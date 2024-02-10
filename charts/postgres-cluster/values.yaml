@@ -20,7 +20,7 @@ cluster:
     wal:
       storageClass: ceph-block
       size: 2Gi
-boostrap:
+bootstrap:
   initdbEnabled: false
   initdb:
     database: app
