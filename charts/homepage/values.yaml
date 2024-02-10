@@ -4,10 +4,10 @@ deployment:
     tag: v0.8.7
     imagePullPolicy: IfNotPresent
   replicas: 1
-  strategy: Rolling Update
+  strategy: Recreate
   resources:
     requests:
-      memory: 10Mi
+      memory: 50Mi
       cpu: 10m
     limits:
       memory: 200Mi
@@ -17,7 +17,6 @@ service:
     port: 3000
 ingressRoute:
   host: homepage.alexlebens.net
-  certResolver: letsencrypt
   authentik:
     outpost: authentik-proxy-outpost
     port: 9000
