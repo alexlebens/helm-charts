@@ -40,6 +40,10 @@ spec:
             - name: {{ $k }}
               value: {{ $v | quote }}
           {{- end }}
+          {{- with .Values.deployment.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: homepage-config
               subPath: bookmarks.yaml
