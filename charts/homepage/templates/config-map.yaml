@@ -35,4 +35,3 @@ data:
 {{- .Values.config.widgets | toYaml | nindent 4 }}
 {{- else }} ""
 {{- end }}
-{{ end }}
