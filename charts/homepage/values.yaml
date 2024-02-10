@@ -1,0 +1,31 @@
+deployment:
+  image:
+    repository: ghcr.io/benphelps/homepage
+    tag: v0.8.7
+    imagePullPolicy: IfNotPresent
+  replicas: 1
+  strategy: Rolling Update
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m
+    limits:
+      memory: 200Mi
+      cpu: 500m    
+service:
+  http:
+    port: 3000
+ingressRoute:
+  host: homepage.alexlebens.net
+  certResolver: letsencrypt
+  authentik:
+    outpost: authentik-proxy-outpost
+    port: 9000
+config:
+  bookmarks:
+  services:
+  widgets:
+  kubernetes:
+    mode: cluster
+  docker:
+  settings:

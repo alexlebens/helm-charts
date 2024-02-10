@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: homepage
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: homepage
+    app.kubernetes.io/managed-by: helm
+data:
+  bookmarks.yaml: {{- if .Values.config.bookmarks }} |
+{{- .Values.config.bookmarks | toYaml | nindent 4}}
+{{- else }} ""
+{{- end }}
+  docker.yaml: {{- if .Values.config.docker }} |
+{{- .Values.config.docker | toYaml | nindent 4 }}
+{{- else }} ""
+{{- end }}
+  kubernetes.yaml: {{- if .Values.config.kubernetes }} |
+{{- .Values.config.kubernetes | toYaml | nindent 4 }}
+{{- else }} ""
+{{- end }}
+  services.yaml: {{- if .Values.config.services }} |
+{{- .Values.config.services | toYaml | nindent 4 }}
+{{- else }} ""
+{{- end }}
+  settings.yaml: {{- if .Values.config.settings }} |
+{{- .Values.config.settings | toYaml | nindent 4 }}
+{{- else }} ""
+{{- end }}
+  widgets.yaml: {{- if .Values.config.widgets }} |
+{{- .Values.config.widgets | toYaml | nindent 4 }}
+{{- else }} ""
+{{- end }}
+{{ end }}

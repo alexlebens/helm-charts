@@ -1,0 +1,12 @@
+apiVersion: v2
+name: homepage
+version: 0.0.1
+description: Chart for benphelps homepage
+keywords:
+  - dashboard
+sources:
+  - https://github.com/gethomepage/homepage
+maintainers:
+  - name: alexlebens
+icon: https://github.com/benphelps/homepage/blob/de584eae8f12a0d257e554e9511ef19bd2a1232c/public/mstile-150x150.png
+appVersion: 0.8.7
