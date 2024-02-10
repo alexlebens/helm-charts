@@ -1,0 +1,17 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: "postgresql-{{ .Release.Name }}-cluster-backup"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+spec:
+  schedule: {{ .Values.backup.schedule }}
+  backupOwnerReference: self
+  cluster:
+    name: "postgresql-{{ .Release.Name }}-cluster"

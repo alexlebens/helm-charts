@@ -1,0 +1,81 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: "postgresql-{{ .Release.Name }}-cluster"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+spec:
+  instances: {{ .Values.cluster.instances }}
+  replicationSlots:
+    highAvailability:
+      enabled: true
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: kubernetes.io/hostname
+  postgresql:
+    parameters:
+      {{- toYaml .Values.cluster.parameters | nindent 6 }}
+  resources:
+    {{- toYaml .Values.cluster.resources | nindent 4 }}
+  storage:
+    storageClass: {{ .Values.cluster.storage.data.storageClass }}
+    size: {{ .Values.cluster.storage.data.size }}
+  walStorage:
+    storageClass: {{ .Values.cluster.storage.wal.storageClass }}
+    size: {{ .Values.cluster.storage.wal.size }}
+  monitoring:
+    enablePodMonitor: true
+
+  {{- if .Values.bootstrap.initdbEnabled }}
+  bootstrap:
+    initdb:
+      {{- toYaml .Values.bootstrap.initdb | nindent 6 }}
+  {{- end }}
+
+  {{- if .Values.backup.recoveryEnabled }}
+  bootstrap:
+    recovery:
+      source: "postgresql-{{ .Release.Name }}-cluster-recovery-index-{{ .Values.backup.recoveryIndex }}"
+  externalClusters:
+    - name: "postgresql-{{ .Release.Name }}-cluster-recovery-index-{{ .Values.backup.recoveryIndex }}"
+      barmanObjectStore:
+        endpointURL: {{ .Values.backup.endpointURL }}
+        destinationPath: "s3://{{ .Values.backup.bucket }}/{{ .Values.cluster.name }}/postgresql/{{ .Release.Name }}-cluster"
+        s3Credentials:
+          accessKeyId:
+            name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
+            key: ACCESS_KEY_ID
+          secretAccessKey:
+            name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
+            key: ACCESS_SECRET_KEY
+        data:
+          compression: {{ .Values.backup.compression }}
+        wal:
+          compression: {{ .Values.backup.compression }}
+  {{- end }}
+
+  {{- if .Values.backup.backupEnabled }}
+  backup:
+    retentionPolicy: "{{ .Values.backup.retentionPolicy }}"
+    barmanObjectStore:
+      destinationPath: "s3://{{ .Values.backup.bucket }}/{{ .Values.cluster.name }}/postgresql/{{ .Release.Name }}-cluster"
+      endpointURL: {{ .Values.backup.endpointURL }}
+      serverName: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.postgresql.backup.backupIndex }}"
+      s3Credentials:
+        accessKeyId:
+          name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
+          key: ACCESS_SECRET_KEY
+      data:
+        compression: {{ .Values.backup.compression }}
+      wal:
+        compression: {{ .Values.backup.compression }}
+  {{- end }}

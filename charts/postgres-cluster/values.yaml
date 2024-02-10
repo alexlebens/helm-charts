@@ -1,0 +1,37 @@
+cluster:
+  name: cl01tl
+  instances: 2
+  parameters:
+    shared_buffers: 128MB
+    max_slot_wal_keep_size: 2000MB
+    hot_standby_feedback: "on"
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 2Gi
+      cpu: 1500m
+      hugepages-2Mi: 512Mi
+  storage:
+    data:
+      storageClass: ceph-block
+      size: 10Gi
+    wal:
+      storageClass: ceph-block
+      size: 2Gi
+boostrap:
+  initdbEnabled: false
+  initdb:
+    database: app
+    owner: app
+backup:
+  backupEnabled: true
+  recoveryEnabled: false  
+  schedule: "0 0 0 * * *"
+  retentionPolicy: 14d
+  backupIndex: 1
+  recoveryIndex: 1
+  endpointURL: https://nyc3.digitaloceanspaces.com
+  bucket: net-infra
+  compression: snappy
