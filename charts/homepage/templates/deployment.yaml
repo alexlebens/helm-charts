@@ -36,6 +36,10 @@ spec:
               containerPort: {{ .Values.service.http.port }}
               protocol: TCP
           env:
+          {{- range $k,$v := .Values.deployment.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
           volumeMounts:
             - name: homepage-config
               subPath: bookmarks.yaml

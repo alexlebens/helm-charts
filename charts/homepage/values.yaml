@@ -1,10 +1,11 @@
 deployment:
+  replicas: 1
+  strategy: Recreate
   image:
     repository: ghcr.io/benphelps/homepage
     tag: v0.8.7
     imagePullPolicy: IfNotPresent
-  replicas: 1
-  strategy: Recreate
+  env:
   resources:
     requests:
       memory: 50Mi
