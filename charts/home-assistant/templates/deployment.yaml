@@ -43,12 +43,12 @@ spec:
           {{- with .Values.deployment.envFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}
-          {{- end }}              
+          {{- end }}
           volumeMounts:
             - mountPath: /config
               name: home-assistant-config
           resources:
-            {{- toYaml .Values.deployment.resources | nindent 12 }}              
+            {{- toYaml .Values.deployment.resources | nindent 12 }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.http.port }}
@@ -70,6 +70,7 @@ spec:
             failureThreshold: 30
             timeoutSeconds: 1
             periodSeconds: 5
+        {{- if .Values.codeserver.enabled }}
         - name: codeserver
           image: "{{ .Values.codeserver.image.repository }}:{{ .Values.codeserver.image.tag }}"
           imagePullPolicy: {{ .Values.codeserver.image.imagePullPolicy }}
@@ -85,12 +86,13 @@ spec:
           {{- with .Values.codeserver.envFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}
-          {{- end }}              
+          {{- end }}
           securityContext:
             {{- toYaml .Values.codeserver.securityContext | nindent 12 }}
           volumeMounts:
             - mountPath: /config/home-assistant
               name: home-assistant-config
+        {{- end }}
       volumes:
         - name: home-assistant-config
           persistentVolumeClaim:
