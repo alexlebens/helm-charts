@@ -3,6 +3,22 @@ entries:
   homepage:
   - apiVersion: v2
     appVersion: 0.8.7
+    created: "2024-02-13T03:56:01.418289602Z"
+    description: Chart for benphelps homepage
+    digest: 3a103db2da2dcffd8ca5e1ff610f483d87c9a6b41ee254c07073aad13d9e21dd
+    icon: https://github.com/benphelps/homepage/blob/de584eae8f12a0d257e554e9511ef19bd2a1232c/public/mstile-150x150.png
+    keywords:
+    - dashboard
+    maintainers:
+    - name: alexlebens
+    name: homepage
+    sources:
+    - https://github.com/gethomepage/homepage
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/homepage-0.0.3/homepage-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.8.7
     created: "2024-02-10T11:09:13.431296976Z"
     description: Chart for benphelps homepage
     digest: a5884a5cfd598bba2e2b50379f445ea15949a629616b14a3ca7b6207a97cd11f
@@ -102,4 +118,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-02-13T03:06:36.088260554Z"
+generated: "2024-02-13T03:56:01.418307485Z"
