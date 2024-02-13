@@ -57,6 +57,6 @@ spec:
       priority: 10
       services:
         - kind: Service
-          name: codeserver-http
+          name: home-assistant-codeserver
           port: {{ .Values.codeserver.service.http.port }}
 {{- end }}          
