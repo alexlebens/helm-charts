@@ -16,7 +16,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
-  ingressClassName: "{{ .Values.ingress.host }}"
+  ingressClassName: "{{ .Values.ingress.ingressClassName }}"
   tls:
     - hosts:
         - "{{ .Values.ingress.host }}"
@@ -63,7 +63,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
-  ingressClassName: "{{ .Values.codeserver.ingress.host }}"
+  ingressClassName: "{{ .Values.codeserver.ingress.ingressClassName }}"
   tls:
     - hosts:
         - "{{ .Values.codeserver.ingress.host }}"

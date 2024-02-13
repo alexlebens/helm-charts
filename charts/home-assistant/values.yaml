@@ -20,6 +20,7 @@ service:
     port: 8123
 ingress:
   enabled: true
+  ingressClassName: traefik
   host: homeassistant.alexlebens.net
   authentik:
     outpost: authentik-proxy-outpost
@@ -71,4 +72,5 @@ codeserver:
       port: 8443
   ingress:
     enabled: true
+    ingressClassName: traefik
     host: codeserver.homeassistant.alexlebens.net
