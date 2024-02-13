@@ -3,6 +3,22 @@ entries:
   home-assistant:
   - apiVersion: v2
     appVersion: 2024.2.1
+    created: "2024-02-13T14:34:35.168475858Z"
+    description: Chart for Home Assistant
+    digest: bcd0bc9c48c06e21445a8da91d87ecbe75d71284ad242882b9871d537809fc7d
+    icon: https://avatars.githubusercontent.com/u/13844975?s=200&v=4
+    keywords:
+    - home-automation
+    maintainers:
+    - name: alexlebens
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/home-assistant-0.0.8/home-assistant-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: 2024.2.1
     created: "2024-02-13T14:07:08.095434099Z"
     description: Chart for Home Assistant
     digest: fca58427efa2f41ad43548821136122d652b482743594ec67b703ec7697d6d9d
@@ -247,4 +263,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-02-13T14:07:08.095476698Z"
+generated: "2024-02-13T14:34:35.168550598Z"
