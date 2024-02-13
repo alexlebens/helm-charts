@@ -1,0 +1,74 @@
+deployment:
+  replicas: 1
+  strategy: Recreate
+  image:
+    repository: homeassistant/home-assistant
+    tag: 2024.2.1
+    imagePullPolicy: IfNotPresent
+  env:
+    TZ: US/Mountain
+  envFrom:
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 50m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+service:
+  http:
+    port: 8123
+ingress:
+  enabled: true
+  host: homeassistant.alexlebens.net
+  authentik:
+    outpost: authentik-proxy-outpost
+    port: 9000
+metrics:
+  enabled: false
+  serviceMonitor:
+    interval: 1m
+    scrapeTimeout: 30s
+    ## See https://www.home-assistant.io/docs/authentication/ for where to find
+    ## long lived access token creation under your account profile, which is
+    ## needed to monitor Home Assistant
+    bearerTokenSecret:
+      name: ""
+      key: ""
+  prometheusRule:
+    enabled: false
+    rules:
+      - alert: HomeAssistantAbsent
+        annotations:
+          description: Home Assistant has disappeared from Prometheus service discovery.
+          summary: Home Assistant is down.
+        expr: |
+          absent(up{job=~".*home-assistant.*"} == 1)
+        for: 5m
+        labels:
+          severity: critical
+persistence:
+  config:
+    storageClassName: ceph-block
+    storageSize: 1Gi
+    volumeMode: Filesystem
+codeserver:
+  enabled: true
+  image:
+    repository: linuxserver/code-server
+    tag: 4.21.1
+    imagePullPolicy: IfNotPresent
+  env:
+    TZ: US/Mountain
+    PUID: 1000
+    PGID: 1000
+    DEFAULT_WORKSPACE: /config
+  envFrom:
+  securityContext:
+    runAsUser: 0
+  service:
+    http:
+      port: 8443
+  ingress:
+    enabled: true
+    host: codeserver.homeassistant.alexlebens.net

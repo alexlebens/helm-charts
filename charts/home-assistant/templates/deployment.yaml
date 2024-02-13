@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: home-assistant
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    type: {{ .Values.deployment.strategy }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: home-assistant
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: home-assistant
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: home-assistant
+      automountServiceAccountToken: true
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http.port }}
+              protocol: TCP
+          env:
+          {{- range $k,$v := .Values.deployment.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
+          {{- with .Values.deployment.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}              
+          volumeMounts:
+            - mountPath: /config
+              name: home-assistant-config
+          resources:
+            {{- toYaml .Values.deployment.resources | nindent 12 }}              
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.http.port }}
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.http.port }}
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.service.http.port }}
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+        - name: codeserver
+          image: "{{ .Values.codeserver.image.repository }}:{{ .Values.codeserver.image.tag }}"
+          imagePullPolicy: {{ .Values.codeserver.image.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.codeserver.service.http.port }}
+              name: codeserver-http
+              protocol: TCP
+          env:
+          {{- range $k,$v := .Values.codeserver.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
+          {{- with .Values.codeserver.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}              
+          securityContext:
+            {{- toYaml .Values.codeserver.securityContext | nindent 12 }}
+          volumeMounts:
+            - mountPath: /config/home-assistant
+              name: home-assistant-config
+      volumes:
+        - name: home-assistant-config
+          persistentVolumeClaim:
+            claimName: home-assistant-config
