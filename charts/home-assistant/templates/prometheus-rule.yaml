@@ -15,5 +15,5 @@ spec:
   groups:
     - name: {{ .Release.Name }}
       rules:
-        {{- toYaml .Values.prometheusRule.rules | nindent 8 }}
+        {{- toYaml .Values.metrics.prometheusRule.rules | nindent 8 }}
 {{- end }}
