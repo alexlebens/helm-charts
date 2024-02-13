@@ -13,10 +13,10 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: {{ .Values.service.http.port }}
-    targetPort: http
-    protocol: TCP
-    name: http
+    - port: {{ .Values.service.http.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
     app.kubernetes.io/name: home-assistant
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -29,7 +29,7 @@ metadata:
   name: home-assistant-codeserver
   namespace: {{ .Release.Namespace }}  
   labels:
-    app.kubernetes.io/name: code-server
+    app.kubernetes.io/name: home-assistant
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
@@ -38,11 +38,11 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: {{ .Values.codeserver.service.http.port }}
-    targetPort: codeserver-http
-    protocol: TCP
-    name: codeserver-http
+    - port: {{ .Values.codeserver.service.http.port }}
+      targetPort: codeserver-http
+      protocol: TCP
+      name: codeserver-http
   selector:
-    app.kubernetes.io/name: codeserver
+    app.kubernetes.io/name: home-assistant
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

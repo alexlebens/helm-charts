@@ -10,6 +10,7 @@ This chart bootstraps a [Home-Assistant](https://github.com/benphelps/homepage) 
 
 - Kubernetes
 - Helm
+- Traefik v2 / IngressRoute
 - Authentik / Auth
 
 ## Parameters

@@ -18,9 +18,8 @@ deployment:
 service:
   http:
     port: 8123
-ingress:
+ingressRoute:
   enabled: true
-  ingressClassName: traefik
   host: homeassistant.alexlebens.net
   authentik:
     outpost: authentik-proxy-outpost
@@ -70,7 +69,6 @@ codeserver:
   service:
     http:
       port: 8443
-  ingress:
+  ingressRoute:
     enabled: true
-    ingressClassName: traefik
     host: codeserver.homeassistant.alexlebens.net
