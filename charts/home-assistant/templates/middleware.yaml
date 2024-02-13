@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled }}
+{{- if .Values.ingressRoute.enabled }}
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -13,7 +13,7 @@ metadata:
     app.kubernetes.io/managed-by: helm
 spec:
   forwardAuth:
-    address: "http://{{ .Values.ingress.authentik.outpost }}.authentik:{{ .Values.ingress.authentik.port }}/outpost.goauthentik.io/auth/traefik"
+    address: "http://{{ .Values.ingressRoute.authentik.outpost }}.authentik:{{ .Values.ingressRoute.authentik.port }}/outpost.goauthentik.io/auth/traefik"
     trustForwardHeader: true
     authResponseHeaders:
       - X-authentik-username
