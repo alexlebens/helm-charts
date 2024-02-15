@@ -1,11 +1,12 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:base",
-        "mergeConfidence:all-badges"
+        "config:recommended",
+        "mergeConfidence:all-badges",
+        ":dependencyDashboard"
     ],
-    "timezone": "MST7MDT",
-    "schedule": "before 8am every weekday",
+    "timezone": "US/Mountain",
+    "schedule": "before 8am",
     "ignoreTests": true,
     "lockFileMaintenance": {
         "enabled": true,
