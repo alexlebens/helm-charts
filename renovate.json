@@ -2,11 +2,9 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "config:recommended",
-        "mergeConfidence:all-badges",
-        ":dependencyDashboard"
+        "mergeConfidence:all-badges"
     ],
     "timezone": "US/Mountain",
-    "ignoreTests": true,
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true
