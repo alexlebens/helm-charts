@@ -6,7 +6,6 @@
         ":dependencyDashboard"
     ],
     "timezone": "US/Mountain",
-    "schedule": "before 8am",
     "ignoreTests": true,
     "lockFileMaintenance": {
         "enabled": true,
