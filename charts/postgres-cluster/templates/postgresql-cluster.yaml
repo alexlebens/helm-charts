@@ -42,9 +42,9 @@ spec:
   {{- if .Values.backup.recoveryEnabled }}
   bootstrap:
     recovery:
-      source: "postgresql-{{ .Release.Name }}-cluster-recovery-index-{{ .Values.backup.recoveryIndex }}"
+      source: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backup.recoveryIndex }}"
   externalClusters:
-    - name: "postgresql-{{ .Release.Name }}-cluster-recovery-index-{{ .Values.backup.recoveryIndex }}"
+    - name: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backup.recoveryIndex }}"
       barmanObjectStore:
         endpointURL: {{ .Values.backup.endpointURL }}
         destinationPath: "s3://{{ .Values.backup.bucket }}/{{ .Values.cluster.name }}/postgresql/{{ .Release.Name }}-cluster"
