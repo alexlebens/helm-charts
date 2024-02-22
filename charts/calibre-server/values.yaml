@@ -39,4 +39,4 @@ persistence:
     storageSize: 5Gi
     volumeMode: Filesystem
   books:
-    claimName:
+    claimName: calibre-server-nfs-storage
