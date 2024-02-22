@@ -1,0 +1,13 @@
+apiVersion: v2
+name: calibre-server
+version: 0.0.1
+description: Chart for Calibre content database
+keywords:
+  - media
+  - books
+sources:
+  - https://github.com/kovidgoyal/calibre
+maintainers:
+  - name: alexlebens
+icon: https://raw.githubusercontent.com/kovidgoyal/calibre/master/resources/images/lt.png
+appVersion: 7.5.1

@@ -1,0 +1,42 @@
+deployment:
+  replicas: 1
+  strategy: Recreate
+  image:
+    repository: linuxserver/calibre
+    tag: v7.5.1-ls269
+    imagePullPolicy: IfNotPresent
+  env:
+    PGID: "1001"
+    PUID: "1001"
+    TZ: UTC
+    UMASK_SET: "022"
+    CUSTOM_USER: calibre
+    TITLE: Calibre Server
+    NO_DECOR: true
+  envFrom:
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 50m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+service:
+  http:
+    port: 8080
+  content:
+    port: 8081
+ingressRoute:
+  enabled: true
+  http:
+    host: server.calibre.alexlebens.net
+  authentik:
+    outpost: authentik-proxy-outpost
+    port: 9000
+persistence:
+  config:
+    storageClassName: ceph-block
+    storageSize: 5Gi
+    volumeMode: Filesystem
+  books:
+    claimName:
