@@ -3,6 +3,23 @@ entries:
   calibre-server:
   - apiVersion: v2
     appVersion: 7.5.1
+    created: "2024-02-23T01:02:13.942762073Z"
+    description: Chart for Calibre content database
+    digest: fd3fb0697e6738ab87c2196f44e6a27d3ce06ccec3ba725889f7f25d9d6c4b05
+    icon: https://raw.githubusercontent.com/kovidgoyal/calibre/master/resources/images/lt.png
+    keywords:
+    - media
+    - books
+    maintainers:
+    - name: alexlebens
+    name: calibre-server
+    sources:
+    - https://github.com/kovidgoyal/calibre
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/calibre-server-0.0.3/calibre-server-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 7.5.1
     created: "2024-02-22T20:57:28.269200802Z"
     description: Chart for Calibre content database
     digest: d9e9550babac95ea44b1451831094d989da29af85c94694c86af3d33b0010f28
@@ -347,4 +364,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-02-22T20:57:28.269251206Z"
+generated: "2024-02-23T01:02:13.942810284Z"
