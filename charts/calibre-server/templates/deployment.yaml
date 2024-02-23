@@ -49,6 +49,8 @@ spec:
           {{- end }}
           volumeMounts:
             - mountPath: /config
+              name: calibre-server-config
+            - mountPath: /books
               name: calibre-server-books
           resources:
             {{- toYaml .Values.deployment.resources | nindent 12 }}
@@ -74,6 +76,9 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 5
       volumes:
+        - name: calibre-server-config
+          persistentVolumeClaim:
+            claimName: calibre-server-config
         - name: calibre-server-books
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.books.claimName }}
