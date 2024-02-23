@@ -1,6 +1,6 @@
 apiVersion: v2
 name: calibre-server
-version: 0.0.2
+version: 0.0.3
 description: Chart for Calibre content database
 keywords:
   - media

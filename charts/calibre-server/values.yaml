@@ -34,9 +34,5 @@ ingressRoute:
     outpost: authentik-proxy-outpost
     port: 9000
 persistence:
-  config:
-    storageClassName: ceph-block
-    storageSize: 5Gi
-    volumeMode: Filesystem
   books:
     claimName: calibre-server-nfs-storage
