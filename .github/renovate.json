@@ -13,15 +13,30 @@
     "bumpVersion": "patch",
     "packageRules": [
         {
-            "description": "Disables the creation of branches/PRs for any minor/patch updates",
-            "matchPaths": [".github/renovate-update-notification/Dockerfile"],
-            "matchUpdateTypes": ["minor", "patch", "pin", "digest", "rollback"],
+            "description": "Disables for non major Renovate version",
+            "matchPaths": [
+                ".github/renovate-update-notification/Dockerfile"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "pin",
+                "digest",
+                "rollback"
+            ],
             "enabled": false
         },
         {
-            "description": "Create a PR whenever there is a new major Renovate version",
-            "matchPaths": [".github/renovate-update-notification/Dockerfile"],
-            "matchUpdateTypes": ["major"],
+            "description": "Generate for major Renovate version",
+            "matchPaths": [
+                ".github/renovate-update-notification/Dockerfile"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "addLabels": [
+                "upgrade"
+            ],
             "automerge": false
         },
         {
@@ -34,6 +49,7 @@
                 "before 5pm on tuesday"
             ],
             "addLabels": [
+                "upgrade",                
                 "weekly",
                 "service"
             ],
@@ -44,10 +60,11 @@
             "description": "Auto merge patches for applications",
             "matchPackageNames": [
                 "homepage",
-                "home-assistant",
-                "calibre-server"
+                "home-assistant"
             ],
-            "matchUpdateTypes": ["patch"],
+            "matchUpdateTypes": [
+                "patch"
+            ],
             "schedule": [
                 "after 10am on tuesday",
                 "before 5pm on tuesday"
@@ -56,21 +73,47 @@
             "automerge": true
         },
         {
-            "description": "Generate for applications on Tuesdays",
+            "description": "Generate patches for applications on Tuesdays",        
             "matchPackageNames": [
-                "homepage",
-                "home-assistant",
                 "calibre-server"
+            ],
+            "matchUpdateTypes": [
+                "patch"
             ],
             "schedule": [
                 "after 10am on tuesday",
                 "before 5pm on tuesday"
             ],
             "addLabels": [
+                "patch",
                 "weekly",
                 "application"
             ],
-            "automerge": false
+            "automerge": false,
+            "minimumReleaseAge": "3 days"
+        },        
+        {
+            "description": "Generate for applications on Tuesdays",
+            "matchPackageNames": [
+                "homepage",
+                "home-assistant",
+                "calibre-server"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "major"
+            ],
+            "schedule": [
+                "after 10am on tuesday",
+                "before 5pm on tuesday"
+            ],
+            "addLabels": [
+                "upgrade",
+                "weekly",
+                "application"
+            ],
+            "automerge": false,
+            "minimumReleaseAge": "3 days"
         }
     ]
 }
