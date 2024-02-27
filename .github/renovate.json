@@ -2,11 +2,75 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "config:recommended",
-        "mergeConfidence:all-badges"
+        "mergeConfidence:all-badges",
+        ":rebaseStalePrs"
     ],
     "timezone": "US/Mountain",
-    "lockFileMaintenance": {
-        "enabled": true,
-        "automerge": true
-    }
+    "schedule": [
+        "after 10am every weekday",
+        "before 5pm every weekday"
+    ],
+    "bumpVersion": "patch",
+    "packageRules": [
+        {
+            "description": "Disables the creation of branches/PRs for any minor/patch updates",
+            "matchPaths": [".github/renovate-update-notification/Dockerfile"],
+            "matchUpdateTypes": ["minor", "patch", "pin", "digest", "rollback"],
+            "enabled": false
+        },
+        {
+            "description": "Create a PR whenever there is a new major Renovate version",
+            "matchPaths": [".github/renovate-update-notification/Dockerfile"],
+            "matchUpdateTypes": ["major"],
+            "automerge": false
+        },
+        {
+            "description": "Generate for core services on Tuesdays",
+            "matchPackageNames": [
+                "postgres-cluster"
+            ],
+            "schedule": [
+                "after 10am on tuesday",
+                "before 5pm on tuesday"
+            ],
+            "addLabels": [
+                "weekly",
+                "core-service"
+            ],
+            "automerge": false,
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "Auto merge patches for applications",
+            "matchPackageNames": [
+                "homepage",
+                "home-assistant",
+                "calibre-server"
+            ],
+            "matchUpdateTypes": ["patch"],
+            "schedule": [
+                "after 10am on tuesday",
+                "before 5pm on tuesday"
+            ],
+            "automergeType": "branch",
+            "automerge": true
+        },
+        {
+            "description": "Generate for applications on Tuesdays",
+            "matchPackageNames": [
+                "homepage",
+                "home-assistant",
+                "calibre-server"
+            ],
+            "schedule": [
+                "after 10am on tuesday",
+                "before 5pm on tuesday"
+            ],
+            "addLabels": [
+                "weekly",
+                "application"
+            ],
+            "automerge": false
+        }
+    ]
 }
