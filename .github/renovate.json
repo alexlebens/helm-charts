@@ -25,7 +25,7 @@
             "automerge": false
         },
         {
-            "description": "Generate for core services on Tuesdays",
+            "description": "Generate for services on Tuesdays",
             "matchPackageNames": [
                 "postgres-cluster"
             ],
@@ -35,7 +35,7 @@
             ],
             "addLabels": [
                 "weekly",
-                "core-service"
+                "service"
             ],
             "automerge": false,
             "minimumReleaseAge": "3 days"
