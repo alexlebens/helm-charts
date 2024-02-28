@@ -10,7 +10,8 @@
         "after 10am every weekday",
         "before 5pm every weekday"
     ],
-    "bumpVersion": "patch",
+    "labels": ["outside-rule"],
+    "bumpVersion": "minor",
     "packageRules": [
         {
             "description": "Disables for non major Renovate version",
@@ -40,69 +41,23 @@
             "automerge": false
         },
         {
-            "description": "Generate for services on Tuesdays",
+            "description": "Generate image updates on Tuesdays",
             "matchPackageNames": [
-                "postgres-cluster"
+                "linuxserver/calibre",
+                "homeassistant/home-assistant",
+                "ghcr.io/gethomepage/homepage",
+                "ghcr.io/cloudnative-pg/postgresql"
             ],
-            "schedule": [
-                "after 10am on tuesday",
-                "before 5pm on tuesday"
-            ],
-            "addLabels": [
-                "upgrade",                
-                "weekly",
-                "service"
-            ],
-            "automerge": false,
-            "minimumReleaseAge": "3 days"
-        },
-        {
-            "description": "Auto merge patches for applications",
-            "matchPackageNames": [
-                "homepage",
-                "home-assistant"
-            ],
-            "matchUpdateTypes": [
-                "patch"
-            ],
-            "schedule": [
-                "after 10am on tuesday",
-                "before 5pm on tuesday"
-            ],
-            "automergeType": "branch",
-            "automerge": true
-        },
-        {
-            "description": "Generate patches for applications on Tuesdays",        
-            "matchPackageNames": [
-                "calibre-server"
-            ],
-            "matchUpdateTypes": [
-                "patch"
-            ],
-            "schedule": [
-                "after 10am on tuesday",
-                "before 5pm on tuesday"
-            ],
-            "addLabels": [
-                "patch",
-                "weekly",
-                "application"
-            ],
-            "automerge": false,
-            "minimumReleaseAge": "3 days"
-        },        
-        {
-            "description": "Generate for applications on Tuesdays",
-            "matchPackageNames": [
-                "homepage",
-                "home-assistant",
-                "calibre-server"
-            ],
-            "matchUpdateTypes": [
-                "minor",
-                "major"
-            ],
+            "matchDatasources": [
+                "docker",
+                "gitea-releases",
+                "gitea-tags",
+                "github-releases",
+                "github-tags",
+                "gitlab-packages",
+                "gitlab-releases",
+                "gitlab-tags"
+            ],            
             "schedule": [
                 "after 10am on tuesday",
                 "before 5pm on tuesday"
@@ -110,10 +65,10 @@
             "addLabels": [
                 "upgrade",
                 "weekly",
-                "application"
+                "image"
             ],
             "automerge": false,
             "minimumReleaseAge": "3 days"
-        }
+        }   
     ]
 }
