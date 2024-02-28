@@ -10,8 +10,9 @@
         "after 10am every weekday",
         "before 5pm every weekday"
     ],
-    "labels": ["outside-rule"],
-    "bumpVersion": "minor",
+    "labels": [
+        "outside-rule"
+    ],
     "packageRules": [
         {
             "description": "Disables for non major Renovate version",
@@ -57,7 +58,7 @@
                 "gitlab-packages",
                 "gitlab-releases",
                 "gitlab-tags"
-            ],            
+            ],
             "schedule": [
                 "after 10am on tuesday",
                 "before 5pm on tuesday"
@@ -67,8 +68,9 @@
                 "weekly",
                 "image"
             ],
+            "bumpVersion": "minor",
             "automerge": false,
             "minimumReleaseAge": "3 days"
-        }   
+        }
     ]
 }
