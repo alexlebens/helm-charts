@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/part-of: {{ .Release.Name }}
     app.kubernetes.io/managed-by: helm
 spec:
-  imageName: {{ .Values.cluster.imageName }}
+  imageName: "{{ .Values.cluster.imageRepo }}:{{ .Values.cluster.imageTag }}"
   instances: {{ .Values.cluster.instances }}
   replicationSlots:
     highAvailability:
