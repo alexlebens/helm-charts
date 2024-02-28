@@ -71,6 +71,22 @@ entries:
     version: 0.0.1
   home-assistant:
   - apiVersion: v2
+    appVersion: v2024.2.5
+    created: "2024-02-28T15:41:16.63694081Z"
+    description: Chart for Home Assistant
+    digest: d087d1f6868d81dad346392cec35ccfb979ad70565c8705cf3f401fb05cf9f61
+    icon: https://avatars.githubusercontent.com/u/13844975?s=200&v=4
+    keywords:
+    - home-automation
+    maintainers:
+    - name: alexlebens
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/home-assistant-0.0.13/home-assistant-0.0.13.tgz
+    version: 0.0.13
+  - apiVersion: v2
     appVersion: v2024.2.4
     created: "2024-02-27T00:46:28.746548508Z"
     description: Chart for Home Assistant
@@ -346,6 +362,23 @@ entries:
   postgres-cluster:
   - apiVersion: v2
     appVersion: v1.22.1
+    created: "2024-02-28T15:41:16.82743741Z"
+    description: Chart for cloudnative-pg cluster
+    digest: 6c5918c25e33b67573ba83829c7aec0428069efbdbbcbe9f2c197048e1a4cbea
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.1.1/postgres-cluster-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: v1.22.1
     created: "2024-02-28T14:42:47.109443185Z"
     description: Chart for cloudnative-pg cluster
     digest: e7113bb6068459cdf8626912b64ef460f7d7d4ab7b329da3bd86b8e8dc270fef
@@ -446,4 +479,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-02-28T14:42:47.109506685Z"
+generated: "2024-02-28T15:41:16.82756115Z"
