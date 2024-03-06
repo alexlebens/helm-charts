@@ -11,7 +11,6 @@
         "before 5pm every weekday"
     ],
     "labels": [
-        "outside-rule"
     ],
     "packageRules": [
         {
