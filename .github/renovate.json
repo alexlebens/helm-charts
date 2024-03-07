@@ -46,7 +46,8 @@
                 "linuxserver/calibre",
                 "homeassistant/home-assistant",
                 "ghcr.io/gethomepage/homepage",
-                "ghcr.io/cloudnative-pg/postgresql"
+                "ghcr.io/cloudnative-pg/postgresql",
+                "linuxserver/code-server"
             ],
             "matchDatasources": [
                 "docker",
