@@ -4,7 +4,7 @@ deployment:
   priorityClassName: system-cluster-critical
   image:
     repository: ghcr.io/alex1989hu/kubelet-serving-cert-approver
-    tag: v0.8.1
+    tag: main
     imagePullPolicy: Always
   resources:
     limits:
