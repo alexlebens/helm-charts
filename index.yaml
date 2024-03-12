@@ -378,6 +378,23 @@ entries:
   kubelet-serving-cert-approver:
   - apiVersion: v2
     appVersion: 0.8.1
+    created: "2024-03-12T04:53:06.104264666Z"
+    description: Kubelet Serving TLS Certificate Signing Request Approver
+    digest: a82cba7d3a1df319e554539b0f453b78d309a61e86350a3553b6e1829b180eb3
+    keywords:
+    - kubernetes
+    - certificate
+    maintainers:
+    - name: alexlebens
+    name: kubelet-serving-cert-approver
+    sources:
+    - https://github.com/alex1989hu/kubelet-serving-cert-approver
+    - https://github.com/alexlebens/helm-charts/charts/homepage
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/kubelet-serving-cert-approver-0.0.3/kubelet-serving-cert-approver-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.8.1
     created: "2024-03-12T04:50:09.429605662Z"
     description: Kubelet Serving TLS Certificate Signing Request Approver
     digest: c5e20169ed83ed17bc49fb0c95d47b52b6bbe4dcd3366fee6483808fb131fcb7
@@ -530,4 +547,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-12T04:50:09.429684479Z"
+generated: "2024-03-12T04:53:06.104345187Z"
