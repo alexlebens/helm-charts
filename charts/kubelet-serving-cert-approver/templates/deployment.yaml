@@ -50,7 +50,7 @@ spec:
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: {{ .Release.Namespace }}
+                  fieldPath: metadata.namespace
           resources:
             {{- toYaml .Values.deployment.resources | nindent 12 }}                  
           livenessProbe:
