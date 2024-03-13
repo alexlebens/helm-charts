@@ -19,7 +19,7 @@ ingress:
   enabled: true
   className: traefik
   annotations:
-  host: outline.alexlebens.net
+  host:
 persistence:
   type: s3
   s3:
@@ -41,7 +41,7 @@ redis:
     enabled: false
 outline:
   nodeEnv: production
-  url: https://outline.alexlebens.net
+  url:
   secretKey:
     existingSecretName: outline-key-secret
     existingSecretKey: secret-key
