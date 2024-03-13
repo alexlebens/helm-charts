@@ -42,12 +42,12 @@ spec:
   {{- if .Values.backup.recoveryEnabled }}
   bootstrap:
     recovery:
-      source: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backup.recoveryIndex }}"
+      source: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.bootstrap.recoveryIndex }}"
   externalClusters:
-    - name: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backup.recoveryIndex }}"
+    - name: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.bootstrap.recoveryIndex }}"
       barmanObjectStore:
-        endpointURL: {{ .Values.backup.endpointURL }}
-        destinationPath: "s3://{{ .Values.backup.bucket }}/{{ .Values.cluster.name }}/postgresql/{{ .Release.Name }}-cluster"
+        endpointURL: {{ .Values.bootstrap.endpointURL }}
+        destinationPath: "s3://{{ .Values.bootstrap.bucket }}/{{ .Values.cluster.name }}/postgresql/{{ .Release.Name }}-cluster"
         s3Credentials:
           accessKeyId:
             name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
@@ -56,9 +56,9 @@ spec:
             name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
             key: ACCESS_SECRET_KEY
         data:
-          compression: {{ .Values.backup.compression }}
+          compression: {{ .Values.cluster.compression }}
         wal:
-          compression: {{ .Values.backup.compression }}
+          compression: {{ .Values.cluster.compression }}
   {{- end }}
 
   {{- if .Values.backup.backupEnabled }}
@@ -76,7 +76,7 @@ spec:
           name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
           key: ACCESS_SECRET_KEY
       data:
-        compression: {{ .Values.backup.compression }}
+        compression: {{ .Values.cluster.compression }}
       wal:
-        compression: {{ .Values.backup.compression }}
+        compression: {{ .Values.cluster.compression }}
   {{- end }}

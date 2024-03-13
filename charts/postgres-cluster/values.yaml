@@ -8,6 +8,7 @@ cluster:
     shared_buffers: 128MB
     max_slot_wal_keep_size: 2000MB
     hot_standby_feedback: "on"
+  compression: snappy
   resources:
     requests:
       memory: 512Mi
@@ -24,17 +25,18 @@ cluster:
       storageClass: ceph-block
       size: 2Gi
 bootstrap:
+  recoveryEnabled: false
+  recoveryIndex: 1
+  endpointURL: https://nyc3.digitaloceanspaces.com
+  bucket: alexlebens.net
   initdbEnabled: false
   initdb:
     database: app
     owner: app
 backup:
   backupEnabled: true
-  recoveryEnabled: false  
   schedule: "0 0 0 * * *"
   retentionPolicy: 14d
   backupIndex: 1
-  recoveryIndex: 1
   endpointURL: https://nyc3.digitaloceanspaces.com
-  bucket: net-infra
-  compression: snappy
+  bucket: alexlebens.net
