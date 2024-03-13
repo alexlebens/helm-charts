@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: homepage
-    app.kubernetes.io/managed-by: helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
