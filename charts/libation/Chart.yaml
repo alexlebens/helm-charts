@@ -1,9 +1,10 @@
 apiVersion: v2
 name: libation
-version: 0.0.1
-description: Chart for benphelps homepage
+version: 0.0.2
+description: Import library from audible
 keywords:
-  - dashboard
+  - audiobooks
+  - job
 sources:
   - https://github.com/rmcrackan/Libation
 maintainers:
