@@ -2,14 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: calibre-server
-  namespace: {{ .Release.Namespace }}  
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: calibre-server
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: helm
 spec:
   type: ClusterIP
   ports:
@@ -26,14 +25,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: calibre-server-content
-  namespace: {{ .Release.Namespace }}  
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: calibre-server
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: helm
 spec:
   type: ClusterIP
   ports:

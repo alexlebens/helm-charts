@@ -29,14 +29,14 @@ service:
 ingressRoute:
   enabled: true
   http:
-    host: server.calibre.alexlebens.net
+    host:
   authentik:
     outpost: authentik-proxy-outpost
     port: 9000
 persistence:
   config:
-    storageClassName: ceph-block
+    storageClassName: default
     storageSize: 5Gi
     volumeMode: Filesystem
   books:
-    claimName: calibre-server-nfs-storage
+    claimName:

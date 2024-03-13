@@ -11,6 +11,7 @@ This chart bootstraps a [Calibre](https://github.com/home-assistant) deployment 
 - Kubernetes
 - Helm
 - Traefik v2 / IngressRoute
+- Authentik / Auth
 
 ## Parameters
 

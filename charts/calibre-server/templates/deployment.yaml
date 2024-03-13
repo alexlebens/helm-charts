@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: helm
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .Values.deployment.replicas }}
@@ -28,7 +27,7 @@ spec:
       serviceAccountName: calibre-server
       automountServiceAccountToken: true
       containers:
-        - name: {{ .Release.Name }}
+        - name: calibre-server
           image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
           imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
           ports:
