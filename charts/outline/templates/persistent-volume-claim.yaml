@@ -1,0 +1,20 @@
+{{- if eq .Values.persistence.type "local" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-volume-claim
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: outline
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: outline
+spec:
+  storageClassName: {{ .Values.persistence.local.storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.local.storageSize }}
+{{- end }}

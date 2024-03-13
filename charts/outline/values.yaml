@@ -1,0 +1,89 @@
+deployment:
+  replicas: 1
+  strategy: Recreate
+  image:
+    repository: outlinewiki/outline
+    tag: "0.75.2"
+    imagePullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 50m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+service:
+  web:
+    port: 3000
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+  host: outline.alexlebens.net
+persistence:
+  type: s3
+  s3:
+    credentialsSecret: outline-s3-secret
+    region: us-east-1
+    bucketName: outline
+    endpoint:
+    uploadMaxSize: "26214400"
+    forcePathStyle: false
+    acl: private
+  local:
+    storageClassName: default
+    storageSize: 50Gi
+    localRootDir: /var/lib/outline/data
+    uploadMaxSize: 26214400
+redis:
+  architecture: standalone
+  auth:
+    enabled: false
+outline:
+  nodeEnv: production
+  url: https://outline.alexlebens.net
+  secretKey:
+    existingSecretName: outline-key-secret
+    existingSecretKey: secret-key
+  utilsSecret:
+    existingSecretName: outline-key-secret
+    existingSecretKey: utils-key
+  database:
+    passwordSecret:
+      existingSecretName: postgresql-outline-cluster-app
+      existingSecretKey: password
+    usernameSecret:
+      existingSecretName: postgresql-outline-cluster-app
+      existingSecretKey: username
+    databaseName: app
+    databaseHost: postgresql-outline-cluster-rw
+    connectionPoolMin: ""
+    connectionPoolMax: "20"
+    sslMode: disable
+  optional:
+    forceHttps: false
+    enableUpdates: false
+    webConcurrency: 1
+    maximumImportSize: 5120000
+    logLevel: info
+    defaultLanguage: en_US
+    rateLimiter:
+      enabled: false
+      requests: 1000
+      durationWindow: 60
+    developmentUnsafeInlineCsp: false
+  auth:
+    oidc:
+      enabled: true
+      clientId:
+        existingSecretName: outline-auth-secret
+        existingSecretKey: oidc-client-id
+      clientSecret:
+        existingSecretName: outline-auth-secret
+        existingSecretKey: oidc-client-secret
+      authUri:
+      tokenUri:
+      userinfoUri:
+      usernameClaim:
+      displayName:
+      scopes: openid profile email
