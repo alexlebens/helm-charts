@@ -1,0 +1,12 @@
+apiVersion: v2
+name: libation
+version: 0.0.1
+description: Chart for benphelps homepage
+keywords:
+  - dashboard
+sources:
+  - https://github.com/rmcrackan/Libation
+maintainers:
+  - name: alexlebens
+icon: https://getlibation.com/images/libation-logo.png
+appVersion: "11.1.0"

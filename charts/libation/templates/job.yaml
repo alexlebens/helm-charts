@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: libation
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: libation
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: job
+    app.kubernetes.io/part-of: libation
+spec:
+  schedule: {{ .Values.libation.job.schedule }}
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: libation
+              image: "{{ .Values.libation.image.repository }}:{{ .Values.libation.image.tag }}"
+              imagePullPolicy: {{ .Values.libation.image.pullPolicy }}
+              env:
+                - name: SLEEP_TIME
+                  value: "-1"
+              volumeMounts:
+                - name: libation-config
+                  mountPath: /config
+                - name: libation-books
+                  mountPath: /data
+          volumes:
+            - name: libation-config
+              persistentVolumeClaim:
+                claimName: libation-config
+            - name: libation-books
+              persistentVolumeClaim:
+                claimName: {{ .Values.persistence.books.claimName }}

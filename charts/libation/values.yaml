@@ -1,0 +1,14 @@
+libation:
+  job:
+    schedule: "0 * * * *"
+  image:
+    repository: rmcrackan/libation
+    tag: "11.1.0"
+    pullPolicy: IfNotPresent
+persistence:
+  config:
+    storageClassName: nfs-client
+    storageSize: 1Gi
+    volumeMode: Filesystem
+  books:
+    claimName: libation-nfs-storage  
