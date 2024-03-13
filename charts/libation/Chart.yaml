@@ -1,6 +1,6 @@
 apiVersion: v2
 name: libation
-version: 0.0.2
+version: 0.0.3
 description: Import library from audible
 keywords:
   - audiobooks
