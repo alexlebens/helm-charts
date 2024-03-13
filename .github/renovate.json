@@ -45,19 +45,15 @@
             "matchPackageNames": [
                 "linuxserver/calibre",
                 "homeassistant/home-assistant",
+                "linuxserver/code-server",
                 "ghcr.io/gethomepage/homepage",
-                "ghcr.io/cloudnative-pg/postgresql",
-                "linuxserver/code-server"
+                "ghcr.io/alex1989hu/kubelet-serving-cert-approver",
+                "rmcrackan/libation",
+                "outlinewiki/outline",
+                "ghcr.io/cloudnative-pg/postgresql"
             ],
             "matchDatasources": [
-                "docker",
-                "gitea-releases",
-                "gitea-tags",
-                "github-releases",
-                "github-tags",
-                "gitlab-packages",
-                "gitlab-releases",
-                "gitlab-tags"
+                "docker"
             ],
             "schedule": [
                 "after 10am on tuesday",
@@ -67,6 +63,27 @@
                 "upgrade",
                 "weekly",
                 "image"
+            ],
+            "bumpVersion": "minor",
+            "automerge": false,
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "Generate application charts on Tuesdays",
+            "matchPackageNames": [
+                "redis"
+            ],
+            "matchDatasources": [
+                "helm"
+            ],
+            "schedule": [
+                "after 10am on tuesday",
+                "before 5pm on tuesday"
+            ],
+            "addLabels": [
+                "upgrade",
+                "weekly",
+                "chart"
             ],
             "bumpVersion": "minor",
             "automerge": false,
