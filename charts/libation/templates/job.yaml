@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/component: job
     app.kubernetes.io/part-of: libation
 spec:
-  schedule: {{ .Values.libation.job.schedule }}
+  schedule: {{ .Values.job.schedule }}
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   jobTemplate:
@@ -20,8 +20,8 @@ spec:
           restartPolicy: Never
           containers:
             - name: libation
-              image: "{{ .Values.libation.image.repository }}:{{ .Values.libation.image.tag }}"
-              imagePullPolicy: {{ .Values.libation.image.pullPolicy }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
               env:
                 - name: SLEEP_TIME
                   value: "-1"

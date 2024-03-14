@@ -4,17 +4,16 @@ metadata:
   name: "events:{{ .Release.Name }}"
   namespace: default
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/name: kubelet-serving-cert-approver
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: server
-    app.kubernetes.io/part-of: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: kubelet-serving-cert-approver
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: "events:{{ .Release.Name }}"
 subjects:
   - kind: ServiceAccount
-    name: {{ .Release.Name }}
+    name: kubelet-serving-cert-approver
     namespace: {{ .Release.Name }}

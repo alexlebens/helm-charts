@@ -19,16 +19,16 @@ cluster:
       hugepages-2Mi: 512Mi
   storage:
     data:
-      storageClass: ceph-block
+      storageClass: default
       size: 10Gi
     wal:
-      storageClass: ceph-block
+      storageClass: default
       size: 2Gi
 bootstrap:
   recoveryEnabled: false
   recoveryIndex: 1
-  endpointURL: https://nyc3.digitaloceanspaces.com
-  bucket: alexlebens.net
+  endpointURL:
+  bucket:
   initdbEnabled: false
   initdb:
     database: app
@@ -38,5 +38,5 @@ backup:
   schedule: "0 0 0 * * *"
   retentionPolicy: 14d
   backupIndex: 1
-  endpointURL: https://nyc3.digitaloceanspaces.com
-  bucket: alexlebens.net
+  endpointURL:
+  bucket:

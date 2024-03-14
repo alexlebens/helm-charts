@@ -6,7 +6,7 @@ deployment:
     tag: 2024.3.0
     imagePullPolicy: IfNotPresent
   env:
-    TZ: US/Mountain
+    TZ: UTC
   envFrom:
   resources:
     requests:
@@ -20,7 +20,7 @@ service:
     port: 8123
 ingressRoute:
   enabled: true
-  host: homeassistant.alexlebens.net
+  host:
   authentik:
     outpost: authentik-proxy-outpost
     port: 9000
@@ -49,17 +49,17 @@ metrics:
           severity: critical
 persistence:
   config:
-    storageClassName: ceph-block
+    storageClassName: default
     storageSize: 1Gi
     volumeMode: Filesystem
 codeserver:
-  enabled: true
+  enabled: false
   image:
     repository: linuxserver/code-server
     tag: 4.22.0
     imagePullPolicy: IfNotPresent
   env:
-    TZ: US/Mountain
+    TZ: UTC
     PUID: 1000
     PGID: 1000
     DEFAULT_WORKSPACE: /config
@@ -70,5 +70,5 @@ codeserver:
     http:
       port: 8443
   ingressRoute:
-    enabled: true
-    host: codeserver.homeassistant.alexlebens.net
+    enabled: false
+    host:

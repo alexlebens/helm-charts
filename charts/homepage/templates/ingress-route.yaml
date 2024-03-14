@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: homepage
-    app.kubernetes.io/managed-by: helm
 spec:
   entryPoints:
     - websecure
@@ -17,7 +16,7 @@ spec:
     - kind: Rule
       match: "Host(`{{ .Values.ingressRoute.host }}`)"
       middlewares:
-        - name: authentik
+        - name: "authentik-{{ .Release.Name }}"
           namespace: {{ .Release.Namespace }}
       priority: 10
       services:

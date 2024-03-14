@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: database
     app.kubernetes.io/part-of: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: helm
 spec:
   imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
   instances: {{ .Values.cluster.instances }}
@@ -39,7 +38,7 @@ spec:
       {{- toYaml .Values.bootstrap.initdb | nindent 6 }}
   {{- end }}
 
-  {{- if .Values.backup.recoveryEnabled }}
+  {{- if .Values.bootstrap.recoveryEnabled }}
   bootstrap:
     recovery:
       source: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.bootstrap.recoveryIndex }}"

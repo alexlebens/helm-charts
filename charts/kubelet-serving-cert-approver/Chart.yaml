@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kubelet-serving-cert-approver
-version: 0.0.3
+version: 0.0.4
 description: Kubelet Serving TLS Certificate Signing Request Approver
 keywords:
   - kubernetes

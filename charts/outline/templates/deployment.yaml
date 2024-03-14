@@ -62,9 +62,15 @@ spec:
                   name: "{{ .Values.outline.database.usernameSecret.existingSecretName }}"
                   key: "{{ .Values.outline.database.usernameSecret.existingSecretKey }}"
             - name: POSTGRES_DATABASE_NAME
-              value: {{ .Values.outline.database.databaseName }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.outline.database.databaseName.existingSecretName }}"
+                  key: "{{ .Values.outline.database.databaseName.existingSecretKey }}"
             - name: POSTGRES_DATABASE_HOST
-              value: {{ .Values.outline.database.databaseHost }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.outline.database.databaseHost.existingSecretName }}"
+                  key: "{{ .Values.outline.database.databaseHost.existingSecretKey }}"
             - name: DATABASE_URL
               value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@postgresql-{{ .Release.Name }}-cluster-rw:5432/$(POSTGRES_DATABASE_NAME)"
             - name: DATABASE_URL_TEST
@@ -91,12 +97,37 @@ spec:
                 secretKeyRef:
                   name: "{{ .Values.persistence.s3.credentialsSecret }}"
                   key: AWS_SECRET_ACCESS_KEY
+          {{- if .Values.persistence.s3.endpointConfigMap.enabled }}
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
+                  key: BUCKET_REGION
+            - name: AWS_S3_UPLOAD_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
+                  key: BUCKET_NAME
+            - name: AWS_S3_UPLOAD_BUCKET_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
+                  key: BUCKET_HOST
+            - name: AWS_S3_UPLOAD_BUCKET_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
+                  key: BUCKET_PORT
+            - name: AWS_S3_UPLOAD_BUCKET_URL
+              value: "$(AWS_S3_UPLOAD_BUCKET_HOST):$(AWS_S3_UPLOAD_BUCKET_PORT)|"
+          {{- else }}
             - name: AWS_REGION
               value: "{{ .Values.persistence.s3.region }}"
             - name: AWS_S3_UPLOAD_BUCKET_NAME
               value: "{{ .Values.persistence.s3.bucketName }}"
             - name: AWS_S3_UPLOAD_BUCKET_URL
               value: "{{ .Values.persistence.s3.endpoint }}"
+          {{- end }}
             - name: AWS_S3_FORCE_PATH_STYLE
               value: "{{ .Values.persistence.s3.forcePathStyle }}"
             - name: AWS_S3_ACL
@@ -116,7 +147,7 @@ spec:
               value: "{{ .Values.outline.optional.enableUpdates }}"
             - name: WEB_CONCURRENCY
               value: "{{ .Values.outline.optional.webConcurrency }}"
-            - name: MAXIMUM_IMPORT_SIZE
+            - name: FILE_STORAGE_IMPORT_MAX_SIZE
               value: "{{ .Values.outline.optional.maximumImportSize }}"
             - name: LOG_LEVEL
               value: "{{ .Values.outline.optional.logLevel }}"

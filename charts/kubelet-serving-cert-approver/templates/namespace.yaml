@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Release.Name }}
+  name: kubelet-serving-cert-approver
   labels:
+    app.kubernetes.io/name: kubelet-serving-cert-approver
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/name: {{ .Release.Name }}
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/enforce: restricted
     pod-security.kubernetes.io/warn: restricted
