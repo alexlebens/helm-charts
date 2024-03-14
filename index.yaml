@@ -512,6 +512,23 @@ entries:
   libation:
   - apiVersion: v2
     appVersion: 11.1.0
+    created: "2024-03-14T07:30:33.31560362Z"
+    description: Import library from audible
+    digest: c0e881c97de52f63399b94f0c1823efbc57bf9c022d4c53704d6ed73277cef57
+    icon: https://getlibation.com/images/libation-logo.png
+    keywords:
+    - audiobooks
+    - job
+    maintainers:
+    - name: alexlebens
+    name: libation
+    sources:
+    - https://github.com/rmcrackan/Libation
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/libation-0.0.5/libation-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: 11.1.0
     created: "2024-03-13T10:38:16.468633967Z"
     description: Import library from audible
     digest: 73632bf15f70281bed6f060b4a2bfb9b50baba2309a97d063106c9e578bcfbe4
@@ -776,4 +793,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-14T06:18:30.229209944Z"
+generated: "2024-03-14T07:30:33.315690914Z"
