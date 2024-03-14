@@ -1,6 +1,6 @@
 apiVersion: v2
 name: home-assistant
-version: 0.0.15
+version: 0.0.16
 description: Chart for Home Assistant
 keywords:
   - home-automation
