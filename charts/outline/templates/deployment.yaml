@@ -62,9 +62,15 @@ spec:
                   name: "{{ .Values.outline.database.usernameSecret.existingSecretName }}"
                   key: "{{ .Values.outline.database.usernameSecret.existingSecretKey }}"
             - name: POSTGRES_DATABASE_NAME
-              value: {{ .Values.outline.database.databaseName }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.outline.database.databaseName.existingSecretName }}"
+                  key: "{{ .Values.outline.database.databaseName.existingSecretKey }}"
             - name: POSTGRES_DATABASE_HOST
-              value: {{ .Values.outline.database.databaseHost }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.outline.database.databaseHost.existingSecretName }}"
+                  key: "{{ .Values.outline.database.databaseHost.existingSecretKey }}"
             - name: DATABASE_URL
               value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@postgresql-{{ .Release.Name }}-cluster-rw:5432/$(POSTGRES_DATABASE_NAME)"
             - name: DATABASE_URL_TEST
