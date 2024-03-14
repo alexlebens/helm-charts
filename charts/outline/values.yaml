@@ -23,9 +23,12 @@ ingress:
 persistence:
   type: s3
   s3:
-    credentialsSecret: outline-s3-secret
-    region: us-east-1
-    bucketName: outline
+    credentialsSecret:
+    endpointConfigMap:
+      enabled: false
+      name:
+    region:
+    bucketName:
     endpoint:
     uploadMaxSize: "26214400"
     forcePathStyle: false
@@ -50,13 +53,17 @@ outline:
     existingSecretKey: utils-key
   database:
     passwordSecret:
-      existingSecretName: postgresql-outline-cluster-app
+      existingSecretName:
       existingSecretKey: password
     usernameSecret:
-      existingSecretName: postgresql-outline-cluster-app
+      existingSecretName:
       existingSecretKey: username
-    databaseName: app
-    databaseHost: postgresql-outline-cluster-rw
+    databaseName:
+      existingSecretName:
+      existingSecretKey: dbname
+    databaseHost:
+      existingSecretName:
+      existingSecretKey: host
     connectionPoolMin: ""
     connectionPoolMax: "20"
     sslMode: disable
