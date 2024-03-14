@@ -141,7 +141,7 @@ spec:
               value: "{{ .Values.outline.optional.enableUpdates }}"
             - name: WEB_CONCURRENCY
               value: "{{ .Values.outline.optional.webConcurrency }}"
-            - name: MAXIMUM_IMPORT_SIZE
+            - name: FILE_STORAGE_IMPORT_MAX_SIZE
               value: "{{ .Values.outline.optional.maximumImportSize }}"
             - name: LOG_LEVEL
               value: "{{ .Values.outline.optional.logLevel }}"
