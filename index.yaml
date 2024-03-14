@@ -597,6 +597,28 @@ entries:
   outline:
   - apiVersion: v2
     appVersion: v0.75.2
+    created: "2024-03-14T14:59:42.715933587Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.x.x
+    description: Chart for Outline wiki
+    digest: c32403aab902ade78eaa92b57d3f03e901854bdee6f38bd6911c5217a6045276
+    icon: https://avatars.githubusercontent.com/u/1765001?s=48&v=4
+    keywords:
+    - wiki
+    - documentation
+    maintainers:
+    - name: alexlebens
+    name: outline
+    sources:
+    - https://github.com/outline/outline
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/outline-0.0.5/outline-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: v0.75.2
     created: "2024-03-14T14:53:05.814346208Z"
     dependencies:
     - name: redis
@@ -854,4 +876,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-14T14:53:05.814431297Z"
+generated: "2024-03-14T14:59:42.716022363Z"
