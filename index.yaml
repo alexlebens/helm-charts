@@ -86,6 +86,23 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/calibre-server-0.0.1/calibre-server-0.0.1.tgz
     version: 0.0.1
+  cops:
+  - apiVersion: v2
+    appVersion: 1.1.3
+    created: "2024-03-15T05:59:33.557471567Z"
+    description: Chart for Calibre OPDS (and HTML) PHP Server
+    digest: 021056a85b5f60a1c25f3575306ddfb5332a094791f7acf790d9b962785ac0ab
+    keywords:
+    - calibre
+    - OPDS
+    maintainers:
+    - name: alexlebens
+    name: cops
+    sources:
+    - https://github.com/seblucas/cops
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cops-0.0.1/cops-0.0.1.tgz
+    version: 0.0.1
   home-assistant:
   - apiVersion: v2
     appVersion: v2024.3.0
@@ -892,4 +909,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-14T23:11:53.531142431Z"
+generated: "2024-03-15T05:59:33.557628589Z"
