@@ -931,4 +931,24 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-15T07:57:42.712437069Z"
+  tubearchivist:
+  - apiVersion: v2
+    appVersion: v0.4.6
+    created: "2024-03-15T08:01:11.399737355Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.19.2
+    - name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.5.12
+    digest: 1a1ebc2d3c13fe50ce76782ddfa77cbf1c0c821beef924f3f0381937b7c4bbed
+    name: tubearchivist
+    sources:
+    - https://github.com/tubearchivist/tubearchivist
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-0.0.1/tubearchivist-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-03-15T08:01:11.399812246Z"
