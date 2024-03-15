@@ -36,7 +36,7 @@ spec:
               protocol: TCP
           env:
             - name: TA_PORT
-              value: {{ .Values.service.http.port }}
+              value: {{ .Values.service.http.port | quote }}
           {{- range $k,$v := .Values.deployment.env }}
             - name: {{ $k }}
               value: {{ $v | quote }}
