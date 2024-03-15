@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cops
+version: 0.0.1
+description: Chart for Calibre OPDS (and HTML) PHP Server
+keywords:
+  - calibre
+  - OPDS
+sources:
+  - https://github.com/seblucas/cops
+maintainers:
+  - name: alexlebens
+appVersion: 1.1.3

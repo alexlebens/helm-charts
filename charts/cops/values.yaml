@@ -1,0 +1,35 @@
+deployment:
+  replicas: 1
+  strategy: Recreate
+  image:
+    repository: linuxserver/cops
+    tag: 2.3.1-ls185
+    imagePullPolicy: IfNotPresent
+  env:
+    PGID: "1000"
+    PUID: "1000"
+    TZ: UTC
+  resources:    
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 50m
+      memory: 256Mi
+serviceAccount:
+  create: true
+service:
+  http:
+    port: 80
+ingress:
+  enabled: false
+  annotations:
+  className:
+  host:
+persistence:
+  config:
+    storageClassName: default
+    storageSize: 5Gi
+    volumeMode: Filesystem
+  books:
+    claimName:
