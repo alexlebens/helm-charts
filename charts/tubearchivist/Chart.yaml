@@ -1,0 +1,15 @@
+apiVersion: v2
+name: tubearchivist
+version: 0.0.1
+sources:
+  - https://github.com/tubearchivist/tubearchivist
+  - https://github.com/bitnami/charts/tree/main/bitnami/redis
+  - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+dependencies:
+  - name: redis
+    version: 18.19.2
+    repository: https://charts.bitnami.com/bitnami
+  - name: elasticsearch
+    version: 19.5.12
+    repository: https://charts.bitnami.com/bitnami
+appVersion: v0.4.6
