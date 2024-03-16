@@ -146,13 +146,15 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: serverIP
+              value: tdarr-server-api
             - name: serverPort
               value: "{{ .Values.node.service.api.port }}"
           volumeMounts:
             - name: tdarr-node-cache
               mountPath: /tcache
             - name: media-storage
-              mountPath: {{ .Values.global.persistence.media.mountPath }}              
+              mountPath: {{ .Values.global.persistence.media.mountPath }}
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
           livenessProbe:
@@ -175,7 +177,7 @@ spec:
             initialDelaySeconds: 0
             failureThreshold: 30
             timeoutSeconds: 1
-            periodSeconds: 5      
+            periodSeconds: 5
       volumes:
         - name: tdarr-node-cache
           emptyDir:
