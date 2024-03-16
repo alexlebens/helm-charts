@@ -7,11 +7,9 @@
     ],
     "timezone": "US/Mountain",
     "schedule": [
-        "after 10am every weekday",
-        "before 5pm every weekday"
+        "every weekday"
     ],
-    "labels": [
-    ],
+    "labels": [],
     "packageRules": [
         {
             "description": "Disables for non major Renovate version",
@@ -41,51 +39,72 @@
             "automerge": false
         },
         {
-            "description": "Generate image updates on Tuesdays",
+            "description": "Label service images",
             "matchPackageNames": [
-                "linuxserver/calibre",
-                "homeassistant/home-assistant",
-                "linuxserver/code-server",
-                "ghcr.io/gethomepage/homepage",
                 "ghcr.io/alex1989hu/kubelet-serving-cert-approver",
-                "rmcrackan/libation",
-                "outlinewiki/outline",
-                "ghcr.io/cloudnative-pg/postgresql"
+                "ghcr.io/cloudnative-pg/postgresql",
+                "redis/redis-stack-server"
             ],
             "matchDatasources": [
                 "docker"
             ],
-            "schedule": [
-                "after 10am on tuesday",
-                "before 5pm on tuesday"
-            ],
             "addLabels": [
-                "upgrade",
-                "weekly",
+                "service",
                 "image"
             ],
-            "bumpVersion": "minor",
             "automerge": false,
             "minimumReleaseAge": "3 days"
         },
         {
-            "description": "Generate application charts on Tuesdays",
+            "description": "Label service charts",
             "matchPackageNames": [
+                "elasticsearch",
                 "redis"
             ],
             "matchDatasources": [
                 "helm"
             ],
-            "schedule": [
-                "after 10am on tuesday",
-                "before 5pm on tuesday"
-            ],
             "addLabels": [
-                "upgrade",
-                "weekly",
+                "serivce",
                 "chart"
             ],
-            "bumpVersion": "minor",
+            "automerge": false,
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "Label application images",
+            "matchPackageNames": [
+                "bbilly1/tubearchivist-jf",
+                "bbilly1/tubearchivist",
+                "freshrss/freshrss",
+                "ghcr.io/gethomepage/homepage",
+                "homeassistant/home-assistant",
+                "linuxserver/calibre",
+                "linuxserver/code-server",
+                "linuxserver/cops",
+                "outlinewiki/outline",
+                "rmcrackan/libation"
+            ],
+            "matchDatasources": [
+                "docker"
+            ],
+            "addLabels": [
+                "application",
+                "image"
+            ],
+            "automerge": false,
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "Label application charts",
+            "matchPackageNames": [],
+            "matchDatasources": [
+                "helm"
+            ],
+            "addLabels": [
+                "application",
+                "chart"
+            ],
             "automerge": false,
             "minimumReleaseAge": "3 days"
         }
