@@ -106,6 +106,22 @@ entries:
   home-assistant:
   - apiVersion: v2
     appVersion: v2024.3.0
+    created: "2024-03-16T04:37:02.561487966Z"
+    description: Chart for Home Assistant
+    digest: cc0d44648d4a4ed3fd2f247e6c9639c50080abdd67b4be24df33398c49e53167
+    icon: https://avatars.githubusercontent.com/u/13844975?s=200&v=4
+    keywords:
+    - home-automation
+    maintainers:
+    - name: alexlebens
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/home-assistant-0.1.0/home-assistant-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
+    appVersion: v2024.3.0
     created: "2024-03-14T23:11:53.530934008Z"
     description: Chart for Home Assistant
     digest: ab187bd516a90fcd0e46afe0c35794b2d5a7189310b297121b81b6a951e8943f
@@ -1027,4 +1043,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T01:12:27.902082782Z"
+generated: "2024-03-16T04:37:02.561702176Z"
