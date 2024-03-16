@@ -89,6 +89,22 @@ entries:
   cops:
   - apiVersion: v2
     appVersion: 1.1.3
+    created: "2024-03-16T04:38:07.142965251Z"
+    description: Chart for Calibre OPDS (and HTML) PHP Server
+    digest: 2eff444961d555d3d8687d11f7a1b93b86acab92e864719ee8528cc4c7e3452c
+    keywords:
+    - calibre
+    - OPDS
+    maintainers:
+    - name: alexlebens
+    name: cops
+    sources:
+    - https://github.com/seblucas/cops
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cops-0.0.2/cops-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 1.1.3
     created: "2024-03-15T05:59:33.557471567Z"
     description: Chart for Calibre OPDS (and HTML) PHP Server
     digest: 021056a85b5f60a1c25f3575306ddfb5332a094791f7acf790d9b962785ac0ab
@@ -646,6 +662,28 @@ entries:
   outline:
   - apiVersion: v2
     appVersion: v0.75.2
+    created: "2024-03-16T04:38:07.233241515Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.19.2
+    description: Chart for Outline wiki
+    digest: 90bd68093e1230c6797e9fb0a5cce098b4bca593d3a22cfbdeaa9b8476ce050f
+    icon: https://avatars.githubusercontent.com/u/1765001?s=48&v=4
+    keywords:
+    - wiki
+    - documentation
+    maintainers:
+    - name: alexlebens
+    name: outline
+    sources:
+    - https://github.com/outline/outline
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/outline-0.0.7/outline-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
+    appVersion: v0.75.2
     created: "2024-03-15T07:57:42.712347973Z"
     dependencies:
     - name: redis
@@ -950,6 +988,25 @@ entries:
   tubearchivist:
   - apiVersion: v2
     appVersion: v0.4.6
+    created: "2024-03-16T04:38:07.337984498Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.19.2
+    - name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.21.2
+    digest: 20542573da922e874312a138299e7484877af58dce4b5bc4e7741ba5a6de6212
+    name: tubearchivist
+    sources:
+    - https://github.com/tubearchivist/tubearchivist
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-0.0.5/tubearchivist-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: v0.4.6
     created: "2024-03-15T08:23:47.161740642Z"
     dependencies:
     - name: redis
@@ -1043,4 +1100,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T04:37:02.561702176Z"
+generated: "2024-03-16T04:38:07.338118729Z"
