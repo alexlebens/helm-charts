@@ -30,7 +30,7 @@ spec:
               {{- end }}
               volumeMounts:
                 - name: tubearchivist-youtube
-                  mountPath: /data
+                  mountPath: /youtube
           volumes:
             - name: tubearchivist-youtube
               persistentVolumeClaim:
