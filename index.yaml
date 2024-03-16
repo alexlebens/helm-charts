@@ -1138,6 +1138,29 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
+  tdarr:
+  - apiVersion: v2
+    appVersion: 2.17.01
+    created: "2024-03-16T14:16:57.738069803Z"
+    dependencies:
+    - name: tdarr-exporter
+      repository: https://homeylab.github.io/helm-charts/
+      version: 1.0.0
+    description: Chart for Tdarr V2
+    digest: dac50143e7085ba37a804d26611a8fd8f5dbdd6ae11f1a43db9103c0e0a5405d
+    icon: https://avatars.githubusercontent.com/u/43864057?s=48&v=4
+    keywords:
+    - video
+    - transcode
+    maintainers:
+    - name: alexlebens
+    name: tdarr
+    sources:
+    - https://github.com/HaveAGitGat/Tdarr
+    - https://github.com/homeylab/helm-charts/tree/main/charts/tdarr-exporter
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tdarr-0.0.1/tdarr-0.0.1.tgz
+    version: 0.0.1
   tubearchivist:
   - apiVersion: v2
     appVersion: v0.4.6
@@ -1333,4 +1356,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T13:25:42.501933046Z"
+generated: "2024-03-16T14:16:57.73825119Z"
