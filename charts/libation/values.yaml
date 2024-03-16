@@ -6,8 +6,8 @@ image:
   pullPolicy: IfNotPresent
 persistence:
   config:
-    storageClassName: nfs-client
+    storageClassName: default
     storageSize: 1Gi
     volumeMode: Filesystem
   books:
-    claimName: libation-nfs-storage
+    claimName:

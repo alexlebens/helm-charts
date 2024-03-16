@@ -23,7 +23,7 @@ service:
     port: 80
 ingress:
   enabled: true
-  className: traefik
+  className:
   annotations:
   host:
 persistence:

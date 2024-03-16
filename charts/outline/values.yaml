@@ -17,7 +17,7 @@ service:
     port: 3000
 ingress:
   enabled: true
-  className: traefik
+  className:
   annotations:
   host:
 persistence:
@@ -54,16 +54,16 @@ outline:
   database:
     passwordSecret:
       existingSecretName:
-      existingSecretKey: password
+      existingSecretKey:
     usernameSecret:
       existingSecretName:
-      existingSecretKey: username
+      existingSecretKey:
     databaseName:
       existingSecretName:
-      existingSecretKey: dbname
+      existingSecretKey:
     databaseHost:
       existingSecretName:
-      existingSecretKey: host
+      existingSecretKey:
     connectionPoolMin: ""
     connectionPoolMax: "20"
     sslMode: disable
