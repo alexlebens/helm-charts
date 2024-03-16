@@ -119,6 +119,23 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/cops-0.0.1/cops-0.0.1.tgz
     version: 0.0.1
+  freshrss:
+  - apiVersion: v2
+    appVersion: 1.23.1
+    created: "2024-03-16T10:11:35.931577985Z"
+    description: Chart for Freshrss
+    digest: 6253e7e0e27c7241b1068e561f46e1be70bd9855d1dfc011e7d18d9573aa3138
+    icon: https://avatars.githubusercontent.com/u/9414285?s=48&v=4
+    keywords:
+    - rss
+    maintainers:
+    - name: alexlebens
+    name: freshrss
+    sources:
+    - https://github.com/FreshRSS/FreshRSS
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.1/freshrss-0.0.1.tgz
+    version: 0.0.1
   home-assistant:
   - apiVersion: v2
     appVersion: v2024.3.0
@@ -1152,4 +1169,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T07:43:11.241112883Z"
+generated: "2024-03-16T10:11:35.931699582Z"
