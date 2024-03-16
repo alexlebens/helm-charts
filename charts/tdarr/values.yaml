@@ -69,9 +69,6 @@ node:
     limits:
       cpu: 1000m
       memory: 2Gi
-  service:
-    api:
-      port: 8266
   persistence:
     cache:
       size: 5Gi

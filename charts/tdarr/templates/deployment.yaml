@@ -132,10 +132,6 @@ spec:
         - name: tdarr-node
           image: "{{ .Values.node.image.repository }}:{{ .Values.node.image.tag }}"
           imagePullPolicy: {{ .Values.node.image.pullPolicy }}
-          ports:
-            - name: api
-              containerPort: {{ .Values.node.service.api.port }}
-              protocol: TCP
           env:
           {{- with (concat .Values.global.env .Values.node.env) }}
             {{- toYaml . | nindent 12 }}
@@ -149,7 +145,7 @@ spec:
             - name: serverIP
               value: tdarr-server-api
             - name: serverPort
-              value: "{{ .Values.node.service.api.port }}"
+              value: "{{ .Values.server.service.api.port }}"
           volumeMounts:
             - name: tdarr-node-cache
               mountPath: /tcache
@@ -157,27 +153,6 @@ spec:
               mountPath: {{ .Values.global.persistence.media.mountPath }}
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
-          livenessProbe:
-            tcpSocket:
-              port: {{ .Values.node.service.api.port }}
-            initialDelaySeconds: 0
-            failureThreshold: 3
-            timeoutSeconds: 1
-            periodSeconds: 10
-          readinessProbe:
-            tcpSocket:
-              port: {{ .Values.node.service.api.port }}
-            initialDelaySeconds: 0
-            failureThreshold: 3
-            timeoutSeconds: 1
-            periodSeconds: 10
-          startupProbe:
-            tcpSocket:
-              port: {{ .Values.node.service.api.port }}
-            initialDelaySeconds: 0
-            failureThreshold: 30
-            timeoutSeconds: 1
-            periodSeconds: 5
       volumes:
         - name: tdarr-node-cache
           emptyDir:
