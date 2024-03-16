@@ -1,0 +1,13 @@
+apiVersion: v2
+name: qbittorrent
+version: 0.0.1
+description: Chart for qBittorrent
+keywords:
+  - downloads
+  - torrent
+sources:
+  - https://github.com/qbittorrent/qBittorrent
+maintainers:
+  - name: alexlebens
+icon: https://avatars.githubusercontent.com/u/2131270?s=48&v=4
+appVersion: version-4.6.3-r0

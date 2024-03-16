@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: qbittorrent
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: qbittorrent
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.server.replicas }}
+  strategy:
+    type: {{ .Values.server.strategy }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qbittorrent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: qbittorrent
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: qbittorrent
+      automountServiceAccountToken: true
+      containers:
+        - name: qbittorrent
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+          {{- with (concat .Values.global.env .Values.server.env) }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+            - name: WEBUI_PORT
+              value: "{{ .Values.server.service.http.port }}"
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+          volumeMounts:
+            - name: qbittorrent-config
+              mountPath: /config
+            - name: media-storage
+              mountPath: {{ .Values.global.persistence.media.mountPath }}
+
+        {{- if .Values.gluetun.enabled }}
+        - name: gluetun
+          image: "{{.Values.gluetun.image.repository}}:{{.Values.gluetun.image.tag}}"
+          imagePullPolicy: {{ .Values.gluetun.image.pullPolicy }}
+          env:
+          {{- with (concat .Values.global.env .Values.server.env) }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: health
+              containerPort: {{ .Values.gluetun.service.health.port }}
+              protocol: TCP
+            - name: http
+              containerPort: {{ .Values.server.service.http.port }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.metrics.exporter.env.port }}
+              protocol: TCP
+          securityContext:
+            {{- toYaml .Values.gluetun.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.gluetun.resources | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.gluetun.service.health.port }}
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.gluetun.service.health.port }}
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.gluetun.service.health.port }}
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+          volumeMounts:
+            - name: tunnel-device
+              mountPath: /dev/net/tun
+            - name: wg0-wireguard-config
+              mountPath: /gluetun/wireguard/
+        {{- end }}
+
+        {{- if .Values.metrics.enabled }}
+        - name: exporter
+          image: "{{ .Values.metrics.exporter.image.repository }}:{{.Values.metrics.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.exporter.image.pullPolicy }}
+          env:
+          {{- with (concat .Values.global.env .Values.server.env) }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+            - name: QBITTORRENT_HOST
+              value: "http://localhost"
+            - name: QBITTORRENT_PORT
+              value: "{{ .Values.server.service.http.port }}"
+        {{- end }}
+
+      volumes:
+
+        {{- if .Values.gluetun.enabled }}
+        - name: tunnel-device
+          hostPath:
+            path: /dev/net/tun
+        - name: wg0-wireguard-config
+          secret:
+            secretName: qbittorrent-wireguard-secret
+            items:
+              - key: wg0.conf
+                path: wg0.conf
+        {{- end }}
+
+        - name: qbittorrent-config
+          persistentVolumeClaim:
+            claimName: qbittorrent-config
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.global.persistence.media.claimName }}
