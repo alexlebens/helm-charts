@@ -16,12 +16,21 @@ spec:
   routes:
     - kind: Rule
       match: "Host(`{{ .Values.ingressRoute.host }}`)"
+      middlewares:
+        - name: "authentik-{{ .Release.Name }}"
+          namespace: {{ .Release.Namespace }}           
       priority: 10
       services:
         - kind: Service
           name: {{ .Release.Name }}
           port: {{ .Values.service.http.port }}
-
+    - kind: Rule
+      match: "Host(`{{ .Values.ingressRoute.host }}`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      priority: 15
+      services:
+        - kind: Service
+          name: {{ .Values.ingressRoute.authentik.outpost }}
+          port: {{ .Values.ingressRoute.authentik.port }}    
 {{- end }}
 
 ---
