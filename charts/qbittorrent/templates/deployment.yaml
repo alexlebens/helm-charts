@@ -107,7 +107,7 @@ spec:
             - name: QBITTORRENT_PORT
               value: "{{ .Values.server.service.http.port }}"
             - name: EXPORTER_PORT
-              value: 9022
+              value: "9022"
         {{- end }}
 
       volumes:
