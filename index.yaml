@@ -138,6 +138,22 @@ entries:
   freshrss:
   - apiVersion: v2
     appVersion: 1.23.1
+    created: "2024-03-16T10:38:58.357412123Z"
+    description: Chart for Freshrss
+    digest: 4959584e202391db69420b2560b8f7aa5e2472f91eab44e6d9aa759fd929e0f2
+    icon: https://avatars.githubusercontent.com/u/9414285?s=48&v=4
+    keywords:
+    - rss
+    maintainers:
+    - name: alexlebens
+    name: freshrss
+    sources:
+    - https://github.com/FreshRSS/FreshRSS
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.2/freshrss-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 1.23.1
     created: "2024-03-16T10:11:35.931577985Z"
     description: Chart for Freshrss
     digest: 6253e7e0e27c7241b1068e561f46e1be70bd9855d1dfc011e7d18d9573aa3138
@@ -1185,4 +1201,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T10:12:02.890255083Z"
+generated: "2024-03-16T10:38:58.357569923Z"
