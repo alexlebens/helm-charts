@@ -1,0 +1,10 @@
+job:
+  schedule: "0 * * * *"
+image:
+  repository: bbilly1/tubearchivist-jf
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+envFrom: 
+persistence:
+  youtube:
+    claimName:
