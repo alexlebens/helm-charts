@@ -1008,4 +1008,23 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-0.0.1/tubearchivist-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-15T08:23:47.161841643Z"
+  tubearchivist-to-jellyfin:
+  - apiVersion: v2
+    appVersion: v0.1.2
+    created: "2024-03-16T01:12:27.901964169Z"
+    description: Import library from tubearchivist to jellyfin
+    digest: 47d4ff6dc12cf6ed84736123e698b7c65a21b22ccd1287a7aeb2a81e17db2da9
+    icon: https://avatars.githubusercontent.com/u/102734415?s=48&v=4
+    keywords:
+    - tubearchivist
+    - jellyfin
+    - job
+    maintainers:
+    - name: alexlebens
+    name: tubearchivist-to-jellyfin
+    sources:
+    - https://github.com/tubearchivist/tubearchivist-jf
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-03-16T01:12:27.902082782Z"
