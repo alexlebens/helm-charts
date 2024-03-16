@@ -1,0 +1,33 @@
+deployment:
+  replicas: 1
+  strategy: Recreate
+  image:
+    repository: ghcr.io/linuxserver/freshrss
+    tag: 1.23.1
+    imagePullPolicy: IfNotPresent
+  env:
+    PGID: "568"
+    PUID: "568"
+    TZ: UTC
+    FRESHRSS_ENV: production
+  envFrom:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 50m
+      memory: 256Mi
+service:
+  http:
+    port: 80
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+  host:
+persistence:
+  config:
+    storageClassName: default
+    storageSize: 5Gi
+    volumeMode: Filesystem
