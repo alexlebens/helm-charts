@@ -89,6 +89,22 @@ entries:
   cops:
   - apiVersion: v2
     appVersion: 1.1.3
+    created: "2024-03-16T10:12:02.890102748Z"
+    description: Chart for Calibre OPDS (and HTML) PHP Server
+    digest: d0c540e924ab19bf81633465a88df79ef251091aeb3a5be82541685051c218e8
+    keywords:
+    - calibre
+    - OPDS
+    maintainers:
+    - name: alexlebens
+    name: cops
+    sources:
+    - https://github.com/seblucas/cops
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cops-0.0.3/cops-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 1.1.3
     created: "2024-03-16T04:38:07.142965251Z"
     description: Chart for Calibre OPDS (and HTML) PHP Server
     digest: 2eff444961d555d3d8687d11f7a1b93b86acab92e864719ee8528cc4c7e3452c
@@ -1169,4 +1185,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T10:11:35.931699582Z"
+generated: "2024-03-16T10:12:02.890255083Z"
