@@ -1,0 +1,22 @@
+deployment:
+  replicas: 1
+  strategy: Recreate
+  image:
+    repository: golift/unpackerr
+    tag: "0.13.1"
+    imagePullPolicy: IfNotPresent
+  env:
+    TZ: UTC
+    UN_WEBSERVER_METRICS: false 
+  envFrom:
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 50m
+    limits:
+      memory: 1Gi
+      cpu: 500m 
+persistence:
+  downloads:
+    mountPath:
+    existingClaim:

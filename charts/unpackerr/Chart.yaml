@@ -1,0 +1,13 @@
+apiVersion: v2
+name: unpackerr
+version: 0.0.1
+description: Chart for Unpackerr
+keywords:
+  - utility
+  - servarr
+sources:
+  - https://github.com/Unpackerr/unpackerr
+maintainers:
+  - name: alexlebens
+icon: https://avatars.githubusercontent.com/u/104323643?s=48&v=4
+appVersion: "0.13.1"
