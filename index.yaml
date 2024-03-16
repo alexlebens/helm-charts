@@ -1315,4 +1315,22 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T13:16:04.595164987Z"
+  unpackerr:
+  - apiVersion: v2
+    appVersion: 0.13.1
+    created: "2024-03-16T13:25:42.501787174Z"
+    description: Chart for Unpackerr
+    digest: 1f62aec1f1e8ad06884469cb34d0026479217bdabd5d6d01bdacab3bf47f38c7
+    icon: https://avatars.githubusercontent.com/u/104323643?s=48&v=4
+    keywords:
+    - utility
+    - servarr
+    maintainers:
+    - name: alexlebens
+    name: unpackerr
+    sources:
+    - https://github.com/Unpackerr/unpackerr
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-03-16T13:25:42.501933046Z"
