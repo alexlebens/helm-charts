@@ -2,7 +2,7 @@ deployment:
   replicas: 1
   strategy: Recreate
   image:
-    repository: ghcr.io/linuxserver/freshrss
+    repository: freshrss/freshrss
     tag: 1.23.1
     imagePullPolicy: IfNotPresent
   env:
