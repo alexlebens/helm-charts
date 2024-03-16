@@ -40,6 +40,15 @@ spec:
               name: cops-books
           resources:
             {{- toYaml .Values.deployment.resources | nindent 12 }}
+          env:
+          {{- range $k,$v := .Values.deployment.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
+          {{- with .Values.deployment.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}            
           livenessProbe:
             httpGet:
               path: /
