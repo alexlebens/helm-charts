@@ -3,6 +3,23 @@ entries:
   calibre-server:
   - apiVersion: v2
     appVersion: 7.5.1
+    created: "2024-03-16T11:44:26.95978593Z"
+    description: Chart for Calibre content database
+    digest: 57768c7795d4248c45f975c5c08a7778630391702aec27df3b48af69445e3e81
+    icon: https://raw.githubusercontent.com/kovidgoyal/calibre/master/resources/images/lt.png
+    keywords:
+    - media
+    - books
+    maintainers:
+    - name: alexlebens
+    name: calibre-server
+    sources:
+    - https://github.com/kovidgoyal/calibre
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/calibre-server-0.0.6/calibre-server-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 7.5.1
     created: "2024-03-13T11:40:51.030823615Z"
     description: Chart for Calibre content database
     digest: c84a88b47e9e53474557074c726d35b37e29503f11b269424a4cafbb3f6dc200
@@ -136,6 +153,22 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/cops-0.0.1/cops-0.0.1.tgz
     version: 0.0.1
   freshrss:
+  - apiVersion: v2
+    appVersion: 1.23.1
+    created: "2024-03-16T11:44:27.056751626Z"
+    description: Chart for Freshrss
+    digest: 4a3130997b6ac1840cf5ebba84d8e20acc1e045aea856ead74455ea53e57522e
+    icon: https://avatars.githubusercontent.com/u/9414285?s=48&v=4
+    keywords:
+    - rss
+    maintainers:
+    - name: alexlebens
+    name: freshrss
+    sources:
+    - https://github.com/FreshRSS/FreshRSS
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.3/freshrss-0.0.3.tgz
+    version: 0.0.3
   - apiVersion: v2
     appVersion: 1.23.1
     created: "2024-03-16T10:38:58.357412123Z"
@@ -460,6 +493,22 @@ entries:
   homepage:
   - apiVersion: v2
     appVersion: v0.8.9
+    created: "2024-03-16T11:44:27.161410815Z"
+    description: Chart for benphelps homepage
+    digest: 7e75aa6d0d23e4aa5f89268e2faf91675da26529fbe6e766fb9db29ab829aded
+    icon: https://github.com/benphelps/homepage/blob/de584eae8f12a0d257e554e9511ef19bd2a1232c/public/mstile-150x150.png
+    keywords:
+    - dashboard
+    maintainers:
+    - name: alexlebens
+    name: homepage
+    sources:
+    - https://github.com/gethomepage/homepage
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/homepage-0.0.8/homepage-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: v0.8.9
     created: "2024-03-14T06:18:30.229006704Z"
     description: Chart for benphelps homepage
     digest: 701446cc192eeba4282b7ed7173489251901eea9cbe95d5c51f481d7ca6fc758
@@ -642,6 +691,23 @@ entries:
   libation:
   - apiVersion: v2
     appVersion: 11.1.0
+    created: "2024-03-16T11:44:27.265162972Z"
+    description: Import library from audible
+    digest: 0f31399ba43a9923e1a96e6dbcc89a1f7bb83886e89a31e9b14e7ce33410ed8f
+    icon: https://getlibation.com/images/libation-logo.png
+    keywords:
+    - audiobooks
+    - job
+    maintainers:
+    - name: alexlebens
+    name: libation
+    sources:
+    - https://github.com/rmcrackan/Libation
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/libation-0.0.6/libation-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 11.1.0
     created: "2024-03-14T07:30:33.31560362Z"
     description: Import library from audible
     digest: c0e881c97de52f63399b94f0c1823efbc57bf9c022d4c53704d6ed73277cef57
@@ -725,6 +791,28 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/libation-0.0.1/libation-0.0.1.tgz
     version: 0.0.1
   outline:
+  - apiVersion: v2
+    appVersion: v0.75.2
+    created: "2024-03-16T11:44:27.378353241Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.19.2
+    description: Chart for Outline wiki
+    digest: 14f1d37cb5dec23719a978aedd701e1881ea89a4fb4e9d792ed0ab8e543c3d5f
+    icon: https://avatars.githubusercontent.com/u/1765001?s=48&v=4
+    keywords:
+    - wiki
+    - documentation
+    maintainers:
+    - name: alexlebens
+    name: outline
+    sources:
+    - https://github.com/outline/outline
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/outline-0.0.8/outline-0.0.8.tgz
+    version: 0.0.8
   - apiVersion: v2
     appVersion: v0.75.2
     created: "2024-03-16T04:38:07.233241515Z"
@@ -1201,4 +1289,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.0.1/tubearchivist-to-jellyfin-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-16T10:38:58.357569923Z"
+generated: "2024-03-16T11:44:27.37861042Z"
