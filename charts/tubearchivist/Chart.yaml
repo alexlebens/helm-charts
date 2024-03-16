@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tubearchivist
-version: 0.0.4
+version: 0.0.5
 sources:
   - https://github.com/tubearchivist/tubearchivist
   - https://github.com/bitnami/charts/tree/main/bitnami/redis
