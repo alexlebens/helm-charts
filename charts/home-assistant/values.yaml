@@ -22,7 +22,7 @@ ingressRoute:
   enabled: true
   host:
   authentik:
-    outpost: authentik-proxy-outpost
+    outpost:
     port: 9000
 metrics:
   enabled: false

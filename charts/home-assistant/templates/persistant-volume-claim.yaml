@@ -1,10 +1,10 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: home-assistant-config
+  name: "{{ .Release.Name }}-config"
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: home-assistant
+    app.kubernetes.io/name: {{ .Release.Name }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
