@@ -60,7 +60,7 @@ spec:
               containerPort: {{ .Values.server.service.http.port }}
               protocol: TCP
             - name: metrics
-              containerPort: {{ .Values.metrics.exporter.env.port }}
+              containerPort: 9022
               protocol: TCP
           securityContext:
             {{- toYaml .Values.gluetun.securityContext | nindent 12 }}
@@ -106,6 +106,8 @@ spec:
               value: "http://localhost"
             - name: QBITTORRENT_PORT
               value: "{{ .Values.server.service.http.port }}"
+            - name: EXPORTER_PORT
+              value: 9022
         {{- end }}
 
       volumes:

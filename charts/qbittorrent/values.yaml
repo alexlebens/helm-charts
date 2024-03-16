@@ -80,7 +80,5 @@ metrics:
         value: admin
       - name: QBITTORRENT_PASS
         value: ""
-      - name: EXPORTER_PORT
-        value: 9022
       - name: EXPORTER_LOG_LEVEL
         value: INFO
