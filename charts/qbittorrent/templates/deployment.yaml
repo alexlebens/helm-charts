@@ -49,7 +49,7 @@ spec:
           image: "{{.Values.gluetun.image.repository}}:{{.Values.gluetun.image.tag}}"
           imagePullPolicy: {{ .Values.gluetun.image.pullPolicy }}
           env:
-          {{- with (concat .Values.global.env .Values.server.env) }}
+          {{- with (concat .Values.global.env .Values.gluetun.env) }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
@@ -99,7 +99,7 @@ spec:
           image: "{{ .Values.metrics.exporter.image.repository }}:{{.Values.metrics.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.metrics.exporter.image.pullPolicy }}
           env:
-          {{- with (concat .Values.global.env .Values.server.env) }}
+          {{- with (concat .Values.global.env .Values.metrics.exporter.env) }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
             - name: QBITTORRENT_HOST
