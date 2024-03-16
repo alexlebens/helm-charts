@@ -21,7 +21,7 @@ server:
     - name: PGID
       value: "1000"
     - name: UMASK_SET
-      value: "002"    
+      value: "002"
   resources:
     requests:
       cpu: 100m
@@ -53,6 +53,7 @@ gluetun:
       add:
         - NET_ADMIN
   env: []
+  existingSecretName:
   resources:
     requests:
       cpu: 100m

@@ -116,7 +116,7 @@ spec:
             path: /dev/net/tun
         - name: wg0-wireguard-config
           secret:
-            secretName: qbittorrent-wireguard-secret
+            secretName: {{ .Values.gluetun.existingSecretName }}
             items:
               - key: wg0.conf
                 path: wg0.conf
