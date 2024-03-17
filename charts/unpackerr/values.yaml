@@ -19,4 +19,4 @@ deployment:
 persistence:
   downloads:
     mountPath:
-    existingClaim:
+    claimName:
