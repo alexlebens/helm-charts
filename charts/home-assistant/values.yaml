@@ -3,7 +3,7 @@ deployment:
   strategy: Recreate
   image:
     repository: homeassistant/home-assistant
-    tag: 2024.3.1
+    tag: 2024.3.3
     imagePullPolicy: IfNotPresent
   env:
     TZ: UTC
