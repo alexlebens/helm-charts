@@ -12,7 +12,7 @@ maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/43864057?s=48&v=4
 dependencies:
-  - name: tdarr-exporter 
+  - name: tdarr-exporter
     version: 1.1.0
     repository: https://homeylab.github.io/helm-charts/
 appVersion: "2.17.01"
