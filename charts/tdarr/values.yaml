@@ -55,7 +55,7 @@ server:
       size: 100Mi
 node:
   replicas: 3
-  strategy: Recreate  
+  strategy: Recreate
   image:
     repository: ghcr.io/haveagitgat/tdarr_node
     tag: "2.17.01"
