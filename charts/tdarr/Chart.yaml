@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tdarr
-version: 0.0.4
+version: 0.0.5
 description: Chart for Tdarr V2
 keywords:
   - video
@@ -13,6 +13,6 @@ maintainers:
 icon: https://avatars.githubusercontent.com/u/43864057?s=48&v=4
 dependencies:
   - name: tdarr-exporter
-    version: 1.1.0
+    version: 1.1.1
     repository: https://homeylab.github.io/helm-charts/
 appVersion: "2.17.01"
