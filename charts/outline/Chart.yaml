@@ -1,6 +1,6 @@
 apiVersion: v2
 name: outline
-version: 0.0.8
+version: 0.0.9
 description: Chart for Outline wiki
 keywords:
   - wiki
