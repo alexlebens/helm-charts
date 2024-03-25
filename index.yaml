@@ -1227,6 +1227,23 @@ entries:
   qbittorrent:
   - apiVersion: v2
     appVersion: version-4.6.3-r0
+    created: "2024-03-25T16:16:00.334104342Z"
+    description: Chart for qBittorrent
+    digest: 28738f3a7c5bfa0709822e0705f4200cf789578eacc66c4208eb011b1d4bced9
+    icon: https://avatars.githubusercontent.com/u/2131270?s=48&v=4
+    keywords:
+    - downloads
+    - torrent
+    maintainers:
+    - name: alexlebens
+    name: qbittorrent
+    sources:
+    - https://github.com/qbittorrent/qBittorrent
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/qbittorrent-0.0.8/qbittorrent-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: version-4.6.3-r0
     created: "2024-03-16T15:56:20.255037351Z"
     description: Chart for qBittorrent
     digest: 0eb9f1a4280c666e566552082b604afe32048652897db13d47e1cd4c1c26af40
@@ -1671,4 +1688,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-25T16:13:23.585672335Z"
+generated: "2024-03-25T16:16:00.334318501Z"
