@@ -22,7 +22,7 @@ spec:
     - host: {{ .Values.ingress.webhook.host }}
       http:
         paths:
-          - path: /
+          - path: /webhook/
             pathType: Prefix
             backend:
               service:
