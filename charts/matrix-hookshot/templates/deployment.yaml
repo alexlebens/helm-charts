@@ -40,6 +40,9 @@ spec:
             - name: appservice
               containerPort: {{ .Values.service.appservice.port }}
               protocol: TCP
+            - name: widgets
+              containerPort: {{ .Values.service.widgets.port }}
+              protocol: TCP              
           env:
           {{- range $k,$v := .Values.deployment.env }}
             - name: {{ $k }}

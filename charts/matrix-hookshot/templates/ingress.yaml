@@ -64,3 +64,37 @@ spec:
                 port:
                   name: appservice
 {{- end }}
+
+---
+{{- if .Values.ingress.widgets.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: matrix-hookshot-widgets
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: matrix-hookshot-widgets
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+  annotations:
+    {{- toYaml .Values.ingress.widgets.annotations | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.widgets.className }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.widgets.host }}
+      secretName: {{ .Release.Name }}-widgets-secret-tls
+  rules:
+    - host: {{ .Values.ingress.widgets.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  name: widgets
+{{- end }}

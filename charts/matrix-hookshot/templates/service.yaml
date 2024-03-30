@@ -24,6 +24,10 @@ spec:
       targetPort: appservice
       protocol: TCP
       name: appservice
+    - port: {{ .Values.service.widgets.port }}
+      targetPort: widgets
+      protocol: TCP
+      name: widgets      
   selector:
     app.kubernetes.io/name: matrix-hookshot
     app.kubernetes.io/instance: {{ .Release.Name }}
