@@ -683,6 +683,24 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/homepage-0.0.1/homepage-0.0.1.tgz
     version: 0.0.1
+  hookshot:
+  - apiVersion: v2
+    appVersion: 5.2.1
+    created: "2024-03-30T19:30:25.831989436Z"
+    description: Chart for Matrix Hookshot
+    digest: 1a27d7ee34fe23ed6bdc64cca21f6ecd907046987809d2d374f9432cf83695aa
+    icon: https://avatars.githubusercontent.com/u/8418310?s=48&v=4
+    keywords:
+    - matrix
+    - webhook
+    maintainers:
+    - name: alexlebens
+    name: hookshot
+    sources:
+    - https://github.com/matrix-org/matrix-hookshot
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/hookshot-0.0.1/hookshot-0.0.1.tgz
+    version: 0.0.1
   kubelet-serving-cert-approver:
   - apiVersion: v2
     appVersion: 0.8.1
@@ -1710,4 +1728,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-25T16:16:36.065721975Z"
+generated: "2024-03-30T19:30:25.832155175Z"
