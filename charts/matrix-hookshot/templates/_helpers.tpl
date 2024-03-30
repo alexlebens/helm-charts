@@ -30,3 +30,14 @@ Helper for passkey secret name
 {{- printf "matrix-hookshot-passkey-secret" }}
 {{- end }}
 {{- end }}
+
+{{/*
+Helper for passkey file name
+*/}}
+{{- define "hookshot.passFile" -}}
+{{- if .Values.hookshot.config.passFile }}
+{{- printf "%s" .Values.hookshot.config.passFile -}}
+{{- else }}
+{{- printf "passkey.pem" }}
+{{- end }}
+{{- end }}

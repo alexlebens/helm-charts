@@ -61,8 +61,8 @@ spec:
               subPath: registration.yml
               readOnly: true
             - name: passkey
-              mountPath: "/data/{{ .Values.hookshot.config.passFile }}"
-              subPath: "{{ .Values.hookshot.config.passFile }}"
+              mountPath: "/data/{{ template "hookshot.passFile" . }}"
+              subPath: {{ template "hookshot.passFile" . }}
               readOnly: true
       volumes:
         - name: config
