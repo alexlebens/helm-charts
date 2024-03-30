@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: "{{ .Release.Name }}-webhook"
+  name: matrix-hookshot-webhook
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: "{{ .Release.Name }}-webhook"
+    app.kubernetes.io/name: matrix-hookshot-webhook
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
@@ -36,10 +36,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: "{{ .Release.Name }}-appservice"
+  name: matrix-hookshot-appservice
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: "{{ .Release.Name }}-appservice"
+    app.kubernetes.io/name: matrix-hookshot-appservice
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web

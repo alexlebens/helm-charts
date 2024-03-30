@@ -4,7 +4,7 @@ metadata:
   name: matrix-hookshot
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/name: matrix-hookshot
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: web
@@ -27,7 +27,7 @@ spec:
       serviceAccountName: {{ .Release.Name }}
       automountServiceAccountToken: true
       containers:
-        - name: {{ .Release.Name }}
+        - name: matrix-hookshot
           image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
           imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
           ports:

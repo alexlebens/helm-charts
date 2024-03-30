@@ -1,6 +1,6 @@
 apiVersion: v2
 name: matrix-hookshot
-version: 0.0.4
+version: 0.0.5
 description: Chart for Matrix Hookshot
 keywords:
   - matrix
