@@ -1,9 +1,10 @@
 apiVersion: v2
-name: hookshot
-version: 0.0.1
+name: matrix-hookshot
+version: 0.0.2
 description: Chart for Matrix Hookshot
 keywords:
   - matrix
+  - matrix-hookshot
   - webhook
 sources:
   - https://github.com/matrix-org/matrix-hookshot
