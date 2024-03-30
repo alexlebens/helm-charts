@@ -67,7 +67,7 @@ spec:
       volumes:
         - name: config
           secret:
-            name: {{ template "hookshot.secretName" . }}
+            secretName: {{ template "hookshot.secretName" . }}
         - name: registration
           secret:
             secretName: {{ template "hookshot.registrationSecretName" . }}
