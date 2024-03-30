@@ -875,6 +875,24 @@ entries:
   matrix-hookshot:
   - apiVersion: v2
     appVersion: 5.2.1
+    created: "2024-03-30T20:17:37.627849724Z"
+    description: Chart for Matrix Hookshot
+    digest: 2283e8e5c2cb87bd46e11d22ac8b74be06baaac1f3360f7456aa8c363512552b
+    icon: https://avatars.githubusercontent.com/u/8418310?s=48&v=4
+    keywords:
+    - matrix
+    - matrix-hookshot
+    - webhook
+    maintainers:
+    - name: alexlebens
+    name: matrix-hookshot
+    sources:
+    - https://github.com/matrix-org/matrix-hookshot
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/matrix-hookshot-0.0.3/matrix-hookshot-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 5.2.1
     created: "2024-03-30T19:31:02.707639826Z"
     description: Chart for Matrix Hookshot
     digest: c706c4fe05e389cdbef1df49fec4f5b2a66846a39381fc63bc8a1efdce1d7954
@@ -1747,4 +1765,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-30T19:31:02.707750703Z"
+generated: "2024-03-30T20:17:37.627983967Z"
