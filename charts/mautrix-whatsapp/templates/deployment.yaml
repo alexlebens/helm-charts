@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-whatsapp
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: mautrix-whatsapp
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    type: {{ .Values.deployment.strategy }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-whatsapp
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-whatsapp
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: mautrix-whatsapp
+      automountServiceAccountToken: true
+      containers:
+        - name: mautrix-whatsapp
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
+          command: ["--no-update"]          
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+          {{- range $k,$v := .Values.deployment.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+          {{- end }}
+          {{- with .Values.deployment.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: {{ .Values.deployment.probes.liveness.failureThreshold }}
+            periodSeconds: {{ .Values.deployment.probes.liveness.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /_matrix/mau/ready
+              port: http
+            failureThreshold: {{ .Values.deployment.probes.readiness.failureThreshold }}
+            periodSeconds: {{ .Values.deployment.probes.readiness.periodSeconds }}
+          resources:
+            {{- toYaml .Values.deployment.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /data/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: registration
+              mountPath: /data/registration.yaml
+              subPath: registration.yaml
+              readOnly: true
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ template "mautrix-whatsapp.secretName" . }}
+        - name: registration
+          secret:
+            secretName: {{ template "mautrix-whatsapp.registrationSecretName" . }}
+        - name: data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default "mautrix-whatsapp-data" }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
