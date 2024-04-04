@@ -1,6 +1,6 @@
 apiVersion: v2
 name: mautrix-whatsapp
-version: 0.0.1
+version: 0.0.2
 description: Chart for Matrix Whatsapp Bridge
 keywords:
   - matrix

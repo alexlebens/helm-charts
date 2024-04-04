@@ -30,7 +30,6 @@ spec:
         - name: mautrix-whatsapp
           image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
           imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
-          command: ["--no-update"]          
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
