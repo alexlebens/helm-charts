@@ -1051,6 +1051,26 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/matrix-hookshot-0.0.2/matrix-hookshot-0.0.2.tgz
     version: 0.0.2
+  mautrix-discord:
+  - apiVersion: v2
+    appVersion: v0.6.5
+    created: "2024-04-04T19:36:55.065579685Z"
+    description: Chart for Matrix Discord Bridge
+    digest: 04e4b74a6060780b734a120ca8920c6aeac854982a1cf63ce57d73a152b38680
+    icon: https://avatars.githubusercontent.com/u/88519669?s=48&v=4
+    keywords:
+    - matrix
+    - mautrix-discord
+    - bridge
+    - discord
+    maintainers:
+    - name: alexlebens
+    name: mautrix-discord
+    sources:
+    - https://github.com/mautrix/discord
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/mautrix-discord-0.0.1/mautrix-discord-0.0.1.tgz
+    version: 0.0.1
   outline:
   - apiVersion: v2
     appVersion: v0.75.2
@@ -1929,4 +1949,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-04T17:48:42.228798361Z"
+generated: "2024-04-04T19:36:55.065786451Z"
