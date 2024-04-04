@@ -1,0 +1,15 @@
+apiVersion: v2
+name: mautrix-discord
+version: 0.0.1
+description: Chart for Matrix Discord Bridge
+keywords:
+  - matrix
+  - mautrix-discord
+  - bridge
+  - discord
+sources:
+  - https://github.com/mautrix/discord
+maintainers:
+  - name: alexlebens
+icon: https://avatars.githubusercontent.com/u/88519669?s=48&v=4
+appVersion: v0.6.5
