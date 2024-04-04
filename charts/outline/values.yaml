@@ -64,6 +64,9 @@ outline:
     databaseHost:
       existingSecretName:
       existingSecretKey:
+    databasePort:
+      existingSecretName:
+      existingSecretKey:      
     connectionPoolMin: ""
     connectionPoolMax: "20"
     sslMode: disable

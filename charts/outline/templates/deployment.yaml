@@ -51,16 +51,16 @@ spec:
                 secretKeyRef:
                   name: "{{ .Values.outline.utilsSecret.existingSecretName }}"
                   key: "{{ .Values.outline.secretKey.existingSecretKey }}"
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.outline.database.usernameSecret.existingSecretName }}"
+                  key: "{{ .Values.outline.database.usernameSecret.existingSecretKey }}"                  
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.outline.database.passwordSecret.existingSecretName }}"
                   key: "{{ .Values.outline.database.passwordSecret.existingSecretKey }}"
-            - name: POSTGRES_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ .Values.outline.database.usernameSecret.existingSecretName }}"
-                  key: "{{ .Values.outline.database.usernameSecret.existingSecretKey }}"
             - name: POSTGRES_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -71,10 +71,15 @@ spec:
                 secretKeyRef:
                   name: "{{ .Values.outline.database.databaseHost.existingSecretName }}"
                   key: "{{ .Values.outline.database.databaseHost.existingSecretKey }}"
+            - name: POSTGRES_DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.outline.database.databasePort.existingSecretName }}"
+                  key: "{{ .Values.outline.database.databasePort.existingSecretKey }}"                  
             - name: DATABASE_URL
-              value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@postgresql-{{ .Release.Name }}-cluster-rw:5432/$(POSTGRES_DATABASE_NAME)"
+              value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@$(POSTGRES_DATABASE_HOST):$(POSTGRES_DATABASE_PORT)/$(POSTGRES_DATABASE_NAME)"
             - name: DATABASE_URL_TEST
-              value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@postgresql-{{ .Release.Name }}-cluster-rw:5432/$(POSTGRES_DATABASE_NAME)-test"
+              value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@$(POSTGRES_DATABASE_HOST):$(POSTGRES_DATABASE_PORT)/$(POSTGRES_DATABASE_NAME)-test"
             - name: DATABASE_CONNECTION_POOL_MIN
               value: "{{ .Values.outline.database.connectionPoolMin }}"
             - name: DATABASE_CONNECTION_POOL_MAX
