@@ -1,0 +1,19 @@
+job:
+  schedule: "0 * * * *"
+image:
+  repository: bbilly1/tubearchivist-jf
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+persistence:
+  youtube:
+    claimName: ""
+config:
+  tubearchivistUrl: ""
+  jellyfinUrl: ""
+secrets:
+  tubearchivistToken:
+    existingSecretName: ""
+    existingSecretKey: token
+  jellyfinToken:
+    existingSecretName: ""
+    existingSecretKey: token
