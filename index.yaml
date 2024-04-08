@@ -588,6 +588,22 @@ entries:
     version: 0.0.1
   homepage:
   - apiVersion: v2
+    appVersion: v0.8.11
+    created: "2024-04-08T17:30:43.797773489Z"
+    description: Chart for benphelps homepage
+    digest: d280b45563c56e022a2166a06bfb1ca9ea777f445bcb21643f92455ee2ee5022
+    icon: https://github.com/benphelps/homepage/blob/de584eae8f12a0d257e554e9511ef19bd2a1232c/public/mstile-150x150.png
+    keywords:
+    - dashboard
+    maintainers:
+    - name: alexlebens
+    name: homepage
+    sources:
+    - https://github.com/gethomepage/homepage
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/homepage-0.0.10/homepage-0.0.10.tgz
+    version: 0.0.10
+  - apiVersion: v2
     appVersion: v0.8.10
     created: "2024-03-25T16:12:40.968143689Z"
     description: Chart for benphelps homepage
@@ -2057,4 +2073,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-08T17:28:25.043911691Z"
+generated: "2024-04-08T17:30:43.798009106Z"
