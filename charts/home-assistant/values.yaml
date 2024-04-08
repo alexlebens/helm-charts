@@ -56,7 +56,7 @@ codeserver:
   enabled: false
   image:
     repository: linuxserver/code-server
-    tag: 4.22.1
+    tag: 4.23.0
     imagePullPolicy: IfNotPresent
   env:
     TZ: UTC
