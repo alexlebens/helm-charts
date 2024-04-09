@@ -204,6 +204,22 @@ entries:
   home-assistant:
   - apiVersion: v2
     appVersion: v2024.4.2
+    created: "2024-04-09T00:19:33.127972864Z"
+    description: Chart for Home Assistant
+    digest: 171a8b0e9303ed2016524f9449fd4c6cc713120f4e0ee28c4311ef3f6a3d310e
+    icon: https://avatars.githubusercontent.com/u/13844975?s=200&v=4
+    keywords:
+    - home-automation
+    maintainers:
+    - name: alexlebens
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/home-assistant-0.1.8/home-assistant-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: v2024.4.2
     created: "2024-04-08T17:28:25.043530689Z"
     description: Chart for Home Assistant
     digest: 16916b7362e3f1a4530cf683e1986010e475d93b35b599ea8e1595f9b7e3f401
@@ -2073,4 +2089,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-08T17:30:43.798009106Z"
+generated: "2024-04-09T00:19:33.128291489Z"
