@@ -124,14 +124,18 @@ spec:
                   name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
                   key: BUCKET_PORT
             - name: AWS_S3_UPLOAD_BUCKET_URL
-              value: "{{ .Values.persistence.s3.urlProtocol }}://$(AWS_S3_UPLOAD_BUCKET_HOST):$(AWS_S3_UPLOAD_BUCKET_PORT)"
+              value: "{{ .Values.persistence.s3.urlProtocol }}://$(AWS_S3_UPLOAD_BUCKET_NAME).$(AWS_S3_UPLOAD_BUCKET_HOST):$(AWS_S3_UPLOAD_BUCKET_PORT)"
+            - name: AWS_S3_ACCELERATE_URL
+              value: "{{ .Values.persistence.s3.urlProtocol }}://$(AWS_S3_UPLOAD_BUCKET_NAME).$(AWS_S3_UPLOAD_BUCKET_HOST):$(AWS_S3_UPLOAD_BUCKET_PORT)"         
           {{- else }}
             - name: AWS_REGION
               value: "{{ .Values.persistence.s3.region }}"
             - name: AWS_S3_UPLOAD_BUCKET_NAME
               value: "{{ .Values.persistence.s3.bucketName }}"
             - name: AWS_S3_UPLOAD_BUCKET_URL
-              value: "{{ .Values.persistence.s3.urlProtocol }}://{{ .Values.persistence.s3.host }}"
+              value: "{{ .Values.persistence.s3.urlProtocol }}://{{ .Values.persistence.s3.bucketName }}.{{ .Values.persistence.s3.host }}"
+            - name: AWS_S3_ACCELERATE_URL
+              value: "{{ .Values.persistence.s3.urlProtocol }}://{{ .Values.persistence.s3.bucketName }}.{{ .Values.persistence.s3.host }}"              
           {{- end }}
             - name: AWS_S3_FORCE_PATH_STYLE
               value: "{{ .Values.persistence.s3.forcePathStyle }}"
