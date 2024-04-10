@@ -29,7 +29,8 @@ persistence:
       name:
     region:
     bucketName:
-    endpoint:
+    host:
+    urlProtocol: http
     uploadMaxSize: "26214400"
     forcePathStyle: false
     acl: private
