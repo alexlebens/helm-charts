@@ -3,7 +3,7 @@ deployment:
   strategy: Recreate
   image:
     repository: bbilly1/tubearchivist
-    tag: v0.4.6
+    tag: v0.4.7
     imagePullPolicy: IfNotPresent
   env:
     TZ: UTC
