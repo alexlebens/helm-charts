@@ -17,6 +17,6 @@ dependencies:
     version: 18.19.4
     repository: https://charts.bitnami.com/bitnami
   - name: elasticsearch
-    version: 19.21.2
+    version: 20.0.3
     repository: https://charts.bitnami.com/bitnami
 appVersion: v0.4.7
