@@ -1483,6 +1483,23 @@ entries:
   postgres-cluster:
   - apiVersion: v2
     appVersion: v1.22.1
+    created: "2024-04-12T01:32:15.687168038Z"
+    description: Chart for cloudnative-pg cluster
+    digest: 1c7943365327d7ab1d130b943e696a074ad9489d374389be07f027e3fa6663f4
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.2.4/postgres-cluster-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: v1.22.1
     created: "2024-03-14T12:32:57.549448494Z"
     description: Chart for cloudnative-pg cluster
     digest: e080e6e949c57f54d77c4f87138d7066daaf283d655f02a369721d69a0999e70
@@ -1652,6 +1669,24 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
   postgres-cluster-upgrade:
+  - apiVersion: v2
+    appVersion: v1.22.1
+    created: "2024-04-12T01:32:15.837175213Z"
+    description: Chart for upgrading a cloudnative-pg cluster in the same namespace
+    digest: b0396d837a9dd9aee0edf547694803c9c52ce8b5af8f74dd0a100363c7ef1e96
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    - upgrade
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster-upgrade
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-upgrade-0.1.1/postgres-cluster-upgrade-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: v1.22.1
     created: "2024-04-12T01:05:35.29792016Z"
@@ -2252,4 +2287,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-12T01:05:35.298220139Z"
+generated: "2024-04-12T01:32:15.837502433Z"
