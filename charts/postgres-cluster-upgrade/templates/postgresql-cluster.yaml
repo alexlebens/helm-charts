@@ -1,0 +1,68 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: "postgresql-{{ .Release.Name }}-cluster-upgrade"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: "postgresql-{{ .Release.Name }}-cluster-upgrade"
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+spec:
+  imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
+  instances: {{ .Values.cluster.instances }}
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: kubernetes.io/hostname
+  postgresql:
+    parameters:
+      {{- toYaml .Values.cluster.parameters | nindent 6 }}
+  resources:
+    {{- toYaml .Values.cluster.resources | nindent 4 }}
+  storage:
+    storageClass: {{ .Values.cluster.storage.data.storageClass }}
+    size: {{ .Values.cluster.storage.data.size }}
+  walStorage:
+    storageClass: {{ .Values.cluster.storage.wal.storageClass }}
+    size: {{ .Values.cluster.storage.wal.size }}
+  monitoring:
+    enablePodMonitor: true
+
+  bootstrap:
+    initdb:
+      import:
+        type: {{ .Values.upgrade.importType }}
+        databases:
+          {{- toYaml .Values.upgrade.importDatabases | nindent 10 }}
+        source:
+          externalCluster: "postgresql-{{ .Release.Name }}-cluster"
+  externalClusters:
+    - name: "postgresql-{{ .Release.Name }}-cluster"
+      connectionParameters:
+        host: "postgresql-{{ .Release.Name }}-cluster-rw"
+        user: app
+        dbname: app
+      password:
+        name: "postgresql-{{ .Release.Name }}-cluster-app"
+        key: password
+
+  {{- if .Values.backup.backupEnabled }}
+  backup:
+    retentionPolicy: "{{ .Values.backup.retentionPolicy }}"
+    barmanObjectStore:
+      destinationPath: "s3://{{ .Values.backup.bucket }}/{{ .Values.cluster.name }}/postgresql/{{ .Release.Name }}-cluster"
+      endpointURL: {{ .Values.backup.endpointURL }}
+      serverName: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backup.backupIndex }}"
+      s3Credentials:
+        accessKeyId:
+          name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: "postgresql-{{ .Release.Name }}-cluster-backup-secret"
+          key: ACCESS_SECRET_KEY
+      data:
+        compression: {{ .Values.cluster.compression }}
+      wal:
+        compression: {{ .Values.cluster.compression }}
+  {{- end }}

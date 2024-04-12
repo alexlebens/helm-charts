@@ -1,0 +1,14 @@
+apiVersion: v2
+name: postgres-cluster-upgrade
+version: 0.1.0
+description: Chart for upgrading a cloudnative-pg cluster in the same namespace
+keywords:
+  - database
+  - postgres
+  - upgrade
+sources:
+  - https://github.com/cloudnative-pg/cloudnative-pg
+maintainers:
+  - name: alexlebens
+icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+appVersion: v1.22.1

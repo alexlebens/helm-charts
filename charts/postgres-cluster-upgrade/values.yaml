@@ -1,0 +1,37 @@
+cluster:
+  name:
+  image:
+    repository: ghcr.io/cloudnative-pg/postgresql
+    tag: 16.2
+  instances: 1
+  parameters:
+    shared_buffers: 128MB
+    max_slot_wal_keep_size: 2000MB
+    hot_standby_feedback: "on"
+  compression: snappy
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 100m
+    limits:
+      memory: 2Gi
+      cpu: 1500m
+      hugepages-2Mi: 512Mi
+  storage:
+    data:
+      storageClass: default
+      size: 10Gi
+    wal:
+      storageClass: default
+      size: 2Gi
+upgrade:
+  importType: microservice
+  importDatabases:
+    - app
+backup:
+  backupEnabled: true
+  inititeBackup: false  
+  retentionPolicy: 3d  
+  backupIndex: 1
+  endpointURL:
+  bucket:
