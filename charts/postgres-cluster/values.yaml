@@ -19,10 +19,10 @@ cluster:
       hugepages-2Mi: 512Mi
   storage:
     data:
-      storageClass: default
+      storageClass:
       size: 10Gi
     wal:
-      storageClass: default
+      storageClass:
       size: 2Gi
 bootstrap:
   recoveryEnabled: false
