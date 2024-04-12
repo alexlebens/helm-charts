@@ -39,10 +39,6 @@ persistence:
     storageSize: 50Gi
     localRootDir: /var/lib/outline/data
     uploadMaxSize: 26214400
-redis:
-  architecture: standalone
-  auth:
-    enabled: false
 outline:
   nodeEnv: production
   url:
@@ -98,3 +94,11 @@ outline:
       usernameClaim:
       displayName:
       scopes: openid profile email
+redis:
+  image:
+    registry: docker.io
+    repository: valkey/valkey
+    tag: 7.2.4-rc1
+  architecture: standalone
+  auth:
+    enabled: false
