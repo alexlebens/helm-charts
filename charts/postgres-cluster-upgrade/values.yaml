@@ -29,7 +29,7 @@ upgrade:
   importDatabases:
     - app
 backup:
-  backupEnabled: true
+  backupEnabled: false
   inititeBackup: false  
   retentionPolicy: 3d  
   backupIndex: 1
