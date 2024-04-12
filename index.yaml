@@ -1651,6 +1651,25 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-0.0.1/postgres-cluster-0.0.1.tgz
     version: 0.0.1
+  postgres-cluster-upgrade:
+  - apiVersion: v2
+    appVersion: v1.22.1
+    created: "2024-04-12T01:05:35.29792016Z"
+    description: Chart for upgrading a cloudnative-pg cluster in the same namespace
+    digest: 9c93e10036e7e87bd08ac7f7b1333dda2f60ad401e6002c11471fa4ee8bb6f71
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    - upgrade
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster-upgrade
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-upgrade-0.1.0/postgres-cluster-upgrade-0.1.0.tgz
+    version: 0.1.0
   qbittorrent:
   - apiVersion: v2
     appVersion: version-4.6.3-r0
@@ -2233,4 +2252,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-12T00:04:57.264996034Z"
+generated: "2024-04-12T01:05:35.298220139Z"
