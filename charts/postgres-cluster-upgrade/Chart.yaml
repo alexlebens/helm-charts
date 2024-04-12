@@ -1,6 +1,6 @@
 apiVersion: v2
 name: postgres-cluster-upgrade
-version: 0.1.0
+version: 0.1.1
 description: Chart for upgrading a cloudnative-pg cluster in the same namespace
 keywords:
   - database
