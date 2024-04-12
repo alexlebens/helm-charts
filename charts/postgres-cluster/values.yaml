@@ -1,9 +1,9 @@
 cluster:
-  name: cl01tl
+  name:
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
     tag: 16.2
-  instances: 2
+  instances: 3
   parameters:
     shared_buffers: 128MB
     max_slot_wal_keep_size: 2000MB
