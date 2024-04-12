@@ -1,6 +1,6 @@
 apiVersion: v2
 name: postgres-cluster
-version: 0.2.4
+version: 0.2.5
 description: Chart for cloudnative-pg cluster
 keywords:
   - database
@@ -10,4 +10,4 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
-appVersion: v1.22.1
+appVersion: v1.22.2

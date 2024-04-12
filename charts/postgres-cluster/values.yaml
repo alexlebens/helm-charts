@@ -2,7 +2,7 @@ cluster:
   name: cl01tl
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
-    tag: 16.0
+    tag: 16.2
   instances: 2
   parameters:
     shared_buffers: 128MB
