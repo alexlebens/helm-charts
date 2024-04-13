@@ -55,7 +55,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.outline.database.usernameSecret.existingSecretName }}"
-                  key: "{{ .Values.outline.database.usernameSecret.existingSecretKey }}"                  
+                  key: "{{ .Values.outline.database.usernameSecret.existingSecretKey }}"
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -75,7 +75,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.outline.database.databasePort.existingSecretName }}"
-                  key: "{{ .Values.outline.database.databasePort.existingSecretKey }}"                  
+                  key: "{{ .Values.outline.database.databasePort.existingSecretKey }}"
             - name: DATABASE_URL
               value: "postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@$(POSTGRES_DATABASE_HOST):$(POSTGRES_DATABASE_PORT)/$(POSTGRES_DATABASE_NAME)"
             - name: DATABASE_URL_TEST
@@ -102,41 +102,14 @@ spec:
                 secretKeyRef:
                   name: "{{ .Values.persistence.s3.credentialsSecret }}"
                   key: AWS_SECRET_ACCESS_KEY
-          {{- if .Values.persistence.s3.endpointConfigMap.enabled }}
-            - name: AWS_REGION
-              valueFrom:
-                configMapKeyRef:
-                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
-                  key: BUCKET_REGION
-            - name: AWS_S3_UPLOAD_BUCKET_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
-                  key: BUCKET_NAME
-            - name: AWS_S3_UPLOAD_BUCKET_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
-                  key: BUCKET_HOST
-            - name: AWS_S3_UPLOAD_BUCKET_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: "{{ .Values.persistence.s3.endpointConfigMap.name }}"
-                  key: BUCKET_PORT
-            - name: AWS_S3_UPLOAD_BUCKET_URL
-              value: "{{ .Values.persistence.s3.urlProtocol }}://$(AWS_S3_UPLOAD_BUCKET_NAME).$(AWS_S3_UPLOAD_BUCKET_HOST):$(AWS_S3_UPLOAD_BUCKET_PORT)"
-            - name: AWS_S3_ACCELERATE_URL
-              value: "{{ .Values.persistence.s3.urlProtocol }}://$(AWS_S3_UPLOAD_BUCKET_NAME).$(AWS_S3_UPLOAD_BUCKET_HOST):$(AWS_S3_UPLOAD_BUCKET_PORT)"         
-          {{- else }}
             - name: AWS_REGION
               value: "{{ .Values.persistence.s3.region }}"
             - name: AWS_S3_UPLOAD_BUCKET_NAME
               value: "{{ .Values.persistence.s3.bucketName }}"
             - name: AWS_S3_UPLOAD_BUCKET_URL
-              value: "{{ .Values.persistence.s3.urlProtocol }}://{{ .Values.persistence.s3.bucketName }}.{{ .Values.persistence.s3.host }}"
+              value: "{{ .Values.persistence.s3.bucketUrl }}"
             - name: AWS_S3_ACCELERATE_URL
-              value: "{{ .Values.persistence.s3.urlProtocol }}://{{ .Values.persistence.s3.bucketName }}.{{ .Values.persistence.s3.host }}"              
-          {{- end }}
+              value: "{{ .Values.persistence.s3.bucketUrl }}"
             - name: AWS_S3_FORCE_PATH_STYLE
               value: "{{ .Values.persistence.s3.forcePathStyle }}"
             - name: AWS_S3_ACL

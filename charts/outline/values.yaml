@@ -24,13 +24,9 @@ persistence:
   type: s3
   s3:
     credentialsSecret:
-    endpointConfigMap:
-      enabled: false
-      name:
     region:
     bucketName:
-    host:
-    urlProtocol: http
+    bucketUrl:
     uploadMaxSize: "26214400"
     forcePathStyle: false
     acl: private
