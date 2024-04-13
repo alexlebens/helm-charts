@@ -1,16 +1,18 @@
+{{ if .Values.backup.enabled }}
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: "postgresql-{{ .Release.Name }}-cluster-backup"
+  name: "postgresql-{{ include "cluster.fullname" . }}-cluster-scheduled-backup"
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    app.kubernetes.io/component: database
-    app.kubernetes.io/part-of: {{ .Release.Name }}
+    {{- include "cluster.labels" . | nindent 4 }}
+  {{- with .Values.cluster.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+  immediate: true
   schedule: {{ .Values.backup.schedule }}
   backupOwnerReference: self
   cluster:
-    name: "postgresql-{{ .Release.Name }}-cluster"
+    name: "postgresql-{{ include "cluster.fullname" . }}-cluster"
+{{ end }}

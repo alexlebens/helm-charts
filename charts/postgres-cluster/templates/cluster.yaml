@@ -1,0 +1,52 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: "postgresql-{{ include "cluster.fullname" . }}-cluster"
+  namespace: {{ .Release.Namespace }}
+  {{- with .Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+  {{- with .Values.cluster.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  instances: {{ .Values.cluster.instances }}
+  imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
+  imagePullPolicy: {{ .Values.cluster.image.pullPolicy }}
+  postgresUID: {{ .Values.cluster.postgresUID }}
+  postgresGID: {{ .Values.cluster.postgresGID }}
+  walStorage:
+    size: {{ .Values.cluster.walStorage.size }}
+    storageClass: {{ .Values.cluster.walStorage.storageClass }}
+  storage:
+    size: {{ .Values.cluster.storage.size }}
+    storageClass: {{ .Values.cluster.storage.storageClass }}
+  {{- with .Values.cluster.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+  {{- with .Values.cluster.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  priorityClassName: {{ .Values.cluster.priorityClassName }}
+  primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
+  primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  logLevel: {{ .Values.cluster.logLevel }}
+  postgresql:
+    shared_preload_libraries:
+      {{- if eq .Values.type "timescaledb" }}
+      - timescaledb
+      {{- end }}
+    {{- with .Values.cluster.postgresql.parameters }}
+    parameters:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+  monitoring:
+    enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
+
+  {{ include "cluster.bootstrap" . | nindent 2 }}
+  {{ include "cluster.backup" . | nindent 2 }}
