@@ -1,7 +1,5 @@
-# -- Override the name of the chart
+# -- Override the name of the cluster
 nameOverride: ""
-# -- Override the full name of the chart
-fullnameOverride: ""
 
 ###
 # -- Type of the CNPG database. Available types:
@@ -25,7 +23,7 @@ cluster:
 
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
-    tag: 16.2
+    tag: "16.2"
     pullPolicy: IfNotPresent
 
   # The UID and GID of the postgres user inside the image
@@ -111,6 +109,9 @@ recovery:
 
   # Generate external cluster name, uses: postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}"
   recoveryIndex: 1
+
+  # Name of the recovery cluster in the object store, defaults to "cluster.name"
+  recoveryName: ""
 
   wal:
     # WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.

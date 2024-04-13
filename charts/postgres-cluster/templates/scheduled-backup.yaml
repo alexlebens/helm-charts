@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: "postgresql-{{ include "cluster.fullname" . }}-cluster-scheduled-backup"
+  name: {{ include "cluster.name" . }}-scheduled-backup
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "cluster.labels" . | nindent 4 }}
@@ -14,5 +14,5 @@ spec:
   schedule: {{ .Values.backup.schedule }}
   backupOwnerReference: self
   cluster:
-    name: "postgresql-{{ include "cluster.fullname" . }}-cluster"
+    name: {{ include "cluster.name" . }}-cluster
 {{ end }}

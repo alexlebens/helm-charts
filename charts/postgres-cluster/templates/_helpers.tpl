@@ -2,25 +2,12 @@
 Expand the name of the chart.
 */}}
 {{- define "cluster.name" -}}
-  {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "cluster.fullname" -}}
-{{- if .Values.fullnameOverride }}
-  {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-  {{- $name := default .Chart.Name .Values.nameOverride }}
-  {{- if contains $name .Release.Name }}
-    {{- .Release.Name | trunc 63 | trimSuffix "-" }}
+  {{- if .Values.nameOverride }}
+    {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+    {{ $version := split "." .Values.cluster.image.tag }}
+    {{- printf "postgresql-%s-%s" $version._0 .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
-{{- end }}
 {{- end }}
 
 {{/*
@@ -54,18 +41,29 @@ app.kubernetes.io/part-of: cloudnative-pg
 {{/*
 Generate name for object store credentials
 */}}
-{{- define "cluster.recovery.credentials" -}}
+{{- define "cluster.recoveryCredentials" -}}
   {{- if .Values.recovery.endpointCredentials -}}
     {{- .Values.recovery.endpointCredentials -}}
   {{- else -}}
     {{- printf "postgresql-%s-cluster-backup-secret" .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
-{{- end -}}
+{{- end }}
 
-{{- define "cluster.backup.credentials" -}}
+{{- define "cluster.backupCredentials" -}}
   {{- if .Values.backup.endpointCredentials -}}
     {{- .Values.backup.endpointCredentials -}}
   {{- else -}}
     {{- printf "postgresql-%s-cluster-backup-secret" .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
-{{- end -}}
+{{- end }}
+
+{{/*
+Generate recovery server name
+*/}}
+{{- define "cluster.recoveryName" -}}
+  {{- if .Values.recovery.recoveryName -}}
+    {{- .Values.recovery.recoveryName -}}
+  {{- else -}}
+    {{ include "cluster.name" . }}
+  {{- end }}
+{{- end }}

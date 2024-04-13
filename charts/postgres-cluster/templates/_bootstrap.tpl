@@ -46,9 +46,9 @@ bootstrap:
         {{- end }}      
       {{- end }}
       source:
-        externalCluster: "postgresql-{{ .Release.Name }}-cluster"
+        externalCluster: "{{ include "cluster.name" . }}-cluster"
 externalClusters:
-  - name: "postgresql-{{ .Release.Name }}-cluster"
+  - name: "{{ include "cluster.name" . }}-cluster"
     {{- with .Values.replica.externalCluster }}
     {{- . | toYaml | nindent 4 }}
     {{- end }}    
@@ -58,25 +58,25 @@ externalClusters:
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
-    source: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}"
+    source: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
 externalClusters:
-  - name: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}"
+  - name: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
     barmanObjectStore:
-      serverName: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}"
-      destinationPath: "s3://{{ .Values.recovery.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ .Release.Name }}"
+      serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
+      destinationPath: "s3://{{ .Values.recovery.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ .Values.recovery.recoveryName }}"
       endpointURL: {{ .Values.recovery.endpointURL }}
       {{- with .Values.recovery.endpointCA }}
       endpointCA:
         name: {{ . }}
         key: ca-bundle.crt
       {{- end }}
-      serverName: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}"
+      serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
       s3Credentials:
         accessKeyId:
-          name: {{ include "cluster.recovery.credentials" . }}
+          name: {{ include "cluster.recoveryCredentials" . }}
           key: ACCESS_KEY_ID
         secretAccessKey:
-          name: {{ include "cluster.recovery.credentials" . }}
+          name: {{ include "cluster.recoveryCredentials" . }}
           key: ACCESS_SECRET_KEY
       wal:
         compression: {{ .Values.recovery.wal.compression }}

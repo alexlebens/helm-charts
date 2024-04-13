@@ -3,20 +3,20 @@
 backup:
   retentionPolicy: {{ .Values.backup.retentionPolicy }}
   barmanObjectStore:
-    destinationPath: "s3://{{ .Values.backup.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ .Release.Name }}"
+    destinationPath: "s3://{{ .Values.backup.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ include "cluster.name" . }}"
     endpointURL: {{ .Values.backup.endpointURL }}
     {{- if .Values.backup.endpointCA }}
     endpointCA:
       name: {{ .Values.backup.endpointCA }}
       key: ca-bundle.crt
     {{- end }}
-    serverName: "postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backup.backupIndex }}"
+    serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.backup.backupIndex }}"
     s3Credentials:
       accessKeyId:
-        name: {{ include "cluster.backup.credentials" . }}
+        name: {{ include "cluster.backupCredentials" . }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ include "cluster.backup.credentials" . }}
+        name: {{ include "cluster.backupCredentials" . }}
         key: ACCESS_SECRET_KEY
     wal:
       compression: {{ .Values.backup.wal.compression }}
