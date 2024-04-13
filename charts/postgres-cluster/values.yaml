@@ -12,8 +12,9 @@ type: postgresql
 
 ###
 # Cluster mode of operation. Available modes:
-# * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
+# * `standalone` - Default mode. Creates new or updates an existing CNPG cluster.
 # * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup
+# * `replica` - Create database as a replica from another CNPG cluster
 mode: standalone
 
 # Generates bucket name and path for recovery and backup, creates: <endpointBucket>/<clusterName>/postgresql/{{ .Release.Name }}
@@ -125,6 +126,32 @@ recovery:
     encryption: ""
     # Number of data files to be archived or restored in parallel.
     jobs: 2
+
+replica:
+  # See https://cloudnative-pg.io/documentation/current/database_import/
+  # * `microservice` - Single database import as expected from cnpg clusters
+  # * `monolith` - Import multiple databases and roles
+  importType: microservice
+
+  # If type microservice only one database is allowed, default is app as standard in cnpg clusters
+  importDatabases:
+    - app
+  
+  # If type microservice no roles are imported and ignored
+  importRoles: []
+
+  # If import type is monolith postImportApplicationSQL is not supported and ignored
+  postImportApplicationSQL: []
+
+  # External cluster connection, password specifies a secret name and the key containing the password value
+  externalCluster:
+    connectionParameters:
+      host: postgresql
+      user: app
+      dbname: app
+    password:
+      name: postgresql
+      key: password
 
 backup:
   enabled: false

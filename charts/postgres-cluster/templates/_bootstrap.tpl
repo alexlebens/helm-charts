@@ -19,8 +19,39 @@ bootstrap:
       {{- with .Values.cluster.initdb }}
       {{- range .postInitApplicationSQL }}
       {{- printf "- %s" . | nindent 6 }}
-      {{- end -}}
-      {{- end -}}
+      {{- end }}
+      {{- end }}
+{{- else if eq .Values.mode "replica" }}
+  initdb:
+    import:
+      type: {{ .Values.replica.importType }}
+      databases:
+        {{- if and (len .Values.replica.importDatabases gt 1) (.Values.replica.importType eq "microservice") }}
+          {{ fail "Too many databases in import type of microservice!" }}
+        {{- else}}
+        {{- with .Values.replica.importDatabases }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
+        {{- end }}        
+      {{- if .Values.replica.importType eq "monolith" }}
+      roles:
+        {{- with .Values.replica.importRoles }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if and (.Values.replica.postImportApplicationSQL) (.Values.replica.importType eq "microservice") }}
+      postImportApplicationSQL:
+        {{- with .Values.replica.postImportApplicationSQL }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}      
+      {{- end }}
+      source:
+        externalCluster: "postgresql-{{ .Release.Name }}-cluster"
+externalClusters:
+  - name: "postgresql-{{ .Release.Name }}-cluster"
+    {{- with .Values.replica.externalCluster }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}    
 {{- else if eq .Values.mode "recovery" }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
@@ -46,7 +77,7 @@ externalClusters:
           key: ACCESS_KEY_ID
         secretAccessKey:
           name: {{ include "cluster.recovery.credentials" . }}
-          key: ACCESS_SECRET_KEY       
+          key: ACCESS_SECRET_KEY
       wal:
         compression: {{ .Values.recovery.wal.compression }}
         encryption: {{ .Values.recovery.wal.encryption }}
@@ -54,7 +85,7 @@ externalClusters:
       data:
         compression: {{ .Values.recovery.data.compression }}
         encryption: {{ .Values.recovery.data.encryption }}
-        jobs: {{ .Values.recovery.data.jobs }}          
+        jobs: {{ .Values.recovery.data.jobs }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
