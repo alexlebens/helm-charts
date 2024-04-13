@@ -95,10 +95,6 @@ outline:
       displayName:
       scopes: openid profile email
 redis:
-  image:
-    registry: docker.io
-    repository: valkey/valkey
-    tag: 7.2.4-rc1
   architecture: standalone
   auth:
     enabled: false
