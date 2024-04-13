@@ -45,7 +45,7 @@ Generate name for object store credentials
   {{- if .Values.recovery.endpointCredentials -}}
     {{- .Values.recovery.endpointCredentials -}}
   {{- else -}}
-    {{- printf "postgresql-%s-cluster-backup-secret" .Release.Name | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -53,7 +53,7 @@ Generate name for object store credentials
   {{- if .Values.backup.endpointCredentials -}}
     {{- .Values.backup.endpointCredentials -}}
   {{- else -}}
-    {{- printf "postgresql-%s-cluster-backup-secret" .Release.Name | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
