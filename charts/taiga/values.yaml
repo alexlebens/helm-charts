@@ -53,10 +53,6 @@ maxAge: 360
 # TODO: This values seems to be unused
 createInitialTemplates: false
 
-## Taiga's url
-##
-taigaUrl: ""
-
 ## Telemetry settings
 ##
 enableTelemetry: true
@@ -259,14 +255,6 @@ async:
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
     ##
     pullPolicy: IfNotPresent
-
-  ## async-taiga rabbitmq credentials
-  ## Must match to async-rabbitmq.auth.username and async-rabbitmq.auth.password
-  ## I don't use async-rabbitmq values because this bug: https://github.com/helm/helm/issues/2192
-  rabbitmq:
-    auth:
-      username: taiga
-      password: taiga
 
   ## Define the number of pods the deployment will create
   ## Do not change unless your persistent volume allows more than one writer, ie NFS
