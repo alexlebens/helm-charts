@@ -74,7 +74,7 @@ spec:
           {{- if .Values.events.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: /admin/login/
+              path: /healthz
               port: {{ .Values.events.service.port }}
             initialDelaySeconds: {{ .Values.events.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.events.livenessProbe.periodSeconds }}
@@ -86,7 +86,7 @@ spec:
           {{- if .Values.events.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: /admin/login/
+              path: /healthz
               port: {{ .Values.events.service.port }}
             initialDelaySeconds: {{ .Values.events.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.events.readinessProbe.periodSeconds }}
