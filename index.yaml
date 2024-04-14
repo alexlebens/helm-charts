@@ -2025,6 +2025,34 @@ entries:
   taiga:
   - apiVersion: v2
     appVersion: 6.7.7
+    created: "2024-04-14T04:30:03.415366619Z"
+    dependencies:
+    - alias: taiga-async-rabbitmq
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.0.3
+    - alias: taiga-events-rabbitmq
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.0.3
+    description: Chart for Taiga
+    digest: cfb85e54176d75eb79ed9809e13765caa8bac0c4e296231d8e83b425d37b7342
+    icon: https://avatars.githubusercontent.com/u/6905422?s=200&v=4
+    keywords:
+    - kanban
+    - project management
+    maintainers:
+    - name: alexlebens
+    name: taiga
+    sources:
+    - https://github.com/taigaio
+    - https://github.com/rabbitmq/rabbitmq-server
+    - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/taiga-0.1.1/taiga-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 6.7.7
     created: "2024-04-14T04:18:11.795549339Z"
     dependencies:
     - alias: taiga-async-rabbitmq
@@ -2496,4 +2524,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-14T04:18:11.795964231Z"
+generated: "2024-04-14T04:30:03.415629919Z"
