@@ -5,8 +5,7 @@ Expand the name of the chart.
   {{- if .Values.nameOverride }}
     {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    {{ $version := split "." .Values.cluster.image.tag }}
-    {{- printf "postgresql-%s-%s" $version._0 .Release.Name | trunc 63 | trimSuffix "-" -}}
+    {{- printf "postgresql-%s-%s" .Values.cluster.image.majorVersion .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 

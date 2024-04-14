@@ -24,6 +24,7 @@ cluster:
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
     tag: "16.2"
+    majorVersion: "16"
     pullPolicy: IfNotPresent
 
   # The UID and GID of the postgres user inside the image
