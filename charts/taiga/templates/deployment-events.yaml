@@ -55,7 +55,7 @@ spec:
             {{ toYaml .Values.events.resources | nindent 12 }}
           ports:
             - name: taiga-events
-              containerPort: {{ .Values.events.http.service.port }}
+              containerPort: {{ .Values.events.service.http.port }}
               protocol: TCP
             - name: taiga-events-app
               containerPort: {{ .Values.events.service.app.port }}
