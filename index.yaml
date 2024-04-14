@@ -2022,6 +2022,35 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/qbittorrent-0.0.1/qbittorrent-0.0.1.tgz
     version: 0.0.1
+  taiga:
+  - apiVersion: v2
+    appVersion: 6.7.7
+    created: "2024-04-14T04:18:11.795549339Z"
+    dependencies:
+    - alias: taiga-async-rabbitmq
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.0.3
+    - alias: taiga-events-rabbitmq
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.0.3
+    description: Chart for Taiga
+    digest: 5a8033a604c4ce88b0c680819d124d9d1a949d3dc4a7f0bb753f4987fb4f52af
+    icon: https://avatars.githubusercontent.com/u/6905422?s=200&v=4
+    keywords:
+    - kanban
+    - project management
+    maintainers:
+    - name: alexlebens
+    name: taiga
+    sources:
+    - https://github.com/taigaio
+    - https://github.com/rabbitmq/rabbitmq-server
+    - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/taiga-0.1.0/taiga-0.1.0.tgz
+    version: 0.1.0
   tdarr:
   - apiVersion: v2
     appVersion: 2.17.01
@@ -2467,4 +2496,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-13T20:58:42.636564924Z"
+generated: "2024-04-14T04:18:11.795964231Z"
