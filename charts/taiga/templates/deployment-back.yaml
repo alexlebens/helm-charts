@@ -1,0 +1,515 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "taiga.fullname" . }}-back
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "taiga.back.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.back.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "taiga.back.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "taiga.back.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "taiga.name" . }}-back
+      annotations:
+        {{- with .Values.back.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- with .Values.back.affinity }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- with .Values.back.nodeSelector }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- with .Values.back.tolerations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "taiga.serviceAccountName" . }}
+      securityContext:
+        {{- with .Values.back.securityContext }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ template "taiga.fullname" . }}-back
+          image: "{{ .Values.back.image.repository }}:{{ .Values.back.image.tag }}"
+          imagePullPolicy: {{ .Values.back.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.back.resources | nindent 12 }}
+          ports:
+            - name: taiga-back
+              containerPort: {{ .Values.back.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: taiga-static
+              mountPath: /taiga-back/static
+            - name: taiga-media
+              mountPath: /taiga-back/media
+          env:
+            - name: TAIGA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.secretKey.existingSecretName }}"
+                  key: "{{ .Values.secretKey.existingSecretKey }}"
+            - name: ENABLE_TELEMETRY
+              value: "{{ .Values.enableTelemetry }}"
+            - name: PUBLIC_REGISTER_ENABLED
+              value: "{{ .Values.publicRegisterEnabled }}"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.usernameKey }}"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.passwordKey }}"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.databaseNameKey }}"
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.hostKey }}"
+
+          {{ if .Values.oidc.enabled }}
+            - name: OIDC_ENABLED
+              value: "True"
+            - name: OIDC_SCOPES
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.scopesKey }}"
+            - name: OIDC_SIGN_ALGO
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.signatureAlgorithmKey }}"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.clientIdKey }}"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.clientSecretKey }}"
+            - name: OIDC_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.baseUrlKey }}"
+            - name: OIDC_JWKS_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.jwksEndpointKey }}"
+            - name: OIDC_AUTHORIZATION_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.authorizationEndpointKey }}"
+            - name: OIDC_TOKEN_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.tokenEndpointKey }}"
+            - name: OIDC_USER_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.userEndpointKey }}"
+          {{ end }}
+
+          {{ if .Values.email.enabled }}
+            - name: EMAIL_BACKEND
+              value: "django.core.mail.backends.smtp.EmailBackend"
+            - name: DEFAULT_FROM_EMAIL
+              value: "{{ .Values.email.from }}"
+            - name: EMAIL_HOST
+              value: "{{ .Values.email.host }}"
+            - name: EMAIL_PORT
+              value: "{{ .Values.email.port }}"
+            - name: EMAIL_USE_TLS
+              value: "{{ .Values.email.tls }}"
+            - name: EMAIL_USE_SSL
+              value: "{{ .Values.email.ssl }}"
+            - name: EMAIL_HOST_USER
+              value: "{{ .Values.email.user }}"
+            - name: EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.email.existingPasswordSecret }}"
+                  key: "{{ .Values.email.existingSecretPasswordKey }}"
+          {{ end }}
+
+            - name: ENABLE_GITHUB_AUTH
+              value: "false"
+            - name: ENABLE_GITLAB_AUTH
+              value: "false"
+            - name: ENABLE_SLACK
+              value: "{{ .Values.enableSlack }}"
+
+          {{ if .Values.githubImporter.enabled }}
+            - name: ENABLE_GITHUB_IMPORTER
+              value: "True"
+            - name: GITHUB_API_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.githubImporter.existingSecretName }}"
+                  key: "{{ .Values.githubImporter.existingSecretClientIdKey }}"
+            - name: GITHUB_API_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.githubImporter.existingSecretName }}"
+                  key: "{{ .Values.githubImporter.existingSecretClientSecretKey }}"
+          {{ else }}
+            - name: ENABLE_GITHUB_IMPORTER
+              value: "False"
+          {{ end }}
+
+          {{ if .Values.jiraImporter.enabled }}
+            - name: ENABLE_JIRA_IMPORTER
+              value: "True"
+            - name: JIRA_IMPORTER_CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.jiraImporter.existingSecretName }}"
+                  key: "{{ .Values.jiraImporter.existingSecretConsumerKeyKey }}"
+            - name: JIRA_IMPORTER_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.jiraImporter.existingSecretName }}"
+                  key: "{{ .Values.jiraImporter.existingSecretCertKey }}"
+            - name: JIRA_IMPORTER_PUB_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.jiraImporter.existingSecretName }}"
+                  key: "{{ .Values.jiraImporter.existingSecretPubCertKey }}"
+          {{ else }}
+            - name: ENABLE_JIRA_IMPORTER
+              value: "False"
+          {{ end }}
+
+          {{ if .Values.trelloImporter }}
+            - name: ENABLE_TRELLO_IMPORTER
+              value: "True"
+            - name: TRELLO_IMPORTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.trelloImporter.existingSecretName }}"
+                  key: "{{ .Values.trelloImporter.existingSecretApiKeyKey }}"
+            - name: TRELLO_IMPORTER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.trelloImporter.existingSecretName }}"
+                  key: "{{ .Values.trelloImporter.existingSecretSecretKeyKey }}"
+          {{ else }}
+            - name: ENABLE_JIRA_IMPORTER
+              value: "False"
+          {{ end }}
+
+            - name: RABBITMQ_USER
+              value: "{{ index .Values "taiga-async-rabbitmq" "auth" "username" }}"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ index .Values "taiga-async-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "taiga-async-rabbitmq" "auth" "existingSecretPasswordKey" }}
+
+          {{ if .Values.ingress.enabled }}
+            - name: TAIGA_SITES_DOMAIN
+              value: "{{ .Values.ingress.host }}"
+            - name: TAIGA_SITES_SCHEME
+              value: "https"
+            - name: SESSION_COOKIE_SECURE
+              value: "True"
+            - name: CSRF_COOKIE_SECURE
+              value: "True"
+          {{- end }}
+
+          {{- if .Values.back.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.back.service.port }}
+            initialDelaySeconds: {{ .Values.back.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.back.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.back.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.back.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.back.livenessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.back.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.back.service.port }}
+            initialDelaySeconds: {{ .Values.back.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.back.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.back.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.back.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.back.readinessProbe.failureThreshold }}
+          {{- end }}
+
+        - name: {{ template "taiga.fullname" . }}-async
+          image: "{{ .Values.async.image.repository }}:{{ .Values.async.image.tag }}"
+          imagePullPolicy: {{ .Values.async.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.async.resources | nindent 12 }}
+          command:
+            - /taiga-back/docker/async_entrypoint.sh
+          volumeMounts:
+            - name: taiga-static
+              mountPath: /taiga-back/static
+            - name: taiga-media
+              mountPath: /taiga-back/media
+          env:
+            - name: TAIGA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.secretKey.existingSecretName }}"
+                  key: "{{ .Values.secretKey.existingSecretKey }}"
+            - name: ENABLE_TELEMETRY
+              value: "{{ .Values.enableTelemetry }}"
+            - name: PUBLIC_REGISTER_ENABLED
+              value: "{{ .Values.publicRegisterEnabled }}"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.usernameKey }}"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.passwordKey }}"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.databaseNameKey }}"
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.existingSecretName }}"
+                  key: "{{ .Values.postgresql.hostKey }}"
+
+          {{ if .Values.oidc.enabled }}
+            - name: OIDC_ENABLED
+              value: "True"
+            - name: OIDC_SCOPES
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.scopesKey }}"
+            - name: OIDC_SIGN_ALGO
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.signatureAlgorithmKey }}"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.clientIdKey }}"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.clientSecretKey }}"
+            - name: OIDC_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.baseUrlKey }}"
+            - name: OIDC_JWKS_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.jwksEndpointKey }}"
+            - name: OIDC_AUTHORIZATION_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.authorizationEndpointKey }}"
+            - name: OIDC_TOKEN_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.tokenEndpointKey }}"
+            - name: OIDC_USER_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.userEndpointKey }}"
+          {{ end }}
+
+          {{ if .Values.email.enabled }}
+            - name: EMAIL_BACKEND
+              value: "django.core.mail.backends.smtp.EmailBackend"
+            - name: DEFAULT_FROM_EMAIL
+              value: "{{ .Values.email.from }}"
+            - name: EMAIL_HOST
+              value: "{{ .Values.email.host }}"
+            - name: EMAIL_PORT
+              value: "{{ .Values.email.port }}"
+            - name: EMAIL_USE_TLS
+              value: "{{ .Values.email.tls }}"
+            - name: EMAIL_USE_SSL
+              value: "{{ .Values.email.ssl }}"
+            - name: EMAIL_HOST_USER
+              value: "{{ .Values.email.user }}"
+            - name: EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.email.existingPasswordSecret }}"
+                  key: "{{ .Values.email.existingSecretPasswordKey }}"
+          {{ end }}
+
+            - name: ENABLE_GITHUB_AUTH
+              value: "false"
+            - name: ENABLE_GITLAB_AUTH
+              value: "false"
+            - name: ENABLE_SLACK
+              value: "{{ .Values.enableSlack }}"
+
+          {{ if .Values.githubImporter.enabled }}
+            - name: ENABLE_GITHUB_IMPORTER
+              value: "True"
+            - name: GITHUB_API_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.githubImporter.existingSecretName }}"
+                  key: "{{ .Values.githubImporter.existingSecretClientIdKey }}"
+            - name: GITHUB_API_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.githubImporter.existingSecretName }}"
+                  key: "{{ .Values.githubImporter.existingSecretClientSecretKey }}"
+          {{ else }}
+            - name: ENABLE_GITHUB_IMPORTER
+              value: "False"
+          {{ end }}
+
+          {{ if .Values.jiraImporter.enabled }}
+            - name: ENABLE_JIRA_IMPORTER
+              value: "True"
+            - name: JIRA_IMPORTER_CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.jiraImporter.existingSecretName }}"
+                  key: "{{ .Values.jiraImporter.existingSecretConsumerKeyKey }}"
+            - name: JIRA_IMPORTER_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.jiraImporter.existingSecretName }}"
+                  key: "{{ .Values.jiraImporter.existingSecretCertKey }}"
+            - name: JIRA_IMPORTER_PUB_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.jiraImporter.existingSecretName }}"
+                  key: "{{ .Values.jiraImporter.existingSecretPubCertKey }}"
+          {{ else }}
+            - name: ENABLE_JIRA_IMPORTER
+              value: "False"
+          {{ end }}
+
+          {{ if .Values.trelloImporter }}
+            - name: ENABLE_TRELLO_IMPORTER
+              value: "True"
+            - name: TRELLO_IMPORTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.trelloImporter.existingSecretName }}"
+                  key: "{{ .Values.trelloImporter.existingSecretApiKeyKey }}"
+            - name: TRELLO_IMPORTER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.trelloImporter.existingSecretName }}"
+                  key: "{{ .Values.trelloImporter.existingSecretSecretKeyKey }}"
+          {{ else }}
+            - name: ENABLE_JIRA_IMPORTER
+              value: "False"
+          {{ end }}
+
+            - name: RABBITMQ_USER
+              value: "{{ index .Values "taiga-async-rabbitmq" "auth" "username" }}"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ index .Values "taiga-async-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "taiga-async-rabbitmq" "auth" "existingSecretPasswordKey" }}
+
+          {{ if .Values.ingress.enabled }}
+            - name: TAIGA_SITES_DOMAIN
+              value: "{{ .Values.ingress.host }}"
+            - name: TAIGA_SITES_SCHEME
+              value: "https"
+            - name: SESSION_COOKIE_SECURE
+              value: "True"
+            - name: CSRF_COOKIE_SECURE
+              value: "True"
+          {{- end }}
+
+          {{- if .Values.back.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.back.service.port }}
+            initialDelaySeconds: {{ .Values.back.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.back.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.back.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.back.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.back.livenessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.back.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.back.service.port }}
+            initialDelaySeconds: {{ .Values.back.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.back.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.back.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.back.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.back.readinessProbe.failureThreshold }}
+          {{- end }}
+
+      volumes:
+        - name: taiga-static
+      {{- if .Values.persistence.static.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "taiga.staticVolumeName" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}
+        - name: taiga-media
+      {{- if .Values.persistence.media.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "taiga.mediaVolumeName" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}

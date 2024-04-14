@@ -1,0 +1,832 @@
+## Global
+##
+global:
+  # -- Set an override for the prefix of the fullname
+  nameOverride:
+
+  # -- Set the entire name definition
+  fullnameOverride:
+
+  # -- Set additional global labels. Helm templates can be used.
+  labels: {}
+
+  # -- Set additional global annotations. Helm templates can be used.
+  annotations: {}
+
+## Service Account
+##
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: false
+
+  # -- Annotations to add to the service account
+  annotations: {}
+
+  # -- Labels to add to the service account
+  labels: {}
+
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+## Secret key
+## Specificy the secret name and the key containg a strong secret key
+##
+secretKey:
+  existingSecretName: ""
+  existingSecretKey: ""
+
+## Create initial user with credentials admin/123123
+## ref: https://taigaio.github.io/taiga-doc/dist/setup-production.html
+##
+# TODO: set to false by default or create with a random password which is stored in a secret
+# or allow to pass in the data for username and secret
+createInitialUser: true
+
+## Max age
+##
+maxAge: 360
+
+## Create initial templates
+## ref: https://taigaio.github.io/taiga-doc/dist/setup-production.html
+##
+# TODO: This values seems to be unused
+createInitialTemplates: false
+
+## Taiga's url
+##
+taigaUrl: ""
+
+## Telemetry settings
+##
+enableTelemetry: true
+
+## Public registration
+##
+publicRegisterEnabled: true
+
+## Enable debug
+## ref: https://taigaio.github.io/taiga-doc/dist/setup-production.html
+debug: false
+
+## Postgresql
+## Configuration is expected to be stored in a secret, reference the secret name and each key for the value
+##
+postgresql:
+  existingSecretName: ""
+  usernameKey: ""
+  passwordKey: ""
+  databaseNameKey: ""
+  hostKey: ""
+  portKey: ""
+
+## OIDC authentication
+## Configuration is expected to be stored in a secret, reference the secret name and each key for the value
+##
+oidc:
+  enabled: false
+  existingSecretName: ""
+  scopesKey: "" # "openid profile email"
+  signatureAlgorithmKey: "" # "RS256"
+  clientIdKey: "" # <generate from auth provider>
+  clientSecretKey: "" # <generate from auth provider>
+  baseUrlKey: "" # "https://id.fedoraproject.org/openidc"
+  jwksEndpointKey: "" # "https://id.fedoraproject.org/openidc/Jwks"
+  authorizationEndpointKey: "" # "https://id.fedoraproject.org/openidc/Authorization"
+  tokenEndpointKey: "" # "https://id.fedoraproject.org/openidc/Token"
+  userEndpointKey: "" # "https://id.fedoraproject.org/openidc/UserInfo"
+
+## SMTP mail delivery configuration
+## ref: https://taigaio.github.io/taiga-doc/dist/setup-production.html
+##
+email:
+  enabled: false
+  from: no-reply@example.com
+  host: localhost
+  port: 587
+  tls: false
+  ssl: false
+  user: ""
+
+  ## Specificy an existing secret containg the password for the smtp user
+  ##
+  existingPasswordSecret: ""
+  existingSecretPasswordKey: ""
+
+## Slack
+##
+enableSlack: false
+
+## Importers
+##
+# Github importer
+githubImporter:
+  enabled: false
+  existingSecretName: ""
+  existingSecretClientIdKey: ""
+  existingSecretClientSecretKey: ""
+
+# Jira importer
+jiraImporter:
+  enabled: false
+  existingSecretName: ""
+  existingSecretConsumerKeyKey: ""
+  existingSecretCertKey: ""
+  existingSecretPubCertKey: ""
+
+# Trello importer
+trelloImporter:
+  enabled: false
+  existingSecretName: ""
+  existingSecretApiKeyKey: ""
+  existingSecretSecretKeyKey: ""
+
+## taiga-back
+##
+back:
+  ## Taiga image version
+  ## ref: https://hub.docker.com/r/taigaio/taiga5/tags
+  ##
+  image:
+    repository: taigaio/taiga-back
+    tag: "6.7.3"
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+  ## Define the number of pods the deployment will create
+  ## Do not change unless your persistent volume allows more than one writer, ie NFS
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  ##
+  replicas: 1
+
+  ## Pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template.
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext: {}
+
+  ## taiga containers' resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: {}
+    #  cpu: 2
+    #  memory: 1Gi
+    requests: {}
+    #  cpu: 1
+    #  memory: 1Gi
+
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## Environment variables, to pass to the entry point
+  ##
+  # extraVars:
+  #   - name: NAMI_DEBUG
+  #     value: --log-level trace
+
+  ## Service
+  ##
+  service:
+    # -- Set the service type
+    type: ClusterIP
+
+    # -- Provide additional annotations which may be required.
+    annotations: {}
+
+    # -- Provide additional labels which may be required.
+    labels: {}
+
+    # -- Allow adding additional match labels
+    extraSelectorLabels: {}
+
+    # -- HTTP port number
+    port: 8000
+
+## Async
+##
+async:
+  ## Taiga image version
+  ## ref: https://hub.docker.com/r/taigaio/taiga5/tags
+  ##
+  image:
+    repository: taigaio/taiga-back
+    tag: "6.7.3"
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+  ## async-taiga rabbitmq credentials
+  ## Must match to async-rabbitmq.auth.username and async-rabbitmq.auth.password
+  ## I don't use async-rabbitmq values because this bug: https://github.com/helm/helm/issues/2192
+  rabbitmq:
+    auth:
+      username: taiga
+      password: taiga
+
+  ## Define the number of pods the deployment will create
+  ## Do not change unless your persistent volume allows more than one writer, ie NFS
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  ##
+  replicas: 1
+
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext: {}
+
+  ## Pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template.
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## taiga containers' resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: {}
+    #  cpu: 2
+    #  memory: 1Gi
+    requests: {}
+    #  cpu: 1
+    #  memory: 1Gi
+
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## Environment variables, to pass to the entry point
+  ##
+  # extraVars:
+  #   - name: NAMI_DEBUG
+  #     value: --log-level trace
+
+  ## Service
+  ##
+  service:
+    # -- Set the service type
+    type: ClusterIP
+
+    # -- Provide additional annotations which may be required.
+    annotations: {}
+
+    # -- Provide additional labels which may be required.
+    labels: {}
+
+    # -- Allow adding additional match labels
+    extraSelectorLabels: {}
+
+    # -- HTTP port number
+    port: 8000
+
+## Async Rabbitmq
+## https://artifacthub.io/packages/helm/bitnami/rabbitmq?modal=values-schema
+##
+taiga-async-rabbitmq:
+  auth:
+    ## @param auth.username RabbitMQ application username
+    ## ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
+    ##
+    username: taiga
+
+    ## @param auth.existingPasswordSecret Existing secret with RabbitMQ credentials (existing secret must contain a value for `rabbitmq-password` key or override with setting auth.existingSecretPasswordKey)
+    ## e.g:
+    ## existingPasswordSecret: name-of-existing-secret
+    ##
+    existingPasswordSecret: ""
+    existingSecretPasswordKey: ""
+
+    ## @param auth.existingErlangSecret Existing secret with RabbitMQ Erlang cookie (must contain a value for `rabbitmq-erlang-cookie` key or override with auth.existingSecretErlangKey)
+    ## e.g:
+    ## existingErlangSecret: name-of-existing-secret
+    ##
+    existingErlangSecret: ""
+    ## @param auth.existingSecretErlangKey [default: rabbitmq-erlang-cookie] Erlang cookie key to be retrieved from existing secret
+    ## NOTE: ignored unless `auth.existingErlangSecret` parameter is set
+    ##
+    existingSecretErlangKey: ""
+
+  ## @param configurationExistingSecret Existing secret with the configuration to use as rabbitmq.conf.
+  ## Must contain the key "rabbitmq.conf"
+  ## Takes precedence over `configuration`, so do not use both simultaneously
+  ## With providing an existingSecret, extraConfiguration and extraConfigurationExistingSecret do not take any effect
+  ##
+  configurationExistingSecret: ""
+  ## @param extraConfiguration [string] Configuration file content: extra configuration to be appended to RabbitMQ configuration
+  ## Use this instead of `configuration` to add more configuration
+  ## Do not use simultaneously with `extraConfigurationExistingSecret`
+  ##
+  extraConfiguration: |-
+    default_vhost = taiga
+    default_permissions.configure = .*
+    default_permissions.read = .*
+    default_permissions.write = .*
+
+## Events
+##
+events:
+  ## Taiga image version
+  ## ref: https://hub.docker.com/r/taigaio/taiga5/tags
+  ##
+  image:
+    repository: taigaio/taiga-events
+    tag: "6.7.0"
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+  ## events-taiga rabbitmq credentials
+  ## Must match to events-rabbitmq.auth.username and events-rabbitmq.auth.password
+  ## I don't use events-rabbitmq values because this bug: https://github.com/helm/helm/issues/2192
+  rabbitmq:
+    auth:
+      username: taiga
+      password: taiga
+
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext: {}
+
+  ## Define the number of pods the deployment will create
+  ## Do not change unless your persistent volume allows more than one writer, ie NFS
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  ##
+  replicas: 1
+
+  ## Pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template.
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## taiga containers' resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: {}
+    #  cpu: 2
+    #  memory: 1Gi
+    requests: {}
+    #  cpu: 1
+    #  memory: 1Gi
+
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## Environment variables, to pass to the entry point
+  ##
+  # extraVars:
+  #   - name: NAMI_DEBUG
+  #     value: --log-level trace
+
+  ## Service
+  ##
+  service:
+    # -- Set the service type
+    type: ClusterIP
+
+    # -- Provide additional annotations which may be required.
+    annotations: {}
+
+    # -- Provide additional labels which may be required.
+    labels: {}
+
+    # -- Allow adding additional match labels
+    extraSelectorLabels: {}
+
+    # -- HTTP port number
+    port: 8888
+
+## Events Rabbitmq
+## https://artifacthub.io/packages/helm/bitnami/rabbitmq?modal=values-schema
+##
+taiga-events-rabbitmq:
+  auth:
+    ## @param auth.username RabbitMQ application username
+    ## ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
+    ##
+    username: taiga
+
+    ## @param auth.existingPasswordSecret Existing secret with RabbitMQ credentials (existing secret must contain a value for `rabbitmq-password` key or override with setting auth.existingSecretPasswordKey)
+    ## e.g:
+    ## existingPasswordSecret: name-of-existing-secret
+    ##
+    existingPasswordSecret: ""
+    existingSecretPasswordKey: ""
+
+    ## @param auth.existingErlangSecret Existing secret with RabbitMQ Erlang cookie (must contain a value for `rabbitmq-erlang-cookie` key or override with auth.existingSecretErlangKey)
+    ## e.g:
+    ## existingErlangSecret: name-of-existing-secret
+    ##
+    existingErlangSecret: ""
+    ## @param auth.existingSecretErlangKey [default: rabbitmq-erlang-cookie] Erlang cookie key to be retrieved from existing secret
+    ## NOTE: ignored unless `auth.existingErlangSecret` parameter is set
+    ##
+    existingSecretErlangKey: ""
+
+  ## @param configurationExistingSecret Existing secret with the configuration to use as rabbitmq.conf.
+  ## Must contain the key "rabbitmq.conf"
+  ## Takes precedence over `configuration`, so do not use both simultaneously
+  ## With providing an existingSecret, extraConfiguration and extraConfigurationExistingSecret do not take any effect
+  ##
+  configurationExistingSecret: ""
+  ## @param extraConfiguration [string] Configuration file content: extra configuration to be appended to RabbitMQ configuration
+  ## Use this instead of `configuration` to add more configuration
+  ## Do not use simultaneously with `extraConfigurationExistingSecret`
+  ##
+  extraConfiguration: |-
+    default_vhost = taiga
+    default_permissions.configure = .*
+    default_permissions.read = .*
+    default_permissions.write = .*
+
+## Protected
+##
+protected:
+  ## Taiga image version
+  ## ref: https://hub.docker.com/r/taigaio/taiga5/tags
+  ##
+  image:
+    repository: taigaio/taiga-protected
+    tag: "6.7.0"
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext: {}
+
+  ## Define the number of pods the deployment will create
+  ## Do not change unless your persistent volume allows more than one writer, ie NFS
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  ##
+  replicas: 1
+
+  ## Pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template.
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## taiga containers' resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: {}
+    #  cpu: 2
+    #  memory: 1Gi
+    requests: {}
+    #  cpu: 1
+    #  memory: 1Gi
+
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## Environment variables, to pass to the entry point
+  ##
+  # extraVars:
+  #   - name: NAMI_DEBUG
+  #     value: --log-level trace
+
+  ## Service
+  ##
+  service:
+    # -- Set the service type
+    type: ClusterIP
+
+    # -- Provide additional annotations which may be required.
+    annotations: {}
+
+    # -- Provide additional labels which may be required.
+    labels: {}
+
+    # -- Allow adding additional match labels
+    extraSelectorLabels: {}
+
+    # -- HTTP port number
+    port: 8003
+
+## Front
+##
+front:
+  ## Taiga image version
+  ## ref: https://hub.docker.com/r/taigaio/taiga5/tags
+  ##
+  image:
+    repository: taigaio/taiga-front
+    tag: "6.7.7"
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+
+  ## Define the number of pods the deployment will create
+  ## Do not change unless your persistent volume allows more than one writer, ie NFS
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+  ##
+  replicas: 1
+
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext: {}
+
+  ## Pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Node labels for pod assignment. Evaluated as a template.
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## taiga containers' resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: {}
+    #  cpu: 2
+    #  memory: 1Gi
+    requests: {}
+    #  cpu: 1
+    #  memory: 1Gi
+
+  ## Configure extra options for liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: false
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+  ## Environment variables, to pass to the entry point
+  ##
+  # extraVars:
+  #   - name: NAMI_DEBUG
+  #     value: --log-level trace
+
+  ## Service
+  ##
+  service:
+    # -- Set the service type
+    type: ClusterIP
+
+    # -- Provide additional annotations which may be required.
+    annotations: {}
+
+    # -- Provide additional labels which may be required.
+    labels: {}
+
+    # -- Allow adding additional match labels
+    extraSelectorLabels: {}
+
+    # -- HTTP port number
+    port: 80
+
+## Configure the ingress resource that allows you to access the
+## taiga installation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  # -- Enables or disables the ingress
+  enabled: false
+
+  # -- Provide additional annotations which may be required.
+  annotations: {}
+
+  # -- Provide additional labels which may be required.
+  labels: {}
+
+  # -- Set the ingressClass that is used for this ingress.
+  className: ""
+
+  ## Configure the hosts for the ingress
+  host: chart-example.local
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  static:
+    # -- Enables or disables the persistence item. Defaults to true
+    enabled: true
+
+    # -- Storage Class for the config volume.
+    # If set to `-`, dynamic provisioning is disabled.
+    # If set to something else, the given storageClass is used.
+    # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner.
+    storageClass: ""
+
+    # -- If you want to reuse an existing claim, the name of the existing PVC can be passed here.
+    existingClaim: ""
+
+    # -- AccessMode for the persistent volume.
+    # Make sure to select an access mode that is supported by your storage provider!
+    # [[ref]](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+    accessMode: ReadWriteOnce
+
+    # -- The amount of storage that is requested for the persistent volume.
+    size: 5Gi
+
+    # -- Set to true to retain the PVC upon `helm uninstall`
+    retain: false
+
+  media:
+    # -- Enables or disables the persistence item. Defaults to true
+    enabled: true
+
+    # -- Storage Class for the config volume.
+    # If set to `-`, dynamic provisioning is disabled.
+    # If set to something else, the given storageClass is used.
+    # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner.
+    storageClass: ""
+
+    # -- If you want to reuse an existing claim, the name of the existing PVC can be passed here.
+    existingClaim: ""
+
+    # -- AccessMode for the persistent volume.
+    # Make sure to select an access mode that is supported by your storage provider!
+    # [[ref]](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+    accessMode: ReadWriteOnce
+
+    # -- The amount of storage that is requested for the persistent volume.
+    size: 5Gi
+
+    # -- Set to true to retain the PVC upon `helm uninstall`
+    retain: false

@@ -1,0 +1,36 @@
+{{- if .Values.createInitialUser }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "taiga.fullname" . }}-create-initial-user
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "taiga.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  createinitialuser.sh: |
+    #!/bin/sh
+    echo """
+    import time
+    import requests
+    import subprocess
+
+    print('Waiting for backend ...')
+    while requests.get('http://{{ template "taiga.fullname" . }}-back/api/v1/').status_code != 200:
+        print('...')
+        time.sleep(2)
+
+    if str(subprocess.check_output(['python', 'manage.py', 'dumpdata', 'users.user'], cwd='/taiga-back')).find('\"is_superuser\": true') == -1:
+        print(subprocess.check_output(['python', 'manage.py', 'loaddata', 'initial_user'], cwd='/taiga-back'))
+    else:
+        print('Admin user yet created.')
+        """ > /tmp/create_superuser.py
+        python /tmp/create_superuser.py
+{{- end }}

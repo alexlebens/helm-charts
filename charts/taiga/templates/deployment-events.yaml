@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "taiga.fullname" . }}-events
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "taiga.events.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.events.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "taiga.events.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "taiga.events.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "taiga.name" . }}-events
+      annotations:
+        {{- with .Values.events.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- with .Values.events.affinity }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- with .Values.events.nodeSelector }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- with .Values.events.tolerations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "taiga.serviceAccountName" . }}
+      securityContext:
+        {{- with .Values.events.securityContext }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+        containers:
+        - name: {{ template "taiga.fullname" . }}-events
+          image: "{{ .Values.events.image.repository }}:{{ .Values.events.image.tag }}"
+          imagePullPolicy: {{ .Values.events.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.events.resources | nindent 12 }}
+          ports:
+            - name: taiga-events
+              containerPort: {{ .Values.events.service.port }}
+              protocol: TCP
+          env:
+            - name: TAIGA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.secretKey.existingSecretName }}"
+                  key: "{{ .Values.secretKey.existingSecretKey }}"
+            - name: RABBITMQ_USER
+              value: "{{ index .Values "taiga-events-rabbitmq" "auth" "username" }}"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ index .Values "taiga-events-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "taiga-events-rabbitmq" "auth" "existingSecretPasswordKey" }}
+
+          {{- if .Values.events.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.events.service.port }}
+            initialDelaySeconds: {{ .Values.events.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.events.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.events.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.events.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.events.livenessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.events.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.events.service.port }}
+            initialDelaySeconds: {{ .Values.events.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.events.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.events.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.events.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.events.readinessProbe.failureThreshold }}
+          {{- end }}

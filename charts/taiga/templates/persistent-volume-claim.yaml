@@ -1,0 +1,54 @@
+{{- if and .Values.persistence.static.enabled (not .Values.persistence.static.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "taiga.staticVolumeName" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if .Values.persistence.static.retain }}
+    helm.sh/resource-policy: keep
+    {{- end }}
+  labels:
+    {{- include "taiga.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  storageClassName: {{ .Values.persistence.static.storageClass }}
+  accessModes:
+    - {{ .Values.persistence.static.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.static.size }}
+{{- end }}
+
+---
+{{- if and .Values.persistence.media.enabled (not .Values.persistence.media.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "taiga.mediaVolumeName" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if .Values.persistence.media.retain }}
+    "helm.sh/resource-policy": keep
+    {{- end }}
+  labels:
+    {{- include "taiga.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  storageClassName: {{ .Values.persistence.media.storageClass }}
+  accessModes:
+    - {{ .Values.persistence.media.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.media.size }}
+{{- end }}

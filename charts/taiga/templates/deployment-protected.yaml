@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "taiga.fullname" . }}-protected
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "taiga.protected.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.protected.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "taiga.protected.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "taiga.protected.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "taiga.name" . }}-protected
+      annotations:
+        {{- with .Values.protected.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- with .Values.protected.affinity }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- with .Values.protected.nodeSelector }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- with .Values.protected.tolerations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "taiga.serviceAccountName" . }}
+      securityContext:
+        {{- with .Values.protected.securityContext }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ template "taiga.fullname" . }}-protected
+          image: "{{ .Values.protected.image.repository }}:{{ .Values.protected.image.tag }}"
+          imagePullPolicy: {{ .Values.protected.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.protected.resources | nindent 12 }}
+          ports:
+            - name: taiga-protected
+              containerPort: {{ .Values.protected.service.port }}
+              protocol: TCP
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.secretKey.existingSecretName }}"
+                  key: "{{ .Values.secretKey.existingSecretKey }}"
+            - name: MAX_AGE
+              value: "{{ .Values.maxAge }}"
+
+          {{- if .Values.protected.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.protected.service.port }}
+            initialDelaySeconds: {{ .Values.protected.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.protected.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.protected.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.protected.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.protected.livenessProbe.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.protected.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.protected.service.port }}
+            initialDelaySeconds: {{ .Values.protected.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.protected.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.protected.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.protected.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.protected.readinessProbe.failureThreshold }}
+          {{- end }}
