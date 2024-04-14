@@ -55,10 +55,14 @@ metadata:
 spec:
   type: {{ .Values.events.service.type }}
   ports:
-    - port: {{ .Values.events.service.port }}
+    - port: {{ .Values.events.service.http.port }}
       targetPort: taiga-events
       protocol: TCP
       name: taiga-events
+    - port: {{ .Values.events.service.app.port }}
+      targetPort: taiga-events-app
+      protocol: TCP
+      name: taiga-events-app
   selector:
     {{- include "taiga.events.matchLabels" . | nindent 4 }}
     {{- with .Values.events.service.extraSelectorLabels }}

@@ -55,7 +55,10 @@ spec:
             {{ toYaml .Values.events.resources | nindent 12 }}
           ports:
             - name: taiga-events
-              containerPort: {{ .Values.events.service.port }}
+              containerPort: {{ .Values.events.http.service.port }}
+              protocol: TCP
+            - name: taiga-events-app
+              containerPort: {{ .Values.events.service.app.port }}
               protocol: TCP
           env:
             - name: TAIGA_SECRET_KEY
@@ -70,12 +73,14 @@ spec:
                 secretKeyRef:
                   name: {{ index .Values "taiga-events-rabbitmq" "auth" "existingPasswordSecret" }}
                   key: {{ index .Values "taiga-events-rabbitmq" "auth" "existingSecretPasswordKey" }}
+            - name: APP_PORT
+              value: "{{ .Values.events.service.app.port }}"
 
           {{- if .Values.events.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
-              port: {{ .Values.events.service.port }}
+              port: {{ .Values.events.service.app.port }}
             initialDelaySeconds: {{ .Values.events.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.events.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.events.livenessProbe.timeoutSeconds }}
@@ -87,7 +92,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: {{ .Values.events.service.port }}
+              port: {{ .Values.events.service.app.port }}
             initialDelaySeconds: {{ .Values.events.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.events.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.events.readinessProbe.timeoutSeconds }}

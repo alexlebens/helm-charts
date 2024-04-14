@@ -487,8 +487,13 @@ events:
     # -- Allow adding additional match labels
     extraSelectorLabels: {}
 
-    # -- HTTP port number
-    port: 8888
+    http:
+      # -- HTTP port number
+      port: 8888
+
+    app:
+      # -- HTTP port number
+      port: 3023
 
 ## Events Rabbitmq
 ## https://artifacthub.io/packages/helm/bitnami/rabbitmq?modal=values-schema
