@@ -46,51 +46,51 @@ spec:
       securityContext:
         {{- with .Values.events.securityContext }}
         {{ toYaml . | nindent 8 }}
-        {{- end }}
-        containers:
-          - name: {{ template "taiga.fullname" . }}-events
-            image: "{{ .Values.events.image.repository }}:{{ .Values.events.image.tag }}"
-            imagePullPolicy: {{ .Values.events.image.pullPolicy }}
-            resources:
-              {{ toYaml .Values.events.resources | nindent 12 }}
-            ports:
-              - name: taiga-events
-                containerPort: {{ .Values.events.service.port }}
-                protocol: TCP
-            env:
-              - name: TAIGA_SECRET_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Values.secretKey.existingSecretName }}"
-                    key: "{{ .Values.secretKey.existingSecretKey }}"
-              - name: RABBITMQ_USER
-                value: "{{ index .Values "taiga-events-rabbitmq" "auth" "username" }}"
-              - name: RABBITMQ_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: {{ index .Values "taiga-events-rabbitmq" "auth" "existingPasswordSecret" }}
-                    key: {{ index .Values "taiga-events-rabbitmq" "auth" "existingSecretPasswordKey" }}
+      {{- end }}
+      containers:
+        - name: {{ template "taiga.fullname" . }}-events
+          image: "{{ .Values.events.image.repository }}:{{ .Values.events.image.tag }}"
+          imagePullPolicy: {{ .Values.events.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.events.resources | nindent 12 }}
+          ports:
+            - name: taiga-events
+              containerPort: {{ .Values.events.service.port }}
+              protocol: TCP
+          env:
+            - name: TAIGA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.secretKey.existingSecretName }}"
+                  key: "{{ .Values.secretKey.existingSecretKey }}"
+            - name: RABBITMQ_USER
+              value: "{{ index .Values "taiga-events-rabbitmq" "auth" "username" }}"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ index .Values "taiga-events-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "taiga-events-rabbitmq" "auth" "existingSecretPasswordKey" }}
 
-            {{- if .Values.events.livenessProbe.enabled }}
-            livenessProbe:
-              httpGet:
-                path: /admin/login/
-                port: {{ .Values.events.service.port }}
-              initialDelaySeconds: {{ .Values.events.livenessProbe.initialDelaySeconds }}
-              periodSeconds: {{ .Values.events.livenessProbe.periodSeconds }}
-              timeoutSeconds: {{ .Values.events.livenessProbe.timeoutSeconds }}
-              successThreshold: {{ .Values.events.livenessProbe.successThreshold }}
-              failureThreshold: {{ .Values.events.livenessProbe.failureThreshold }}
-            {{- end }}
+          {{- if .Values.events.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.events.service.port }}
+            initialDelaySeconds: {{ .Values.events.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.events.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.events.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.events.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.events.livenessProbe.failureThreshold }}
+          {{- end }}
 
-            {{- if .Values.events.readinessProbe.enabled }}
-            readinessProbe:
-              httpGet:
-                path: /admin/login/
-                port: {{ .Values.events.service.port }}
-              initialDelaySeconds: {{ .Values.events.readinessProbe.initialDelaySeconds }}
-              periodSeconds: {{ .Values.events.readinessProbe.periodSeconds }}
-              timeoutSeconds: {{ .Values.events.readinessProbe.timeoutSeconds }}
-              successThreshold: {{ .Values.events.readinessProbe.successThreshold }}
-              failureThreshold: {{ .Values.events.readinessProbe.failureThreshold }}
-            {{- end }}
+          {{- if .Values.events.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /admin/login/
+              port: {{ .Values.events.service.port }}
+            initialDelaySeconds: {{ .Values.events.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.events.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.events.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.events.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.events.readinessProbe.failureThreshold }}
+          {{- end }}
