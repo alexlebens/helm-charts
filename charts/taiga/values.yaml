@@ -402,14 +402,6 @@ events:
     ##
     pullPolicy: IfNotPresent
 
-  ## events-taiga rabbitmq credentials
-  ## Must match to events-rabbitmq.auth.username and events-rabbitmq.auth.password
-  ## I don't use events-rabbitmq values because this bug: https://github.com/helm/helm/issues/2192
-  rabbitmq:
-    auth:
-      username: taiga
-      password: taiga
-
   ## Pod Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   ##
