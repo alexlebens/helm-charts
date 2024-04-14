@@ -60,9 +60,9 @@ spec:
       protocol: TCP
       name: taiga-events
     - port: {{ .Values.events.service.app.port }}
-      targetPort: taiga-events-app
+      targetPort: taiga-app
       protocol: TCP
-      name: taiga-events-app
+      name: taiga-app
   selector:
     {{- include "taiga.events.matchLabels" . | nindent 4 }}
     {{- with .Values.events.service.extraSelectorLabels }}

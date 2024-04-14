@@ -57,7 +57,7 @@ spec:
             - name: taiga-events
               containerPort: {{ .Values.events.service.http.port }}
               protocol: TCP
-            - name: taiga-events-app
+            - name: taiga-app
               containerPort: {{ .Values.events.service.app.port }}
               protocol: TCP
           env:
