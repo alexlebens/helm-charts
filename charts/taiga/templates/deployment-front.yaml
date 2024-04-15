@@ -72,6 +72,8 @@ spec:
               value: "false"
             - name: ENABLE_GITLAB_AUTH
               value: "false"
+            - name: ENABLE_OIDC
+              value: "{{ .Values.oidc.enabled }}"              
             - name: ENABLE_SLACK
               value: "{{ .Values.enableSlack }}"
             - name: ENABLE_GITHUB_IMPORTER

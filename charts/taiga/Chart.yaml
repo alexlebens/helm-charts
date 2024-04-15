@@ -1,6 +1,6 @@
 apiVersion: v2
 name: taiga
-version: 0.1.12
+version: 0.1.13
 description: Chart for Taiga
 keywords:
   - kanban
