@@ -232,12 +232,12 @@ spec:
           {{ end }}
 
             - name: RABBITMQ_USER
-              value: "{{ index .Values "taiga-async-rabbitmq" "auth" "username" }}"
+              value: "{{ index .Values "async-rabbitmq" "auth" "username" }}"
             - name: RABBITMQ_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ index .Values "taiga-async-rabbitmq" "auth" "existingPasswordSecret" }}
-                  key: {{ index .Values "taiga-async-rabbitmq" "auth" "existingSecretPasswordKey" }}
+                  name: {{ index .Values "async-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "async-rabbitmq" "auth" "existingSecretPasswordKey" }}
 
           {{ if .Values.ingress.enabled }}
             - name: TAIGA_SITES_DOMAIN
@@ -456,12 +456,12 @@ spec:
           {{ end }}
 
             - name: RABBITMQ_USER
-              value: "{{ index .Values "taiga-async-rabbitmq" "auth" "username" }}"
+              value: "{{ index .Values "async-rabbitmq" "auth" "username" }}"
             - name: RABBITMQ_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ index .Values "taiga-async-rabbitmq" "auth" "existingPasswordSecret" }}
-                  key: {{ index .Values "taiga-async-rabbitmq" "auth" "existingSecretPasswordKey" }}
+                  name: {{ index .Values "async-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "async-rabbitmq" "auth" "existingSecretPasswordKey" }}
 
           {{ if .Values.ingress.enabled }}
             - name: TAIGA_SITES_DOMAIN

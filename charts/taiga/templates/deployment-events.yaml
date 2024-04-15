@@ -67,12 +67,12 @@ spec:
                   name: "{{ .Values.secretKey.existingSecretName }}"
                   key: "{{ .Values.secretKey.existingSecretKey }}"
             - name: RABBITMQ_USER
-              value: "{{ index .Values "taiga-events-rabbitmq" "auth" "username" }}"
+              value: "{{ index .Values "events-rabbitmq" "auth" "username" }}"
             - name: RABBITMQ_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ index .Values "taiga-events-rabbitmq" "auth" "existingPasswordSecret" }}
-                  key: {{ index .Values "taiga-events-rabbitmq" "auth" "existingSecretPasswordKey" }}
+                  name: {{ index .Values "events-rabbitmq" "auth" "existingPasswordSecret" }}
+                  key: {{ index .Values "events-rabbitmq" "auth" "existingSecretPasswordKey" }}
             - name: APP_PORT
               value: "{{ .Values.events.service.app.port }}"
 
