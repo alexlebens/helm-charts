@@ -347,7 +347,7 @@ async:
 ## Async Rabbitmq
 ## https://artifacthub.io/packages/helm/bitnami/rabbitmq?modal=values-schema
 ##
-taiga-async-rabbitmq:
+async-rabbitmq:
   auth:
     ## @param auth.username RabbitMQ application username
     ## ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables
@@ -498,7 +498,7 @@ events:
 ## Events Rabbitmq
 ## https://artifacthub.io/packages/helm/bitnami/rabbitmq?modal=values-schema
 ##
-taiga-events-rabbitmq:
+events-rabbitmq:
   auth:
     ## @param auth.username RabbitMQ application username
     ## ref: https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq#environment-variables

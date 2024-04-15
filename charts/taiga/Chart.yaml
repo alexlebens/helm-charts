@@ -1,6 +1,6 @@
 apiVersion: v2
 name: taiga
-version: 0.1.10
+version: 0.1.11
 description: Chart for Taiga
 keywords:
   - kanban
@@ -16,9 +16,9 @@ dependencies:
   - name: rabbitmq
     version: 13.0.3
     repository: https://charts.bitnami.com/bitnami
-    alias: taiga-async-rabbitmq
+    alias: async-rabbitmq
   - name: rabbitmq
     version: 13.0.3
     repository: https://charts.bitnami.com/bitnami
-    alias: taiga-events-rabbitmq
+    alias: events-rabbitmq
 appVersion: 6.7.7
