@@ -40,7 +40,7 @@ spec:
                 name: "{{ template "taiga.fullname" . }}-back"
                 port:
                   name: taiga-back
-            pathType: ImplementationSpecific
+            pathType: ImplementationSpecific     
           - path: /admin
             backend:
               service:
@@ -48,6 +48,15 @@ spec:
                 port:
                   name: taiga-back
             pathType: ImplementationSpecific
+        {{ if .Values.oidc.enabled }}
+          - path: /oidc
+            backend:
+              service:
+                name: "{{ template "taiga.fullname" . }}-back"
+                port:
+                  name: taiga-back
+            pathType: ImplementationSpecific
+        {{- end }}                  
           - path: /events
             backend:
               service:
