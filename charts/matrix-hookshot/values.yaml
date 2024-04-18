@@ -3,7 +3,7 @@ deployment:
   strategy: Recreate
   image:
     repository: halfshot/matrix-hookshot
-    tag: "5.2.1"
+    tag: "5.3.0"
     imagePullPolicy: IfNotPresent
   env: {}
   envFrom: []
@@ -39,7 +39,7 @@ ingress:
     enabled: false
     className: ""
     annotations: {}
-    host: ""    
+    host: ""
 metrics:
   enabled: false
   serviceMonitor:
@@ -81,7 +81,7 @@ hookshot:
         resources:
           - widgets
 
-    #github:
+    # github:
     #  # (Optional) Configure this to enable GitHub support
     #  auth:
     #    # Authentication for the GitHub App.
@@ -104,7 +104,7 @@ hookshot:
     #    # (Optional) Prefix used when creating ghost users for GitHub accounts.
     #    _github_
 
-    #gitlab:
+    # gitlab:
     #  # (Optional) Configure this to enable GitLab support
     #  instances:
     #    gitlab.com:
@@ -119,7 +119,7 @@ hookshot:
     #    # (Optional) Aggregate comments by waiting this many miliseconds before posting them to Matrix. Defaults to 5000 (5 seconds)
     #    5000
 
-    #figma:
+    # figma:
     #  # (Optional) Configure this to enable Figma support
     #  publicUrl: https://example.com/hookshot/
     #  instances:
@@ -128,7 +128,7 @@ hookshot:
     #      accessToken: your-personal-access-token
     #      passcode: your-webhook-passcode
 
-    #jira:
+    # jira:
     #  # (Optional) Configure this to enable Jira support. Only specify `url` if you are using a On Premise install (i.e. not atlassian.com)
     #  webhook:
     #    # Webhook settings for JIRA
@@ -139,7 +139,7 @@ hookshot:
     #    client_secret: bar
     #    redirect_uri: https://example.com/oauth/
 
-    #generic:
+    # generic:
     #  # (Optional) Support for generic webhook events.
     #  #'allowJsTransformationFunctions' will allow users to write short transformation snippets in code, and thus is unsafe in untrusted environments
 
@@ -150,23 +150,23 @@ hookshot:
     #  allowJsTransformationFunctions: false
     #  waitForComplete: false
 
-    #feeds:
+    # feeds:
     #  # (Optional) Configure this to enable RSS/Atom feed support
     #  enabled: false
     #  pollConcurrency: 4
     #  pollIntervalSeconds: 600
     #  pollTimeoutSeconds: 30
 
-    #provisioning:
+    # provisioning:
     #  # (Optional) Provisioning API for integration managers
     #  secret: "!secretToken"
 
-    #bot:
+    # bot:
     #  # (Optional) Define profile information for the bot user
     #  displayname: Hookshot Bot
     #  avatar: mxc://half-shot.uk/2876e89ccade4cb615e210c458e2a7a6883fe17d
 
-    #serviceBots:
+    # serviceBots:
     #  # (Optional) Define additional bot users for specific services
     #  - localpart: feeds
     #    displayname: Feeds
@@ -174,21 +174,21 @@ hookshot:
     #    prefix: "!feeds"
     #    service: feeds
 
-    #metrics:
+    # metrics:
     #  # (Optional) Prometheus metrics support
     #  enabled: true
 
-    #cache:
+    # cache:
     #  # (Optional) Cache options for large scale deployments.
     #  # For encryption to work, this must be configured.
     #  redisUri: redis://localhost:6379
 
-    #queue:
+    # queue:
     #  # (Optional) Message queue configuration options for large scale deployments.
     #  # For encryption to work, this must not be configured.
     #  redisUri: redis://localhost:6379
 
-    #widgets:
+    # widgets:
     #  # (Optional) EXPERIMENTAL support for complimentary widgets
     #  addToAdminRooms: false
     #  disallowedIpRanges:
@@ -217,12 +217,12 @@ hookshot:
     #  branding:
     #    widgetTitle: Hookshot Configuration
 
-    #sentry:
+    # sentry:
     #  # (Optional) Configure Sentry error reporting
     #  dsn: https://examplePublicKey@o0.ingest.sentry.io/0
     #  environment: production
 
-    #permissions:
+    # permissions:
     #  # (Optional) Permissions for using the bridge. See docs/setup.md#permissions for help
     #  - actor: example.com
     #    services:
