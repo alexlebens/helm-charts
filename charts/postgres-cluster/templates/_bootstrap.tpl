@@ -33,13 +33,13 @@ bootstrap:
         {{- . | toYaml | nindent 8 }}
         {{- end }}
         {{- end }}        
-      {{- if .Values.replica.importType eq "monolith" }}
+      {{- if eq .Values.replica.importType "monolith" }}
       roles:
         {{- with .Values.replica.importRoles }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
       {{- end }}
-      {{- if and (.Values.replica.postImportApplicationSQL) (.Values.replica.importType eq "microservice") }}
+      {{- if and (.Values.replica.postImportApplicationSQL) (eq .Values.replica.importType "microservice") }}
       postImportApplicationSQL:
         {{- with .Values.replica.postImportApplicationSQL }}
         {{- . | toYaml | nindent 8 }}
