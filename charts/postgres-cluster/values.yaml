@@ -171,6 +171,9 @@ backup:
   # Generate external cluster name, creates: postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backups.backupIndex }}"
   backupIndex: 1
 
+  # Name of the backup cluster in the object store, defaults to "cluster.name"
+  backupName: ""
+
   wal:
     # WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
     compression: snappy

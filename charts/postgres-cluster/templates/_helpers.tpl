@@ -57,6 +57,18 @@ Generate name for object store credentials
 {{- end }}
 
 {{/*
+Generate backup server name
+*/}}
+{{- define "cluster.backupName" -}}
+  {{- if .Values.backup.backupName -}}
+    {{- .Values.backup.backupName -}}
+  {{- else -}}
+    {{ include "cluster.name" . }}
+  {{- end }}
+{{- end }}
+
+
+{{/*
 Generate recovery server name
 */}}
 {{- define "cluster.recoveryName" -}}
