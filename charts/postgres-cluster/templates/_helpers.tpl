@@ -75,7 +75,7 @@ Generate recovery server name
   {{- if .Values.recovery.recoveryServerName -}}
     {{- .Values.recovery.recoveryServerName -}}
   {{- else -}}
-    {{- printf "%s-backup-%s" (include "cluster.name" .) .Values.recovery.recoveryIndex | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.recoveryIndex) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
