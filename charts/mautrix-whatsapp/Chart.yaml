@@ -1,6 +1,6 @@
 apiVersion: v2
 name: mautrix-whatsapp
-version: 0.0.2
+version: 0.0.3
 description: Chart for Matrix Whatsapp Bridge
 keywords:
   - matrix
@@ -12,4 +12,4 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/88519669?s=48&v=4
-appVersion: v0.10.6
+appVersion: v0.10.7
