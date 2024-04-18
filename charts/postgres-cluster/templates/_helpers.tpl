@@ -5,7 +5,7 @@ Expand the name of the chart.
   {{- if .Values.nameOverride }}
     {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    {{- printf "postgresql-%s-%s" ((semver .Values.cluster.image.tag).Major | toString) .Release.Name | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-postgresql-%s" .Release.Name ((semver .Values.cluster.image.tag).Major | toString) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
