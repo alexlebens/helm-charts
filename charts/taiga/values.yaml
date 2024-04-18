@@ -82,15 +82,15 @@ postgresql:
 oidc:
   enabled: false
   existingSecretName: ""
-  scopesKey: "" # "openid profile email"
-  signatureAlgorithmKey: "" # "RS256"
-  clientIdKey: "" # <generate from auth provider>
-  clientSecretKey: "" # <generate from auth provider>
-  baseUrlKey: "" # "https://id.fedoraproject.org/openidc"
-  jwksEndpointKey: "" # "https://id.fedoraproject.org/openidc/Jwks"
-  authorizationEndpointKey: "" # "https://id.fedoraproject.org/openidc/Authorization"
-  tokenEndpointKey: "" # "https://id.fedoraproject.org/openidc/Token"
-  userEndpointKey: "" # "https://id.fedoraproject.org/openidc/UserInfo"
+  scopesKey: ""                  # "openid profile email"
+  signatureAlgorithmKey: ""      # "RS256"
+  clientIdKey: ""                # <generate from auth provider>
+  clientSecretKey: ""            # <generate from auth provider>
+  baseUrlKey: ""                 # "https://id.fedoraproject.org/openidc"
+  jwksEndpointKey: ""            # "https://id.fedoraproject.org/openidc/Jwks"
+  authorizationEndpointKey: ""   # "https://id.fedoraproject.org/openidc/Authorization"
+  tokenEndpointKey: ""           # "https://id.fedoraproject.org/openidc/Token"
+  userEndpointKey: ""            # "https://id.fedoraproject.org/openidc/UserInfo"
 
 ## SMTP mail delivery configuration
 ## ref: https://taigaio.github.io/taiga-doc/dist/setup-production.html
