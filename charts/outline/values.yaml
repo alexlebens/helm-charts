@@ -59,7 +59,7 @@ outline:
       existingSecretKey:
     databasePort:
       existingSecretName:
-      existingSecretKey:      
+      existingSecretKey:
     connectionPoolMin: ""
     connectionPoolMax: "20"
     sslMode: disable
