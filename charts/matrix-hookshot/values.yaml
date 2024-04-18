@@ -3,7 +3,7 @@ deployment:
   strategy: Recreate
   image:
     repository: halfshot/matrix-hookshot
-    tag: "5.2.1"
+    tag: "5.3.0"
     imagePullPolicy: IfNotPresent
   env: {}
   envFrom: []
