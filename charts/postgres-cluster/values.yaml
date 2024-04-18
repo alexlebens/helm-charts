@@ -107,11 +107,14 @@ recovery:
   # Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
   endpointCredentials: ""
 
-  # Generate external cluster name, uses: postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}"
+  # Generate external cluster name, uses: {{ .Release.Name }}postgresql-<major version>-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}
   recoveryIndex: 1
 
   # Name of the recovery cluster in the object store, defaults to "cluster.name"
-  recoveryName: ""
+  recoveryServerName: ""
+
+  # Name of the recovery cluster in the object store, defaults to ".Release.Name"
+  recoveryInstanceName: ""
 
   wal:
     # WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.

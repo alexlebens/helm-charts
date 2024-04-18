@@ -58,19 +58,18 @@ externalClusters:
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
-    source: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
+    source: {{ include "cluster.recoveryServerName" . }}
 externalClusters:
-  - name: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
+  - name: {{ include "cluster.recoveryServerName" . }}
     barmanObjectStore:
-      serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
-      destinationPath: "s3://{{ .Values.recovery.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ include "cluster.recoveryName" . }}"
+      serverName: {{ include "cluster.recoveryServerName" . }}
+      destinationPath: "s3://{{ .Values.recovery.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ include "cluster.recoveryInstanceName" . }}"
       endpointURL: {{ .Values.recovery.endpointURL }}
       {{- with .Values.recovery.endpointCA }}
       endpointCA:
         name: {{ . }}
         key: ca-bundle.crt
       {{- end }}
-      serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.recovery.recoveryIndex }}"
       s3Credentials:
         accessKeyId:
           name: {{ include "cluster.recoveryCredentials" . }}

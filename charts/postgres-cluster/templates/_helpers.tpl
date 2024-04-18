@@ -71,9 +71,20 @@ Generate backup server name
 {{/*
 Generate recovery server name
 */}}
-{{- define "cluster.recoveryName" -}}
-  {{- if .Values.recovery.recoveryName -}}
-    {{- .Values.recovery.recoveryName -}}
+{{- define "cluster.recoveryServerName" -}}
+  {{- if .Values.recovery.recoveryServerName -}}
+    {{- .Values.recovery.recoveryServerName -}}
+  {{- else -}}
+    {{- printf "%s-backup-%s" (include "cluster.name" .) .Values.recovery.recoveryIndex | trunc 63 | trimSuffix "-" -}}
+  {{- end }}
+{{- end }}
+
+{{/*
+Generate recovery instance name
+*/}}
+{{- define "cluster.recoveryInstanceName" -}}
+  {{- if .Values.recovery.recoveryInstanceName -}}
+    {{- .Values.recovery.recoveryInstanceName -}}
   {{- else -}}
     {{ include "cluster.name" . }}
   {{- end }}
