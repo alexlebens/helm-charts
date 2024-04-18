@@ -26,7 +26,7 @@ bootstrap:
     import:
       type: {{ .Values.replica.importType }}
       databases:
-        {{- if and (gt (len .Values.replica.importDatabases) 1) (eq .Values.replica.importType "microservice") }}
+        {{- if and (gt (len .Values.replica.importDatabases) 1) (eq (default .Values.replica.importType "microservice") "microservice") }}
           {{ fail "Too many databases in import type of microservice!" }}
         {{- else}}
         {{- with .Values.replica.importDatabases }}
