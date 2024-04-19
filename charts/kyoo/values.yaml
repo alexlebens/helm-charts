@@ -817,7 +817,7 @@ rabbitmq:
   ## Do not use simultaneously with `extraConfigurationExistingSecret`
   ##
   extraConfiguration: |-
-    default_vhost = kyoo
+    default_vhost = none
     default_permissions.configure = .*
     default_permissions.read = .*
     default_permissions.write = .*
