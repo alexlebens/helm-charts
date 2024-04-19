@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kyoo.fullname" . }}-migrations
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "kyoo.migrations.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.migrations.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "kyoo.migrations.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kyoo.migrations.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "kyoo.name" . }}-migrations
+      annotations:
+        {{- with .Values.migrations.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- with .Values.migrations.affinity }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- with .Values.migrations.nodeSelector }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- with .Values.migrations.tolerations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "kyoo.serviceAccountName" . }}
+      securityContext:
+        {{- with .Values.migrations.securityContext }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ template "kyoo.fullname" . }}-migrations
+          image: "{{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag }}"
+          imagePullPolicy: {{ .Values.migrations.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.migrations.resources | nindent 12 }}
+          env:
+          {{- with .Values.back.extraVars }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+            - name: REQUIRE_ACCOUNT_VERIFICATION
+              value: "{{ .Values.config.requireAccountVerification }}"
+            - name: UNLOGGED_PERMISSIONS
+              value: "{{ .Values.config.unloggedPermissions }}"
+            - name: DEFAULT_PERMISSIONS
+              value: "{{ .Values.config.defaultPermissions }}"
+            - name: AUTHENTICATION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.secretAuthenticationKey.existingSecretName }}"
+                  key: "{{ .Values.config.secretAuthenticationKey.existingSecretKey }}"
+            - name: KYOO_APIKEYS
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.secretAPIKey.existingSecretName }}"
+                  key: "{{ .Values.config.secretAPIKey.existingKyooSecretKey }}"
+            - name: PUBLIC_URL
+              value: "{{ .Values.config.publicUrl }}"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.postgresql.existingSecretName }}"
+                  key: "{{ .Values.config.postgresql.usernameKey }}"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.postgresql.existingSecretName }}"
+                  key: "{{ .Values.config.postgresql.passwordKey }}"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.postgresql.existingSecretName }}"
+                  key: "{{ .Values.config.postgresql.databaseNameKey }}"
+            - name: POSTGRES_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.postgresql.existingSecretName }}"
+                  key: "{{ .Values.config.postgresql.hostKey }}"
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.postgresql.existingSecretName }}"
+                  key: "{{ .Values.config.postgresql.portKey }}"
+
+          {{ if .Values.config.oidc.enabled }}
+            - name: OIDC_SERVICE_NAME
+              value: "{{ .Values.config.oidc.name }}"
+            - name: OIDC_SERVICE_LOGO
+              value: "{{ .Values.config.oidc.logo }}"
+            - name: OIDC_SERVICE_AUTHORIZATION
+              value: "{{ .Values.config.oidc.authorization }}"
+            - name: OIDC_SERVICE_TOKEN
+              value: "{{ .Values.config.oidc.token }}"
+            - name: OIDC_SERVICE_PROFILE
+              value: "{{ .Values.config.oidc.profile }}"
+            - name: OIDC_SERVICE_SCOPE
+              value: "{{ .Values.config.oidc.scope }}"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.clientIdKey }}"
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.oidc.existingSecretName }}"
+                  key: "{{ .Values.oidc.clientSecretKey }}"
+          {{ end }}
+
+            - name: MEILI_HOST
+              value: http://{{ template "kyoo.fullname" . }}-meilisearch.{{ .Release.Namespace }}:{{ .Values.meilisearch.service.port }}
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.meilisearch.auth.existingMasterKeySecret }}"
+                  key: MEILI_MASTER_KEY
+            - name: RABBITMQ_HOST
+              value: {{ template "kyoo.fullname" . }}-rabbitmq
+            - name: RABBITMQ_DEFAULT_USER
+              value: "{{ .Values.rabbitmq.auth.username }}"
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.rabbitmq.auth.existingPasswordSecret }}"
+                  key: "{{ .Values.rabbitmq.auth.existingSecretPasswordKey }}"

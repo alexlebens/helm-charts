@@ -1,0 +1,44 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "kyoo.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  labels:
+    {{- include "kyoo.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.ingress.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.host }}
+      secretName: {{ template "kyoo.fullname" . }}-secret-tls
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: "{{ template "kyoo.fullname" . }}-front"
+                port:
+                  name: kyoo-front
+            pathType: ImplementationSpecific
+          - path: /api
+            backend:
+              service:
+                name: "{{ template "kyoo.fullname" . }}-back"
+                port:
+                  name: kyoo-back
+            pathType: ImplementationSpecific
+{{- end }}

@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kyoo.fullname" . }}-matcher
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "kyoo.matcher.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.matcher.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "kyoo.matcher.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kyoo.matcher.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "kyoo.name" . }}-matcher
+      annotations:
+        {{- with .Values.matcher.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- with .Values.matcher.affinity }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- with .Values.matcher.nodeSelector }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- with .Values.matcher.tolerations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "kyoo.serviceAccountName" . }}
+      securityContext:
+        {{- with .Values.matcher.securityContext }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ template "kyoo.fullname" . }}-matcher
+          image: "{{ .Values.matcher.image.repository }}:{{ .Values.matcher.image.tag }}"
+          imagePullPolicy: {{ .Values.matcher.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.matcher.resources | nindent 12 }}
+          command:
+            - matcher
+          env:
+          {{- with .Values.back.extraVars }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+            - name: KYOO_URL
+              value: http://{{ template "kyoo.fullname" . }}-back.{{ .Release.Namespace }}:{{ .Values.back.service.port }}
+            - name: KYOO_APIKEYS
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.secretAPIKey.existingSecretName }}"
+                  key: "{{ .Values.config.secretAPIKey.existingKyooSecretKey }}"
+            - name: THEMOVIEDB_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.secretAPIKey.existingSecretName }}"
+                  key: "{{ .Values.config.secretAPIKey.existingTMDBSecretKey }}"
+            - name: LIBRARY_LANGUAGES
+              value: "{{ .Values.config.libraryLanguages }}"
+            - name: RABBITMQ_HOST
+              value: {{ template "kyoo.fullname" . }}-rabbitmq
+            - name: RABBITMQ_DEFAULT_USER
+              value: "{{ .Values.rabbitmq.auth.username }}"
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.rabbitmq.auth.existingPasswordSecret }}"
+                  key: "{{ .Values.rabbitmq.auth.existingSecretPasswordKey }}"

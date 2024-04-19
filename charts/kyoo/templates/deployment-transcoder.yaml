@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kyoo.fullname" . }}-transcoder
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "kyoo.transcoder.labels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.transcoder.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "kyoo.transcoder.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kyoo.transcoder.labels" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "kyoo.name" . }}-transcoder
+      annotations:
+        {{- with .Values.transcoder.podAnnotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- with .Values.transcoder.affinity }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      nodeSelector:
+        {{- with .Values.transcoder.nodeSelector }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- with .Values.transcoder.tolerations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "kyoo.serviceAccountName" . }}
+      securityContext:
+        {{- with .Values.transcoder.securityContext }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ template "kyoo.fullname" . }}-transcoder
+          image: "{{ .Values.transcoder.image.repository }}:{{ .Values.transcoder.image.tag }}"
+          imagePullPolicy: {{ .Values.transcoder.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.transcoder.resources | nindent 12 }}
+          ports:
+            - name: kyoo-transcoder
+              containerPort: {{ .Values.transcoder.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: kyoo-metadata
+              mountPath: "{{ .Values.persistence.metadata.mountPath }}"
+            - name: kyoo-cache
+              mountPath: "{{ .Values.persistence.cache.mountPath }}"
+            - name: kyoo-library
+              mountPath: "{{ .Values.persistence.library.mountPath }}"
+          env:
+          {{- with .Values.back.extraVars }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- if eq .Values.config.transcoderProfile "vaapi" }}
+            - name: GOCODER_HWACCEL
+              value: "vaapi"
+            - name: GOCODER_VAAPI_RENDERER
+              value: "{{ .Values.config.transcoderRenderPath }}"
+          {{- else if eq .Values.config.transcoderProfile "qsv" }}
+            - name: GOCODER_HWACCEL
+              value: "qsv"
+            - name: GOCODER_QSV_RENDERER
+              value: "{{ .Values.config.transcoderRenderPath }}"
+          {{- else if eq .Values.config.transcoderProfile "nvidia" }}
+            - name: GOCODER_HWACCEL
+              value: "nvidia"
+          {{- else }}
+            - name: GOCODER_HWACCEL
+              value: "disabled"
+          {{- end }}
+
+            - name: GOCODER_PRESET
+              value: "{{ .Values.config.transcoderPreset }}"
+            - name: GOCODER_METADATA_ROOT
+              value: "{{ .Values.persistence.metadata.mountPath }}"
+            - name: GOCODER_CACHE_ROOT
+              value: "{{ .Values.persistence.cache.mountPath }}"
+
+      volumes:
+        - name: kyoo-metadata
+      {{- if .Values.persistence.metadata.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "kyoo.metadataVolumeName" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}
+        - name: kyoo-cache
+          emptyDir:
+            sizeLimit: {{ .Values.persistence.cache.size }}
+        - name: kyoo-library
+      {{- if .Values.persistence.library.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.library.existingClaim }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}
