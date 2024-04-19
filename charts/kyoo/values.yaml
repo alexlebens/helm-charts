@@ -633,7 +633,7 @@ scanner:
   ## ref: https://hub.docker.com/r/zoriya/zoriya/kyoo_scanner/tags
   ##
   image:
-    repository: zoriya/zoriya/kyoo_scanner
+    repository: zoriya/kyoo_scanner
     tag: "4.4.0"
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
