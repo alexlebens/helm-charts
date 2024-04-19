@@ -816,7 +816,11 @@ rabbitmq:
   ## Use this instead of `configuration` to add more configuration
   ## Do not use simultaneously with `extraConfigurationExistingSecret`
   ##
-  extraConfiguration: ""
+  extraConfiguration: |-
+    default_vhost = /
+    default_permissions.configure = .*
+    default_permissions.read = .*
+    default_permissions.write = .*
 
 ## Meilisearch
 ## https://github.com/meilisearch/meilisearch-kubernetes/blob/main/charts/meilisearch/values.yaml
