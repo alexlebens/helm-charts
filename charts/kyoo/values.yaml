@@ -817,7 +817,7 @@ rabbitmq:
   ## Do not use simultaneously with `extraConfigurationExistingSecret`
   ##
   extraConfiguration: |-
-    default_vhost = /
+    default_vhost = '/'
     default_permissions.configure = .*
     default_permissions.read = .*
     default_permissions.write = .*
