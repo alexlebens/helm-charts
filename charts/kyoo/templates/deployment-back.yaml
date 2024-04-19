@@ -125,13 +125,13 @@ spec:
             - name: OIDC_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Values.oidc.existingSecretName }}"
-                  key: "{{ .Values.oidc.clientIdKey }}"
+                  name: "{{ .Values.config.oidc.existingSecretName }}"
+                  key: "{{ .Values.config.oidc.clientIDKey }}"
             - name: OIDC_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Values.oidc.existingSecretName }}"
-                  key: "{{ .Values.oidc.clientSecretKey }}"
+                  name: "{{ .Values.config.oidc.existingSecretName }}"
+                  key: "{{ .Values.config.oidc.secretIDKey }}"
           {{ end }}
 
             - name: MEILI_HOST
