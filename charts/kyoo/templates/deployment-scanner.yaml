@@ -65,16 +65,23 @@ spec:
 
             - name: KYOO_URL
               value: http://{{ template "kyoo.fullname" . }}-back.{{ .Release.Namespace }}:{{ .Values.back.service.port }}
+
+          {{- if .Values.config.secretAPIKey.existingKyooSecretKey }}
             - name: KYOO_APIKEYS
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.config.secretAPIKey.existingSecretName }}"
                   key: "{{ .Values.config.secretAPIKey.existingKyooSecretKey }}"
+          {{- end }}
+
+          {{- if .Values.config.secretAPIKey.existingTMDBSecretKey }}
             - name: THEMOVIEDB_APIKEY
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.config.secretAPIKey.existingSecretName }}"
                   key: "{{ .Values.config.secretAPIKey.existingTMDBSecretKey }}"
+          {{- end }}
+
             - name: LIBRARY_LANGUAGES
               value: "{{ .Values.config.libraryLanguages }}"
             - name: LIBRARY_IGNORE_PATTERN
