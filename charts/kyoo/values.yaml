@@ -68,7 +68,7 @@ config:
   # UNLOGGED_PERMISSIONS=overall.read,overall.play
   # You can specify this to allow guests users to see your collection without behing able to play videos for example:
   # UNLOGGED_PERMISSIONS=overall.read
-  unloggedPermissions: ""
+  unloggedPermissions: overall.read
 
   # Specify permissions of new accounts.
   defaultPermissions: overall.read,overall.play
