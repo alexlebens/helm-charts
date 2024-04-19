@@ -112,15 +112,16 @@ config:
     secretIDKey: ""
 
   ## Postgresql
-  ## All configuration is expected to be stored in a secret, reference the secret name and each key for the value
   ##
   postgresql:
+    username: ""
+    database: ""
+    host: ""
+    port: ""
+
+    # -- Use a secret to store the pasword
     existingSecretName: ""
-    usernameKey: ""
     passwordKey: ""
-    databaseNameKey: ""
-    hostKey: ""
-    portKey: ""
 
 ## Configure the ingress resource that allows you to access the
 ## kyoo installation. Set up the URL

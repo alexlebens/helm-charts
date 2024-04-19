@@ -84,30 +84,18 @@ spec:
             - name: PUBLIC_URL
               value: "{{ .Values.config.publicUrl }}"
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ .Values.config.postgresql.existingSecretName }}"
-                  key: "{{ .Values.config.postgresql.usernameKey }}"
+              value: "{{ .Values.config.postgresql.username }}"
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.config.postgresql.existingSecretName }}"
                   key: "{{ .Values.config.postgresql.passwordKey }}"
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ .Values.config.postgresql.existingSecretName }}"
-                  key: "{{ .Values.config.postgresql.databaseNameKey }}"
+              value: "{{ .Values.config.postgresql.database }}"
             - name: POSTGRES_SERVER
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ .Values.config.postgresql.existingSecretName }}"
-                  key: "{{ .Values.config.postgresql.hostKey }}"
+              value: "{{ .Values.config.postgresql.host }}"
             - name: POSTGRES_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ .Values.config.postgresql.existingSecretName }}"
-                  key: "{{ .Values.config.postgresql.portKey }}"
+              value: "{{ .Values.config.postgresql.port }}"
 
           {{ if .Values.config.oidc.enabled }}
             - name: OIDC_SERVICE_NAME
