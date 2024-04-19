@@ -901,6 +901,33 @@ entries:
   kyoo:
   - apiVersion: v2
     appVersion: v4.4.0
+    created: "2024-04-19T11:22:34.809097759Z"
+    dependencies:
+    - name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.1
+    - name: meilisearch
+      repository: https://meilisearch.github.io/meilisearch-kubernetes
+      version: 0.6.1
+    description: Chart for Kyoo
+    digest: 228647fecc87da561a6e98a5c81b4a14e2a4164aaec411dea513adcd4b8c2f94
+    icon: https://raw.githubusercontent.com/zoriya/Kyoo/master/icons/icon-256x256.png
+    keywords:
+    - media
+    maintainers:
+    - name: alexlebens
+    name: kyoo
+    sources:
+    - https://github.com/zoriya/Kyoo
+    - https://github.com/rabbitmq/rabbitmq-server
+    - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+    - https://github.com/meilisearch/meilisearch
+    - https://github.com/meilisearch/meilisearch-kubernetes/tree/main/charts/meilisearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/kyoo-0.1.7/kyoo-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    appVersion: v4.4.0
     created: "2024-04-19T11:05:31.37488677Z"
     dependencies:
     - name: rabbitmq
@@ -3535,4 +3562,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-19T11:05:31.375190018Z"
+generated: "2024-04-19T11:22:34.809394886Z"
