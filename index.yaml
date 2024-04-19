@@ -898,6 +898,34 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/kubelet-serving-cert-approver-0.0.1/kubelet-serving-cert-approver-0.0.1.tgz
     version: 0.0.1
+  kyoo:
+  - apiVersion: v2
+    appVersion: v4.4.0
+    created: "2024-04-19T10:09:45.80451897Z"
+    dependencies:
+    - name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.1
+    - name: meilisearch
+      repository: https://meilisearch.github.io/meilisearch-kubernetes
+      version: 0.6.1
+    description: Chart for Kyoo
+    digest: d76397fd853289e5d2a7fb37b0ffffe97890926c274c27ef3f883cc52820b303
+    icon: https://raw.githubusercontent.com/zoriya/Kyoo/master/icons/icon-256x256.png
+    keywords:
+    - media
+    maintainers:
+    - name: alexlebens
+    name: kyoo
+    sources:
+    - https://github.com/zoriya/Kyoo
+    - https://github.com/rabbitmq/rabbitmq-server
+    - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+    - https://github.com/meilisearch/meilisearch
+    - https://github.com/meilisearch/meilisearch-kubernetes/tree/main/charts/meilisearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/kyoo-0.1.0/kyoo-0.1.0.tgz
+    version: 0.1.0
   libation:
   - apiVersion: v2
     appVersion: 11.1.0
@@ -3345,4 +3373,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-19T04:03:14.646816742Z"
+generated: "2024-04-19T10:09:45.804745954Z"
