@@ -1924,6 +1924,24 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/outline-0.0.1/outline-0.0.1.tgz
     version: 0.0.1
+  penpot:
+  - apiVersion: v2
+    appVersion: 2.0.1
+    created: "2024-04-20T03:37:42.354206347Z"
+    description: Chart for Penpot
+    digest: 4c90edbd169f67466a716e07c93f5f484c310fba4cb47ea40c9442d2fa80a84d
+    icon: https://avatars.githubusercontent.com/u/30179644?s=200&v=4
+    keywords:
+    - penpot
+    - design
+    maintainers:
+    - name: alexlebens
+    name: penpot
+    sources:
+    - https://github.com/penpot/penpot
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/penpot-0.1.0/penpot-0.1.0.tgz
+    version: 0.1.0
   postgres-cluster:
   - apiVersion: v2
     appVersion: v1.22.2
@@ -3616,4 +3634,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-19T11:41:59.276793959Z"
+generated: "2024-04-20T03:37:42.354571254Z"
