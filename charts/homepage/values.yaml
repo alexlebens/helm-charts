@@ -1,4 +1,5 @@
 deployment:
+  annotations: {}
   replicas: 1
   strategy: Recreate
   image:
