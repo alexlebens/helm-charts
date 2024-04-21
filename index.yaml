@@ -1171,6 +1171,28 @@ entries:
     version: 0.1.0
   lazy-librarian:
   - apiVersion: v2
+    appVersion: version-b3a081ec
+    created: "2024-04-21T10:03:50.332590588Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.1.0
+    description: A Helm chart for deploying LazyLibrarian
+    digest: cd868894da4543c5ffe7da812090192b3ea37a793d32abb482ae9130cc4f6108
+    icon: https://lazylibrarian.gitlab.io/logo.svg
+    keywords:
+    - lazylibrarian
+    - ebooks
+    maintainers:
+    - name: alexlebens
+    name: lazy-librarian
+    sources:
+    - https://gitlab.com/LazyLibrarian/LazyLibrarian.git
+    - https://lazylibrarian.gitlab.io
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/lazy-librarian-0.1.1/lazy-librarian-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: version-1152df82
     created: "2024-04-21T09:59:40.839994408Z"
     dependencies:
@@ -3657,4 +3679,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-21T09:59:40.840265916Z"
+generated: "2024-04-21T10:03:50.332884412Z"
