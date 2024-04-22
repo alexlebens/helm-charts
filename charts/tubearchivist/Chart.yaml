@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tubearchivist
-version: 0.2.3
+version: 0.2.4
 description: Chart for Tube Archivist
 keywords:
   - download
@@ -17,6 +17,6 @@ dependencies:
     version: 19.1.2
     repository: https://charts.bitnami.com/bitnami
   - name: elasticsearch
-    version: 20.0.4
+    version: 21.0.1
     repository: https://charts.bitnami.com/bitnami
 appVersion: v0.4.7
