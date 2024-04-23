@@ -1640,6 +1640,28 @@ entries:
   outline:
   - apiVersion: v2
     appVersion: v0.75.2
+    created: "2024-04-23T21:58:06.231332461Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.1.3
+    description: Chart for Outline wiki
+    digest: 60d8a05514cf755991d05712cf8fd22a1758152f80dbd1d243e78f815c8c9e0b
+    icon: https://avatars.githubusercontent.com/u/1765001?s=48&v=4
+    keywords:
+    - wiki
+    - documentation
+    maintainers:
+    - name: alexlebens
+    name: outline
+    sources:
+    - https://github.com/outline/outline
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/outline-0.5.3/outline-0.5.3.tgz
+    version: 0.5.3
+  - apiVersion: v2
+    appVersion: v0.75.2
     created: "2024-04-19T04:03:14.457254106Z"
     dependencies:
     - name: redis
@@ -3341,6 +3363,32 @@ entries:
   tubearchivist:
   - apiVersion: v2
     appVersion: v0.4.7
+    created: "2024-04-23T21:58:06.403739852Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.1.3
+    - name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.0.1
+    description: Chart for Tube Archivist
+    digest: 920755164b1743a0db929f33decc25114d434efa5fdd5f924748c5a8b1a503bb
+    icon: https://avatars.githubusercontent.com/u/102734415?s=48&v=4
+    keywords:
+    - download
+    - video
+    maintainers:
+    - name: alexlebens
+    name: tubearchivist
+    sources:
+    - https://github.com/tubearchivist/tubearchivist
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-0.2.5/tubearchivist-0.2.5.tgz
+    version: 0.2.5
+  - apiVersion: v2
+    appVersion: v0.4.7
     created: "2024-04-22T12:43:52.695763622Z"
     dependencies:
     - name: redis
@@ -3794,4 +3842,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-23T09:34:59.944531464Z"
+generated: "2024-04-23T21:58:06.404073777Z"
