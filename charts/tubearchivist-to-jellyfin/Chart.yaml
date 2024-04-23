@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tubearchivist-to-jellyfin
-version: 0.0.4
+version: 0.1.0
 description: Import library from tubearchivist to jellyfin
 keywords:
   - tubearchivist
@@ -11,4 +11,4 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/102734415?s=48&v=4
-appVersion: "v0.1.2"
+appVersion: "v0.2.0"
