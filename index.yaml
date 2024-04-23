@@ -3615,6 +3615,24 @@ entries:
     version: 0.0.1
   tubearchivist-to-jellyfin:
   - apiVersion: v2
+    appVersion: v0.2.0
+    created: "2024-04-23T09:33:11.954222282Z"
+    description: Import library from tubearchivist to jellyfin
+    digest: 06ea1c3542d9f57fc04703f586af5e1be784265ac6b0048039116bb7ea8ef66f
+    icon: https://avatars.githubusercontent.com/u/102734415?s=48&v=4
+    keywords:
+    - tubearchivist
+    - jellyfin
+    - job
+    maintainers:
+    - name: alexlebens
+    name: tubearchivist-to-jellyfin
+    sources:
+    - https://github.com/tubearchivist/tubearchivist-jf
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-to-jellyfin-0.1.0/tubearchivist-to-jellyfin-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
     appVersion: v0.1.2
     created: "2024-04-05T05:22:32.610202679Z"
     description: Import library from tubearchivist to jellyfin
@@ -3721,4 +3739,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-22T12:43:52.69617916Z"
+generated: "2024-04-23T09:33:11.954579399Z"
