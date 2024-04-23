@@ -19,5 +19,5 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
   - name: meilisearch
     version: 0.6.1
-    repository: https://meilisearch.github.io/meilisearch-kubernetes  
+    repository: https://meilisearch.github.io/meilisearch-kubernetes
 appVersion: v4.4.0
