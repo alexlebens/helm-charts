@@ -917,6 +917,33 @@ entries:
   kyoo:
   - apiVersion: v2
     appVersion: v4.4.0
+    created: "2024-04-23T09:34:59.852794345Z"
+    dependencies:
+    - name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.2
+    - name: meilisearch
+      repository: https://meilisearch.github.io/meilisearch-kubernetes
+      version: 0.6.1
+    description: Chart for Kyoo
+    digest: 1f873b2a72c72932457e71afd03512c2c5941672b018ae78626122e48493971c
+    icon: https://raw.githubusercontent.com/zoriya/Kyoo/master/icons/icon-256x256.png
+    keywords:
+    - media
+    maintainers:
+    - name: alexlebens
+    name: kyoo
+    sources:
+    - https://github.com/zoriya/Kyoo
+    - https://github.com/rabbitmq/rabbitmq-server
+    - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+    - https://github.com/meilisearch/meilisearch
+    - https://github.com/meilisearch/meilisearch-kubernetes/tree/main/charts/meilisearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/kyoo-0.1.10/kyoo-0.1.10.tgz
+    version: 0.1.10
+  - apiVersion: v2
+    appVersion: v4.4.0
     created: "2024-04-19T11:41:59.276238392Z"
     dependencies:
     - name: rabbitmq
@@ -2726,6 +2753,34 @@ entries:
   taiga:
   - apiVersion: v2
     appVersion: 6.7.7
+    created: "2024-04-23T09:34:59.94390403Z"
+    dependencies:
+    - alias: async-rabbitmq
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.2
+    - alias: events-rabbitmq
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.2
+    description: Chart for Taiga
+    digest: 974a68ce859efed81ad68420f6eba5924a12c9cb7bd2e25206281897653a4b6e
+    icon: https://avatars.githubusercontent.com/u/6905422?s=200&v=4
+    keywords:
+    - kanban
+    - project management
+    maintainers:
+    - name: alexlebens
+    name: taiga
+    sources:
+    - https://github.com/taigaio
+    - https://github.com/rabbitmq/rabbitmq-server
+    - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/taiga-0.2.1/taiga-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
+    appVersion: 6.7.7
     created: "2024-04-18T01:14:18.754359736Z"
     dependencies:
     - alias: async-rabbitmq
@@ -3739,4 +3794,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-23T09:33:11.954579399Z"
+generated: "2024-04-23T09:34:59.944531464Z"
