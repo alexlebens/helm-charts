@@ -55,7 +55,7 @@ backupProfiles:
 {{- end }}
 {{- end }}
 
-{{- if .Values.backupSchedules }}
+{{- if .Values.backup.schedules }}
 backupSchedules:
 {{- range $_, $schedule := .Values.backup.schedules }}
   - name: {{ $schedule.name | quote }}
