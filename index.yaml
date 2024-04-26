@@ -1653,6 +1653,26 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/mautrix-whatsapp-0.0.1/mautrix-whatsapp-0.0.1.tgz
     version: 0.0.1
+  mysql-cluster:
+  - apiVersion: v2
+    appVersion: 8.3.0-2.1.2
+    created: "2024-04-26T20:05:43.286963Z"
+    description: Chart for a mysql cluster
+    digest: 2d0ef0a8baf01cb04e82565949aea2c0e82a5927c490cd6d3411cd07159e9e34
+    icon: https://avatars.githubusercontent.com/u/2452804?s=48&v=4
+    keywords:
+    - database
+    - mysql
+    maintainers:
+    - name: alexlebens
+    name: mysql-cluster
+    sources:
+    - https://dev.mysql.com/
+    - https://github.com/mysql/mysql-operator
+    - https://github.com/mysql/mysql-operator/tree/trunk/helm/mysql-innodbcluster
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/mysql-cluster-0.1.0/mysql-cluster-0.1.0.tgz
+    version: 0.1.0
   outline:
   - apiVersion: v2
     appVersion: v0.75.2
@@ -3875,4 +3895,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-04-26T16:00:28.002429102Z"
+generated: "2024-04-26T20:05:43.287333733Z"
