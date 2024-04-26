@@ -1,0 +1,75 @@
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: {{ include "cluster.name" . }}-cluster
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.global.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+    {{- include "cluster.selectorLabels" . | nindent 4 }}
+    {{- with .Values.global.labels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  instances: {{ required "serverInstances is required" .Values.cluster.serverInstances }}
+  baseServerId: {{ required "baseServerId is required" .Values.cluster.baseServerId }}  
+  serviceAccountName: {{ include "mysql.serviceAccountName" . }}  
+  imagePullPolicy : {{ .Values.cluster.image.pullPolicy }}
+  version: {{ .Values.cluster.image.version }}
+  tlsUseSelfSigned: true
+  secretName: {{ .Values.cluster.exisitingCredentialsSecret }}
+  podSpec:
+    {{- with .Values.cluster.podSpec }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  podAnnotations:
+    {{- with .Values.cluster.podAnnotations }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  podLabels:
+    {{- with .Values.cluster.podLabels }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
+  router:
+    instances: {{ required "router.instances is required" .Values.cluster.router.instances }}
+    podSpec:
+      {{- with .Values.cluster.router.podSpec }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    podAnnotations:
+      {{- with .Values.cluster.router.podAnnotations }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    podLabels:
+      {{- with .Values.cluster.router.podLabels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    tlsSecretName: {{ include "cluster.name" . }}-router-tls
+  logs:
+    {{- with .Values.cluster.logs }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}      
+  mycnf: |
+{{ .Values.cluster.serverConfig.mycnf | indent 4 }}
+  {{- if .Values.cluster.datadirVolumeClaimTemplate }}
+  {{- with .Values.cluster.datadirVolumeClaimTemplate }}
+  datadirVolumeClaimTemplate:
+    {{- if .storageClassName }}
+    storageClassName: {{ .storageClassName | quote }}
+    {{- end}}
+    {{- if .accessModes }}
+    accessModes: [ "{{ .accessModes }}" ]
+    {{- end }}
+    {{- if .size }}
+    resources:
+      requests:
+        storage: "{{ .size }}"
+    {{- end }}
+  {{- end }}
+  {{- end }}
+
+  {{ include "cluster.init" . | nindent 2 }}
+  {{ include "cluster.backup" . | nindent 2 }}
