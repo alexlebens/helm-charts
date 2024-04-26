@@ -3,7 +3,7 @@
 backup:
   retentionPolicy: {{ .Values.backup.retentionPolicy }}
   barmanObjectStore:
-    destinationPath: "s3://{{ .Values.backup.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ include "cluster.backupName" . }}"
+    destinationPath: "s3://{{ .Values.backup.endpointBucket }}/{{ .Values.kubernetesClusterName }}/{{ include "cluster.backupName" . }}"
     endpointURL: {{ .Values.backup.endpointURL }}
     {{- if .Values.backup.endpointCA }}
     endpointCA:
