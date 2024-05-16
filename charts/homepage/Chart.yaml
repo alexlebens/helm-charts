@@ -1,6 +1,6 @@
 apiVersion: v2
 name: homepage
-version: 0.0.12
+version: 0.0.13
 description: Chart for benphelps homepage
 keywords:
   - dashboard
