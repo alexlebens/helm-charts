@@ -19,10 +19,11 @@ service:
   http:
     port: 3000
 ingressRoute:
-  host:
+  host: ""
   authentik:
-    outpost:
+    outpost: ""
     port: 9000
+    namespace: ""
 config:
   bookmarks:
   services:

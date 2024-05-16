@@ -30,3 +30,4 @@ spec:
         - kind: Service
           name: {{ .Values.ingressRoute.authentik.outpost }}
           port: {{ .Values.ingressRoute.authentik.port }}
+          namespace: {{ .Values.ingressRoute.authentik.namespace }}
