@@ -15,9 +15,6 @@ type: postgresql
 # * `replica` - Create database as a replica from another CNPG cluster
 mode: standalone
 
-# Generates bucket name and path for recovery and backup, creates: <endpointBucket>/<clusterName>/postgresql/{{ .Release.Name }}
-kubernetesClusterName: ""
-
 cluster:
   instances: 3
 
@@ -84,7 +81,8 @@ cluster:
   # BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
-  initdb: {}
+  initdb:
+    {}
     # database: app
     # owner: app
     # secret: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
@@ -96,10 +94,9 @@ recovery:
   pitrTarget:
     time: ""
 
-  # Overrides the provider specific default endpoint. Defaults to:
-  # S3: https://s3.<region>.amazonaws.com"
+  # S3 https endpoint and the s3:// path
   endpointURL: ""
-  endpointBucket: ""
+  destinationPath: ""
 
   # Specifies secret that contains a CA bundle to validate a privately signed certificate, should contain the key ca-bundle.crt
   endpointCA: ""
@@ -140,7 +137,7 @@ replica:
   # If type microservice only one database is allowed, default is app as standard in cnpg clusters
   importDatabases:
     - app
-  
+
   # If type microservice no roles are imported and ignored
   importRoles: []
 
@@ -160,9 +157,11 @@ replica:
 backup:
   enabled: false
 
-  # Overrides the provider specific default endpoint
+  # S3 endpoint starting with "https://"
   endpointURL: ""
-  endpointBucket: ""
+
+  # S3 path starting with "s3://"
+  destinationPath: ""
 
   # Specifies secret that contains a CA bundle to validate a privately signed certificate, should contain the key ca-bundle.crt
   endpointCA: ""

@@ -63,7 +63,7 @@ externalClusters:
   - name: {{ include "cluster.recoveryServerName" . }}
     barmanObjectStore:
       serverName: {{ include "cluster.recoveryServerName" . }}
-      destinationPath: "s3://{{ .Values.recovery.endpointBucket }}/{{ .Values.kubernetesClusterName }}/postgresql/{{ include "cluster.recoveryInstanceName" . }}"
+      destinationPath: {{ .Values.recovery.destinationPath }}
       endpointURL: {{ .Values.recovery.endpointURL }}
       {{- with .Values.recovery.endpointCA }}
       endpointCA:
