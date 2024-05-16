@@ -1792,6 +1792,28 @@ entries:
   outline:
   - apiVersion: v2
     appVersion: v0.76.1
+    created: "2024-05-16T17:49:02.321300001Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.3.2
+    description: Chart for Outline wiki
+    digest: c5b91c312a1bbd09428f8e82699243a1a6aa0e38df2cadb82566c7dd141b2857
+    icon: https://avatars.githubusercontent.com/u/1765001?s=48&v=4
+    keywords:
+    - wiki
+    - documentation
+    maintainers:
+    - name: alexlebens
+    name: outline
+    sources:
+    - https://github.com/outline/outline
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/outline-0.6.1/outline-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v2
+    appVersion: v0.76.1
     created: "2024-05-16T17:43:19.539140888Z"
     dependencies:
     - name: redis
@@ -4135,4 +4157,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-16T17:48:43.819455616Z"
+generated: "2024-05-16T17:49:02.32194055Z"
