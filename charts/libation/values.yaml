@@ -2,7 +2,7 @@ job:
   schedule: "0 * * * *"
 image:
   repository: rmcrackan/libation
-  tag: "11.1.0"
+  tag: "11.3.13"
   pullPolicy: IfNotPresent
 persistence:
   config:
