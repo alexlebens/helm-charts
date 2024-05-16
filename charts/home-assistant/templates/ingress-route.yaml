@@ -18,7 +18,7 @@ spec:
       match: "Host(`{{ .Values.ingressRoute.host }}`)"
       middlewares:
         - name: "authentik-{{ .Release.Name }}"
-          namespace: {{ .Release.Namespace }}           
+          namespace: {{ .Release.Namespace }}
       priority: 10
       services:
         - kind: Service
@@ -30,7 +30,8 @@ spec:
       services:
         - kind: Service
           name: {{ .Values.ingressRoute.authentik.outpost }}
-          port: {{ .Values.ingressRoute.authentik.port }}    
+          port: {{ .Values.ingressRoute.authentik.port }}
+          namespace: {{ .Values.ingressRoute.authentik.namespace }}
 {{- end }}
 
 ---
@@ -54,7 +55,7 @@ spec:
       match: "Host(`{{ .Values.codeserver.ingressRoute.host }}`)"
       middlewares:
         - name: "authentik-{{ .Release.Name }}"
-          namespace: {{ .Release.Namespace }}      
+          namespace: {{ .Release.Namespace }}
       priority: 10
       services:
         - kind: Service
@@ -66,5 +67,6 @@ spec:
       services:
         - kind: Service
           name: {{ .Values.ingressRoute.authentik.outpost }}
-          port: {{ .Values.ingressRoute.authentik.port }}          
+          port: {{ .Values.ingressRoute.authentik.port }}
+          namespace: {{ .Values.ingressRoute.authentik.namespace }}
 {{- end }}

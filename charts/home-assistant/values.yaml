@@ -22,8 +22,9 @@ ingressRoute:
   enabled: true
   host:
   authentik:
-    outpost:
+    outpost: ""
     port: 9000
+    namespace: ""
 metrics:
   enabled: false
   serviceMonitor:
