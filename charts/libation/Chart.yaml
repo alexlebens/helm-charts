@@ -1,6 +1,6 @@
 apiVersion: v2
 name: libation
-version: 0.0.6
+version: 0.0.7
 description: Import library from audible
 keywords:
   - audiobooks
@@ -10,4 +10,4 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://getlibation.com/images/libation-logo.png
-appVersion: "11.1.0"
+appVersion: "11.3.13"
