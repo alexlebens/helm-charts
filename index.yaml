@@ -1421,6 +1421,23 @@ entries:
     version: 0.1.0
   libation:
   - apiVersion: v2
+    appVersion: 11.3.13
+    created: "2024-05-16T18:57:46.274479801Z"
+    description: Import library from audible
+    digest: cb0dd77d9e282fa1712726e98eb3df9629d2ae52debe42186356c7d636c28a39
+    icon: https://getlibation.com/images/libation-logo.png
+    keywords:
+    - audiobooks
+    - job
+    maintainers:
+    - name: alexlebens
+    name: libation
+    sources:
+    - https://github.com/rmcrackan/Libation
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/libation-0.0.7/libation-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
     appVersion: 11.1.0
     created: "2024-03-16T11:44:27.265162972Z"
     description: Import library from audible
@@ -4225,4 +4242,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-16T18:44:44.670762511Z"
+generated: "2024-05-16T18:57:46.274855483Z"
