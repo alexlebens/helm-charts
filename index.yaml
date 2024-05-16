@@ -3,6 +3,23 @@ entries:
   calibre-server:
   - apiVersion: v2
     appVersion: 7.5.1
+    created: "2024-05-16T18:44:44.566460417Z"
+    description: Chart for Calibre content database
+    digest: 2102dd4c6f89e6bf7d1fe7ff9825e3a13a781842f0ae0a5ac24feefa2fb7175f
+    icon: https://raw.githubusercontent.com/kovidgoyal/calibre/master/resources/images/lt.png
+    keywords:
+    - media
+    - books
+    maintainers:
+    - name: alexlebens
+    name: calibre-server
+    sources:
+    - https://github.com/kovidgoyal/calibre
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/calibre-server-0.0.8/calibre-server-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: 7.5.1
     created: "2024-05-16T17:35:54.691807642Z"
     description: Chart for Calibre content database
     digest: 39cae06aefd637ac79f50311e772692d2ddd64f2574645df1bde927592ef7bc4
@@ -219,6 +236,22 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.1/freshrss-0.0.1.tgz
     version: 0.0.1
   home-assistant:
+  - apiVersion: v2
+    appVersion: v2024.5.3
+    created: "2024-05-16T18:44:44.670207797Z"
+    description: Chart for Home Assistant
+    digest: aafd20bdf7fb6c867b7b8651085e166599d5af6d3de9db267747d4eda5f1d146
+    icon: https://avatars.githubusercontent.com/u/13844975?s=200&v=4
+    keywords:
+    - home-automation
+    maintainers:
+    - name: alexlebens
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/home-assistant-0.1.15/home-assistant-0.1.15.tgz
+    version: 0.1.15
   - apiVersion: v2
     appVersion: v2024.5.3
     created: "2024-05-16T17:46:58.878025346Z"
@@ -4192,4 +4225,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-16T18:44:26.142800166Z"
+generated: "2024-05-16T18:44:44.670762511Z"
