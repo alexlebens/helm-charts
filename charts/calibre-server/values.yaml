@@ -31,8 +31,9 @@ ingressRoute:
   http:
     host:
   authentik:
-    outpost:
+    outpost: ""
     port: 9000
+    namespace: ""
 persistence:
   config:
     storageClassName: default
