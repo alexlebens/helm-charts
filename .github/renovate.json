@@ -5,7 +5,7 @@
         "mergeConfidence:all-badges",
         ":rebaseStalePrs"
     ],
-    "timezone": "US/Mountain",
+    "timezone": "US/Central",
     "schedule": [
         "every weekday"
     ],
