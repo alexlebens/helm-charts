@@ -40,7 +40,7 @@
         },
         {
             "description": "Label service images",
-            "matchPackageNames": [
+            "matchDepNames": [
                 "ghcr.io/alex1989hu/kubelet-serving-cert-approver",
                 "ghcr.io/cloudnative-pg/postgresql",
                 "redis/redis-stack-server"
@@ -57,7 +57,7 @@
         },
         {
             "description": "Label service charts",
-            "matchPackageNames": [
+            "matchDepNames": [
                 "elasticsearch",
                 "redis"
             ],
@@ -73,7 +73,7 @@
         },
         {
             "description": "Label application images",
-            "matchPackageNames": [
+            "matchDepNames": [
                 "bbilly1/tubearchivist-jf",
                 "bbilly1/tubearchivist",
                 "freshrss/freshrss",
@@ -97,7 +97,7 @@
         },
         {
             "description": "Label application charts",
-            "matchPackageNames": [],
+            "matchDepNames": [],
             "matchDatasources": [
                 "helm"
             ],
