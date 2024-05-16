@@ -3470,6 +3470,28 @@ entries:
     version: 0.1.0
   tdarr:
   - apiVersion: v2
+    appVersion: 2.18.02
+    created: "2024-05-16T17:47:56.039232262Z"
+    dependencies:
+    - name: tdarr-exporter
+      repository: https://homeylab.github.io/helm-charts/
+      version: 1.1.1
+    description: Chart for Tdarr V2
+    digest: fe5f4ecf5c2102885986450f2f52aa50bb8a13ac9120dced49df280d902b32ef
+    icon: https://avatars.githubusercontent.com/u/43864057?s=48&v=4
+    keywords:
+    - video
+    - transcode
+    maintainers:
+    - name: alexlebens
+    name: tdarr
+    sources:
+    - https://github.com/HaveAGitGat/Tdarr
+    - https://github.com/homeylab/helm-charts/tree/main/charts/tdarr-exporter
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tdarr-0.0.6/tdarr-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
     appVersion: 2.17.01
     created: "2024-03-25T16:16:36.065509571Z"
     dependencies:
@@ -4087,4 +4109,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-16T17:46:58.879594247Z"
+generated: "2024-05-16T17:47:56.03946704Z"
