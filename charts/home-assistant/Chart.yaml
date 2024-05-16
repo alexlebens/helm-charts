@@ -1,6 +1,6 @@
 apiVersion: v2
 name: home-assistant
-version: 0.1.12
+version: 0.1.13
 description: Chart for Home Assistant
 keywords:
   - home-automation
@@ -9,4 +9,4 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/13844975?s=200&v=4
-appVersion: v2024.4.4
+appVersion: v2024.5.3
