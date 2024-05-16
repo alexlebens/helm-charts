@@ -3,6 +3,23 @@ entries:
   calibre-server:
   - apiVersion: v2
     appVersion: 7.5.1
+    created: "2024-05-16T17:35:54.691807642Z"
+    description: Chart for Calibre content database
+    digest: 39cae06aefd637ac79f50311e772692d2ddd64f2574645df1bde927592ef7bc4
+    icon: https://raw.githubusercontent.com/kovidgoyal/calibre/master/resources/images/lt.png
+    keywords:
+    - media
+    - books
+    maintainers:
+    - name: alexlebens
+    name: calibre-server
+    sources:
+    - https://github.com/kovidgoyal/calibre
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/calibre-server-0.0.7/calibre-server-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
+    appVersion: 7.5.1
     created: "2024-03-16T11:44:26.95978593Z"
     description: Chart for Calibre content database
     digest: 57768c7795d4248c45f975c5c08a7778630391702aec27df3b48af69445e3e81
@@ -3946,4 +3963,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-16T17:35:45.966205393Z"
+generated: "2024-05-16T17:35:54.692641255Z"
