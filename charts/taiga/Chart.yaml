@@ -14,11 +14,11 @@ maintainers:
 icon: https://avatars.githubusercontent.com/u/6905422?s=200&v=4
 dependencies:
   - name: rabbitmq
-    version: 14.1.4
+    version: 14.1.5
     repository: https://charts.bitnami.com/bitnami
     alias: async-rabbitmq
   - name: rabbitmq
-    version: 14.1.4
+    version: 14.1.5
     repository: https://charts.bitnami.com/bitnami
     alias: events-rabbitmq
 appVersion: 6.7.7
