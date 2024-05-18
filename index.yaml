@@ -3761,6 +3761,32 @@ entries:
   tubearchivist:
   - apiVersion: v2
     appVersion: v0.4.7
+    created: "2024-05-18T19:40:23.284213895Z"
+    dependencies:
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.3.3
+    - name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.0.6
+    description: Chart for Tube Archivist
+    digest: dcc44a23a0a25611471880fe9bc3e066dc002bbaa32aa2369d1ba99872f385e0
+    icon: https://avatars.githubusercontent.com/u/102734415?s=48&v=4
+    keywords:
+    - download
+    - video
+    maintainers:
+    - name: alexlebens
+    name: tubearchivist
+    sources:
+    - https://github.com/tubearchivist/tubearchivist
+    - https://github.com/bitnami/charts/tree/main/bitnami/redis
+    - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/tubearchivist-0.2.8/tubearchivist-0.2.8.tgz
+    version: 0.2.8
+  - apiVersion: v2
+    appVersion: v0.4.7
     created: "2024-05-16T17:48:43.819046632Z"
     dependencies:
     - name: redis
@@ -4292,4 +4318,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-17T17:08:32.680756046Z"
+generated: "2024-05-18T19:40:23.284534664Z"
