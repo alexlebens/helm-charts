@@ -1834,6 +1834,25 @@ entries:
     version: 0.0.1
   mysql-cluster:
   - apiVersion: v2
+    appVersion: 8.4.0
+    created: "2024-05-25T02:01:05.394198178Z"
+    description: Chart for a mysql cluster
+    digest: e6a5fb19b04a050349c20b2597e065546c984f538335342e7a72f72ecfe2cc11
+    icon: https://avatars.githubusercontent.com/u/2452804?s=48&v=4
+    keywords:
+    - database
+    - mysql
+    maintainers:
+    - name: alexlebens
+    name: mysql-cluster
+    sources:
+    - https://dev.mysql.com/
+    - https://github.com/mysql/mysql-operator
+    - https://github.com/mysql/mysql-operator/tree/trunk/helm/mysql-innodbcluster
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/mysql-cluster-0.2.0/mysql-cluster-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: 8.3.0-2.1.2
     created: "2024-05-16T18:15:32.434947561Z"
     description: Chart for a mysql cluster
@@ -4416,4 +4435,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-20T17:14:22.015985035Z"
+generated: "2024-05-25T02:01:05.394499871Z"
