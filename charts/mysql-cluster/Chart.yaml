@@ -1,6 +1,6 @@
 apiVersion: v2
 name: mysql-cluster
-version: 0.1.2
+version: 0.2.0
 description: Chart for a mysql cluster
 keywords:
   - database
@@ -12,4 +12,4 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/2452804?s=48&v=4
-appVersion: 8.3.0-2.1.2
+appVersion: 8.4.0
