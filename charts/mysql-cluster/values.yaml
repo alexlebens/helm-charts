@@ -54,6 +54,7 @@ cluster:
       [mysqld]
       core_file
       local_infile=off
+      mysql_native_password=ON
 
   datadirVolumeClaimTemplate:
     storageClassName: ""
