@@ -524,9 +524,3 @@ mautrixWhatsapp:
           max_size: 100
           max_backups: 10
           compress: true
-
-  # registration.yml contents
-  existingRegistrationSecret: ""
-  registration:
-    rate_limited: false
-    sender_localpart: whatsappbridgebot
