@@ -1738,6 +1738,25 @@ entries:
   mautrix-discord:
   - apiVersion: v2
     appVersion: v0.6.5
+    created: "2024-05-26T20:43:34.88837671Z"
+    description: Chart for Matrix Discord Bridge
+    digest: 207db3cebbee6eeb3ae6187934e9433f0faf6a71d96a7f6f7f6f084baedc9cbd
+    icon: https://avatars.githubusercontent.com/u/88519669?s=48&v=4
+    keywords:
+    - matrix
+    - mautrix-discord
+    - bridge
+    - discord
+    maintainers:
+    - name: alexlebens
+    name: mautrix-discord
+    sources:
+    - https://github.com/mautrix/discord
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/mautrix-discord-0.1.1/mautrix-discord-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: v0.6.5
     created: "2024-05-26T20:28:36.934128513Z"
     description: Chart for Matrix Discord Bridge
     digest: bfff9429db94bb204400e14e20902e1c76e4a8039c8fedd65004e9959132dac8
@@ -1794,6 +1813,25 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/mautrix-discord-0.0.1/mautrix-discord-0.0.1.tgz
     version: 0.0.1
   mautrix-whatsapp:
+  - apiVersion: v2
+    appVersion: v0.10.7
+    created: "2024-05-26T20:43:35.002687201Z"
+    description: Chart for Matrix Whatsapp Bridge
+    digest: cde0c04044dfba34896161dec440d8aed34e3b333fec36f92726d4716b2c16cc
+    icon: https://avatars.githubusercontent.com/u/88519669?s=48&v=4
+    keywords:
+    - matrix
+    - mautrix-whatsapp
+    - bridge
+    - whatsapp
+    maintainers:
+    - name: alexlebens
+    name: mautrix-whatsapp
+    sources:
+    - https://github.com/mautrix/whatsapp
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/mautrix-whatsapp-0.1.1/mautrix-whatsapp-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: v0.10.7
     created: "2024-05-26T20:31:27.511772222Z"
@@ -4492,4 +4530,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-26T20:31:27.512111787Z"
+generated: "2024-05-26T20:43:35.003108251Z"
