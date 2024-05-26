@@ -1796,6 +1796,25 @@ entries:
   mautrix-whatsapp:
   - apiVersion: v2
     appVersion: v0.10.7
+    created: "2024-05-26T20:31:27.511772222Z"
+    description: Chart for Matrix Whatsapp Bridge
+    digest: 1497bc7b0e6ef0ced0ae828a99d13943b41f15e4a0115b33ebf3172e20f7f482
+    icon: https://avatars.githubusercontent.com/u/88519669?s=48&v=4
+    keywords:
+    - matrix
+    - mautrix-whatsapp
+    - bridge
+    - whatsapp
+    maintainers:
+    - name: alexlebens
+    name: mautrix-whatsapp
+    sources:
+    - https://github.com/mautrix/whatsapp
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/mautrix-whatsapp-0.1.0/mautrix-whatsapp-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
+    appVersion: v0.10.7
     created: "2024-04-18T01:05:44.67881566Z"
     description: Chart for Matrix Whatsapp Bridge
     digest: 21b60184a6d8e962c109ea9b58c65ae3717b040354034d49ef149b9e8cc3887e
@@ -4473,4 +4492,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-26T20:28:36.934509304Z"
+generated: "2024-05-26T20:31:27.512111787Z"
