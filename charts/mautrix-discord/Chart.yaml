@@ -1,6 +1,6 @@
 apiVersion: v2
 name: mautrix-discord
-version: 0.1.0
+version: 0.1.1
 description: Chart for Matrix Discord Bridge
 keywords:
   - matrix
