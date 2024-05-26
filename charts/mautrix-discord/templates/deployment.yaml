@@ -62,19 +62,12 @@ spec:
               mountPath: /data/config.yaml
               subPath: config.yaml
               readOnly: true
-            - name: registration
-              mountPath: /data/registration.yaml
-              subPath: registration.yaml
-              readOnly: true
             - name: data
               mountPath: /data
       volumes:
         - name: config
           secret:
             secretName: {{ template "mautrix-discord.secretName" . }}
-        - name: registration
-          secret:
-            secretName: {{ template "mautrix-discord.registrationSecretName" . }}
         - name: data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
