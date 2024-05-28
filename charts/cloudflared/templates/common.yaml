@@ -18,6 +18,7 @@ controllers:
         args:
           - tunnel
           - --no-autoupdate
+          - --protocol http2
           - run
           - --token
           - $(CF_MANAGED_TUNNEL_TOKEN)
