@@ -1,0 +1,3 @@
+name: cloudflared
+existingSecretName: cloudflared-secret
+existingSecretKey: cf-tunnel-token
