@@ -39,70 +39,22 @@
             "automerge": false
         },
         {
-            "description": "Label service images",
-            "matchDepNames": [
-                "ghcr.io/alex1989hu/kubelet-serving-cert-approver",
-                "ghcr.io/cloudnative-pg/postgresql",
-                "redis/redis-stack-server"
-            ],
+            "description": "Label images",
             "matchDatasources": [
                 "docker"
             ],
             "addLabels": [
-                "service",
                 "image"
             ],
             "automerge": false,
             "minimumReleaseAge": "3 days"
         },
         {
-            "description": "Label service charts",
-            "matchDepNames": [
-                "elasticsearch",
-                "redis"
-            ],
+            "description": "Label charts",
             "matchDatasources": [
                 "helm"
             ],
             "addLabels": [
-                "serivce",
-                "chart"
-            ],
-            "automerge": false,
-            "minimumReleaseAge": "3 days"
-        },
-        {
-            "description": "Label application images",
-            "matchDepNames": [
-                "bbilly1/tubearchivist-jf",
-                "bbilly1/tubearchivist",
-                "freshrss/freshrss",
-                "ghcr.io/gethomepage/homepage",
-                "homeassistant/home-assistant",
-                "linuxserver/calibre",
-                "linuxserver/code-server",
-                "linuxserver/cops",
-                "outlinewiki/outline",
-                "rmcrackan/libation"
-            ],
-            "matchDatasources": [
-                "docker"
-            ],
-            "addLabels": [
-                "application",
-                "image"
-            ],
-            "automerge": false,
-            "minimumReleaseAge": "3 days"
-        },
-        {
-            "description": "Label application charts",
-            "matchDepNames": [],
-            "matchDatasources": [
-                "helm"
-            ],
-            "addLabels": [
-                "application",
                 "chart"
             ],
             "automerge": false,
