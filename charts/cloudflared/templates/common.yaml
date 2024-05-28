@@ -17,8 +17,9 @@ controllers:
           pullPolicy: IfNotPresent
         args:
           - tunnel
+          - --protocol
+          - http2
           - --no-autoupdate
-          - --protocol http2
           - run
           - --token
           - $(CF_MANAGED_TUNNEL_TOKEN)
