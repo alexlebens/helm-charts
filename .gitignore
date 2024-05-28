@@ -1,3 +1,6 @@
+# Archived
+charts/**/archive
+
 # Compiled Helm chart dependencies
 charts/**/Chart.lock
 charts/**/charts/
