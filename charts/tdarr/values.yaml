@@ -58,7 +58,7 @@ node:
   strategy: Recreate
   image:
     repository: ghcr.io/haveagitgat/tdarr_node
-    tag: "2.18.02"
+    tag: "2.19.01"
     pullPolicy: IfNotPresent
   env: []
   envFrom: []
