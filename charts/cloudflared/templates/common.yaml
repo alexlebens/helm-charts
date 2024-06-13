@@ -30,9 +30,10 @@ controllers:
                 name: {{ .Values.existingSecretName }}
                 key: {{ .Values.existingSecretKey }}
         resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{ end }}
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "cloudflared.hardcodedValues" . | fromYaml) -}}
 
