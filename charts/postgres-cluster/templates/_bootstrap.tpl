@@ -20,6 +20,9 @@ bootstrap:
       {{- range .postInitApplicationSQL }}
       {{- printf "- %s" . | nindent 6 }}
       {{- end }}
+      {{- range .postInitSQL }}
+      {{- printf "- %s" . | nindent 6 }}
+      {{- end }}
       {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
@@ -32,7 +35,7 @@ bootstrap:
         {{- with .Values.replica.importDatabases }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
-        {{- end }}        
+        {{- end }}
       {{- if eq .Values.replica.importType "monolith" }}
       roles:
         {{- with .Values.replica.importRoles }}
@@ -43,7 +46,7 @@ bootstrap:
       postImportApplicationSQL:
         {{- with .Values.replica.postImportApplicationSQL }}
         {{- . | toYaml | nindent 8 }}
-        {{- end }}      
+        {{- end }}
       {{- end }}
       source:
         externalCluster: "{{ include "cluster.name" . }}-cluster"
@@ -51,7 +54,7 @@ externalClusters:
   - name: "{{ include "cluster.name" . }}-cluster"
     {{- with .Values.replica.externalCluster }}
     {{- . | toYaml | nindent 4 }}
-    {{- end }}    
+    {{- end }}
 {{- else if eq .Values.mode "recovery" }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
