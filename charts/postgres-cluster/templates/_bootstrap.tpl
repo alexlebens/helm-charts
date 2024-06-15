@@ -20,6 +20,9 @@ bootstrap:
       {{- range .postInitApplicationSQL }}
       {{- printf "- %s" . | nindent 6 }}
       {{- end }}
+      {{- end }}
+    postInitSQL:
+      {{- with .Values.cluster.initdb }}
       {{- range .postInitSQL }}
       {{- printf "- %s" . | nindent 6 }}
       {{- end }}
