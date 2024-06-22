@@ -40,7 +40,6 @@ cluster:
 
   logs:
     error:
-      enabled: true
       collect: false
     general:
       enabled: false
