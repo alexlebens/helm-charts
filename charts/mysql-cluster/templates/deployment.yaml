@@ -22,30 +22,30 @@ spec:
   tlsUseSelfSigned: true
   secretName: {{ .Values.cluster.exisitingCredentialsSecret }}
   podSpec:
-    {{- with .Values.cluster.podSpec }}
-    {{ toYaml . | nindent 4 }}
+    {{- if .Values.cluster.podSpec }}
+    {{ toYaml .Values.cluster.podSpec | nindent 4 }}
     {{- end }}
   podAnnotations:
-    {{- with .Values.cluster.podAnnotations }}
-    {{ toYaml . | nindent 4 }}
+    {{- if .Values.cluster.podAnnotations }}
+    {{ toYaml .Values.cluster.podAnnotations | nindent 4 }}
     {{- end }}
   podLabels:
-    {{- with .Values.cluster.podLabels }}
-    {{ toYaml . | nindent 4 }}
+    {{- if .Values.cluster.podLabels }}
+    {{ toYaml .Values.cluster.podLabels | nindent 4 }}
     {{- end }}
   router:
     instances: {{ required "router.instances is required" .Values.cluster.router.instances }}
     podSpec:
-      {{- with .Values.cluster.router.podSpec }}
-      {{- toYaml . | nindent 6 }}
+      {{- if .Values.cluster.router.podSpec }}
+      {{- toYaml .Values.cluster.router.podSpec | nindent 6 }}
       {{- end }}
     podAnnotations:
-      {{- with .Values.cluster.router.podAnnotations }}
-      {{- toYaml . | nindent 6 }}
+      {{- if .Values.cluster.router.podAnnotations }}
+      {{- toYaml .Values.cluster.router.podAnnotations | nindent 6 }}
       {{- end }}
     podLabels:
-      {{- with .Values.cluster.router.podLabels }}
-      {{- toYaml . | nindent 6 }}
+      {{- if .Values.cluster.router.podLabels }}
+      {{- toYaml .Values.cluster.router.podLabels | nindent 6 }}
       {{- end }}
     tlsSecretName: {{ include "cluster.name" . }}-router-tls
   logs:
