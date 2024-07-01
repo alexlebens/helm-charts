@@ -32,15 +32,17 @@ spec:
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
+  {{- end }}
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
   logLevel: {{ .Values.cluster.logLevel }}
   postgresql:
+    {{- if eq .Values.type "timescaledb" }}
     shared_preload_libraries:
-      {{- if eq .Values.type "timescaledb" }}
       - timescaledb
-      {{- end }}
+    {{- end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
       {{- toYaml . | nindent 6 }}
