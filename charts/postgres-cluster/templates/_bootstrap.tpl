@@ -78,13 +78,25 @@ externalClusters:
           name: {{ include "cluster.recoveryCredentials" . }}
           key: ACCESS_SECRET_KEY
       wal:
+        {{- if .Values.recovery.wal.compression }}
         compression: {{ .Values.recovery.wal.compression }}
+        {{- end }}
+        {{- if .Values.recovery.wal.encryption }}
         encryption: {{ .Values.recovery.wal.encryption }}
+        {{- end }}
+        {{- if .Values.recovery.wal.maxParallel }}
         maxParallel: {{ .Values.recovery.wal.maxParallel }}
+        {{- end }}
       data:
+        {{- if .Values.recovery.data.compression }}
         compression: {{ .Values.recovery.data.compression }}
+        {{- end }}
+        {{- if .Values.recovery.data.encryption }}
         encryption: {{ .Values.recovery.data.encryption }}
-        jobs: {{ .Values.recovery.data.jobs }}
+        {{- end }}
+        {{- if .Values.recovery.data.maxParallel }}
+        maxParallel: {{ .Values.recovery.data.maxParallel }}
+        {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}

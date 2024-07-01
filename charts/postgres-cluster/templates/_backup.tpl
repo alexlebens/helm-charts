@@ -19,12 +19,24 @@ backup:
         name: {{ include "cluster.backupCredentials" . }}
         key: ACCESS_SECRET_KEY
     wal:
+      {{- if .Values.backup.wal.compression }}
       compression: {{ .Values.backup.wal.compression }}
+      {{- end }}
+      {{- if .Values.backup.wal.encryption }}
       encryption: {{ .Values.backup.wal.encryption }}
+      {{- end }}
+      {{- if .Values.backup.wal.maxParallel }}
       maxParallel: {{ .Values.backup.wal.maxParallel }}
+      {{- end }}
     data:
+      {{- if .Values.backup.data.compression }}
       compression: {{ .Values.backup.data.compression }}
+      {{- end }}
+      {{- if .Values.backup.data.encryption }}
       encryption: {{ .Values.backup.data.encryption }}
-      jobs: {{ .Values.backup.data.jobs }}
+      {{- end }}
+      {{- if .Values.backup.data.maxParallel }}
+      maxParallel: {{ .Values.backup.data.maxParallel }}
+      {{- end }}
 {{- end }}
 {{- end }}
