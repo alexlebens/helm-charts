@@ -7,6 +7,7 @@ bootstrap:
     {{- . | toYaml | nindent 4 }}
     {{- end }}
     {{- end }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (.Values.cluster.initdb) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -21,6 +22,7 @@ bootstrap:
       {{- printf "- %s" . | nindent 6 }}
       {{- end }}
       {{- end }}
+    {{- end }}      
 {{- else if eq .Values.mode "replica" }}
   initdb:
     import:
