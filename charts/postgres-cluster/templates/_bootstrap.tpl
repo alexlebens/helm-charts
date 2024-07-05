@@ -94,8 +94,8 @@ externalClusters:
         {{- if .Values.recovery.data.encryption }}
         encryption: {{ .Values.recovery.data.encryption }}
         {{- end }}
-        {{- if .Values.recovery.data.maxParallel }}
-        maxParallel: {{ .Values.recovery.data.maxParallel }}
+        {{- if .Values.recovery.data.jobs }}
+        jobs: {{ .Values.recovery.data.jobs }}
         {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}

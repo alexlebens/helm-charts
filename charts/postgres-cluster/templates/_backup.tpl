@@ -25,8 +25,8 @@ backup:
       {{- if .Values.backup.wal.encryption }}
       encryption: {{ .Values.backup.wal.encryption }}
       {{- end }}
-      {{- if .Values.backup.wal.jobs }}
-      jobs: {{ .Values.backup.wal.jobs }}
+      {{- if .Values.backup.wal.maxParallel }}
+      maxParallel: {{ .Values.backup.wal.maxParallel }}
       {{- end }}
     data:
       {{- if .Values.backup.data.compression }}
