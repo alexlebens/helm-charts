@@ -43,6 +43,14 @@ spec:
     shared_preload_libraries:
       - timescaledb
     {{- end }}
+    {{- if eq .Values.type "tensorchord" }}
+    shared_preload_libraries:
+      - vectors.so
+    {{- end }}
+    {{- with .Values.cluster.postgresql.shared_preload_libraries }}
+    shared_preload_libraries:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
       {{- toYaml . | nindent 6 }}

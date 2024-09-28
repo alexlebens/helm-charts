@@ -7,7 +7,7 @@ bootstrap:
     {{- . | toYaml | nindent 4 }}
     {{- end }}
     {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (.Values.cluster.initdb.postInitApplicationSQL) }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -16,13 +16,18 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
+      {{- else if eq .Values.type "tensorchord" }}
+      - CREATE EXTENSION IF NOT EXISTS "vector";
+      - CREATE EXTENSION IF NOT EXISTS "vectors";
+      - CREATE EXTENSION IF NOT EXISTS "cube";
+      - CREATE EXTENSION IF NOT EXISTS "earthdistance";
       {{- end }}
       {{- with .Values.cluster.initdb }}
       {{- range .postInitApplicationSQL }}
       {{- printf "- %s" . | nindent 6 }}
       {{- end }}
       {{- end }}
-    {{- end }}      
+    {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
     import:
