@@ -11,6 +11,14 @@ backup:
       key: ca-bundle.crt
     {{- end }}
     serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.backup.backupIndex }}"
+    tags:
+      {{- with .Values.backup.tags }}
+      {{- . | toYaml | nindent 6 }}
+      {{- end }}
+    historyTags:
+      {{- with .Values.backup.historyTags }}
+      {{- . | toYaml | nindent 6 }}
+      {{- end }}
     s3Credentials:
       accessKeyId:
         name: {{ include "cluster.backupCredentials" . }}
