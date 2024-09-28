@@ -7,6 +7,9 @@ bootstrap:
     {{- . | toYaml | nindent 4 }}
     {{- end }}
     {{- end }}
+    {{- if eq .Values.type "tensorchord" }}
+    dataChecksums: true
+    {{- end }}
     {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
@@ -17,10 +20,14 @@ bootstrap:
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- else if eq .Values.type "tensorchord" }}
-      - CREATE EXTENSION IF NOT EXISTS "vector";
+      - ALTER SYSTEM SET search_path TO "$user", public, vectors;
+      - SET search_path TO "$user", public, vectors;
       - CREATE EXTENSION IF NOT EXISTS "vectors";
       - CREATE EXTENSION IF NOT EXISTS "cube";
       - CREATE EXTENSION IF NOT EXISTS "earthdistance";
+      - ALTER SCHEMA vectors OWNER TO "app";
+      - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA vectors TO "app";
+      - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "app";
       {{- end }}
       {{- with .Values.cluster.initdb }}
       {{- range .postInitApplicationSQL }}
