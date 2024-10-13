@@ -8,7 +8,13 @@ global:
 controllers:
   main:
     type: daemonset
-    strategy: RollingUpdate
+    pod:
+      priorityClassName: system-node-critical
+      tolerations:
+        - operator: "Exists"
+          effect: "NoExecute"
+        - operator: "Exists"
+          effect: "NoSchedule"
     containers:
       main:
         image:
@@ -33,7 +39,7 @@ controllers:
             path: /health
           startup:
             type: HTTP
-            path: /health            
+            path: /health
         securityContext:
           privileged: True
 configMaps:
@@ -62,7 +68,7 @@ persistence:
     hostPath: /dev
 serviceMonitor:
   main:
-    serviceName: generic-device-plugin  
+    serviceName: generic-device-plugin
     endpoints:
       - port: http
         scheme: http
