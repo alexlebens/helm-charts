@@ -1,0 +1,76 @@
+{{- include "bjw-s.common.loader.init" . }}
+
+{{- define "genericDevicePlugin.hardcodedValues" -}}
+{{ if not .Values.global.nameOverride }}
+global:
+  nameOverride: {{ .Values.name }}
+{{ end }}
+controllers:
+  main:
+    type: daemonset
+    strategy: RollingUpdate
+    containers:
+      main:
+        image:
+          repository: {{ .Values.image.repository }}
+          tag: {{ .Values.image.tag }}
+          pullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+          - --config=/config/config.yaml
+        env:
+          - name: LISTEN
+            value: {{ .Values.service.listenPort }}
+          - name: PLUGIN_DIRECTORY
+            value: /var/lib/kubelet/device-plugins
+          - name: DOMAIN
+            value: {{ .Values.deviceDomain }}
+        probes:
+          liveness:
+            type: HTTP
+            path: /health
+          readiness:
+            type: HTTP
+            path: /health
+          startup:
+            type: HTTP
+            path: /health            
+        securityContext:
+          privileged: True
+configMaps:
+  config:
+    enabled: {{ .Values.config.enabled }}
+    data:
+      config.yaml: {{ toYaml .Values.config.data | nindent 8 }}
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        port: {{ .Values.service.listenPort }}
+persistence:
+  config:
+    enabled: true
+    type: configMap
+    name: {{ .Values.name }}-config
+  device-plugins:
+    enabled: true
+    type: hostPath
+    hostPath: /var/lib/kubelet/device-plugins
+  dev:
+    enabled: true
+    type: hostPath
+    hostPath: /dev
+serviceMonitor:
+  main:
+    serviceName: generic-device-plugin  
+    endpoints:
+      - port: http
+        scheme: http
+        path: /metrics
+        interval: 30s
+        scrapeTimeout: 10s
+{{- end -}}
+{{- $_ := mergeOverwrite .Values (include "genericDevicePlugin.hardcodedValues" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{ include "bjw-s.common.loader.generate" . }}

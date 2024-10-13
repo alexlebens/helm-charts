@@ -1,0 +1,74 @@
+name: generic-device-plugin
+
+image:
+  repository: ghcr.io/squat/generic-device-plugin
+  pullPolicy: Always
+  tag: latest
+
+deviceDomain: squat.ai
+
+service:
+  listenPort: 8080
+
+resources:
+  limit:
+    cpu: 100m
+    memory: 20Mi
+  requests:
+    cpu: 50m
+    memory: 10Mi
+
+config:
+  enabled: true
+  # -- generic-device-plugin config file [[ref]](https://github.com/squat/generic-device-plugin#usage)
+  # @default -- See [values.yaml](./values.yaml)
+  data: |
+    devices:
+      - name: serial
+        groups:
+          - paths:
+              - path: /dev/ttyUSB*
+          - paths:
+              - path: /dev/ttyACM*
+          - paths:
+              - path: /dev/tty.usb*
+          - paths:
+              - path: /dev/cu.*
+          - paths:
+              - path: /dev/cuaU*
+          - paths:
+              - path: /dev/rfcomm*
+      - name: video
+        groups:
+          - paths:
+              - path: /dev/video0
+      - name: fuse
+        groups:
+          - count: 10
+            paths:
+              - path: /dev/fuse
+      - name: audio
+        groups:
+          - count: 10
+            paths:
+              - path: /dev/snd
+      - name: capture
+        groups:
+          - paths:
+              - path: /dev/snd/controlC0
+              - path: /dev/snd/pcmC0D0c
+          - paths:
+              - path: /dev/snd/controlC1
+                mountPath: /dev/snd/controlC0
+              - path: /dev/snd/pcmC1D0c
+                mountPath: /dev/snd/pcmC0D0c
+          - paths:
+              - path: /dev/snd/controlC2
+                mountPath: /dev/snd/controlC0
+              - path: /dev/snd/pcmC2D0c
+                mountPath: /dev/snd/pcmC0D0c
+          - paths:
+              - path: /dev/snd/controlC3
+                mountPath: /dev/snd/controlC0
+              - path: /dev/snd/pcmC3D0c
+                mountPath: /dev/snd/pcmC0D0c
