@@ -478,6 +478,29 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.1/freshrss-0.0.1.tgz
     version: 0.0.1
+  generic-device-plugin:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2024-10-13T04:18:28.253461732Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.5.1
+    description: Generic Device Plugin
+    digest: fe738c5bc048f355a4daa33223c017c3efe09530fd57e84e77c4e8cb588e1777
+    keywords:
+    - generic-device-plugin
+    - device
+    - plugin
+    maintainers:
+    - name: alexlebens
+    name: generic-device-plugin
+    sources:
+    - https://github.com/squat/generic-device-plugin
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/generic-device-plugin-0.1.0/generic-device-plugin-0.1.0.tgz
+    version: 0.1.0
   home-assistant:
   - apiVersion: v2
     appVersion: v2024.5.4
@@ -5068,4 +5091,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-10-12T00:03:39.94729307Z"
+generated: "2024-10-13T04:18:28.25382842Z"
