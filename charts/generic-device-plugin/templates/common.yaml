@@ -19,7 +19,7 @@ controllers:
           - --config=/config/config.yaml
         env:
           - name: LISTEN
-            value: {{ .Values.service.listenPort }}
+            value: :{{ .Values.service.listenPort }}
           - name: PLUGIN_DIRECTORY
             value: /var/lib/kubelet/device-plugins
           - name: DOMAIN
