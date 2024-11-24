@@ -139,6 +139,28 @@ entries:
     version: 0.0.1
   cloudflared:
   - apiVersion: v2
+    appVersion: 2024.11.1
+    created: "2024-11-24T04:41:10.154952378Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.5.1
+    description: Cloudflared Tunnel
+    digest: 7624ce25d79727454b5f544208d72981881e68c8d22f897f8000672861f15a83
+    icon: https://avatars.githubusercontent.com/u/314135?s=48&v=4
+    keywords:
+    - cloudflare
+    - tunnel
+    maintainers:
+    - name: alexlebens
+    name: cloudflared
+    sources:
+    - https://github.com/cloudflare/cloudflared
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cloudflared-1.10.0/cloudflared-1.10.0.tgz
+    version: 1.10.0
+  - apiVersion: v2
     appVersion: 2024.10.0
     created: "2024-10-19T05:59:06.27316228Z"
     dependencies:
@@ -5174,4 +5196,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-11-24T04:38:54.412609967Z"
+generated: "2024-11-24T04:41:10.155296927Z"
