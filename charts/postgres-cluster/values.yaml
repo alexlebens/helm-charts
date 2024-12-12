@@ -178,9 +178,9 @@ backup:
 
   # Tags to add to backups. Add in key value beneath the type.
   tags:
-    backupRetentionPolicy: "expire"
+    backupRetentionPolicy: ""
   historyTags:
-    backupRetentionPolicy: "keep"
+    backupRetentionPolicy: ""
 
   # Configuration for the WAL and data files.
   wal:
@@ -199,7 +199,7 @@ backup:
     jobs: 2
 
   # Retention policy for backups
-  retentionPolicy: "60d"
+  retentionPolicy: "14d"
 
   # Scheduled backup in cron format
-  schedule: "0 0 */3 * *"
+  schedule: "0 0 */1 * *"
