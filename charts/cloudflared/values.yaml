@@ -3,7 +3,7 @@ existingSecretName: cloudflared-secret
 existingSecretKey: cf-tunnel-token
 image:
   repository: cloudflare/cloudflared
-  tag: "2024.11.1"
+  tag: "2024.12.1"
   pullPolicy: IfNotPresent
 resources:
   requests:
