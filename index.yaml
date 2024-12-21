@@ -139,6 +139,28 @@ entries:
     version: 0.0.1
   cloudflared:
   - apiVersion: v2
+    appVersion: 2024.12.2
+    created: "2024-12-21T01:25:55.285210455Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.5.1
+    description: Cloudflared Tunnel
+    digest: da841d706463894c0dd80eea506a8427f477aad1be895b24d9515d0993771993
+    icon: https://avatars.githubusercontent.com/u/314135?s=48&v=4
+    keywords:
+    - cloudflare
+    - tunnel
+    maintainers:
+    - name: alexlebens
+    name: cloudflared
+    sources:
+    - https://github.com/cloudflare/cloudflared
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cloudflared-1.12.0/cloudflared-1.12.0.tgz
+    version: 1.12.0
+  - apiVersion: v2
     appVersion: 2024.12.1
     created: "2024-12-19T19:58:55.107216754Z"
     dependencies:
@@ -2943,6 +2965,23 @@ entries:
   postgres-cluster:
   - apiVersion: v2
     appVersion: v1.24.1
+    created: "2024-12-21T01:25:55.41427766Z"
+    description: Chart for cloudnative-pg cluster
+    digest: 496ada8cbf4c01ac637407bd4a4591c5ed65ea9f62f24cc43b64f57489e7cf59
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-3.18.0/postgres-cluster-3.18.0.tgz
+    version: 3.18.0
+  - apiVersion: v2
+    appVersion: v1.24.1
     created: "2024-12-19T20:50:15.097857859Z"
     description: Chart for cloudnative-pg cluster
     digest: 747b217abfbe422c676370e3a1cd6c545ed37c99d7a5491a73314648e719873a
@@ -5286,4 +5325,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-19T20:50:15.098321942Z"
+generated: "2024-12-21T01:25:55.414879602Z"
