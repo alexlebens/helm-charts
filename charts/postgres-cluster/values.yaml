@@ -202,4 +202,4 @@ backup:
   retentionPolicy: "14d"
 
   # Scheduled backup in cron format
-  schedule: "0 0 */3 * *"
+  schedule: "0 0 0 * * *"
