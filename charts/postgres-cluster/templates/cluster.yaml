@@ -18,6 +18,7 @@ spec:
   imagePullPolicy: {{ .Values.cluster.image.pullPolicy }}
   postgresUID: {{ .Values.cluster.postgresUID }}
   postgresGID: {{ .Values.cluster.postgresGID }}
+  enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}

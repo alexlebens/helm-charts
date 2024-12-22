@@ -28,6 +28,8 @@ cluster:
   postgresUID: 26
   postgresGID: 26
 
+  enableSuperuserAccess: false
+
   walStorage:
     size: 2Gi
     storageClass: ""
