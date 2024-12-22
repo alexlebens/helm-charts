@@ -37,11 +37,9 @@ bootstrap:
     {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
-    {{- with .Values.replica.importDatabaseName }}
-    database: {{ . }}
-    {{- end }}
-    {{- with .Values.replica.importOwner }}
-    owner: {{ . }}
+    {{- with .Values.cluster.initdb }}
+    {{- with (omit . "postInitApplicationSQL") }}
+    {{- . | toYaml | nindent 4 }}
     {{- end }}
     import:
       type: {{ .Values.replica.importType }}

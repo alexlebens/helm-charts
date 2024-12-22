@@ -139,12 +139,6 @@ replica:
   importDatabases:
     - app
 
-  # If type microservice select the name for the imported database.
-  importDatabaseName: app
-
-  # If type microservice select the name for the database owner.
-  importOwner: app
-
   # If type microservice no roles are imported and ignored
   importRoles: []
 
