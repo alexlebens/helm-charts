@@ -10,7 +10,7 @@ bootstrap:
     {{- if eq .Values.type "tensorchord" }}
     dataChecksums: true
     {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.bootstrap.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
