@@ -37,9 +37,7 @@ bootstrap:
     {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
-    {{- if eq .Values.replica.importType "microservice" }}
     database: {{ first .Values.replica.importDatabases }}
-    {{- end }}
     import:
       type: {{ .Values.replica.importType }}
       databases:
