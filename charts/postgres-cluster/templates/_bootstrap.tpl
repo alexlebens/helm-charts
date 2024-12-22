@@ -37,7 +37,7 @@ bootstrap:
     {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
-    database: {{ .Values.replica.importDatabaseName }}
+    database: jellyplist
     import:
       type: {{ .Values.replica.importType }}
       databases:
