@@ -6,9 +6,6 @@
         ":rebaseStalePrs"
     ],
     "timezone": "US/Central",
-    "schedule": [
-        "every weekday"
-    ],
     "labels": [],
     "packageRules": [
         {
