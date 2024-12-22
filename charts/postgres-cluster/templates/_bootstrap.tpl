@@ -41,6 +41,7 @@ bootstrap:
     {{- with (omit . "postInitApplicationSQL") }}
     {{- . | toYaml | nindent 4 }}
     {{- end }}
+    {{- end }}
     import:
       type: {{ .Values.replica.importType }}
       databases:
