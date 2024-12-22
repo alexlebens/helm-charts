@@ -60,4 +60,5 @@ spec:
     enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
 
   {{ include "cluster.bootstrap" . | nindent 2 }}
+
   {{ include "cluster.backup" . | nindent 2 }}
