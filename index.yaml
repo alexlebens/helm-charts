@@ -2965,6 +2965,23 @@ entries:
   postgres-cluster:
   - apiVersion: v2
     appVersion: v1.24.1
+    created: "2024-12-22T05:30:04.383051593Z"
+    description: Chart for cloudnative-pg cluster
+    digest: a078f1d1f7abb9a32a7057ec443475d2c135167601ed789851e1579834480161
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-3.20.8/postgres-cluster-3.20.8.tgz
+    version: 3.20.8
+  - apiVersion: v2
+    appVersion: v1.24.1
     created: "2024-12-22T05:26:54.684822051Z"
     description: Chart for cloudnative-pg cluster
     digest: 19c2f1a264bea476bdc5a851e80848c67d786d49beaeb124583c57a779ac0a37
@@ -5478,4 +5495,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-22T05:26:54.685324343Z"
+generated: "2024-12-22T05:30:04.383659874Z"
