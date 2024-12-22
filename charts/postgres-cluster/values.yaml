@@ -80,6 +80,7 @@ cluster:
       hot_standby_feedback: "on"
     shared_preload_libraries: []
 
+bootstrap:
   # BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb

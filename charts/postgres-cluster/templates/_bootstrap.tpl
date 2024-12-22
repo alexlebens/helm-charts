@@ -2,7 +2,7 @@
 bootstrap:
 {{- if eq .Values.mode "standalone" }}
   initdb:
-    {{- with .Values.cluster.initdb }}
+    {{- with .Values.bootstrap.initdb }}
     {{- with (omit . "postInitApplicationSQL") }}
     {{- . | toYaml | nindent 4 }}
     {{- end }}
@@ -29,7 +29,7 @@ bootstrap:
       - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA vectors TO "app";
       - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "app";
       {{- end }}
-      {{- with .Values.cluster.initdb }}
+      {{- with .Values.bootstrap.initdb }}
       {{- range .postInitApplicationSQL }}
       {{- printf "- %s" . | nindent 6 }}
       {{- end }}
@@ -37,11 +37,6 @@ bootstrap:
     {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
-    {{- with .Values.cluster.initdb }}
-    {{- with (omit . "postInitApplicationSQL") }}
-    {{- . | toYaml | nindent 4 }}
-    {{- end }}
-    {{- end }}
     import:
       type: {{ .Values.replica.importType }}
       databases:
@@ -66,6 +61,11 @@ bootstrap:
       {{- end }}
       source:
         externalCluster: "{{ include "cluster.name" . }}-cluster"
+    {{- with .Values.bootstrap.initdb }}
+    {{- with (omit . "postInitApplicationSQL") }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}
+    {{- end }}        
 externalClusters:
   - name: "{{ include "cluster.name" . }}-cluster"
     {{- with .Values.replica.externalCluster }}
