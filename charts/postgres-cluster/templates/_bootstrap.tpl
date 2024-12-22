@@ -37,7 +37,7 @@ bootstrap:
     {{- end }}
 {{- else if eq .Values.mode "replica" }}
   initdb:
-    database: {{ first .Values.replica.importDatabases }}
+    database: {{ .Values.replica.importDatabaseName }}
     import:
       type: {{ .Values.replica.importType }}
       databases:
