@@ -65,7 +65,7 @@ bootstrap:
     {{- with (omit . "postInitApplicationSQL") }}
     {{- . | toYaml | nindent 4 }}
     {{- end }}
-    {{- end }}        
+    {{- end }}
 externalClusters:
   - name: "{{ include "cluster.name" . }}-cluster"
     {{- with .Values.replica.externalCluster }}

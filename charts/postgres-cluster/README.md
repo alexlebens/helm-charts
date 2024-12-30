@@ -1,17 +1,99 @@
-## Introduction
+# postgres-cluster
 
-[CloudNative PG](https://github.com/cloudnative-pg/cloudnative-pg)
+![Version: 4.0.1](https://img.shields.io/badge/Version-4.0.1-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
 
-CloudNativePG is the Kubernetes operator that covers the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture, using native streaming replication.
+Chart for cloudnative-pg cluster
 
-This chart bootstraps a [CNPG](https://github.com/cloudnative-pg/cloudnative-pg) cluster on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+## Maintainers
 
-## Prerequisites
+| Name | Email | Url |
+| ---- | ------ | --- |
+| alexlebens |  |  |
 
-- Kubernetes
-- Helm
-- CloudNative PG Operator
+## Source Code
 
-## Parameters
+* <https://github.com/cloudnative-pg/cloudnative-pg>
 
-See the [values files](values.yaml).
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| backup.backupIndex | int | `1` |  |
+| backup.backupName | string | `""` |  |
+| backup.data.compression | string | `"snappy"` |  |
+| backup.data.encryption | string | `""` |  |
+| backup.data.jobs | int | `2` |  |
+| backup.destinationPath | string | `""` |  |
+| backup.enabled | bool | `false` |  |
+| backup.endpointCA | string | `""` |  |
+| backup.endpointCredentials | string | `""` |  |
+| backup.endpointURL | string | `""` |  |
+| backup.historyTags.backupRetentionPolicy | string | `""` |  |
+| backup.retentionPolicy | string | `"14d"` |  |
+| backup.schedule | string | `"0 0 0 * * *"` |  |
+| backup.tags.backupRetentionPolicy | string | `""` |  |
+| backup.wal.compression | string | `"snappy"` |  |
+| backup.wal.encryption | string | `""` |  |
+| backup.wal.maxParallel | int | `2` |  |
+| bootstrap.initdb | object | `{}` |  |
+| cluster.additionalLabels | object | `{}` |  |
+| cluster.affinity.enablePodAntiAffinity | bool | `true` |  |
+| cluster.affinity.topologyKey | string | `"kubernetes.io/hostname"` |  |
+| cluster.annotations | object | `{}` |  |
+| cluster.enableSuperuserAccess | bool | `false` |  |
+| cluster.image.pullPolicy | string | `"IfNotPresent"` |  |
+| cluster.image.repository | string | `"ghcr.io/cloudnative-pg/postgresql"` |  |
+| cluster.image.tag | string | `"17.2-22"` |  |
+| cluster.instances | int | `3` |  |
+| cluster.logLevel | string | `"info"` |  |
+| cluster.monitoring.enabled | bool | `false` |  |
+| cluster.monitoring.podMonitor.enabled | bool | `true` |  |
+| cluster.monitoring.prometheusRule.enabled | bool | `false` |  |
+| cluster.monitoring.prometheusRule.excludeRules | list | `[]` |  |
+| cluster.postgresGID | int | `26` |  |
+| cluster.postgresUID | int | `26` |  |
+| cluster.postgresql.parameters.hot_standby_feedback | string | `"on"` |  |
+| cluster.postgresql.parameters.max_slot_wal_keep_size | string | `"2000MB"` |  |
+| cluster.postgresql.parameters.shared_buffers | string | `"128MB"` |  |
+| cluster.postgresql.shared_preload_libraries | list | `[]` |  |
+| cluster.primaryUpdateMethod | string | `"switchover"` |  |
+| cluster.primaryUpdateStrategy | string | `"unsupervised"` |  |
+| cluster.priorityClassName | string | `""` |  |
+| cluster.resources.limits.cpu | string | `"800m"` |  |
+| cluster.resources.limits.hugepages-2Mi | string | `"256Mi"` |  |
+| cluster.resources.limits.memory | string | `"1Gi"` |  |
+| cluster.resources.requests.cpu | string | `"10m"` |  |
+| cluster.resources.requests.memory | string | `"256Mi"` |  |
+| cluster.storage.size | string | `"10Gi"` |  |
+| cluster.storage.storageClass | string | `""` |  |
+| cluster.walStorage.size | string | `"2Gi"` |  |
+| cluster.walStorage.storageClass | string | `""` |  |
+| mode | string | `"standalone"` |  |
+| nameOverride | string | `""` | Override the name of the cluster |
+| recovery.data.compression | string | `"snappy"` |  |
+| recovery.data.encryption | string | `""` |  |
+| recovery.data.jobs | int | `2` |  |
+| recovery.destinationPath | string | `""` |  |
+| recovery.endpointCA | string | `""` |  |
+| recovery.endpointCredentials | string | `""` |  |
+| recovery.endpointURL | string | `""` |  |
+| recovery.pitrTarget.time | string | `""` |  |
+| recovery.recoveryIndex | int | `1` |  |
+| recovery.recoveryInstanceName | string | `""` |  |
+| recovery.recoveryServerName | string | `""` |  |
+| recovery.wal.compression | string | `"snappy"` |  |
+| recovery.wal.encryption | string | `""` |  |
+| recovery.wal.maxParallel | int | `2` |  |
+| replica.externalCluster.connectionParameters.dbname | string | `"app"` |  |
+| replica.externalCluster.connectionParameters.host | string | `"postgresql"` |  |
+| replica.externalCluster.connectionParameters.user | string | `"app"` |  |
+| replica.externalCluster.password.key | string | `"password"` |  |
+| replica.externalCluster.password.name | string | `"postgresql"` |  |
+| replica.importDatabases[0] | string | `"app"` |  |
+| replica.importRoles | list | `[]` |  |
+| replica.importType | string | `"microservice"` |  |
+| replica.postImportApplicationSQL | list | `[]` |  |
+| type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` * `timescaledb` * `tensorchord` |
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

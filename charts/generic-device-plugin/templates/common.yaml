@@ -1,6 +1,6 @@
-{{- include "bjw-s.common.loader.init" . }}
+{{ include "bjw-s.common.loader.init" . }}
 
-{{- define "genericDevicePlugin.hardcodedValues" -}}
+{{ define "genericDevicePlugin.hardcodedValues" }}
 {{ if not .Values.global.nameOverride }}
 global:
   nameOverride: {{ .Values.name }}
@@ -75,8 +75,8 @@ serviceMonitor:
         path: /metrics
         interval: 30s
         scrapeTimeout: 10s
-{{- end -}}
-{{- $_ := mergeOverwrite .Values (include "genericDevicePlugin.hardcodedValues" . | fromYaml) -}}
+{{ end }}
+{{ $_ := mergeOverwrite .Values (include "genericDevicePlugin.hardcodedValues" . | fromYaml) }}
 
 {{/* Render the templates */}}
 {{ include "bjw-s.common.loader.generate" . }}
