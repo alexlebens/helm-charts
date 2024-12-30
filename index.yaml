@@ -140,6 +140,28 @@ entries:
   cloudflared:
   - apiVersion: v2
     appVersion: 2024.12.2
+    created: "2024-12-30T22:55:31.185313134Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.5.1
+    description: Cloudflared Tunnel
+    digest: 25f008f99533af750c1b8af4ad866617aafeb536ad732aa57cf40c7618132422
+    icon: https://avatars.githubusercontent.com/u/314135?s=48&v=4
+    keywords:
+    - cloudflare
+    - tunnel
+    maintainers:
+    - name: alexlebens
+    name: cloudflared
+    sources:
+    - https://github.com/cloudflare/cloudflared
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cloudflared-1.12.1/cloudflared-1.12.1.tgz
+    version: 1.12.1
+  - apiVersion: v2
+    appVersion: 2024.12.2
     created: "2024-12-21T01:25:55.285210455Z"
     dependencies:
     - name: common
@@ -567,6 +589,28 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.1/freshrss-0.0.1.tgz
     version: 0.0.1
   generic-device-plugin:
+  - apiVersion: v2
+    appVersion: 0.1.3
+    created: "2024-12-30T22:55:31.380107229Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.5.1
+    description: Generic Device Plugin
+    digest: 287822769572f2f83337c53e54a4560a98dda5b812912e38793d1966bf9a3c7a
+    keywords:
+    - generic-device-plugin
+    - device
+    - plugin
+    maintainers:
+    - name: alexlebens
+    name: generic-device-plugin
+    sources:
+    - https://github.com/squat/generic-device-plugin
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/generic-device-plugin-0.1.3/generic-device-plugin-0.1.3.tgz
+    version: 0.1.3
   - apiVersion: v2
     appVersion: 0.1.2
     created: "2024-10-13T17:39:19.080819603Z"
@@ -2963,6 +3007,23 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/penpot-0.1.0/penpot-0.1.0.tgz
     version: 0.1.0
   postgres-cluster:
+  - apiVersion: v2
+    appVersion: v1.25.0
+    created: "2024-12-30T22:55:31.616548526Z"
+    description: Chart for cloudnative-pg cluster
+    digest: cbdde4ac25d2b397a5287935aec78f541454f0715867b79685b16b9267f770ef
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster
+    sources:
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-4.0.1/postgres-cluster-4.0.1.tgz
+    version: 4.0.1
   - apiVersion: v2
     appVersion: v1.25.0
     created: "2024-12-25T03:08:20.210478698Z"
@@ -5563,4 +5624,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-25T03:08:20.211024023Z"
+generated: "2024-12-30T22:55:31.617238986Z"
