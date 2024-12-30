@@ -612,6 +612,28 @@ entries:
     version: 0.0.1
   generic-device-plugin:
   - apiVersion: v2
+    appVersion: 0.1.5
+    created: "2024-12-30T23:04:30.535450625Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.6.0
+    description: Generic Device Plugin
+    digest: 33d7f1b875e28d442614aca3d3c80f161df1f4e140e9a905b16da7a3035407c0
+    keywords:
+    - generic-device-plugin
+    - device
+    - plugin
+    maintainers:
+    - name: alexlebens
+    name: generic-device-plugin
+    sources:
+    - https://github.com/squat/generic-device-plugin
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/generic-device-plugin-0.1.5/generic-device-plugin-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
     appVersion: 0.1.3
     created: "2024-12-30T22:55:31.380107229Z"
     dependencies:
@@ -5646,4 +5668,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-30T23:00:55.678537451Z"
+generated: "2024-12-30T23:04:30.535848546Z"
