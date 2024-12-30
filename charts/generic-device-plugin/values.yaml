@@ -1,15 +1,20 @@
+# -- Name override of release
 name: generic-device-plugin
 
+# -- Default image
 image:
   repository: ghcr.io/squat/generic-device-plugin
   pullPolicy: Always
   tag: latest
 
+# -- Domain used by devices for identifcation
 deviceDomain: squat.ai
 
+# -- Service port
 service:
   listenPort: 8080
 
+# -- Default resources
 resources:
   limit:
     cpu: 100m
@@ -18,6 +23,7 @@ resources:
     cpu: 50m
     memory: 10Mi
 
+# -- Config map
 config:
   enabled: true
   # -- generic-device-plugin config file [[ref]](https://github.com/squat/generic-device-plugin#usage)
