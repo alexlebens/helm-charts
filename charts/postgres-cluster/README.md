@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 4.0.3](https://img.shields.io/badge/Version-4.0.3-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
+![Version: 4.1.0](https://img.shields.io/badge/Version-4.1.0-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
 
 Chart for cloudnative-pg cluster
 
@@ -44,7 +44,7 @@ Chart for cloudnative-pg cluster
 | cluster.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.2-22"}` | Default image |
 | cluster.instances | int | `3` |  |
 | cluster.logLevel | string | `"info"` |  |
-| cluster.monitoring | object | `{"enabled":false,"podMonitor":{"enabled":true},"prometheusRule":{"enabled":false,"excludeRules":[]}}` | Enable default monitoring and alert rules |
+| cluster.monitoring | object | `{"enabled":false,"podMonitor":{"enabled":true},"prometheusRule":{"enableDefaultRules":true,"enabled":false,"excludeRules":[]}}` | Enable default monitoring and alert rules |
 | cluster.postgresGID | int | `26` |  |
 | cluster.postgresUID | int | `26` | The UID and GID of the postgres user inside the image |
 | cluster.postgresql | object | `{"parameters":{"hot_standby_feedback":"on","max_slot_wal_keep_size":"2000MB","shared_buffers":"128MB"},"shared_preload_libraries":[]}` | Parameters to be set for the database itself See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |

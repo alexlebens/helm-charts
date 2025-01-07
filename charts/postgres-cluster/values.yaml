@@ -74,6 +74,7 @@ cluster:
       enabled: true
     prometheusRule:
       enabled: false
+      enableDefaultRules: true
       excludeRules: []
 
   # -- Parameters to be set for the database itself
