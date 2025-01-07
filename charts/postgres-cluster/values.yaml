@@ -42,10 +42,10 @@ cluster:
   resources:
     requests:
       memory: 256Mi
-      cpu: 10m
+      cpu: 100m
     limits:
-      memory: 1Gi
-      cpu: 800m
+      memory: 2Gi
+      cpu: 1000m
       hugepages-2Mi: 256Mi
 
   # -- See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
