@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 4.1.2](https://img.shields.io/badge/Version-4.1.2-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
+![Version: 4.1.3](https://img.shields.io/badge/Version-4.1.3-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
 
 Chart for cloudnative-pg cluster
 
@@ -51,7 +51,7 @@ Chart for cloudnative-pg cluster
 | cluster.primaryUpdateMethod | string | `"switchover"` | Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or in-place (restart). |
 | cluster.primaryUpdateStrategy | string | `"unsupervised"` | Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised) |
 | cluster.priorityClassName | string | `""` |  |
-| cluster.resources | object | `{"limits":{"cpu":1,"hugepages-2Mi":"256Mi","memory":"2Gi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Default resources |
+| cluster.resources | object | `{"limits":{"cpu":"1","hugepages-2Mi":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Default resources |
 | cluster.storage.size | string | `"10Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.walStorage | object | `{"size":"2Gi","storageClass":""}` | Default storage size |
