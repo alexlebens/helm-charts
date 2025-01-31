@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 4.1.3](https://img.shields.io/badge/Version-4.1.3-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
+![Version: 4.1.4](https://img.shields.io/badge/Version-4.1.4-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
 
 Chart for cloudnative-pg cluster
 
@@ -22,19 +22,19 @@ Chart for cloudnative-pg cluster
 | backup.backupName | string | `""` | Name of the backup cluster in the object store, defaults to "cluster.name" |
 | backup.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backup.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| backup.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
+| backup.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
 | backup.destinationPath | string | `""` | S3 path starting with "s3://" |
 | backup.enabled | bool | `false` |  |
 | backup.endpointCA | string | `""` | Specifies secret that contains a CA bundle to validate a privately signed certificate, should contain the key ca-bundle.crt |
 | backup.endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
 | backup.endpointURL | string | `""` | S3 endpoint starting with "https://" |
 | backup.historyTags.backupRetentionPolicy | string | `""` |  |
-| backup.retentionPolicy | string | `"14d"` | Retention policy for backups |
-| backup.schedule | string | `"0 0 0 * * *"` | Scheduled backup in cron format |
+| backup.retentionPolicy | string | `"7d"` | Retention policy for backups |
+| backup.schedule | string | `"0 0 */3 * *"` | Scheduled backup in cron format |
 | backup.tags | object | `{"backupRetentionPolicy":""}` | Tags to add to backups. Add in key value beneath the type. |
 | backup.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backup.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| backup.wal.maxParallel | int | `2` | Number of WAL files to be archived or restored in parallel. |
+| backup.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
 | bootstrap | object | `{"initdb":{}}` | Bootstrap is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
 | bootstrap.initdb | object | `{}` | Example values database: app owner: app secret: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch postInitApplicationSQL:   - CREATE TABLE IF NOT EXISTS example; |
 | cluster.additionalLabels | object | `{}` |  |
@@ -57,10 +57,10 @@ Chart for cloudnative-pg cluster
 | cluster.walStorage | object | `{"size":"2Gi","storageClass":""}` | Default storage size |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - Default mode. Creates new or updates an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup * `replica` - Create database as a replica from another CNPG cluster |
 | nameOverride | string | `""` | Override the name of the cluster |
-| recovery | object | `{"data":{"compression":"snappy","encryption":"","jobs":2},"destinationPath":"","endpointCA":"","endpointCredentials":"","endpointURL":"","pitrTarget":{"time":""},"recoveryIndex":1,"recoveryInstanceName":"","recoveryServerName":"","wal":{"compression":"snappy","encryption":"","maxParallel":2}}` | Recovery settings when booting cluster from external cluster |
+| recovery | object | `{"data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"","endpointCA":"","endpointCredentials":"","endpointURL":"","pitrTarget":{"time":""},"recoveryIndex":1,"recoveryInstanceName":"","recoveryServerName":"","wal":{"compression":"snappy","encryption":"","maxParallel":1}}` | Recovery settings when booting cluster from external cluster |
 | recovery.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| recovery.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
+| recovery.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
 | recovery.endpointCA | string | `""` | Specifies secret that contains a CA bundle to validate a privately signed certificate, should contain the key ca-bundle.crt |
 | recovery.endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
 | recovery.endpointURL | string | `""` | S3 https endpoint and the s3:// path |
@@ -70,7 +70,7 @@ Chart for cloudnative-pg cluster
 | recovery.recoveryServerName | string | `""` | Name of the recovery cluster in the object store, defaults to "cluster.name" |
 | recovery.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| recovery.wal.maxParallel | int | `2` | Number of WAL files to be archived or restored in parallel. |
+| recovery.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
 | replica.externalCluster | object | `{"connectionParameters":{"dbname":"app","host":"postgresql","user":"app"},"password":{"key":"password","name":"postgresql"}}` | External cluster connection, password specifies a secret name and the key containing the password value |
 | replica.importDatabases | list | `["app"]` | If type microservice only one database is allowed, default is app as standard in cnpg clusters |
 | replica.importRoles | list | `[]` | If type microservice no roles are imported and ignored |
