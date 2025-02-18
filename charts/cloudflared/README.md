@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 1.13.0](https://img.shields.io/badge/Version-1.13.0-informational?style=flat-square) ![AppVersion: 2025.1.0](https://img.shields.io/badge/AppVersion-2025.1.0-informational?style=flat-square)
+![Version: 1.14.0](https://img.shields.io/badge/Version-1.14.0-informational?style=flat-square) ![AppVersion: 2025.2.0](https://img.shields.io/badge/AppVersion-2025.2.0-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -19,7 +19,7 @@ Cloudflared Tunnel
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bjw-s.github.io/helm-charts/ | common | 3.6.1 |
+| https://bjw-s.github.io/helm-charts/ | common | 3.7.1 |
 
 ## Values
 
@@ -27,7 +27,7 @@ Cloudflared Tunnel
 |-----|------|---------|-------------|
 | existingSecretKey | string | `"cf-tunnel-token"` | Name of key that contains the token in the existingSecret |
 | existingSecretName | string | `"cloudflared-secret"` | Name of existing secret that contains Cloudflare token |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2025.1.0"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2025.2.0"}` | Default image |
 | name | string | `"cloudflared"` | Name override of release |
 | resources | object | `{"requests":{"cpu":"10m","memory":"128Mi"}}` | Default resources |
 
