@@ -36,6 +36,16 @@
             "automerge": false
         },
         {
+            "description": "Label charts",
+            "matchDatasources": [
+                "helm"
+            ],
+            "addLabels": [
+                "chart"
+            ],
+            "automerge": false
+        },
+        {
             "description": "Label images",
             "matchDatasources": [
                 "docker"
@@ -46,14 +56,15 @@
             "automerge": false
         },
         {
-            "description": "Label charts",
+            "description": "CNPG image",
             "matchDatasources": [
-                "helm"
+                "docker"
             ],
             "addLabels": [
-                "chart"
+                "image"
             ],
-            "automerge": false
+            "automerge": false,
+            "versioning": "deb"
         }
     ]
 }
