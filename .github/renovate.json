@@ -43,8 +43,7 @@
             "addLabels": [
                 "image"
             ],
-            "automerge": false,
-            "minimumReleaseAge": "3 days"
+            "automerge": false
         },
         {
             "description": "Label charts",
@@ -54,8 +53,7 @@
             "addLabels": [
                 "chart"
             ],
-            "automerge": false,
-            "minimumReleaseAge": "3 days"
+            "automerge": false
         }
     ]
 }
