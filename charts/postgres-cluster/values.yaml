@@ -20,7 +20,7 @@ cluster:
   # -- Default image
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
-    tag: "17.2-34"
+    tag: "17.4-2-bullseye"
     pullPolicy: IfNotPresent
 
   # -- The UID and GID of the postgres user inside the image
