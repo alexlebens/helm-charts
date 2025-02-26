@@ -57,6 +57,9 @@
         },
         {
             "description": "CNPG image",
+            "matchDepNames": [
+                "ghcr.io/cloudnative-pg/postgresql"
+            ],
             "matchDatasources": [
                 "docker"
             ],
