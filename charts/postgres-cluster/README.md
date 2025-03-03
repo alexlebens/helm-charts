@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 4.2.0](https://img.shields.io/badge/Version-4.2.0-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
+![Version: 4.2.1](https://img.shields.io/badge/Version-4.2.1-informational?style=flat-square) ![AppVersion: v1.25.0](https://img.shields.io/badge/AppVersion-v1.25.0-informational?style=flat-square)
 
 Chart for cloudnative-pg cluster
 
@@ -41,7 +41,7 @@ Chart for cloudnative-pg cluster
 | cluster.affinity | object | `{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"}` | See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
 | cluster.enableSuperuserAccess | bool | `false` | Create secret containing credentials of superuser |
-| cluster.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.4-2-bullseye"}` | Default image |
+| cluster.image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.4-3-bullseye"}` | Default image |
 | cluster.instances | int | `3` |  |
 | cluster.logLevel | string | `"info"` |  |
 | cluster.monitoring | object | `{"enabled":false,"podMonitor":{"enabled":true},"prometheusRule":{"enableDefaultRules":true,"enabled":false,"excludeRules":[]}}` | Enable default monitoring and alert rules |
