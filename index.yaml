@@ -140,6 +140,28 @@ entries:
   cloudflared:
   - apiVersion: v2
     appVersion: 2025.2.1
+    created: "2025-03-06T00:10:46.10133266Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.7.2
+    description: Cloudflared Tunnel
+    digest: 0bc7fbdbbae7d4fa8dd3546f86b7bb832205cd6060c6b26314b5c89ba15edee1
+    icon: https://avatars.githubusercontent.com/u/314135?s=48&v=4
+    keywords:
+    - cloudflare
+    - tunnel
+    maintainers:
+    - name: alexlebens
+    name: cloudflared
+    sources:
+    - https://github.com/cloudflare/cloudflared
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cloudflared-1.14.2/cloudflared-1.14.2.tgz
+    version: 1.14.2
+  - apiVersion: v2
+    appVersion: 2025.2.1
     created: "2025-03-03T17:16:31.451451045Z"
     dependencies:
     - name: common
@@ -699,6 +721,28 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/freshrss-0.0.1/freshrss-0.0.1.tgz
     version: 0.0.1
   generic-device-plugin:
+  - apiVersion: v2
+    appVersion: 0.1.7
+    created: "2025-03-06T00:10:46.214777946Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s.github.io/helm-charts/
+      version: 3.7.2
+    description: Generic Device Plugin
+    digest: 2192ee97ded189b298d69772b4535f55b9f595c824daaf0e1ea034f8382b2a44
+    keywords:
+    - generic-device-plugin
+    - device
+    - plugin
+    maintainers:
+    - name: alexlebens
+    name: generic-device-plugin
+    sources:
+    - https://github.com/squat/generic-device-plugin
+    - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/generic-device-plugin-0.1.8/generic-device-plugin-0.1.8.tgz
+    version: 0.1.8
   - apiVersion: v2
     appVersion: 0.1.7
     created: "2025-02-18T02:17:49.881854875Z"
@@ -5970,4 +6014,4 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2025-03-03T17:17:27.813934177Z"
+generated: "2025-03-06T00:10:46.215287792Z"
