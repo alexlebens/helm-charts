@@ -36,8 +36,8 @@ jobs:
 
       - name: Publish Helm Chart to Gitea
         run: |
-          helm registry login ${{ vars.REPOSITORY_HOST }} -u ${{ github.actor }} -p ${{ secrets.REPOSITORY_TOKEN }}
-          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REPOSITORY_HOST }}/${{ github.actor }} --provenance=false
+          helm repo add --username ${{ github.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm-charts
+          helm cm-push ${{ env.PACKAGE_PATH }} helm-charts
 
       - name: Release Helm Chart
         uses: akkuman/gitea-release-action@v1
