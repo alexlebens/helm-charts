@@ -35,3 +35,4 @@ jobs:
           gitea_token: ${{ secrets.REPOSITORY_TOKEN }}
           tag_name_pattern: '{chartName}-chart'
           skip_existing: true
+          version: 3.17.1
