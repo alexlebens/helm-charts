@@ -21,7 +21,6 @@ jobs:
         with:
           token: ${{ secrets.GITEA_TOKEN }}
           version: latest
-        id: install
 
       - name: Package Helm Chart
         run: |
@@ -40,8 +39,15 @@ jobs:
           helm repo add --username ${{ github.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm
           helm cm-push ${{ env.PACKAGE_PATH }} helm-charts
 
+      - name: Extract Chart Metadata
+        run: |
+          CHART_VERSION=$(yq '.version' Chart.yaml)
+          CHART_NAME=$(yq '.name' Chart.yaml)
+
       - name: Release Helm Chart
         uses: akkuman/gitea-release-action@v1
         with:
+          name: $CHART_NAME
+          tag_name: $CHART_VERSION
           files: |-
             ${{ env.PACKAGE_PATH }}
