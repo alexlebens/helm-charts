@@ -1,6 +1,6 @@
 # generic-device-plugin
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![AppVersion: 0.1.9](https://img.shields.io/badge/AppVersion-0.1.9-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![AppVersion: 0.1.10](https://img.shields.io/badge/AppVersion-0.1.10-informational?style=flat-square)
 
 Generic Device Plugin
 
@@ -19,7 +19,7 @@ Generic Device Plugin
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bjw-s.github.io/helm-charts/ | common | 3.7.2 |
+| https://bjw-s.github.io/helm-charts/ | common | 3.7.3 |
 
 ## Values
 
