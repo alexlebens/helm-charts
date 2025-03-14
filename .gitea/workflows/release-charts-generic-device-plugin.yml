@@ -45,8 +45,8 @@ jobs:
       - name: Extract Chart Metadata
         run: |
           cd $WORKFLOW_DIR
-          CHART_VERSION=$(yq '.version' Chart.yaml)
-          CHART_NAME=$(yq '.name' Chart.yaml)
+          echo "CHART_VERSION=$(yq '.version' Chart.yaml)" >> $GITEA_ENV
+          echo "CHART_NAME=$(yq '.name' Chart.yaml)" >> $GITEA_ENV
 
       - name: Release Helm Chart
         uses: akkuman/gitea-release-action@v1
