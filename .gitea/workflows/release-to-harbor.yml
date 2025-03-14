@@ -1,0 +1,37 @@
+name: Release Charts
+# https://github.com/thpham/helm-oci-charts-releaser
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/**'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "${{ gitea.actor }}"
+          git config user.email "${{ gitea.actor }}@users.noreply.${{ vars.REPOSITORY_HOST }}"
+
+      - name: Run chart-releaser
+        uses: https://github.com/thpham/helm-oci-charts-releaser@v1
+        with:
+          oci_registry: ${{ vars.REGISTRY_HOST }}/v2/helm-charts
+          oci_username: ${{ vars.REGISTRY_USER }}
+          oci_password: ${{ secrets.REGISTRY_SECRET }}
+          gitea_server: ${{ vars.REPOSITORY_HOST }}
+          gitea_token: ${{ secrets.REPOSITORY_TOKEN }}
+          tag_name_pattern: '{chartName}-chart'
+          skip_existing: true
