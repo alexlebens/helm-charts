@@ -32,7 +32,7 @@ jobs:
       - name: Publish Helm Chart to Harbor
         run: |
           helm registry login ${{ vars.REGISTRY_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }}
-          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REGISTRY_HOST }}/${{ vars.REGISTRY_USER }}
+          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REGISTRY_HOST }}/helm-charts
 
       - name: Publish Helm Chart to Gitea
         run: |
