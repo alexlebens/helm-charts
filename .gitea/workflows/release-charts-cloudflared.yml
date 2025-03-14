@@ -51,7 +51,7 @@ jobs:
       - name: Release Helm Chart
         uses: akkuman/gitea-release-action@v1
         with:
-          name: $CHART_NAME
-          tag_name: $CHART_VERSION
+          name: ${{ env.CHART_NAME }}
+          tag_name: ${{ env.CHART_VERSION }}
           files: |-
             ${{ env.PACKAGE_PATH }}
