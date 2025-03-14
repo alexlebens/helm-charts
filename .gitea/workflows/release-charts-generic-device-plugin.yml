@@ -36,7 +36,7 @@ jobs:
 
       - name: Publish Helm Chart to Gitea
         run: |
-          helm repo add --username ${{ github.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm-charts
+          helm repo add --username ${{ github.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm
           helm cm-push ${{ env.PACKAGE_PATH }} helm-charts
 
       - name: Release Helm Chart
