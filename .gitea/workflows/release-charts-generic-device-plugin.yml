@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "charts/generic-device-plugin"
+      - "charts/generic-device-plugin/**"
 
   workflow_dispatch:
 
