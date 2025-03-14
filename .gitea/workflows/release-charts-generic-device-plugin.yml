@@ -41,6 +41,7 @@ jobs:
 
       - name: Extract Chart Metadata
         run: |
+          cd charts/generic-device-plugin
           CHART_VERSION=$(yq '.version' Chart.yaml)
           CHART_NAME=$(yq '.name' Chart.yaml)
 
