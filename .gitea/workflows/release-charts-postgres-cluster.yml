@@ -9,6 +9,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  WORKFLOW_DIR: "charts/postgres-cluster"
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
 
       - name: Package Helm Chart
         run: |
-          cd charts/postgres-cluster
+          cd $WORKFLOW_DIR
           helm dependency build
           echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITEA_ENV
 
@@ -41,7 +44,7 @@ jobs:
 
       - name: Extract Chart Metadata
         run: |
-          cd charts/generic-device-plugin
+          cd $WORKFLOW_DIR
           CHART_VERSION=$(yq '.version' Chart.yaml)
           CHART_NAME=$(yq '.name' Chart.yaml)
 
