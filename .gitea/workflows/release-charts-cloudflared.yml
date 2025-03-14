@@ -26,6 +26,7 @@ jobs:
       - name: Package Helm Chart
         run: |
           cd charts/cloudflared
+          helm dependency build
           echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITEA_ENV
 
       - name: Publish Helm Chart to Harbor
