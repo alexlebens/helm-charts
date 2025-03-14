@@ -1,0 +1,45 @@
+name: release-charts-cloudflared
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "charts/cloudflared"
+
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITEA_TOKEN }}
+          version: latest
+        id: install
+
+      - name: Package Helm Chart
+        run: |
+          cd charts/cloudflared
+          echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITEA_ENV
+
+      - name: Publish Helm Chart to Harbor
+        run: |
+          helm registry login ${{ vars.REGISTRY_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }}
+          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REGISTRY_HOST }}/${{ vars.REGISTRY_USER }}
+
+      - name: Publish Helm Chart to Gitea
+        run: |
+          helm registry login ${{ vars.REPOSITORY_HOST }} -u ${{ github.actor }} -p ${{ secrets.REPOSITORY_TOKEN }}
+          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REPOSITORY_HOST }}/${{ github.actor }}
+
+      - name: Release Helm Chart
+        uses: akkuman/gitea-release-action@v1
+        with:
+          files: |-
+            ${{ env.PACKAGE_PATH }}
