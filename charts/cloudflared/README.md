@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 1.14.3](https://img.shields.io/badge/Version-1.14.3-informational?style=flat-square) ![AppVersion: 2025.2.1](https://img.shields.io/badge/AppVersion-2025.2.1-informational?style=flat-square)
+![Version: 1.14.4](https://img.shields.io/badge/Version-1.14.4-informational?style=flat-square) ![AppVersion: 2025.5.0](https://img.shields.io/badge/AppVersion-2025.5.0-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -27,7 +27,7 @@ Cloudflared Tunnel
 |-----|------|---------|-------------|
 | existingSecretKey | string | `"cf-tunnel-token"` | Name of key that contains the token in the existingSecret |
 | existingSecretName | string | `"cloudflared-secret"` | Name of existing secret that contains Cloudflare token |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2025.2.1"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2025.5.0"}` | Default image |
 | name | string | `"cloudflared"` | Name override of release |
 | resources | object | `{"requests":{"cpu":"10m","memory":"128Mi"}}` | Default resources |
 
