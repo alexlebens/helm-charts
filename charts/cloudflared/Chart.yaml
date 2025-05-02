@@ -1,18 +1,18 @@
 apiVersion: v2
 name: cloudflared
-version: 1.14.6
+version: 1.14.7
 description: Cloudflared Tunnel
 keywords:
   - cloudflare
   - tunnel
 sources:
   - https://github.com/cloudflare/cloudflared
-  - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+  - https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common
 maintainers:
   - name: alexlebens
 dependencies:
   - name: common
-    repository: https://bjw-s.github.io/helm-charts/
+    repository: https://bjw-s-labs.github.io/helm-charts/
     version: 3.7.3
 icon: https://avatars.githubusercontent.com/u/314135?s=48&v=4
 appVersion: "2025.4.2"

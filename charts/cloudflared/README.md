@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 1.14.6](https://img.shields.io/badge/Version-1.14.6-informational?style=flat-square) ![AppVersion: 2025.4.2](https://img.shields.io/badge/AppVersion-2025.4.2-informational?style=flat-square)
+![Version: 1.14.7](https://img.shields.io/badge/Version-1.14.7-informational?style=flat-square) ![AppVersion: 2025.4.2](https://img.shields.io/badge/AppVersion-2025.4.2-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -13,13 +13,13 @@ Cloudflared Tunnel
 ## Source Code
 
 * <https://github.com/cloudflare/cloudflared>
-* <https://github.com/bjw-s/helm-charts/tree/main/charts/library/common>
+* <https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common>
 
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bjw-s.github.io/helm-charts/ | common | 3.7.3 |
+| https://bjw-s-labs.github.io/helm-charts/ | common | 3.7.3 |
 
 ## Values
 
