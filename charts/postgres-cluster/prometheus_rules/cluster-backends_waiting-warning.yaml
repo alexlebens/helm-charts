@@ -1,0 +1,16 @@
+{{- $alert := "CNPGClusterBackendsWaitingWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster a backend is waiting for longer than 5 minutes.
+  description: |-
+    Pod {{`{{`}} $labels.pod {{`}}`}}
+    has been waiting for longer than 5 minutes
+expr: |
+  cnpg_backends_waiting_total > 300
+for: 1m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

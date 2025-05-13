@@ -10,6 +10,17 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "cluster.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "cluster.chart" -}}
@@ -38,6 +49,56 @@ app.kubernetes.io/part-of: cloudnative-pg
 {{- end }}
 
 {{/*
+Whether we need to use TimescaleDB defaults
+*/}}
+{{- define "cluster.useTimescaleDBDefaults" -}}
+{{ and (eq .Values.type "timescaledb") .Values.imageCatalog.create (empty .Values.cluster.imageCatalogRef.name) (empty .Values.imageCatalog.images) (empty .Values.cluster.imageName) }}
+{{- end -}}
+
+{{/*
+Cluster Image Name
+If a custom imageName is available, use it, otherwise use the defaults based on the .Values.type
+*/}}
+{{- define "cluster.imageName" -}}
+    {{- if .Values.cluster.image.repository -}}
+        {{- printf "%s:%s" .Values.cluster.image.repository .Values.cluster.image.tag -}}
+    {{- else if eq .Values.type "postgresql" -}}
+        {{- printf "ghcr.io/cloudnative-pg/postgresql:%s" .Values.version.postgresql -}}
+    {{- else if eq .Values.type "postgis" -}}
+        {{- printf "ghcr.io/cloudnative-pg/postgis:%s-%s" .Values.version.postgresql .Values.version.postgis -}}
+    {{- else -}}
+        {{ fail "Invalid cluster type!" }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Cluster Image
+If imageCatalogRef defined, use it, otherwise calculate ordinary imageName.
+*/}}
+{{- define "cluster.image" }}
+{{- if .Values.cluster.imageCatalogRef.name }}
+imageCatalogRef:
+  apiGroup: postgresql.cnpg.io
+  {{- toYaml .Values.cluster.imageCatalogRef | nindent 2 }}
+  major: {{ include "cluster.postgresqlMajor" . }}
+{{- else if and .Values.imageCatalog.create (not (empty .Values.imageCatalog.images )) }}
+imageCatalogRef:
+  apiGroup: postgresql.cnpg.io
+  kind: ImageCatalog
+  name: {{ include "cluster.name" . }}
+  major: {{ include "cluster.postgresqlMajor" . }}
+{{- else if eq (include "cluster.useTimescaleDBDefaults" .) "true" -}}
+imageCatalogRef:
+  apiGroup: postgresql.cnpg.io
+  kind: ImageCatalog
+  name: {{ include "cluster.name" . }}-timescaledb-ha
+  major: {{ include "cluster.postgresqlMajor" . }}
+{{- else }}
+imageName: {{ include "cluster.imageName" . }}
+{{- end }}
+{{- end }}
+
+{{/*
 Generate name for object store credentials
 */}}
 {{- define "cluster.recoveryCredentials" -}}
@@ -57,6 +118,32 @@ Generate name for object store credentials
 {{- end }}
 
 {{/*
+Postgres UID
+*/}}
+{{- define "cluster.postgresUID" -}}
+  {{- if ge (int .Values.cluster.postgresUID) 0 -}}
+    {{- .Values.cluster.postgresUID }}
+  {{- else if and (eq (include "cluster.useTimescaleDBDefaults" .) "true") (eq .Values.type "timescaledb") -}}
+    {{- 1000 -}}
+  {{- else -}}
+    {{- 26 -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Postgres GID
+*/}}
+{{- define "cluster.postgresGID" -}}
+  {{- if ge (int .Values.cluster.postgresGID) 0 -}}
+    {{- .Values.cluster.postgresGID }}
+  {{- else if and (eq (include "cluster.useTimescaleDBDefaults" .) "true") (eq .Values.type "timescaledb") -}}
+    {{- 1000 -}}
+  {{- else -}}
+    {{- 26 -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Generate backup server name
 */}}
 {{- define "cluster.backupName" -}}
@@ -67,7 +154,6 @@ Generate backup server name
   {{- end }}
 {{- end }}
 
-
 {{/*
 Generate recovery server name
 */}}
@@ -76,16 +162,5 @@ Generate recovery server name
     {{- .Values.recovery.recoveryServerName -}}
   {{- else -}}
     {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.recoveryIndex) | trunc 63 | trimSuffix "-" -}}
-  {{- end }}
-{{- end }}
-
-{{/*
-Generate recovery instance name
-*/}}
-{{- define "cluster.recoveryInstanceName" -}}
-  {{- if .Values.recovery.recoveryInstanceName -}}
-    {{- .Values.recovery.recoveryInstanceName -}}
-  {{- else -}}
-    {{ include "cluster.name" . }}
   {{- end }}
 {{- end }}

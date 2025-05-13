@@ -7,18 +7,22 @@ backup:
     endpointURL: {{ .Values.backup.endpointURL }}
     {{- if .Values.backup.endpointCA }}
     endpointCA:
-      name: {{ .Values.backup.endpointCA }}
-      key: ca-bundle.crt
+      name: {{ .Values.backup.endpointCA.name }}
+      key: {{ .Values.backup.endpointCA.key }}
     {{- end }}
-    serverName: "{{ include "cluster.name" . }}-backup-{{ .Values.backup.backupIndex }}"
-    tags:
-      {{- with .Values.backup.tags }}
-      {{- . | toYaml | nindent 6 }}
+    serverName: "{{ include "cluster.backupName" . }}-backup-{{ .Values.backup.backupIndex }}"
+    wal:
+      compression: {{ .Values.backup.wal.compression }}
+      {{- with .Values.backup.wal.encryption}}
+      encryption: {{ . }}
       {{- end }}
-    historyTags:
-      {{- with .Values.backup.historyTags }}
-      {{- . | toYaml | nindent 6 }}
+      maxParallel: {{ .Values.backup.wal.maxParallel }}
+    data:
+      compression: {{ .Values.backup.data.compression }}
+      {{- with .Values.backup.data.encryption }}
+      encryption: {{ . }}
       {{- end }}
+      jobs: {{ .Values.backup.data.jobs }}
     s3Credentials:
       accessKeyId:
         name: {{ include "cluster.backupCredentials" . }}
@@ -26,25 +30,5 @@ backup:
       secretAccessKey:
         name: {{ include "cluster.backupCredentials" . }}
         key: ACCESS_SECRET_KEY
-    wal:
-      {{- if .Values.backup.wal.compression }}
-      compression: {{ .Values.backup.wal.compression }}
-      {{- end }}
-      {{- if .Values.backup.wal.encryption }}
-      encryption: {{ .Values.backup.wal.encryption }}
-      {{- end }}
-      {{- if .Values.backup.wal.maxParallel }}
-      maxParallel: {{ .Values.backup.wal.maxParallel }}
-      {{- end }}
-    data:
-      {{- if .Values.backup.data.compression }}
-      compression: {{ .Values.backup.data.compression }}
-      {{- end }}
-      {{- if .Values.backup.data.encryption }}
-      encryption: {{ .Values.backup.data.encryption }}
-      {{- end }}
-      {{- if .Values.backup.data.jobs }}
-      jobs: {{ .Values.backup.data.jobs }}
-      {{- end }}
 {{- end }}
 {{- end }}

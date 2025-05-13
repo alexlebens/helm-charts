@@ -1,0 +1,16 @@
+{{- $alert := "CNPGClusterDatabaseDeadlockConflictsWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster has over 10 deadlock conflicts.
+  description: |-
+    There are over 10 deadlock conflicts in
+    {{`{{`}} $labels.pod {{`}}`}}
+expr: |
+  cnpg_pg_stat_database_deadlocks > 10
+for: 1m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

@@ -1,16 +1,20 @@
 {{- define "cluster.bootstrap" -}}
-bootstrap:
+
 {{- if eq .Values.mode "standalone" }}
+bootstrap:
   initdb:
-    {{- with .Values.bootstrap.initdb }}
-    {{- with (omit . "postInitApplicationSQL") }}
-    {{- . | toYaml | nindent 4 }}
+    {{- with .Values.cluster.initdb }}
+        {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
+            {{- . | toYaml | nindent 4 }}
+        {{- end }}
     {{- end }}
+    {{- if .Values.cluster.initdb.owner }}
+    owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
     {{- if eq .Values.type "tensorchord" }}
     dataChecksums: true
     {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.bootstrap.initdb.postInitApplicationSQL) }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -29,65 +33,117 @@ bootstrap:
       - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA vectors TO "app";
       - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "app";
       {{- end }}
-      {{- with .Values.bootstrap.initdb }}
-      {{- range .postInitApplicationSQL }}
-      {{- printf "- %s" . | nindent 6 }}
-      {{- end }}
+      {{- with .Values.cluster.initdb }}
+        {{- range .postInitApplicationSQL }}
+          {{- printf "- %s" . | nindent 6 }}
+        {{- end -}}
       {{- end }}
     {{- end }}
-{{- else if eq .Values.mode "replica" }}
+
+{{- else if eq .Values.mode "recovery" -}}
+bootstrap:
+
+{{- if eq .Values.recovery.method "pgBaseBackup" }}
+  pg_basebackup:
+    source: pgBaseBackupSource
+    {{ with .Values.recovery.pgBaseBackup.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.pgBaseBackup.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.pgBaseBackup.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+externalClusters:
+  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" .Values.recovery.pgBaseBackup.source) | nindent 2 }}
+
+{{- else if eq .Values.recovery.method "import" }}
   initdb:
+    {{- with .Values.cluster.initdb }}
+      {{- with (omit . "owner" "import" "postInitApplicationSQL") }}
+        {{- . | toYaml | nindent 4 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.cluster.initdb.owner }}
+    owner: {{ tpl .Values.cluster.initdb.owner . }}
+    {{- end }}
     import:
-      type: {{ .Values.replica.importType }}
+      source:
+        externalCluster: importSource
+      type: {{ .Values.recovery.import.type }}
       databases:
-        {{- if and (gt (len .Values.replica.importDatabases) 1) (eq .Values.replica.importType "microservice") }}
+        {{- if and (gt (len .Values.recovery.import.databases) 1) (eq .Values.recovery.import.type "microservice") }}
           {{ fail "Too many databases in import type of microservice!" }}
         {{- else}}
-        {{- with .Values.replica.importDatabases }}
+        {{- with .Values.recovery.import.databases }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
         {{- end }}
-      {{- if eq .Values.replica.importType "monolith" }}
+      {{- if eq .Values.recovery.import.type "monolith" }}
       roles:
         {{- with .Values.replica.importRoles }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
       {{- end }}
-      {{- if and (.Values.replica.postImportApplicationSQL) (eq .Values.replica.importType "microservice") }}
+      {{- if and (.Values.recovery.import.postImportApplicationSQL) (eq .Values.recovery.import.type "microservice") }}
       postImportApplicationSQL:
-        {{- with .Values.replica.postImportApplicationSQL }}
+        {{- with .Values.recovery.import.postImportApplicationSQL }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
       {{- end }}
-      source:
-        externalCluster: "{{ include "cluster.name" . }}-cluster"
-    {{- with .Values.bootstrap.initdb }}
-    {{- with (omit . "postInitApplicationSQL") }}
-    {{- . | toYaml | nindent 4 }}
-    {{- end }}
-    {{- end }}
+      schemaOnly: {{ .Values.recovery.import.schemaOnly }}
+      {{ with .Values.recovery.import.pgDumpExtraOptions }}
+      pgDumpExtraOptions:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{ with .Values.recovery.import.pgRestoreExtraOptions }}
+      pgRestoreExtraOptions:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
 externalClusters:
-  - name: "{{ include "cluster.name" . }}-cluster"
-    {{- with .Values.replica.externalCluster }}
-    {{- . | toYaml | nindent 4 }}
-    {{- end }}
-{{- else if eq .Values.mode "recovery" }}
+  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
+
+{{- else if eq .Values.mode "backup" }}
   recovery:
-    {{- with .Values.recovery.pitrTarget.time }}
+    {{- with .Values.recovery.backup.pitrTarget.time }}
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
+    {{ with .Values.recovery.backup.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.backup.owner }}
+    owner: {{ . }}
+    {{- end }}
+    backup:
+      name: {{ .Values.recovery.backup.backupName }}
+
+{{- else if eq .Values.mode "objectStore" }}
+  recovery:
+    {{- with .Values.recovery.objectStore.pitrTarget.time }}
+    recoveryTarget:
+      targetTime: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.objectStore.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.objectStore.owner }}
+    owner: {{ . }}
+    {{- end }}
     source: {{ include "cluster.recoveryServerName" . }}
+
 externalClusters:
   - name: {{ include "cluster.recoveryServerName" . }}
     barmanObjectStore:
       serverName: {{ include "cluster.recoveryServerName" . }}
-      destinationPath: {{ .Values.recovery.destinationPath }}
-      endpointURL: {{ .Values.recovery.endpointURL }}
-      {{- with .Values.recovery.endpointCA }}
+      endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
+      destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
+      {{- if .Values.recovery.objectStore.endpointCA }}
       endpointCA:
-        name: {{ . }}
-        key: ca-bundle.crt
+        name: {{ .Values.recovery.objectStore.endpointCA.name }}
+        key: {{ .Values.recovery.objectStore.endpointCA.key }}
       {{- end }}
       s3Credentials:
         accessKeyId:
@@ -97,26 +153,24 @@ externalClusters:
           name: {{ include "cluster.recoveryCredentials" . }}
           key: ACCESS_SECRET_KEY
       wal:
-        {{- if .Values.recovery.wal.compression }}
-        compression: {{ .Values.recovery.wal.compression }}
+        compression: {{ .Values.recovery.objectStore.wal.compression }}
+        {{- with .Values.recovery.objectStore.wal.encryption}}
+        encryption: {{ . }}
         {{- end }}
-        {{- if .Values.recovery.wal.encryption }}
-        encryption: {{ .Values.recovery.wal.encryption }}
-        {{- end }}
-        {{- if .Values.recovery.wal.maxParallel }}
-        maxParallel: {{ .Values.recovery.wal.maxParallel }}
-        {{- end }}
+        maxParallel: {{ .Values.recovery.objectStore.wal.maxParallel }}
       data:
-        {{- if .Values.recovery.data.compression }}
-        compression: {{ .Values.recovery.data.compression }}
+        compression: {{ .Values.recovery.objectStore.data.compression }}
+        {{- with .Values.recovery.objectStore.data.encryption }}
+        encryption: {{ . }}
         {{- end }}
-        {{- if .Values.recovery.data.encryption }}
-        encryption: {{ .Values.recovery.data.encryption }}
-        {{- end }}
-        {{- if .Values.recovery.data.jobs }}
-        jobs: {{ .Values.recovery.data.jobs }}
-        {{- end }}
-{{- else }}
+        jobs: {{ .Values.recovery.objectStore.data.jobs }}
+
+{{-  else }}
+  {{ fail "Invalid recovery mode!" }}
+{{- end }}
+
+{{-  else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
+
 {{- end }}

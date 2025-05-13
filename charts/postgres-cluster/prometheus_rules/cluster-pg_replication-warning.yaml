@@ -1,0 +1,15 @@
+{{- $alert := "CNPGClusterPGReplicationWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster standby is lagging behind the primary.
+  description: |-
+    Standby is lagging behind by over 300 seconds (5 minutes)
+expr: |
+  cnpg_pg_replication_lag > 300
+for: 1m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}
