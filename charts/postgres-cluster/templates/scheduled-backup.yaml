@@ -14,6 +14,6 @@ spec:
   schedule: {{ .schedule | quote }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
-    name: {{ include "cluster.name" $context }}
+    name: {{ include "cluster.name" $context }}-cluster
 {{ end -}}
 {{ end }}
