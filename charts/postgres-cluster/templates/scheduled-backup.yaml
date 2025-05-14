@@ -6,12 +6,9 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
   name: {{ include "cluster.name" $context }}-{{ .name }}-scheduled-backup
-  namespace: {{ include "cluster.namespace" $ }}
+  namespace: {{ include "cluster.namespace" $context }}
   labels:
-    {{- include "cluster.labels" $ | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "cluster.labels" $context | nindent 4 }}
 spec:
   immediate: true
   schedule: {{ .schedule | quote }}

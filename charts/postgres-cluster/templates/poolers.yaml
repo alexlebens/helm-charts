@@ -6,10 +6,7 @@ metadata:
   name: {{ include "cluster.name" $  }}-pooler-{{ .name }}
   namespace: {{ include "cluster.namespace" $ }}
   labels:
-    {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   cluster:
     name: {{ include "cluster.name" $ }}

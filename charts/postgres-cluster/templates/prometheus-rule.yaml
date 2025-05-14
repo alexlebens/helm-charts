@@ -6,9 +6,6 @@ metadata:
   namespace: {{ include "cluster.namespace" $ }}
   labels:
     {{- include "cluster.labels" $ | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   groups:
     - name: cloudnative-pg/{{ include "cluster.name" . }}

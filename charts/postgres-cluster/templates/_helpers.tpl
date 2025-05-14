@@ -26,6 +26,9 @@ helm.sh/chart: {{ include "cluster.chart" $ }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.cluster.additionalLabels }}
+{{ toYaml . }}
+{{- end }}
 {{- end }}
 
 {{/*

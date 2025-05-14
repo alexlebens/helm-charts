@@ -9,15 +9,12 @@ metadata:
   {{- end }}
   labels:
     {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   instances: {{ .Values.cluster.instances }}
   {{- include "cluster.image" . | nindent 2 }}
   imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
-  imagePullPolicy: {{ .Values.cluster.image.imagePullPolicy }}
-  {{- with .Values.cluster.image.imagePullSecrets }}
+  imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
+  {{- with .Values.cluster.imagePullSecrets }}
   imagePullSecrets:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
