@@ -10,17 +10,6 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
-Allow the release namespace to be overridden for multi-namespace deployments in combined charts
-*/}}
-{{- define "cluster.namespace" -}}
-  {{- if .Values.namespaceOverride -}}
-    {{- .Values.namespaceOverride -}}
-  {{- else -}}
-    {{- .Release.Namespace -}}
-  {{- end -}}
-{{- end -}}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "cluster.chart" -}}
@@ -47,6 +36,17 @@ app.kubernetes.io/name: {{ include "cluster.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/part-of: cloudnative-pg
 {{- end }}
+
+{{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "cluster.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
 
 {{/*
 Whether we need to use TimescaleDB defaults
