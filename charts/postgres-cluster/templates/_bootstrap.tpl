@@ -105,7 +105,7 @@ externalClusters:
 externalClusters:
   {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
 
-{{- else if eq .Values.mode "backup" }}
+{{- else if eq .Values.recovery.method "backup" }}
   recovery:
     {{- with .Values.recovery.backup.pitrTarget.time }}
     recoveryTarget:
@@ -120,7 +120,7 @@ externalClusters:
     backup:
       name: {{ .Values.recovery.backup.backupName }}
 
-{{- else if eq .Values.mode "objectStore" }}
+{{- else if eq .Values.recovery.method "objectStore" }}
   recovery:
     {{- with .Values.recovery.objectStore.pitrTarget.time }}
     recoveryTarget:
