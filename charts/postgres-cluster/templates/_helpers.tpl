@@ -20,8 +20,8 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "cluster.labels" -}}
-helm.sh/chart: {{ include "cluster.chart" . }}
-{{ include "cluster.selectorLabels" . }}
+helm.sh/chart: {{ include "cluster.chart" $ }}
+{{ include "cluster.selectorLabels" $ }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -32,7 +32,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "cluster.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "cluster.name" . }}
+app.kubernetes.io/name: {{ include "cluster.name" $ }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/part-of: cloudnative-pg
 {{- end }}
