@@ -5,7 +5,7 @@ backup:
   barmanObjectStore:
     destinationPath: {{ .Values.backup.destinationPath }}
     endpointURL: {{ .Values.backup.endpointURL }}
-    {{- if .Values.backup.endpointCA }}
+    {{- if .Values.backup.endpointCA.name }}
     endpointCA:
       name: {{ .Values.backup.endpointCA.name }}
       key: {{ .Values.backup.endpointCA.key }}

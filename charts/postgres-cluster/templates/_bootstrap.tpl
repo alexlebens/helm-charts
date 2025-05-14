@@ -140,7 +140,7 @@ externalClusters:
       serverName: {{ include "cluster.recoveryServerName" . }}
       endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
       destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
-      {{- if .Values.recovery.objectStore.endpointCA }}
+      {{- if .Values.recovery.objectStore.endpointCA.name }}
       endpointCA:
         name: {{ .Values.recovery.objectStore.endpointCA.name }}
         key: {{ .Values.recovery.objectStore.endpointCA.key }}
