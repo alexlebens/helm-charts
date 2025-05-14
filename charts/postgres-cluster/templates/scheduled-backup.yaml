@@ -8,7 +8,7 @@ metadata:
   name: {{ include "cluster.name" $context }}-{{ .name }}-scheduled-backup
   namespace: {{ include "cluster.namespace" $ }}
   labels:
-    {{- include "cluster.labels" . | nindent 4 }}
+    {{- include "cluster.labels" $ | nindent 4 }}
   {{- with .Values.cluster.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}

@@ -2,10 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ include "cluster.name" . }}-alert-rules
-  namespace: {{ include "cluster.namespace" . }}
+  name: {{ include "cluster.name" $ }}-alert-rules
+  namespace: {{ include "cluster.namespace" $ }}
   labels:
-    {{- include "cluster.labels" . | nindent 4 }}
+    {{- include "cluster.labels" $ | nindent 4 }}
   {{- with .Values.cluster.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
