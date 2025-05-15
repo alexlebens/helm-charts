@@ -44,7 +44,7 @@ cluster:
   # -- Default image
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
-    tag: "17.4-3-bullseye"
+    tag: "17.5-1-bullseye"
 
   # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
   imageCatalogRef: {}
