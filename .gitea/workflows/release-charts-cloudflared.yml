@@ -55,3 +55,12 @@ jobs:
           tag_name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
           files: |-
             ${{ env.PACKAGE_PATH }}
+
+      - name: Actions Ntfy
+        run: |
+          curl \
+            -H "Authorization: Bearer ${{ secrets.NTFY_CRED }}" \
+            -H "Title: Chart Released: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}" \
+            -H "Content-Type: text/plain" \
+            -d $'Repo: ${{ gitea.repository }}\nCommit: ${{ gitea.sha }}\nRef: ${{ gitea.ref }}\nStatus: ${{ job.status}}' \
+            ${{ secrets.NTFY_URL }}
