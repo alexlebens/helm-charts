@@ -81,7 +81,6 @@ persistence:
           - path: /server
             readOnly: true
             mountPropagation: None
-            subPath: server
   client-tls:
     enabled: true
     type: secret
@@ -92,7 +91,6 @@ persistence:
           - path: /client
             readOnly: true
             mountPropagation: None
-            subPath: client
 
 {{ end }}
 {{ $_ := mergeOverwrite .Values (include "barman-cloud.hardcodedValues" . | fromYaml) }}
