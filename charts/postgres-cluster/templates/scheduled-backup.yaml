@@ -5,8 +5,8 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: "{{ include "cluster.name" . }}-{{ $context.name }}-scheduled-backup"
-  namespace: {{ include "cluster.namespace" . }}
+  name: "{{ include "cluster.name" $context }}-{{ $context.name }}-scheduled-backup"
+  namespace: {{ include "cluster.namespace" $context }}
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
 spec:
@@ -15,11 +15,11 @@ spec:
   schedule: {{ $context.schedule | quote }}
   backupOwnerReference: {{ $context.backupOwnerReference }}
   cluster:
-    name: {{ include "cluster.name" . }}-cluster
+    name: {{ include "cluster.name" $context }}-cluster
   method: plugin
   pluginConfiguration:
     name: {{ $context.plugin }}
     parameters:
-      barmanObjectName: "{{ include "cluster.name" . }}-{{ $context.backupName }}-backup"
+      barmanObjectName: "{{ include "cluster.name" $context }}-{{ $context.backupName }}-backup"
 {{ end -}}
 {{ end }}
