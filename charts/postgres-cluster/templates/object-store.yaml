@@ -14,12 +14,12 @@ spec:
   configuration:
     destinationPath: {{ $context.destinationPath }}
     endpointURL: {{ $context.endpointURL }}
-    {{- if $context.endpointCA.name }}
+    {{- if not (empty $context.endpointCA.name) }}
     endpointCA:
       name: {{ $context.endpointCA.name }}
       key: {{ $context.endpointCA.key }}
     {{- end }}
-    {{- if $context.clusterName }}
+    {{- if not (empty $context.clusterName) }}
     serverName: "{{ $context.clusterName }}-backup-{{ $context.index }}"
     {{- else }}
     serverName: "{{ include "cluster.name" $context }}-backup-{{ $context.index }}"
@@ -38,14 +38,14 @@ spec:
       jobs: {{ $context.data.jobs }}
     s3Credentials:
       accessKeyId:
-        {{- if $context.endpointCredentials }}
+        {{- if not (empty $context.endpointCredentials) }}
         name: {{ $context.endpointCredentials }}
         {{- else }}
         name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
         {{- end }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        {{- if $context.endpointCredentials }}
+        {{- if not (empty $context.endpointCredentials) }}
         name: {{ $context.endpointCredentials }}
         {{- else }}
         name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
@@ -67,7 +67,7 @@ spec:
   configuration:
     destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
     endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
-    {{- if .Values.recovery.objectStore.endpointCA.name }}
+    {{- if not (empty .Values.recovery.objectStore.endpointCA.name) }}
     endpointCA:
       name: {{ .Values.recovery.objectStore.endpointCA.name }}
       key: {{ .Values.recovery.objectStore.endpointCA.key }}
