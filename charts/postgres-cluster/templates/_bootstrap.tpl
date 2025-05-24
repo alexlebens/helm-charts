@@ -131,6 +131,7 @@ externalClusters:
   - name: {{ include "cluster.recoveryServerName" . }}
     plugin:
       name: barman-cloud.cloudnative-pg.io
+      enabled: true
       parameters:
         barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
         serverName: {{ include "cluster.recoveryServerName" . }}
