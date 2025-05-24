@@ -13,7 +13,7 @@ controllers:
     replicas: 1
     strategy: Recreate
     serviceAccount:
-      name: plugin-barman-cloud
+      name: {{ .Release.Name }}-plugin-barman-cloud
     pod:
       securityContext:
         runAsNonRoot: true
