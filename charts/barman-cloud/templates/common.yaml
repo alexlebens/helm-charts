@@ -82,6 +82,13 @@ persistence:
             readOnly: true
             mountPropagation: None
             subPath: server
+  client-tls:
+    enabled: true
+    type: secret
+    name: {{ .Values.name }}-client-tls
+    advancedMounts:
+      main:
+        main:
           - path: /client
             readOnly: true
             mountPropagation: None
