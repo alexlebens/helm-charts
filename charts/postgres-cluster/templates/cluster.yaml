@@ -26,9 +26,9 @@ spec:
   {{ $context := . -}}
   {{ range .Values.backup.objectStore -}}
     - name: barman-cloud.cloudnative-pg.io
-      isWALArchiver: {{ $context.isWALArchiver }}
+      isWALArchiver: {{ .isWALArchiver }}
       parameters:
-        barmanObjectName: "{{ include "cluster.name" . }}-{{ $context.name }}-backup"
+        barmanObjectName: "{{ include "cluster.name" $context }}-{{ .name }}-backup"
   {{ end -}}
   {{ end }}
   {{ if eq .Values.recovery.method "objectStore" }}

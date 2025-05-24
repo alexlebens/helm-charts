@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "cluster.name" -}}
-  {{- if not (empty .Values.nameOverride ) }}
+  {{- if .Values.nameOverride }}
     {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
     {{- printf "%s-postgresql-%s" .Release.Name ((semver .Values.cluster.image.tag).Major | toString) | trunc 63 | trimSuffix "-" -}}

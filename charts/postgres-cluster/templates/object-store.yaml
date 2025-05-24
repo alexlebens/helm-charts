@@ -5,48 +5,48 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: "{{ include "cluster.name" $context }}-{{ $context.name }}-backup"
+  name: "{{ include "cluster.name" $context }}-{{ .name }}-backup"
   namespace: {{ include "cluster.namespace" $context }}
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
 spec:
-  retentionPolicy: {{ $context.retentionPolicy }}
+  retentionPolicy: {{ .retentionPolicy }}
   configuration:
-    destinationPath: {{ $context.destinationPath }}
-    endpointURL: {{ $context.endpointURL }}
-    {{- if .endpointCA.enabled }}
+    destinationPath: {{ .destinationPath }}
+    endpointURL: {{ .endpointURL }}
+    {{ if .endpointCA.enabled }}
     endpointCA:
       name: {{ .endpointCA.name }}
       key: {{ .endpointCA.key }}
-    {{- end }}
-    {{- if not (empty $context.clusterName) }}
-    serverName: "{{ $context.clusterName }}-backup-{{ $context.index }}"
+    {{ end }}
+    {{- if .clusterName }}
+    serverName: "{{ .clusterName }}-backup-{{ .index }}"
     {{- else }}
-    serverName: "{{ include "cluster.name" $context }}-backup-{{ $context.index }}"
+    serverName: "{{ include "cluster.name" $context }}-backup-{{ .index }}"
     {{- end }}
     wal:
-      compression: {{ $context.wal.compression }}
-      {{- with $context.wal.encryption}}
+      compression: {{ .wal.compression }}
+      {{- with .wal.encryption}}
       encryption: {{ . }}
       {{- end }}
-      maxParallel: {{ $context.wal.maxParallel }}
+      maxParallel: {{ .wal.maxParallel }}
     data:
-      compression: {{ $context.data.compression }}
-      {{- with $context.data.encryption }}
+      compression: {{ .data.compression }}
+      {{- with .data.encryption }}
       encryption: {{ . }}
       {{- end }}
-      jobs: {{ $context.data.jobs }}
+      jobs: {{ .data.jobs }}
     s3Credentials:
       accessKeyId:
-        {{- if not (empty $context.endpointCredentials) }}
-        name: {{ $context.endpointCredentials }}
+        {{- if not (empty .endpointCredentials) }}
+        name: {{ .endpointCredentials }}
         {{- else }}
         name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
         {{- end }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        {{- if not (empty $context.endpointCredentials) }}
-        name: {{ $context.endpointCredentials }}
+        {{- if .endpointCredentials }}
+        name: {{ .endpointCredentials }}
         {{- else }}
         name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
         {{- end }}

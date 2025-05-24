@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 6.0.9](https://img.shields.io/badge/Version-6.0.9-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
+![Version: 6.1.0](https://img.shields.io/badge/Version-6.1.0-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -19,19 +19,19 @@ Cloudnative-pg Cluster
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backup | object | `{"enabled":false,"method":"objectStore","objectStore":[{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"","endpointCA":{"create":false,"enabled":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","index":1,"isWALArchiver":true,"name":"external","retentionPolicy":"30d","wal":{"compression":"snappy","encryption":"","maxParallel":1}}],"scheduledBackups":[{"backupName":"external","backupOwnerReference":"self","name":"daily-backup","plugin":"barman-cloud.cloudnative-pg.io","schedule":"0 0 */3 * *","suspend":false}]}` | Backup settings |
-| backup.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
+| backup | object | `{"enabled":true,"method":"objectStore","objectStore":[{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"s3://postgres-backups","endpointCA":{"create":false,"enabled":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"https://nyc3.digitaloceanspaces.com","index":1,"isWALArchiver":true,"name":"external","retentionPolicy":"30d","wal":{"compression":"snappy","encryption":"","maxParallel":1}}],"scheduledBackups":[{"backupName":"external","backupOwnerReference":"self","name":"daily-backup","plugin":"barman-cloud.cloudnative-pg.io","schedule":"0 0 */3 * *","suspend":false}]}` | Backup settings |
+| backup.enabled | bool | `true` | You need to configure backups manually, so backups are disabled by default. |
 | backup.method | string | `"objectStore"` | Method to create backups, options currently are only objectStore |
-| backup.objectStore | list | `[{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"","endpointCA":{"create":false,"enabled":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","index":1,"isWALArchiver":true,"name":"external","retentionPolicy":"30d","wal":{"compression":"snappy","encryption":"","maxParallel":1}}]` | Options for object store backups |
+| backup.objectStore | list | `[{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"s3://postgres-backups","endpointCA":{"create":false,"enabled":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"https://nyc3.digitaloceanspaces.com","index":1,"isWALArchiver":true,"name":"external","retentionPolicy":"30d","wal":{"compression":"snappy","encryption":"","maxParallel":1}}]` | Options for object store backups |
 | backup.objectStore[0].clusterName | string | `""` | Override the name of the backup cluster, defaults to "cluster.name" |
 | backup.objectStore[0].data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backup.objectStore[0].data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backup.objectStore[0].data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
-| backup.objectStore[0].destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| backup.objectStore[0].destinationPath | string | `"s3://postgres-backups"` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
 | backup.objectStore[0].endpointCA | object | `{"create":false,"enabled":false,"key":"","name":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | backup.objectStore[0].endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | backup.objectStore[0].endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
-| backup.objectStore[0].endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
+| backup.objectStore[0].endpointURL | string | `"https://nyc3.digitaloceanspaces.com"` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
 | backup.objectStore[0].index | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }} |
 | backup.objectStore[0].isWALArchiver | bool | `true` | Specificies if this backup will do WALs |
 | backup.objectStore[0].name | string | `"external"` | Object store backup name |
