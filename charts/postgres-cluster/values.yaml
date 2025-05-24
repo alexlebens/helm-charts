@@ -278,8 +278,8 @@ recovery:
 
       # -- Creates a secret with the given value if true, otherwise uses an existing secret.
       create: false
-      name: ""
-      key: ""
+      name: null
+      key: null
 
     # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
     index: 1
@@ -443,8 +443,8 @@ backup:
       endpointCA:
         # -- Creates a secret with the given value if true, otherwise uses an existing secret.
         create: false
-        name: ""
-        key: ""
+        name: null
+        key: null
 
       # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
       index: 1
