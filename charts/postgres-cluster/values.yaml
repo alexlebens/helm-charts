@@ -275,8 +275,6 @@ recovery:
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
-      enabled: false
-
       # -- Creates a secret with the given value if true, otherwise uses an existing secret.
       create: false
 
@@ -443,8 +441,6 @@ backup:
 
       # -- Specifies a CA bundle to validate a privately signed certificate.
       endpointCA:
-        enabled: false
-
         # -- Creates a secret with the given value if true, otherwise uses an existing secret.
         create: false
 

@@ -14,7 +14,7 @@ spec:
   configuration:
     destinationPath: {{ .destinationPath }}
     endpointURL: {{ .endpointURL }}
-    {{ if .endpointCA.enabled }}
+    {{ if .endpointCA.name }}
     endpointCA:
       name: {{ .endpointCA.name }}
       key: {{ .endpointCA.key }}
@@ -67,7 +67,7 @@ spec:
   configuration:
     destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
     endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
-    {{- if .Values.recovery.objectStore.endpointCA.enabled }}
+    {{- if .Values.recovery.objectStore.endpointCA.name }}
     endpointCA:
       name: {{ .Values.recovery.objectStore.endpointCA.name }}
       key: {{ .Values.recovery.objectStore.endpointCA.key }}
