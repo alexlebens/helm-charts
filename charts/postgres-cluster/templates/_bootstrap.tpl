@@ -14,16 +14,9 @@ bootstrap:
     {{- if eq .Values.type "tensorchord" }}
     dataChecksums: true
     {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
+    {{- if or (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
-      {{- if eq .Values.type "postgis" }}
-      - CREATE EXTENSION IF NOT EXISTS postgis;
-      - CREATE EXTENSION IF NOT EXISTS postgis_topology;
-      - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
-      - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
-      {{- else if eq .Values.type "timescaledb" }}
-      - CREATE EXTENSION IF NOT EXISTS timescaledb;
-      {{- else if eq .Values.type "tensorchord" }}
+      {{- if eq .Values.type "tensorchord" }}
       - ALTER SYSTEM SET search_path TO "$user", public, vectors;
       - SET search_path TO "$user", public, vectors;
       - CREATE EXTENSION IF NOT EXISTS "vectors";
@@ -136,34 +129,11 @@ externalClusters:
 
 externalClusters:
   - name: {{ include "cluster.recoveryServerName" . }}
-    barmanObjectStore:
-      serverName: {{ include "cluster.recoveryServerName" . }}
-      endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
-      destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
-      {{- if .Values.recovery.objectStore.endpointCA.name }}
-      endpointCA:
-        name: {{ .Values.recovery.objectStore.endpointCA.name }}
-        key: {{ .Values.recovery.objectStore.endpointCA.key }}
-      {{- end }}
-      s3Credentials:
-        accessKeyId:
-          name: {{ include "cluster.recoveryCredentials" . }}
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: {{ include "cluster.recoveryCredentials" . }}
-          key: ACCESS_SECRET_KEY
-      wal:
-        compression: {{ .Values.recovery.objectStore.wal.compression }}
-        {{- with .Values.recovery.objectStore.wal.encryption}}
-        encryption: {{ . }}
-        {{- end }}
-        maxParallel: {{ .Values.recovery.objectStore.wal.maxParallel }}
-      data:
-        compression: {{ .Values.recovery.objectStore.data.compression }}
-        {{- with .Values.recovery.objectStore.data.encryption }}
-        encryption: {{ . }}
-        {{- end }}
-        jobs: {{ .Values.recovery.objectStore.data.jobs }}
+    plugin:
+      name: barman-cloud.cloudnative-pg.io
+      parameters:
+        barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
+        serverName: {{ include "cluster.recoveryServerName" . }}
 
 {{-  else }}
   {{ fail "Invalid recovery mode!" }}

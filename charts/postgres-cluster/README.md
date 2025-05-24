@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 5.1.0](https://img.shields.io/badge/Version-5.1.0-informational?style=flat-square) ![AppVersion: v1.25.1](https://img.shields.io/badge/AppVersion-v1.25.1-informational?style=flat-square)
+![Version: 6.0.0](https://img.shields.io/badge/Version-6.0.0-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -19,34 +19,39 @@ Cloudnative-pg Cluster
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backup | object | `{"backupIndex":1,"backupName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"","enabled":false,"endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","retentionPolicy":"30d","scheduledBackups":[{"backupOwnerReference":"self","method":"barmanObjectStore","name":"daily-backup","schedule":"0 0 */3 * *"}],"wal":{"compression":"snappy","encryption":"","maxParallel":1}}` | Backup settings |
-| backup.backupIndex | int | `1` | Generate external cluster name, creates: postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backups.backupIndex }}" |
-| backup.backupName | string | `""` | Override ame of the backup cluster in the object store, defaults to "cluster.name" |
-| backup.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
-| backup.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| backup.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
-| backup.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| backup | object | `{"enabled":false,"method":"objectStore","objectStore":[{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","index":1,"isWALArchiver":true,"name":"external","retentionPolicy":"30d","wal":{"compression":"snappy","encryption":"","maxParallel":1}}],"scheduledBackups":[{"backupName":"external","backupOwnerReference":"self","name":"daily-backup","plugin":"barman-cloud.cloudnative-pg.io","schedule":"0 0 */3 * *","suspend":false}]}` | Backup settings |
 | backup.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
-| backup.endpointCA | object | `{"create":false,"key":"","name":""}` | Specifies a CA bundle to validate a privately signed certificate. |
-| backup.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
-| backup.endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
-| backup.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
-| backup.retentionPolicy | string | `"30d"` | Retention policy for backups |
+| backup.method | string | `"objectStore"` | Method to create backups, options currently are only objectStore |
+| backup.objectStore | list | `[{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"destinationPath":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","index":1,"isWALArchiver":true,"name":"external","retentionPolicy":"30d","wal":{"compression":"snappy","encryption":"","maxParallel":1}}]` | Options for object store backups |
+| backup.objectStore[0].clusterName | string | `""` | Override the name of the backup cluster, defaults to "cluster.name" |
+| backup.objectStore[0].data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
+| backup.objectStore[0].data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| backup.objectStore[0].data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
+| backup.objectStore[0].destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| backup.objectStore[0].endpointCA | object | `{"create":false,"key":"","name":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| backup.objectStore[0].endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
+| backup.objectStore[0].endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
+| backup.objectStore[0].endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
+| backup.objectStore[0].index | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }} |
+| backup.objectStore[0].isWALArchiver | bool | `true` | Specificies if this backup will do WALs |
+| backup.objectStore[0].name | string | `"external"` | Object store backup name |
+| backup.objectStore[0].retentionPolicy | string | `"30d"` | Retention policy for backups |
+| backup.objectStore[0].wal | object | `{"compression":"snappy","encryption":"","maxParallel":1}` | Storage |
+| backup.objectStore[0].wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
+| backup.objectStore[0].wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| backup.objectStore[0].wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
+| backup.scheduledBackups[0].backupName | string | `"external"` | Name of backup target |
 | backup.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
-| backup.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
 | backup.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
+| backup.scheduledBackups[0].plugin | string | `"barman-cloud.cloudnative-pg.io"` | Backup method, can be `barman-cloud.cloudnative-pg.io` (default) |
 | backup.scheduledBackups[0].schedule | string | `"0 0 */3 * *"` | Schedule in cron format |
-| backup.wal | object | `{"compression":"snappy","encryption":"","maxParallel":1}` | Storage |
-| backup.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
-| backup.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| backup.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
-| cluster | object | `{"additionalLabels":{},"affinity":{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"},"annotations":{},"certificates":{},"enablePDB":true,"enableSuperuserAccess":false,"image":{"repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.5-1-bullseye"},"imageCatalogRef":{},"imagePullPolicy":"IfNotPresent","imagePullSecrets":[],"initdb":{},"instances":3,"logLevel":"info","monitoring":{"customQueries":[],"customQueriesSecret":[],"disableDefaultQueries":false,"enabled":false,"podMonitor":{"enabled":true,"metricRelabelings":[],"relabelings":[]},"prometheusRule":{"enabled":false,"excludeRules":[]}},"postgresGID":-1,"postgresUID":-1,"postgresql":{"ldap":{},"parameters":{"hot_standby_feedback":"on","max_slot_wal_keep_size":"2000MB","shared_buffers":"128MB"},"pg_hba":[],"pg_ident":[],"shared_preload_libraries":[],"synchronous":{}},"primaryUpdateMethod":"switchover","primaryUpdateStrategy":"unsupervised","priorityClassName":"","resources":{"limits":{"hugepages-2Mi":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"roles":[],"serviceAccountTemplate":{},"services":{},"storage":{"size":"10Gi","storageClass":""},"superuserSecret":"","walStorage":{"enabled":true,"size":"2Gi","storageClass":""}}` | Cluster settings |
+| backup.scheduledBackups[0].suspend | bool | `false` | Temporarily stop scheduled backups from running |
+| cluster | object | `{"additionalLabels":{},"affinity":{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"},"annotations":{},"certificates":{},"enablePDB":true,"enableSuperuserAccess":false,"image":{"repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.5-1-bullseye"},"imagePullPolicy":"IfNotPresent","imagePullSecrets":[],"initdb":{},"instances":3,"logLevel":"info","monitoring":{"customQueries":[],"customQueriesSecret":[],"disableDefaultQueries":false,"enabled":false,"podMonitor":{"enabled":true,"metricRelabelings":[],"relabelings":[]},"prometheusRule":{"enabled":false,"excludeRules":[]}},"postgresGID":-1,"postgresUID":-1,"postgresql":{"ldap":{},"parameters":{"hot_standby_feedback":"on","max_slot_wal_keep_size":"2000MB","shared_buffers":"128MB"},"pg_hba":[],"pg_ident":[],"shared_preload_libraries":[],"synchronous":{}},"primaryUpdateMethod":"switchover","primaryUpdateStrategy":"unsupervised","priorityClassName":"","resources":{"limits":{"hugepages-2Mi":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"roles":[],"serviceAccountTemplate":{},"services":{},"storage":{"size":"10Gi","storageClass":""},"superuserSecret":"","walStorage":{"enabled":true,"size":"2Gi","storageClass":""}}` | Cluster settings |
 | cluster.affinity | object | `{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.certificates | object | `{}` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
 | cluster.enablePDB | bool | `true` | Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets |
 | cluster.enableSuperuserAccess | bool | `false` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.image | object | `{"repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.5-1-bullseye"}` | Default image |
-| cluster.imageCatalogRef | object | `{}` | Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName` |
 | cluster.imagePullPolicy | string | `"IfNotPresent"` | Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images |
 | cluster.imagePullSecrets | list | `[]` | The list of pull secrets to be used to pull the images. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference |
 | cluster.initdb | object | `{}` | Bootstrap is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
@@ -76,13 +81,11 @@ Cloudnative-pg Cluster
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage | object | `{"size":"10Gi","storageClass":""}` | Default storage size |
-| imageCatalog.create | bool | `false` | Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored. |
-| imageCatalog.images | list | `[]` | List of images to be provisioned in an image catalog. |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - Default mode. Creates new or updates an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup |
 | nameOverride | string | `""` | Override the name of the cluster |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | poolers | list | `[]` | List of PgBouncer poolers |
-| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"backup","objectStore":{"data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationPath":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","owner":"","pitrTarget":{"time":""},"recoveryIndex":1,"recoveryServerName":"","wal":{"compression":"snappy","encryption":"","maxParallel":1}},"pgBaseBackup":{"database":"app","owner":"","secret":"","source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":""}}}` | Recovery settings when booting cluster from external cluster |
+| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"backup","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationPath":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"","index":1,"name":"recovery","owner":"","pitrTarget":{"time":""},"wal":{"compression":"snappy","encryption":"","maxParallel":1}},"pgBaseBackup":{"database":"app","owner":"","secret":"","source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":""}}}` | Recovery settings when booting cluster from external cluster |
 | recovery.backup.backupName | string | `""` | Name of the backup to recover from. |
 | recovery.backup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.backup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
@@ -101,6 +104,7 @@ Cloudnative-pg Cluster
 | recovery.import.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
 | recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works |
 | recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pgBaseBackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster. |
+| recovery.objectStore.clusterName | string | `""` | Override the name of the backup cluster, defaults to "cluster.name" |
 | recovery.objectStore.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | recovery.objectStore.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
@@ -110,11 +114,11 @@ Cloudnative-pg Cluster
 | recovery.objectStore.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | recovery.objectStore.endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
 | recovery.objectStore.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
+| recovery.objectStore.index | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }} |
+| recovery.objectStore.name | string | `"recovery"` | Object store backup name |
 | recovery.objectStore.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | recovery.objectStore.pitrTarget | object | `{"time":""}` | Point in time recovery target. Specify one of the following: |
 | recovery.objectStore.pitrTarget.time | string | `""` | Time in RFC3339 format |
-| recovery.objectStore.recoveryIndex | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}postgresql-<major version>-cluster-backup-index-{{ .Values.recovery.recoveryIndex }} |
-| recovery.objectStore.recoveryServerName | string | `""` | Override name of the recovery cluster in the object store, defaults to "cluster.name" |
 | recovery.objectStore.wal | object | `{"compression":"snappy","encryption":"","maxParallel":1}` | Storage |
 | recovery.objectStore.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
@@ -127,10 +131,7 @@ Cloudnative-pg Cluster
 | recovery.pgBaseBackup.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |
 | recovery.pgBaseBackup.source.passwordSecret.name | string | `""` | Name of the secret containing the password |
 | recovery.pgBaseBackup.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
-| type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` * `timescaledb` * `tensorchord` |
-| version.postgis | string | `"3.5"` | If using PostGIS, specify the version |
-| version.postgresql | string | `"17"` | PostgreSQL major version to use |
-| version.timescaledb | string | `"2.15"` | If using TimescaleDB, specify the version |
+| type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `tensorchord` |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

@@ -1,0 +1,95 @@
+{{ if and (.Values.backup.enabled) (eq .Values.backup.method "objectStore") }}
+{{ $context := . -}}
+{{ range .Values.backup.objectStore -}}
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: "{{ include "cluster.name" . }}-{{ $context.name }}-backup"
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+spec:
+  retentionPolicy: {{ $context.retentionPolicy }}
+  configuration:
+    destinationPath: {{ $context.destinationPath }}
+    endpointURL: {{ $context.endpointURL }}
+    {{- if $context.endpointCA.name }}
+    endpointCA:
+      name: {{ $context.endpointCA.name }}
+      key: {{ $context.endpointCA.key }}
+    {{- end }}
+    {{- if $context.clusterName }}
+    serverName: "{{ $context.clusterName }}-backup-{{ $context.index }}"
+    {{- else }}
+    serverName: "{{ include "cluster.name" . }}-backup-{{ $context.index }}"
+    {{- end }}
+    wal:
+      compression: {{ $context.wal.compression }}
+      {{- with $context.wal.encryption}}
+      encryption: {{ . }}
+      {{- end }}
+      maxParallel: {{ $context.wal.maxParallel }}
+    data:
+      compression: {{ $context.data.compression }}
+      {{- with $context.data.encryption }}
+      encryption: {{ . }}
+      {{- end }}
+      jobs: {{ $context.data.jobs }}
+    s3Credentials:
+      accessKeyId:
+        {{- if $context.endpointCredentials }}
+        name: {{ $context.endpointCredentials }}
+        {{- else }}
+        name: {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+        {{- end }}
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        {{- if $context.endpointCredentials }}
+        name: {{ $context.endpointCredentials }}
+        {{- else }}
+        name: {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+        {{- end }}
+        key: ACCESS_SECRET_KEY
+{{ end -}}
+{{ end }}
+
+{{ if eq .Values.recovery.method "objectStore" }}
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+spec:
+  configuration:
+    destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
+    endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
+    {{- if .Values.recovery.objectStore.endpointCA.name }}
+    endpointCA:
+      name: {{ .Values.recovery.objectStore.endpointCA.name }}
+      key: {{ .Values.recovery.objectStore.endpointCA.key }}
+    {{- end }}
+    serverName: {{ include "cluster.recoveryServerName" . }}
+    wal:
+      compression: {{ .Values.recovery.objectStore.wal.compression }}
+      {{- with .Values.recovery.objectStore.wal.encryption}}
+      encryption: {{ . }}
+      {{- end }}
+      maxParallel: {{ .Values.recovery.objectStore.wal.maxParallel }}
+    data:
+      compression: {{ .Values.recovery.objectStore.data.compression }}
+      {{- with .Values.recovery.objectStore.data.encryption }}
+      encryption: {{ . }}
+      {{- end }}
+      jobs: {{ .Values.recovery.objectStore.data.jobs }}
+    s3Credentials:
+      accessKeyId:
+        name: {{ include "cluster.recoveryCredentials" . }}
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: {{ include "cluster.recoveryCredentials" . }}
+        key: ACCESS_SECRET_KEY
+{{ end }}

@@ -11,7 +11,6 @@ metadata:
     {{- include "cluster.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.cluster.instances }}
-  {{- include "cluster.image" . | nindent 2 }}
   imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   {{- with .Values.cluster.imagePullSecrets }}
@@ -20,6 +19,23 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
+  {{ if or (and (.Values.backup.enabled) (eq .Values.backup.method "objectStore")) (eq .Values.recovery.method "objectStore") }}
+  plugins:
+  {{ end }}
+  {{ if and (.Values.backup.enabled) (eq .Values.backup.method "objectStore") }}
+  {{ $context := . -}}
+  {{ range .Values.backup.objectStore -}}
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: {{ $context.isWALArchiver }}
+      parameters:
+        barmanObjectName: "{{ include "cluster.name" . }}-{{ $context.name }}-backup"
+  {{ end -}}
+  {{ end }}
+  {{ if eq .Values.recovery.method "objectStore" }}
+    - name: barman-cloud.cloudnative-pg.io
+      parameters:
+        barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
+  {{ end }}
   storage:
     size: {{ .Values.cluster.storage.size }}
     {{- if not (empty .Values.cluster.storage.storageClass) }}
@@ -59,11 +75,8 @@ spec:
   enablePDB: {{ .Values.cluster.enablePDB }}
 
   postgresql:
-    {{- if or (eq .Values.type "timescaledb") (eq .Values.type "tensorchord") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
+    {{- if or (eq .Values.type "tensorchord") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:
-      {{- if eq .Values.type "timescaledb" }}
-      - timescaledb
-      {{- end }}
       {{- if eq .Values.type "tensorchord" }}
       - vectors.so
       {{- end }}
@@ -137,4 +150,3 @@ spec:
     {{- end }}
 
   {{ include "cluster.bootstrap" . | nindent 2 }}
-  {{ include "cluster.backup" . | nindent 2 }}

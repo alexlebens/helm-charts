@@ -11,9 +11,15 @@ metadata:
     {{- include "cluster.labels" $context | nindent 4 }}
 spec:
   immediate: true
-  schedule: {{ .schedule | quote }}
-  backupOwnerReference: {{ .backupOwnerReference }}
+  suspend: {{ $context.suspend }}
+  schedule: {{ $context.schedule | quote }}
+  backupOwnerReference: {{ $context.backupOwnerReference }}
   cluster:
     name: {{ include "cluster.name" $context }}-cluster
+  method: plugin
+  pluginConfiguration:
+    name: {{ $context.plugin }}
+    parameters:
+      barmanObjectName: "{{ include "cluster.name" . }}-{{ $context.backupName }}-backup"
 {{ end -}}
 {{ end }}

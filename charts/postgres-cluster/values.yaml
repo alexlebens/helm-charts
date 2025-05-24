@@ -6,31 +6,8 @@ namespaceOverride: ""
 
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
-# * `postgis`
-# * `timescaledb`
 # * `tensorchord`
 type: postgresql
-
-imageCatalog:
-
-  # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.
-  create: false
-
-  # -- List of images to be provisioned in an image catalog.
-  images: []
-    # - image: ghcr.io/your_repo/your_image:your_tag
-    #   major: 16
-
-version:
-
-  # -- PostgreSQL major version to use
-  postgresql: "17"
-
-  # -- If using TimescaleDB, specify the version
-  timescaledb: "2.15"
-
-  # -- If using PostGIS, specify the version
-  postgis: "3.5"
 
 # -- Cluster mode of operation. Available modes:
 # * `standalone` - Default mode. Creates new or updates an existing CNPG cluster.
@@ -45,11 +22,6 @@ cluster:
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
     tag: "17.5-1-bullseye"
-
-  # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
-  imageCatalogRef: {}
-    # kind: ImageCatalog
-    # name: postgresql
 
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
@@ -287,16 +259,19 @@ recovery:
     # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     owner: ""
 
-    # -- Overrides the provider specific default endpoint. Defaults to:
-    # S3: https://s3.<region>.amazonaws.com"
-    # Leave empty if using the default S3 endpoint
-    endpointURL: ""
+    # -- Object store backup name
+    name: recovery
 
     # -- Overrides the provider specific default path. Defaults to:
     # S3: s3://<bucket><path>
     # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
     # Google: gs://<bucket><path>
     destinationPath: ""
+
+    # -- Overrides the provider specific default endpoint. Defaults to:
+    # S3: https://s3.<region>.amazonaws.com"
+    # Leave empty if using the default S3 endpoint
+    endpointURL: ""
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
@@ -305,6 +280,12 @@ recovery:
       create: false
       name: ""
       key: ""
+
+    # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
+    index: 1
+
+    # -- Override the name of the backup cluster, defaults to "cluster.name"
+    clusterName: ""
 
     # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
     endpointCredentials: ""
@@ -330,12 +311,6 @@ recovery:
 
       # -- Number of data files to be archived or restored in parallel.
       jobs: 1
-
-    # -- Generate external cluster name, uses: {{ .Release.Name }}postgresql-<major version>-cluster-backup-index-{{ .Values.recovery.recoveryIndex }}
-    recoveryIndex: 1
-
-    # -- Override name of the recovery cluster in the object store, defaults to "cluster.name"
-    recoveryServerName: ""
 
   # See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
@@ -445,47 +420,68 @@ backup:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
-  # -- Overrides the provider specific default endpoint. Defaults to:
-  # S3: https://s3.<region>.amazonaws.com"
-  endpointURL: ""  # Leave empty if using the default S3 endpoint
+  # -- Method to create backups, options currently are only objectStore
+  method: objectStore
 
-  # -- Specifies a CA bundle to validate a privately signed certificate.
-  endpointCA:
-    # -- Creates a secret with the given value if true, otherwise uses an existing secret.
-    create: false
-    name: ""
-    key: ""
+  # -- Options for object store backups
+  objectStore:
+    -
+      # -- Object store backup name
+      name: external
 
-  # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-  endpointCredentials: ""
+      # -- Overrides the provider specific default path. Defaults to:
+      # S3: s3://<bucket><path>
+      # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
+      # Google: gs://<bucket><path>
+      destinationPath: ""
 
-  # -- Overrides the provider specific default path. Defaults to:
-  # S3: s3://<bucket><path>
-  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
-  # Google: gs://<bucket><path>
-  destinationPath: ""
+      # -- Overrides the provider specific default endpoint. Defaults to:
+      # S3: https://s3.<region>.amazonaws.com"
+      endpointURL: ""  # Leave empty if using the default S3 endpoint
 
-  # -- Storage
-  wal:
+      # -- Specifies a CA bundle to validate a privately signed certificate.
+      endpointCA:
+        # -- Creates a secret with the given value if true, otherwise uses an existing secret.
+        create: false
+        name: ""
+        key: ""
 
-    # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
-    compression: snappy
+      # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
+      index: 1
 
-    # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
-    encryption: ""
+      # -- Override the name of the backup cluster, defaults to "cluster.name"
+      clusterName: ""
 
-    # -- Number of WAL files to be archived or restored in parallel.
-    maxParallel: 1
+      # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+      endpointCredentials: ""
 
-  data:
-    # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
-    compression: snappy
+      # -- Retention policy for backups
+      retentionPolicy: "30d"
 
-    # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
-    encryption: ""
+      # -- Specificies if this backup will do WALs
+      isWALArchiver: true
 
-    # -- Number of data files to be archived or restored in parallel.
-    jobs: 1
+      # -- Storage
+      wal:
+
+        # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+        compression: snappy
+
+        # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+        encryption: ""
+
+        # -- Number of WAL files to be archived or restored in parallel.
+        maxParallel: 1
+
+      data:
+        # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+        compression: snappy
+
+        # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+        encryption: ""
+
+        # -- Number of data files to be archived or restored in parallel.
+        jobs: 1
 
   scheduledBackups:
     -
@@ -495,20 +491,17 @@ backup:
       # -- Schedule in cron format
       schedule: "0 0 */3 * *"
 
+      # -- Temporarily stop scheduled backups from running
+      suspend: false
+
       # -- Backup owner reference
       backupOwnerReference: self
 
-      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
-      method: barmanObjectStore
+      # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
+      plugin: barman-cloud.cloudnative-pg.io
 
-  # -- Retention policy for backups
-  retentionPolicy: "30d"
-
-  # -- Generate external cluster name, creates: postgresql-{{ .Release.Name }}-cluster-backup-index-{{ .Values.backups.backupIndex }}"
-  backupIndex: 1
-
-  # -- Override ame of the backup cluster in the object store, defaults to "cluster.name"
-  backupName: ""
+      # -- Name of backup target
+      backupName: external
 
 # -- List of PgBouncer poolers
 poolers: []
