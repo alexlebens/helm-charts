@@ -19,7 +19,7 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
-  {{ if or (and (.Values.backup.enabled) (eq .Values.backup.method "objectStore")) (eq .Values.recovery.method "objectStore") }}
+  {{ if or (eq .Values.backup.method "objectStore") (eq .Values.recovery.method "objectStore") }}
   plugins:
   {{ end }}
   {{ if and (.Values.backup.enabled) (eq .Values.backup.method "objectStore") }}
