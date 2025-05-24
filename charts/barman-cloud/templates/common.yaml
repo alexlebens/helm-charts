@@ -1,0 +1,94 @@
+{{ include "bjw-s.common.loader.init" . }}
+
+{{ define "barman-cloud.hardcodedValues" }}
+{{ if not .Values.global.nameOverride }}
+global:
+  nameOverride: {{ .Values.name }}
+{{ end }}
+controllers:
+  main:
+    type: deployment
+    labels:
+      app: {{ .Values.name }}
+    replicas: 1
+    strategy: Recreate
+    serviceAccountName: plugin-barman-cloud
+    pod:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      selector:
+        matchLabels:
+          app: {{ .Values.name }}
+    containers:
+      main:
+        image:
+          repository: {{ .Values.image.repository }}
+          tag: {{ .Values.image.tag }}
+          pullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+          - operator
+          - --server-cert=/server/tls.crt
+          - --server-key=/server/tls.key
+          - --client-cert=/client/tls.crt
+          - --server-address=:{{ .Values.service.listenPort }}
+          - --leader-elect
+          - --log-level=debug
+        env:
+          - name: SIDECAR_IMAGE
+            valueFrom:
+              secretKeyRef:
+                key: SIDECAR_IMAGE
+                name: plugin-barman-cloud-m76km67hd7
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 10001
+          runAsUser: 10001
+          seccompProfile:
+            type: RuntimeDefault
+serviceAccount:
+  plugin-barman-cloud:
+    enabled: {{ .Values.serviceAccount.enabled }}
+service:
+  main:
+    controller: main
+    annotations:
+      cnpg.io/pluginPort: "{{ .Values.service.listenPort }}"
+      cnpg.io/pluginClientSecret: {{ .Values.name }}-client-tls
+      cnpg.io/pluginServerSecret: {{ .Values.name }}-server-tls
+    labels:
+      app: {{ .Values.name }}
+      cnpg.io/pluginName: barman-cloud.cloudnative-pg.io
+    ports:
+      http:
+        port: {{ .Values.service.listenPort }}
+        protocol: TCP
+        targetPort: {{ .Values.service.listenPort }}
+persistence:
+  server-tls:
+    enabled: true
+    type: secret
+    name: {{ .Values.name }}-server-tls
+    advancedMounts:
+      main:
+        main:
+          - path: /server
+            readOnly: true
+            mountPropagation: None
+            subPath: server
+          - path: /client
+            readOnly: true
+            mountPropagation: None
+            subPath: client
+
+{{ end }}
+{{ $_ := mergeOverwrite .Values (include "barman-cloud.hardcodedValues" . | fromYaml) }}
+
+{{/* Render the templates */}}
+{{ include "bjw-s.common.loader.generate" . }}

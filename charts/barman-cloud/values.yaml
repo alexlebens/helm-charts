@@ -1,0 +1,20 @@
+# -- Name override of release
+name: barman-cloud
+
+# -- Name of existing secret that contains Cloudflare token
+existingSecretName: cloudflared-secret
+
+# -- Name of key that contains the token in the existingSecret
+existingSecretKey: cf-tunnel-token
+
+# -- Default image
+image:
+  repository: ghcr.io/cloudnative-pg/plugin-barman-cloud
+  tag: "v0.4.0"
+  pullPolicy: IfNotPresent
+
+# -- Default resources
+resources:
+  requests:
+    cpu: 10m
+    memory: 128Mi
