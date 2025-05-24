@@ -5,10 +5,10 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: "{{ include "cluster.name" . }}-{{ $context.name }}-backup"
-  namespace: {{ include "cluster.namespace" . }}
+  name: "{{ include "cluster.name" $context }}-{{ $context.name }}-backup"
+  namespace: {{ include "cluster.namespace" $context }}
   labels:
-    {{- include "cluster.labels" . | nindent 4 }}
+    {{- include "cluster.labels" $context | nindent 4 }}
 spec:
   retentionPolicy: {{ $context.retentionPolicy }}
   configuration:
@@ -22,7 +22,7 @@ spec:
     {{- if $context.clusterName }}
     serverName: "{{ $context.clusterName }}-backup-{{ $context.index }}"
     {{- else }}
-    serverName: "{{ include "cluster.name" . }}-backup-{{ $context.index }}"
+    serverName: "{{ include "cluster.name" $context }}-backup-{{ $context.index }}"
     {{- end }}
     wal:
       compression: {{ $context.wal.compression }}
@@ -41,14 +41,14 @@ spec:
         {{- if $context.endpointCredentials }}
         name: {{ $context.endpointCredentials }}
         {{- else }}
-        name: {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+        name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
         {{- end }}
         key: ACCESS_KEY_ID
       secretAccessKey:
         {{- if $context.endpointCredentials }}
         name: {{ $context.endpointCredentials }}
         {{- else }}
-        name: {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+        name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
         {{- end }}
         key: ACCESS_SECRET_KEY
 {{ end -}}
