@@ -12,7 +12,7 @@ roleRef:
   name: metrics-auth-role
 subjects:
 - kind: ServiceAccount
-  name: {{ .Release.Name }}-plugin-barman-cloud
+  name: {{ .Release.Name }}-barman-cloud
   namespace: {{ .Release.Namespace }}
 
 ---
@@ -30,5 +30,5 @@ roleRef:
   name: plugin-barman-cloud
 subjects:
 - kind: ServiceAccount
-  name: {{ .Release.Name }}-plugin-barman-cloud
+  name: {{ .Release.Name }}-barman-cloud
   namespace: {{ .Release.Namespace }}
