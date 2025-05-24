@@ -45,14 +45,14 @@ spec:
         {{- if .endpointCredentials }}
         name: {{ .endpointCredentials }}
         {{- else }}
-        name: {{ include "cluster.recoveryCredentials" $context }}
+        name: {{ include "cluster.backupCredentials" $context }}
         {{- end }}
         key: ACCESS_KEY_ID
       secretAccessKey:
         {{- if .endpointCredentials }}
         name: {{ .endpointCredentials }}
         {{- else }}
-        name: {{ include "cluster.recoveryCredentials" $context }}
+        name: {{ include "cluster.backupCredentials" $context }}
         {{- end }}
         key: ACCESS_SECRET_KEY
 {{ end -}}

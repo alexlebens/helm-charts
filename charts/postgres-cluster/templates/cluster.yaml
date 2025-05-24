@@ -24,7 +24,7 @@ spec:
   {{ end }}
   {{- range $objectStore := .Values.backup.objectStore }}
     - name: barman-cloud.cloudnative-pg.io
-      isWALArchiver: {{ $objectStore.isWALArchiver }}
+      isWALArchiver: {{ $objectStore.isWALArchiver | default true }}
       parameters:
         barmanObjectName: "{{ include "cluster.name" $ }}-{{ $objectStore.name }}-backup"
   {{- end }}
