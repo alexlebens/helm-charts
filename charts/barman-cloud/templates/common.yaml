@@ -41,7 +41,6 @@ controllers:
               secretKeyRef:
                 key: SIDECAR_IMAGE
                 name: plugin-barman-cloud-m76km67hd7
-
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -54,7 +53,7 @@ controllers:
             type: RuntimeDefault
 serviceAccount:
   plugin-barman-cloud:
-    enabled: {{ .Values.serviceAccount.enabled }}
+    enabled: true
 service:
   main:
     controller: main
