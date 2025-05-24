@@ -19,11 +19,6 @@ spec:
       name: {{ .endpointCA.name }}
       key: {{ .endpointCA.key }}
     {{- end }}
-    {{- if .clusterName }}
-    serverName: "{{ .clusterName }}-backup-{{ .index }}"
-    {{- else }}
-    serverName: "{{ include "cluster.name" $context }}-backup-{{ .index }}"
-    {{- end }}
     {{- if .wal }}
     wal:
       compression: {{ .wal.compression | default "snappy" }}
@@ -76,7 +71,6 @@ spec:
       name: {{ .Values.recovery.objectStore.endpointCA.name }}
       key: {{ .Values.recovery.objectStore.endpointCA.key }}
     {{- end }}
-    serverName: {{ include "cluster.recoveryServerName" . }}
     wal:
       compression: {{ .Values.recovery.objectStore.wal.compression }}
       {{- with .Values.recovery.objectStore.wal.encryption}}
