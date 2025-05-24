@@ -10,35 +10,39 @@ metadata:
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
 spec:
-  retentionPolicy: {{ .retentionPolicy }}
+  retentionPolicy: {{ .retentionPolicy | default "30d" }}
   configuration:
-    destinationPath: {{ .destinationPath }}
-    endpointURL: {{ .endpointURL }}
-    {{ if .endpointCA.name }}
+    destinationPath: {{ .destinationPath | required "Destination path is required" }}
+    endpointURL: {{ .endpointURL | default "https://nyc3.digitaloceanspaces.com" }}
+    {{- if .endpointCA }}
     endpointCA:
       name: {{ .endpointCA.name }}
       key: {{ .endpointCA.key }}
-    {{ end }}
+    {{- end }}
     {{- if .clusterName }}
     serverName: "{{ .clusterName }}-backup-{{ .index }}"
     {{- else }}
     serverName: "{{ include "cluster.name" $context }}-backup-{{ .index }}"
     {{- end }}
+    {{- if .wal }}
     wal:
-      compression: {{ .wal.compression }}
-      {{- with .wal.encryption}}
+      compression: {{ .wal.compression | default "snappy" }}
+      {{- with .wal.encryption }}
       encryption: {{ . }}
       {{- end }}
-      maxParallel: {{ .wal.maxParallel }}
+      maxParallel: {{ .wal.maxParallel | default 1 }}
+    {{- end }}
+    {{- if .wal }}
     data:
-      compression: {{ .data.compression }}
+      compression: {{ .data.compression | default "snappy"  }}
       {{- with .data.encryption }}
       encryption: {{ . }}
       {{- end }}
-      jobs: {{ .data.jobs }}
+      jobs: {{ .data.jobs | default 1 }}
+    {{- end }}
     s3Credentials:
       accessKeyId:
-        {{- if not (empty .endpointCredentials) }}
+        {{- if .endpointCredentials }}
         name: {{ .endpointCredentials }}
         {{- else }}
         name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}

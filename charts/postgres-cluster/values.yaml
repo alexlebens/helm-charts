@@ -424,65 +424,66 @@ backup:
   method: objectStore
 
   # -- Options for object store backups
-  objectStore:
-    -
-      # -- Object store backup name
-      name: external
+  objectStore: []
 
-      # -- Overrides the provider specific default path. Defaults to:
-      # S3: s3://<bucket><path>
-      # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
-      # Google: gs://<bucket><path>
-      destinationPath: s3://postgres-backups
+    # -
+    #   # -- Object store backup name
+    #   name: external
 
-      # -- Overrides the provider specific default endpoint. Defaults to:
-      # S3: https://s3.<region>.amazonaws.com"
-      endpointURL: https://nyc3.digitaloceanspaces.com
+    #   # -- Overrides the provider specific default path. Defaults to:
+    #   # S3: s3://<bucket><path>
+    #   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
+    #   # Google: gs://<bucket><path>
+    #   destinationPath: ""
 
-      # -- Specifies a CA bundle to validate a privately signed certificate.
-      endpointCA:
-        # -- Creates a secret with the given value if true, otherwise uses an existing secret.
-        create: false
+    #   # -- Overrides the provider specific default endpoint. Defaults to:
+    #   # https://nyc3.digitaloceanspaces.com
+    #   endpointURL: ""
 
-        name: ""
-        key: ""
+    #   # -- Specifies a CA bundle to validate a privately signed certificate.
+    #   endpointCA:
+    #     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
+    #     create: false
 
-      # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
-      index: 1
+    #     name: ""
+    #     key: ""
 
-      # -- Override the name of the backup cluster, defaults to "cluster.name"
-      clusterName: ""
+    #   # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
+    #   index: 1
 
-      # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-      endpointCredentials: ""
+    #   # -- Override the name of the backup cluster, defaults to "cluster.name"
+    #   clusterName: ""
 
-      # -- Retention policy for backups
-      retentionPolicy: "30d"
+    #   # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+    #   endpointCredentials: ""
 
-      # -- Specificies if this backup will do WALs
-      isWALArchiver: true
+    #   # -- Retention policy for backups
+    #   retentionPolicy: "30d"
 
-      # -- Storage
-      wal:
+    #   # -- Specificies if this backup will do WALs
+    #   isWALArchiver: true
 
-        # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
-        compression: snappy
+    #   # -- Storage
+    #   wal:
 
-        # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
-        encryption: ""
+    #     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+    #     compression: snappy
 
-        # -- Number of WAL files to be archived or restored in parallel.
-        maxParallel: 1
+    #     # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+    #     encryption: ""
 
-      data:
-        # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
-        compression: snappy
+    #     # -- Number of WAL files to be archived or restored in parallel.
+    #     maxParallel: 1
 
-        # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
-        encryption: ""
+    #   data:
+    #     # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+    #     compression: snappy
 
-        # -- Number of data files to be archived or restored in parallel.
-        jobs: 1
+    #     # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+    #     encryption: ""
+
+    #     # -- Number of data files to be archived or restored in parallel.
+    #     jobs: 1
 
   scheduledBackups:
     -
