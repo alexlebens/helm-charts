@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 6.2.1](https://img.shields.io/badge/Version-6.2.1-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
+![Version: 6.3.0](https://img.shields.io/badge/Version-6.3.0-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -19,16 +19,11 @@ Cloudnative-pg Cluster
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backup | object | `{"enabled":true,"method":"objectStore","objectStore":[],"scheduledBackups":[{"backupName":"external","backupOwnerReference":"self","name":"daily-backup","plugin":"barman-cloud.cloudnative-pg.io","schedule":"0 0 */3 * *","suspend":false}]}` | Backup settings |
-| backup.enabled | bool | `true` | You need to configure backups manually, so backups are disabled by default. |
+| backup | object | `{"enabled":false,"method":"objectStore","objectStore":[],"scheduledBackups":[]}` | Backup settings |
+| backup.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
 | backup.method | string | `"objectStore"` | Method to create backups, options currently are only objectStore |
 | backup.objectStore | list | `[]` | Options for object store backups |
-| backup.scheduledBackups[0].backupName | string | `"external"` | Name of backup target |
-| backup.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
-| backup.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
-| backup.scheduledBackups[0].plugin | string | `"barman-cloud.cloudnative-pg.io"` | Backup method, can be `barman-cloud.cloudnative-pg.io` (default) |
-| backup.scheduledBackups[0].schedule | string | `"0 0 */3 * *"` | Schedule in cron format |
-| backup.scheduledBackups[0].suspend | bool | `false` | Temporarily stop scheduled backups from running |
+| backup.scheduledBackups | list | `[]` | List of scheduled backups |
 | cluster | object | `{"additionalLabels":{},"affinity":{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"},"annotations":{},"certificates":{},"enablePDB":true,"enableSuperuserAccess":false,"image":{"repository":"ghcr.io/cloudnative-pg/postgresql","tag":"17.5-1-bullseye"},"imagePullPolicy":"IfNotPresent","imagePullSecrets":[],"initdb":{},"instances":3,"logLevel":"info","monitoring":{"customQueries":[],"customQueriesSecret":[],"disableDefaultQueries":false,"enabled":false,"podMonitor":{"enabled":true,"metricRelabelings":[],"relabelings":[]},"prometheusRule":{"enabled":false,"excludeRules":[]}},"postgresGID":-1,"postgresUID":-1,"postgresql":{"ldap":{},"parameters":{"hot_standby_feedback":"on","max_slot_wal_keep_size":"2000MB","shared_buffers":"128MB"},"pg_hba":[],"pg_ident":[],"shared_preload_libraries":[],"synchronous":{}},"primaryUpdateMethod":"switchover","primaryUpdateStrategy":"unsupervised","priorityClassName":"","resources":{"limits":{"hugepages-2Mi":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"roles":[],"serviceAccountTemplate":{},"services":{},"storage":{"size":"10Gi","storageClass":""},"superuserSecret":"","walStorage":{"enabled":true,"size":"2Gi","storageClass":""}}` | Cluster settings |
 | cluster.affinity | object | `{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.certificates | object | `{}` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |

@@ -27,10 +27,10 @@ spec:
     {{- if .wal }}
     wal:
       compression: {{ .wal.compression | default "snappy" }}
-      {{- with .wal.encryption }}
+      {{ with .wal.encryption }}
       encryption: {{ . }}
-      {{- end }}
-      maxParallel: {{ .wal.maxParallel | default 1 }}
+      {{ end }}
+      maxParallel: {{ .wal.maxParallel | default "1" }}
     {{- end }}
     {{- if .wal }}
     data:
@@ -45,14 +45,14 @@ spec:
         {{- if .endpointCredentials }}
         name: {{ .endpointCredentials }}
         {{- else }}
-        name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
+        name: {{ include "cluster.recoveryCredentials" $context }}
         {{- end }}
         key: ACCESS_KEY_ID
       secretAccessKey:
         {{- if .endpointCredentials }}
         name: {{ .endpointCredentials }}
         {{- else }}
-        name: {{- printf "%s-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-" -}}
+        name: {{ include "cluster.recoveryCredentials" $context }}
         {{- end }}
         key: ACCESS_SECRET_KEY
 {{ end -}}

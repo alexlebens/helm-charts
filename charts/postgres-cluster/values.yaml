@@ -418,7 +418,7 @@ recovery:
 backup:
 
   # -- You need to configure backups manually, so backups are disabled by default.
-  enabled: true
+  enabled: false
 
   # -- Method to create backups, options currently are only objectStore
   method: objectStore
@@ -485,25 +485,30 @@ backup:
     #     # -- Number of data files to be archived or restored in parallel.
     #     jobs: 1
 
-  scheduledBackups:
-    -
-      # -- Scheduled backup name
-      name: daily-backup
+  # -- List of scheduled backups
+  scheduledBackups: []
 
-      # -- Schedule in cron format
-      schedule: "0 0 */3 * *"
+    # -
+    #   # -- Scheduled backup name
+    #   name: daily-backup
 
-      # -- Temporarily stop scheduled backups from running
-      suspend: false
+    #   # -- Schedule in cron format
+    #   schedule: "0 0 */3 * *"
 
-      # -- Backup owner reference
-      backupOwnerReference: self
+    #   # -- Start backup on deployment
+    #   immediate: false
 
-      # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
-      plugin: barman-cloud.cloudnative-pg.io
+    #   # -- Temporarily stop scheduled backups from running
+    #   suspend: false
 
-      # -- Name of backup target
-      backupName: external
+    #   # -- Backup owner reference
+    #   backupOwnerReference: self
+
+    #   # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
+    #   plugin: barman-cloud.cloudnative-pg.io
+
+    #   # -- Name of backup target
+    #   backupName: external
 
 # -- List of PgBouncer poolers
 poolers: []

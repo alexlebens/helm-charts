@@ -22,15 +22,12 @@ spec:
   {{ if or (eq .Values.backup.method "objectStore") (eq .Values.recovery.method "objectStore") }}
   plugins:
   {{ end }}
-  {{ if and (.Values.backup.enabled) (eq .Values.backup.method "objectStore") }}
-  {{ $context := . -}}
-  {{ range .Values.backup.objectStore -}}
+  {{- range $objectStore := .Values.backup.objectStore }}
     - name: barman-cloud.cloudnative-pg.io
-      isWALArchiver: {{ .isWALArchiver }}
+      isWALArchiver: {{ $objectStore.isWALArchiver }}
       parameters:
-        barmanObjectName: "{{ include "cluster.name" $context }}-{{ .name }}-backup"
-  {{ end -}}
-  {{ end }}
+        barmanObjectName: "{{ include "cluster.name" $ }}-{{ $objectStore.name }}-backup"
+  {{- end }}
   {{ if eq .Values.recovery.method "objectStore" }}
     - name: barman-cloud.cloudnative-pg.io
       parameters:

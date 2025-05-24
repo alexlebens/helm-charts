@@ -94,3 +94,10 @@ Generate name for recovery object store credentials
     {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
+
+{{/*
+Generate name for backup object store credentials
+*/}}
+{{- define "cluster.backupCredentials" -}}
+    {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end }}

@@ -10,15 +10,15 @@ metadata:
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
 spec:
-  immediate: true
-  suspend: {{ .suspend }}
-  schedule: {{ .schedule | quote }}
-  backupOwnerReference: {{ .backupOwnerReference }}
+  immediate: {{ .immediate | default true }}
+  suspend: {{ .suspend | default false }}
+  schedule: {{ .schedule | quote | required "Schedule is required" }}
+  backupOwnerReference: {{ .backupOwnerReference | default "self" }}
   cluster:
     name: {{ include "cluster.name" $context }}-cluster
   method: plugin
   pluginConfiguration:
-    name: {{ .plugin }}
+    name: {{ .plugin | default "barman-cloud.cloudnative-pg.io" }}
     parameters:
       barmanObjectName: "{{ include "cluster.name" $context }}-{{ .backupName }}-backup"
 {{ end -}}
