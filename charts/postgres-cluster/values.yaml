@@ -275,11 +275,13 @@ recovery:
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
+      enabled: false
 
       # -- Creates a secret with the given value if true, otherwise uses an existing secret.
       create: false
-      name: null
-      key: null
+
+      name: ""
+      key: ""
 
     # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
     index: 1
@@ -441,10 +443,13 @@ backup:
 
       # -- Specifies a CA bundle to validate a privately signed certificate.
       endpointCA:
+        enabled: false
+
         # -- Creates a secret with the given value if true, otherwise uses an existing secret.
         create: false
-        name: null
-        key: null
+
+        name: ""
+        key: ""
 
       # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
       index: 1
