@@ -10,9 +10,3 @@ image:
 # -- Default service
 service:
   listenPort: 9090
-
-# -- Default resources
-resources:
-  requests:
-    cpu: 10m
-    memory: 128Mi

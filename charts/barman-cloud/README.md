@@ -1,6 +1,6 @@
 # barman-cloud
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![AppVersion: v.0.4.0](https://img.shields.io/badge/AppVersion-v.0.4.0-informational?style=flat-square)
+![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![AppVersion: v.0.4.0](https://img.shields.io/badge/AppVersion-v.0.4.0-informational?style=flat-square)
 
 Barman Cloud Plugin
 
@@ -27,7 +27,6 @@ Barman Cloud Plugin
 |-----|------|---------|-------------|
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/cloudnative-pg/plugin-barman-cloud","tag":"v0.4.0"}` | Default image |
 | name | string | `"barman-cloud"` | Name override of release |
-| resources | object | `{"requests":{"cpu":"10m","memory":"128Mi"}}` | Default resources |
 | service | object | `{"listenPort":9090}` | Default service |
 
 ----------------------------------------------

@@ -12,7 +12,8 @@ controllers:
       app: {{ .Values.name }}
     replicas: 1
     strategy: Recreate
-    serviceAccountName: plugin-barman-cloud
+    serviceAccount:
+      name: plugin-barman-cloud
     pod:
       securityContext:
         runAsNonRoot: true
