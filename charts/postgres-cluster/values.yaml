@@ -493,7 +493,7 @@ backup:
     #   name: daily-backup
 
     #   # -- Schedule in cron format
-    #   schedule: "0 0 */3 * *"
+    #   schedule: "0 0 0 * * *"
 
     #   # -- Start backup on deployment
     #   immediate: false
