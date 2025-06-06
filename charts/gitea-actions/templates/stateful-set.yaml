@@ -12,7 +12,7 @@ metadata:
     {{- with .Values.statefulset.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ include "gitea.actions.fullname" . }}-act-runner
+  name: {{ include "gitea.actions.fullname" . }}-actions
   namespace: {{ .Values.namespace | default .Release.Namespace }}
 spec:
   replicas: {{ .Values.statefulset.replicas }}
