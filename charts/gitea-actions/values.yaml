@@ -37,7 +37,7 @@
 ## @param existingSecret Secret that contains the token
 ## @param existingSecretKey Secret key
 ## @param giteaRootURL URL the act_runner registers and connect with
-enabled: false
+enabled: true
 statefulset:
   replicas: 1
   annotations: {}
@@ -75,6 +75,7 @@ statefulset:
       #    value: "1"
 
   persistence:
+    storageClass: ""
     size: 1Gi
 
 init:

@@ -34,33 +34,10 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create image name and tag used by the deployment.
-*/}}
-{{- define "gitea.actions.image" -}}
-{{- $fullOverride := .Values.image.fullOverride | default "" -}}
-{{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
-{{- $repository := .Values.image.repository -}}
-{{- $separator := ":" -}}
-{{- $tag := .Values.image.tag | default .Chart.AppVersion | toString -}}
-{{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
-{{- $digest := "" -}}
-{{- if .Values.image.digest }}
-    {{- $digest = (printf "@%s" (.Values.image.digest | toString)) -}}
-{{- end -}}
-{{- if $fullOverride }}
-    {{- printf "%s" $fullOverride -}}
-{{- else if $registry }}
-    {{- printf "%s/%s%s%s%s%s" $registry $repository $separator $tag $rootless $digest -}}
-{{- else -}}
-    {{- printf "%s%s%s%s%s" $repository $separator $tag $rootless $digest -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Storage Class
 */}}
 {{- define "gitea.actions.persistence.storageClass" -}}
-{{- $storageClass :=  (tpl ( default "" .Values.persistence.storageClass) .) | default (tpl ( default "" .Values.global.storageClass) .) }}
+{{- $storageClass :=  (tpl ( default "" .Values.statefulset.persistence.storageClass) .) | default (tpl ( default "" .Values.global.storageClass) .) }}
 {{- if $storageClass }}
 storageClassName: {{ $storageClass | quote }}
 {{- end }}
@@ -73,8 +50,8 @@ Common labels
 helm.sh/chart: {{ include "gitea.actions.chart" . }}
 app: {{ include "gitea.actions.name" . }}
 {{ include "gitea.actions.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
-version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ .Values.statefulset.actRunner.tag | default .Chart.AppVersion | quote }}
+version: {{ .Values.statefulset.actRunner.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -82,8 +59,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 helm.sh/chart: {{ include "gitea.actions.chart" . }}
 app: {{ include "gitea.actions.name" . }}-act-runner
 {{ include "gitea.actions.selectorLabels.actRunner" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
-version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ .Values.statefulset.actRunner.tag | default .Chart.AppVersion | quote }}
+version: {{ .Values.statefulset.actRunner.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 

@@ -1,6 +1,6 @@
 # gitea-actions
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![AppVersion: 0.261.3](https://img.shields.io/badge/AppVersion-0.261.3-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![AppVersion: 0.2.11](https://img.shields.io/badge/AppVersion-0.2.11-informational?style=flat-square)
 
 Gitea Actions
 
@@ -19,7 +19,7 @@ Gitea Actions
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| enabled | bool | `false` |  |
+| enabled | bool | `true` |  |
 | existingSecret | string | `""` |  |
 | existingSecretKey | string | `""` |  |
 | giteaRootURL | string | `""` |  |
@@ -45,6 +45,7 @@ Gitea Actions
 | statefulset.labels | object | `{}` |  |
 | statefulset.nodeSelector | object | `{}` |  |
 | statefulset.persistence.size | string | `"1Gi"` |  |
+| statefulset.persistence.storageClass | string | `""` |  |
 | statefulset.replicas | int | `1` |  |
 | statefulset.resources | object | `{}` |  |
 | statefulset.tolerations | list | `[]` |  |
