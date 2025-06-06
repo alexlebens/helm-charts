@@ -19,7 +19,14 @@
             "addLabels": [
                 "chart"
             ],
-            "automerge": false
+            "automerge": false,
+            "bumpVersions": [
+                {
+                "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+                "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+                "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+                }
+            ]
         },
         {
             "description": "Label images",
@@ -29,7 +36,14 @@
             "addLabels": [
                 "image"
             ],
-            "automerge": false
+            "automerge": false,
+            "bumpVersions": [
+                {
+                "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+                "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+                "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+                }
+            ]
         },
         {
             "description": "CNPG image",
@@ -43,7 +57,14 @@
                 "image"
             ],
             "automerge": false,
-            "versioning": "deb"
+            "versioning": "deb",
+            "bumpVersions": [
+                {
+                "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+                "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+                "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+                }
+            ]
         }
     ]
 }
