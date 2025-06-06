@@ -1,6 +1,6 @@
 # gitea-actions
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![AppVersion: 0.261.3](https://img.shields.io/badge/AppVersion-0.261.3-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![AppVersion: 0.261.3](https://img.shields.io/badge/AppVersion-0.261.3-informational?style=flat-square)
 
 Gitea Actions
 
@@ -27,26 +27,8 @@ Gitea Actions
 | global.imageRegistry | string | `""` |  |
 | global.nameOverride | string | `""` |  |
 | global.storageClass | string | `""` |  |
-| image.digest | string | `""` |  |
-| image.fullOverride | string | `""` |  |
-| image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.registry | string | `"docker.gitea.com"` |  |
-| image.repository | string | `"gitea"` |  |
-| image.rootless | bool | `true` |  |
-| image.tag | string | `""` |  |
 | init.image.repository | string | `"busybox"` |  |
 | init.image.tag | string | `"1.37.0"` |  |
-| persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| persistence.annotations."helm.sh/resource-policy" | string | `"keep"` |  |
-| persistence.claimName | string | `"gitea-shared-storage"` |  |
-| persistence.create | bool | `true` |  |
-| persistence.enabled | bool | `true` |  |
-| persistence.labels | object | `{}` |  |
-| persistence.mount | bool | `true` |  |
-| persistence.size | string | `"10Gi"` |  |
-| persistence.storageClass | string | `nil` |  |
-| persistence.subPath | string | `nil` |  |
-| persistence.volumeName | string | `""` |  |
 | statefulset.actRunner.config | string | `"log:\n  level: debug\ncache:\n  enabled: false\n"` |  |
 | statefulset.actRunner.extraVolumeMounts | list | `[]` |  |
 | statefulset.actRunner.pullPolicy | string | `"IfNotPresent"` |  |
