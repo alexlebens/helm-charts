@@ -1,0 +1,15 @@
+apiVersion: v2
+name: gitea-actions
+version: 0.0.0
+description: Gitea Actions
+keywords:
+  - cicd
+  - runner
+  - actions
+sources:
+  - https://gitea.com/gitea/helm-actions
+  - https://gitea.com/gitea/act
+maintainers:
+  - name: alexlebens
+icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+appVersion: 0.261.3
