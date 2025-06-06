@@ -1,16 +1,16 @@
-name: release-charts-cloudfbarman-cloudlared
+name: release-charts-gitea-actions
 
 on:
   push:
     branches:
       - main
     paths:
-      - "charts/barman-cloud/**"
+      - "charts/gitea-actions/**"
 
   workflow_dispatch:
 
 env:
-  WORKFLOW_DIR: "charts/barman-cloud"
+  WORKFLOW_DIR: "charts/gitea-actions"
 
 jobs:
   release:
