@@ -60,7 +60,7 @@ jobs:
           url: '${{ secrets.NTFY_URL }}'
           topic: '${{ secrets.NTFY_TOPIC }}'
           title: "Gitea Action"
-          priority: 4
+          priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,successfully,completed
           details: 'Helm Chart for ${{ env.CHART_NAME }} release workflow has successfully completed!'
@@ -73,7 +73,7 @@ jobs:
           url: '${{ secrets.NTFY_URL }}'
           topic: '${{ secrets.NTFY_TOPIC }}'
           title: "Gitea Action"
-          priority: 5
+          priority: 4
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
           details: 'Helm Chart for ${{ env.CHART_NAME }} release workflow has failed!'
