@@ -65,7 +65,7 @@ jobs:
           title: 'Gitea Action'
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          details: 'Helm Chart for ${{ env.CHART_NAME }} release workflow has successfully completed!'
+          details: 'Helm Chart for generic-device-plugin release workflow has successfully completed!'
           icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
 
       - name: ntfy Failed
@@ -77,7 +77,7 @@ jobs:
           title: 'Gitea Action'
           priority: 4
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          details: 'Helm Chart for ${{ env.CHART_NAME }} release workflow has failed!'
+          details: 'Helm Chart for generic-device-plugin release workflow has failed!'
           icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
           actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=release-charts-generic-device-plugin.yml", "clear": true}]'
           image: true
