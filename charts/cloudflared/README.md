@@ -19,7 +19,7 @@ Cloudflared Tunnel
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bjw-s-labs.github.io/helm-charts/ | common | 4.0.1 |
+| https://bjw-s-labs.github.io/helm-charts/ | common | 4.1.0 |
 
 ## Values
 
