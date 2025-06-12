@@ -62,10 +62,9 @@ jobs:
         with:
           url: '${{ secrets.NTFY_URL }}'
           topic: '${{ secrets.NTFY_TOPIC }}'
-          title: "Gitea Action"
+          title: 'Gitea Action'
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,successfully,completed
           details: 'Helm Chart for ${{ env.CHART_NAME }} release workflow has successfully completed!'
           icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
 
@@ -75,11 +74,10 @@ jobs:
         with:
           url: '${{ secrets.NTFY_URL }}'
           topic: '${{ secrets.NTFY_TOPIC }}'
-          title: "Gitea Action"
+          title: 'Gitea Action'
           priority: 4
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,failed
           details: 'Helm Chart for ${{ env.CHART_NAME }} release workflow has failed!'
           icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
-          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=release-charts-${{ env.CHART_NAME }}.yml", "clear": true}]'
+          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=release-charts-gitea-actions.yml", "clear": true}]'
           image: true
