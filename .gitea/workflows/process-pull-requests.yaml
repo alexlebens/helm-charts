@@ -30,6 +30,6 @@ jobs:
           REPOSITORY: ${{ gitea.repository }}
           TOKEN: ${{ secrets.BOT_TOKEN }}
           STALE_DAYS: 3
-          STALE_TAG: 'stale'
-          REQUIRED_TAG: 'automerge'
+          STALE_TAG: 21
+          REQUIRED_TAG: 19
         run: python ./scripts/scripts/process-pull-requests.py
