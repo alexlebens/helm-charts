@@ -34,7 +34,6 @@ jobs:
           LOG_LEVEL: DEBUG
           ISSUE_STALE_DAYS: 3
           ISSUE_STALE_TAG: stale
-          ISSUE_REQUIRED_TAG: automerge
           ISSUE_EXCLUDE_TAG: renovate
           PULL_REQUEST_STALE_DAYS: 3
           PULL_REQUEST_STALE_TAG: stale
