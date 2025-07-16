@@ -34,8 +34,7 @@ jobs:
           LOG_LEVEL: DEBUG
           ISSUE_STALE_DAYS: 3
           ISSUE_STALE_TAG: stale
-          ISSUE_EXCLUDE_TAG: renovate
+          ISSUE_EXCLUDE_TAG: Renovate
           PULL_REQUEST_STALE_DAYS: 3
           PULL_REQUEST_STALE_TAG: stale
-          PULL_REQUEST_REQUIRED_TAG: automerge
         run: python ./workflow-scripts/process-repository.py
