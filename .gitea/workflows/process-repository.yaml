@@ -29,14 +29,14 @@ jobs:
       - name: Run Script
         env:
           INSTANCE_URL: ${{ vars.INSTANCE_URL }}
-          OWNER: ${{ gitea.owner }}
           REPOSITORY: ${{ gitea.repository }}
           TOKEN: ${{ secrets.BOT_TOKEN }}
           LOG_LEVEL: DEBUG
           ISSUE_STALE_DAYS: 3
-          ISSUE_STALE_TAG: 21
-          ISSUE_EXCLUDE_TAG: 18
+          ISSUE_STALE_TAG: stale
+          ISSUE_REQUIRED_TAG: automerge
+          ISSUE_EXCLUDE_TAG: renovate
           PULL_REQUEST_STALE_DAYS: 3
-          PULL_REQUEST_STALE_TAG: 21
-          PULL_REQUEST_REQUIRED_TAG: 19
+          PULL_REQUEST_STALE_TAG: stale
+          PULL_REQUEST_REQUIRED_TAG: automerge
         run: python ./workflow-scripts/process-repository.py
