@@ -10,7 +10,7 @@ existingSecretKey: cf-tunnel-token
 # -- Default image
 image:
   repository: cloudflare/cloudflared
-  tag: "2025.7.0"
+  tag: "2025.8.0"
   pullPolicy: IfNotPresent
 
 # -- Default resources
