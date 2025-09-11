@@ -8,7 +8,7 @@ image:
   pullPolicy: Always
 
 # -- Domain used by devices for identifcation
-deviceDomain: squat.ai
+deviceDomain: devic.es
 
 # -- Service port
 service:
