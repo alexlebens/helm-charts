@@ -4,7 +4,7 @@ name: generic-device-plugin
 # -- Default image
 image:
   repository: ghcr.io/squat/generic-device-plugin
-  tag: latest@sha256:1f779444c72c7bf06b082c44698d6268a8e642ebd9488a35c84a603087940e64
+  tag: latest@sha256:df8245854e71e3f580fb082acc97dea4b5c23d25566527e1c510643b0d939ce8
   pullPolicy: Always
 
 # -- Domain used by devices for identifcation

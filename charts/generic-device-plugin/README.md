@@ -1,6 +1,6 @@
 # generic-device-plugin
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![AppVersion: 0.6.0](https://img.shields.io/badge/AppVersion-0.6.0-informational?style=flat-square)
+![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![AppVersion: 0.7.0](https://img.shields.io/badge/AppVersion-0.7.0-informational?style=flat-square)
 
 Generic Device Plugin
 
@@ -28,7 +28,7 @@ Generic Device Plugin
 | config | object | `{"data":"devices:\n  - name: serial\n    groups:\n      - paths:\n          - path: /dev/ttyUSB*\n      - paths:\n          - path: /dev/ttyACM*\n      - paths:\n          - path: /dev/tty.usb*\n      - paths:\n          - path: /dev/cu.*\n      - paths:\n          - path: /dev/cuaU*\n      - paths:\n          - path: /dev/rfcomm*\n  - name: video\n    groups:\n      - paths:\n          - path: /dev/video0\n  - name: fuse\n    groups:\n      - count: 10\n        paths:\n          - path: /dev/fuse\n  - name: audio\n    groups:\n      - count: 10\n        paths:\n          - path: /dev/snd\n  - name: capture\n    groups:\n      - paths:\n          - path: /dev/snd/controlC0\n          - path: /dev/snd/pcmC0D0c\n      - paths:\n          - path: /dev/snd/controlC1\n            mountPath: /dev/snd/controlC0\n          - path: /dev/snd/pcmC1D0c\n            mountPath: /dev/snd/pcmC0D0c\n      - paths:\n          - path: /dev/snd/controlC2\n            mountPath: /dev/snd/controlC0\n          - path: /dev/snd/pcmC2D0c\n            mountPath: /dev/snd/pcmC0D0c\n      - paths:\n          - path: /dev/snd/controlC3\n            mountPath: /dev/snd/controlC0\n          - path: /dev/snd/pcmC3D0c\n            mountPath: /dev/snd/pcmC0D0c\n","enabled":true}` | Config map |
 | config.data | string | See [values.yaml](./values.yaml) | generic-device-plugin config file [[ref]](https://github.com/squat/generic-device-plugin#usage) |
 | deviceDomain | string | `"devic.es"` | Domain used by devices for identifcation |
-| image | object | `{"pullPolicy":"Always","repository":"ghcr.io/squat/generic-device-plugin","tag":"latest@sha256:1f779444c72c7bf06b082c44698d6268a8e642ebd9488a35c84a603087940e64"}` | Default image |
+| image | object | `{"pullPolicy":"Always","repository":"ghcr.io/squat/generic-device-plugin","tag":"latest@sha256:df8245854e71e3f580fb082acc97dea4b5c23d25566527e1c510643b0d939ce8"}` | Default image |
 | name | string | `"generic-device-plugin"` | Name override of release |
 | resources | object | `{"limit":{"cpu":"100m","memory":"20Mi"},"requests":{"cpu":"50m","memory":"10Mi"}}` | Default resources |
 | service | object | `{"listenPort":8080}` | Service port |
