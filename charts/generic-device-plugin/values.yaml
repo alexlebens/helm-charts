@@ -16,9 +16,6 @@ service:
 
 # -- Default resources
 resources:
-  limit:
-    cpu: 100m
-    memory: 20Mi
   requests:
     cpu: 50m
     memory: 10Mi
