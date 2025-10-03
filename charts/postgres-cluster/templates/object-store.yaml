@@ -37,10 +37,10 @@ spec:
     {{- end }}
     s3Credentials:
       accessKeyId:
-        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
+        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
+        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_SECRET_KEY
 {{ end -}}
 {{ end }}
