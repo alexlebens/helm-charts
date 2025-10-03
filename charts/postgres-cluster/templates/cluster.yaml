@@ -19,10 +19,8 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
-  {{ if (eq .Values.backup.method "objectStore") }}
-    plugins:
-  {{ end }}
   {{- range $objectStore := .Values.backup.objectStore }}
+  plugins:
     - name: barman-cloud.cloudnative-pg.io
       enabled: true
       isWALArchiver: {{ $objectStore.isWALArchiver | default true }}
@@ -34,7 +32,7 @@ spec:
         serverName: "{{ include "cluster.name" $ }}-backup-{{ $objectStore.index }}"
         {{- end }}
   {{- end }}
-  {{ if eq .Values.recovery.method "objectStore" }}
+  {{ if (eq .Values.recovery.method "objectStore") }}
   externalClusters:
     - name: recovery
       plugin:
