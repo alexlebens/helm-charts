@@ -83,17 +83,3 @@ Generate recovery server name
     {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.objectStore.index) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
-
-{{/*
-Generate name for recovery object store credentials
-*/}}
-{{- define "cluster.recoveryCredentials" -}}
-  {{- printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-
-{{/*
-Generate name for backup object store credentials
-*/}}
-{{- define "cluster.backupCredentials" -}}
-  {{- printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
-{{- end }}

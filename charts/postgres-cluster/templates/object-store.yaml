@@ -37,10 +37,10 @@ spec:
     {{- end }}
     s3Credentials:
       accessKeyId:
-        name: {{ .endpointCredentials }}
+        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ .endpointCredentials }}
+        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_SECRET_KEY
 {{ end -}}
 {{ end }}
@@ -77,9 +77,9 @@ spec:
       jobs: {{ .Values.recovery.objectStore.data.jobs }}
     s3Credentials:
       accessKeyId:
-        name: {{ .Values.recovery.objectStore.endpointCredentials }}
+        name: {{ .Values.recovery.objectStore.endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ .Values.recovery.objectStore.endpointCredentials }}
+        name: {{ .Values.recovery.objectStore.endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_SECRET_KEY
 {{ end }}
