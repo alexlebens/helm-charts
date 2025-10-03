@@ -88,16 +88,12 @@ Generate recovery server name
 Generate name for recovery object store credentials
 */}}
 {{- define "cluster.recoveryCredentials" -}}
-  {{- if .Values.recovery.endpointCredentials -}}
-    {{- .Values.recovery.endpointCredentials -}}
-  {{- else -}}
-    {{- printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
-  {{- end }}
+  {{- printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 
 {{/*
 Generate name for backup object store credentials
 */}}
 {{- define "cluster.backupCredentials" -}}
-    {{- printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+  {{- printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end }}

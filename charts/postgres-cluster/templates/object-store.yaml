@@ -37,18 +37,10 @@ spec:
     {{- end }}
     s3Credentials:
       accessKeyId:
-        {{- if .endpointCredentials }}
-        name: {{ .endpointCredentials }}
-        {{- else }}
-        name: {{ include "cluster.backupCredentials" $context }}
-        {{- end }}
+        name: {{ .endpointCredentials | default include "cluster.backupCredentials" $context }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        {{- if .endpointCredentials }}
-        name: {{ .endpointCredentials }}
-        {{- else }}
-        name: {{ include "cluster.backupCredentials" $context }}
-        {{- end }}
+        name: {{ .endpointCredentials | default include "cluster.backupCredentials" $context }}
         key: ACCESS_SECRET_KEY
 {{ end -}}
 {{ end }}
@@ -85,9 +77,9 @@ spec:
       jobs: {{ .Values.recovery.objectStore.data.jobs }}
     s3Credentials:
       accessKeyId:
-        name: {{ include "cluster.recoveryCredentials" . }}
+        name: {{ .Values.recovery.endpointCredentials | default include "cluster.recoveryCredentials" . }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ include "cluster.recoveryCredentials" . }}
+        name: {{ .Values.recovery.endpointCredentials | default include "cluster.recoveryCredentials" . }}
         key: ACCESS_SECRET_KEY
 {{ end }}
