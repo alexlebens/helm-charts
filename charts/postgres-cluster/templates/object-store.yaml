@@ -1,4 +1,4 @@
-{{ if and (.Values.backup.enabled) (eq .Values.backup.method "objectStore") }}
+{{ if (eq .Values.backup.method "objectStore") }}
 {{ $context := . -}}
 {{ range .Values.backup.objectStore -}}
 ---

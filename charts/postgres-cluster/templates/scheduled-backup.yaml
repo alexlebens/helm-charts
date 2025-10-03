@@ -1,4 +1,3 @@
-{{ if .Values.backup.enabled }}
 {{ $context := . -}}
 {{ range .Values.backup.scheduledBackups -}}
 ---
@@ -22,4 +21,3 @@ spec:
     parameters:
       barmanObjectName: "{{ include "cluster.name" $context }}-{{ .backupName }}-backup"
 {{ end -}}
-{{ end }}

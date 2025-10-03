@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 6.6.4](https://img.shields.io/badge/Version-6.6.4-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
+![Version: 6.7.0](https://img.shields.io/badge/Version-6.7.0-informational?style=flat-square) ![AppVersion: v1.26.0](https://img.shields.io/badge/AppVersion-v1.26.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -19,8 +19,7 @@ Cloudnative-pg Cluster
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backup | object | `{"enabled":false,"method":"objectStore","objectStore":[],"scheduledBackups":[]}` | Backup settings |
-| backup.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
+| backup | object | `{"method":"objectStore","objectStore":[],"scheduledBackups":[]}` | Backup settings |
 | backup.method | string | `"objectStore"` | Method to create backups, options currently are only objectStore |
 | backup.objectStore | list | `[]` | Options for object store backups |
 | backup.scheduledBackups | list | `[]` | List of scheduled backups |

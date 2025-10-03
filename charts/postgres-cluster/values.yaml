@@ -417,9 +417,6 @@ recovery:
 # -- Backup settings
 backup:
 
-  # -- You need to configure backups manually, so backups are disabled by default.
-  enabled: false
-
   # -- Method to create backups, options currently are only objectStore
   method: objectStore
 
