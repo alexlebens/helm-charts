@@ -9,7 +9,7 @@ metadata:
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
 spec:
-  immediate: {{ .immediate | default true }}
+  immediate: {{ .immediate | default false }}
   suspend: {{ .suspend | default false }}
   schedule: {{ .schedule | quote | required "Schedule is required" }}
   backupOwnerReference: {{ .backupOwnerReference | default "self" }}
