@@ -77,9 +77,9 @@ spec:
       jobs: {{ .Values.recovery.objectStore.data.jobs }}
     s3Credentials:
       accessKeyId:
-        name: {{ .Values.recovery.endpointCredentials | default (include "cluster.recoveryCredentials" .) }}
+        name: {{ .Values.recovery.objectStore.endpointCredentials }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ .Values.recovery.endpointCredentials | default (include "cluster.recoveryCredentials" .) }}
+        name: {{ .Values.recovery.objectStore.endpointCredentials }}
         key: ACCESS_SECRET_KEY
 {{ end }}
