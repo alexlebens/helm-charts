@@ -27,7 +27,7 @@ spec:
       {{ end }}
       maxParallel: {{ .wal.maxParallel | default "1" }}
     {{- end }}
-    {{- if .wal }}
+    {{- if .data }}
     data:
       compression: {{ .data.compression | default "snappy"  }}
       {{- with .data.encryption }}
