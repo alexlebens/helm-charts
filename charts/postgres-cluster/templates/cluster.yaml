@@ -80,11 +80,8 @@ spec:
   enablePDB: {{ .Values.cluster.enablePDB }}
 
   postgresql:
-    {{- if or (eq .Values.type "tensorchord") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
+    {{- if .Values.cluster.postgresql.shared_preload_libraries }}
     shared_preload_libraries:
-      {{- if eq .Values.type "tensorchord" }}
-      - vectors.so
-      {{- end }}
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
       {{- end }}

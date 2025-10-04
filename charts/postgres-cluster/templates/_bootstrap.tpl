@@ -11,21 +11,8 @@ bootstrap:
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
-    {{- if eq .Values.type "tensorchord" }}
-    dataChecksums: true
-    {{- end }}
-    {{- if or (eq .Values.type "tensorchord") (.Values.cluster.initdb.postInitApplicationSQL) }}
+    {{- if (.Values.cluster.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
-      {{- if eq .Values.type "tensorchord" }}
-      - ALTER SYSTEM SET search_path TO "$user", public, vectors;
-      - SET search_path TO "$user", public, vectors;
-      - CREATE EXTENSION IF NOT EXISTS "vectors";
-      - CREATE EXTENSION IF NOT EXISTS "cube";
-      - CREATE EXTENSION IF NOT EXISTS "earthdistance";
-      - ALTER SCHEMA vectors OWNER TO "app";
-      - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA vectors TO "app";
-      - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "app";
-      {{- end }}
       {{- with .Values.cluster.initdb }}
         {{- range .postInitApplicationSQL }}
           {{- printf "- %s" . | nindent 6 }}
