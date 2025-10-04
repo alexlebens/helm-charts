@@ -1,70 +1,57 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "config:recommended",
-        "mergeConfidence:all-badges",
-        ":rebaseStalePrs"
-    ],
-    "timezone": "US/Central",
-    "schedule": [ "* */1 * * *" ],
-    "labels": [],
-    "prHourlyLimit": 0,
-    "prConcurrentLimit": 0,
-    "packageRules": [
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "mergeConfidence:all-badges",
+    ":rebaseStalePrs"
+  ],
+  "timezone": "US/Central",
+  "schedule": ["* */1 * * *"],
+  "labels": [],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "packageRules": [
+    {
+      "description": "Label charts",
+      "matchDatasources": ["helm"],
+      "addLabels": ["chart"],
+      "automerge": false,
+      "bumpVersions": [
         {
-            "description": "Label charts",
-            "matchDatasources": [
-                "helm"
-            ],
-            "addLabels": [
-                "chart"
-            ],
-            "automerge": false,
-            "bumpVersions": [
-                {
-                "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
-                "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
-                "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
-                }
-            ]
-        },
-        {
-            "description": "Label images",
-            "matchDatasources": [
-                "docker"
-            ],
-            "addLabels": [
-                "image"
-            ],
-            "automerge": false,
-            "bumpVersions": [
-                {
-                "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
-                "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
-                "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
-                }
-            ]
-        },
-        {
-            "description": "CNPG image",
-            "matchDepNames": [
-                "ghcr.io/cloudnative-pg/postgresql"
-            ],
-            "matchDatasources": [
-                "docker"
-            ],
-            "addLabels": [
-                "image"
-            ],
-            "automerge": false,
-            "versioning": "deb",
-            "bumpVersions": [
-                {
-                "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
-                "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
-                "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
-                }
-            ]
+          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+          "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+          "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
         }
-    ]
+      ]
+    },
+    {
+      "description": "Label images",
+      "matchDatasources": ["docker"],
+      "addLabels": ["image"],
+      "automerge": false,
+      "bumpVersions": [
+        {
+          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+          "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+          "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+        }
+      ]
+    },
+    {
+      "description": "CNPG image",
+      "matchDepNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "matchDatasources": ["docker"],
+      "addLabels": ["image"],
+      "matchUpdateTypes": ["major", "minor"],
+      "automerge": false,
+      "versioning": "deb",
+      "bumpVersions": [
+        {
+          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+          "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+          "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+        }
+      ]
+    }
+  ]
 }
