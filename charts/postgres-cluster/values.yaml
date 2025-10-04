@@ -6,7 +6,6 @@ namespaceOverride: ""
 
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
-# * `tensorchord`
 type: postgresql
 
 # -- Cluster mode of operation. Available modes:
@@ -21,7 +20,7 @@ cluster:
   # -- Default image
   image:
     repository: ghcr.io/cloudnative-pg/postgresql
-    tag: "17.5-1-bullseye"
+    tag: 17.6-standard-trixie
 
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
