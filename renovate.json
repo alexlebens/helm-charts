@@ -44,7 +44,6 @@
       "addLabels": ["image"],
       "matchUpdateTypes": ["major", "minor"],
       "automerge": false,
-      "versioning": "deb",
       "bumpVersions": [
         {
           "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
