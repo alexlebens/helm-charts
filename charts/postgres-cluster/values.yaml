@@ -130,7 +130,8 @@ cluster:
       enabled: false
 
       # -- Exclude specified rules
-      excludeRules: []
+      excludeRules:
+        - CNPGClusterLastFailedArchiveTimeWarning
 
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
