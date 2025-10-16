@@ -1,6 +1,6 @@
 apiVersion: v2
 name: generic-device-plugin
-version: 0.14.0
+version: 0.15.0
 description: Generic Device Plugin
 keywords:
   - generic-device-plugin
@@ -14,5 +14,5 @@ maintainers:
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts/
-    version: 4.3.0
-appVersion: 0.10.0
+    version: 4.4.0
+appVersion: 0.15.0
