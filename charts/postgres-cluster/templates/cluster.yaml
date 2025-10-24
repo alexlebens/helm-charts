@@ -19,11 +19,15 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
-  {{- range $objectStore := .Values.backup.objectStore }}
   plugins:
+  {{- range $objectStore := .Values.backup.objectStore }}
     - name: barman-cloud.cloudnative-pg.io
       enabled: true
-      isWALArchiver: {{ $objectStore.isWALArchiver | default true }}
+      {{- if $objectStore.isWALArchiver }}
+      isWALArchiver: true
+      {{- else }}
+      isWALArchiver: false
+      {{- end }}
       parameters:
         barmanObjectName: "{{ include "cluster.name" $ }}-{{ $objectStore.name }}-backup"
         {{- if $objectStore.clusterName }}
