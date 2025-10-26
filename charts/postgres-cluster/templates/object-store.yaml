@@ -42,6 +42,11 @@ spec:
       secretAccessKey:
         name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
         key: ACCESS_SECRET_KEY
+    {{- if .endpointCredentialsIncludeRegion }}
+      region:
+        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
+        key: ACCESS_REGION
+    {{- end }}
 {{ end -}}
 {{ end }}
 
