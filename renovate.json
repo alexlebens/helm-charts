@@ -25,6 +25,21 @@
       ]
     },
     {
+      "description": "Automerge chart digest",
+      "matchUpdateTypes": ["digest"],
+      "matchDatasources": ["helm"],
+      "addLabels": ["chart", "automerge"],
+      "automerge": true,
+      "minimumReleaseAge": "1 days",
+      "bumpVersions": [
+        {
+          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+          "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+          "bumpType": "patch"
+        }
+      ]
+    },
+    {
       "description": "Label images",
       "matchDatasources": ["docker"],
       "addLabels": ["image"],
