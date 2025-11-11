@@ -81,5 +81,5 @@ jobs:
           tags: action,failed
           details: 'Helm Chart ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }} has failed to be released.'
           icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
-          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/site-profile/actions?workflow=release-charts-cloudflared.yml", "clear": true}]'
+          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=release-charts-cloudflared.yml", "clear": true}]'
           image: true
