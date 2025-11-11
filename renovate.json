@@ -25,21 +25,6 @@
       ]
     },
     {
-      "description": "Automerge chart digest",
-      "matchUpdateTypes": ["digest"],
-      "matchDatasources": ["helm"],
-      "addLabels": ["chart", "automerge"],
-      "automerge": true,
-      "minimumReleaseAge": "1 days",
-      "bumpVersions": [
-        {
-          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
-          "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
-          "bumpType": "patch"
-        }
-      ]
-    },
-    {
       "description": "Label images",
       "matchDatasources": ["docker"],
       "addLabels": ["image"],
@@ -53,17 +38,18 @@
       ]
     },
     {
-      "description": "CNPG image",
-      "matchDepNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "description": "Automerge generic-device-plugin image on digest",
       "matchDatasources": ["docker"],
-      "addLabels": ["image"],
-      "matchUpdateTypes": ["major", "minor"],
-      "automerge": false,
+      "matchDepNames": ["ghcr.io/squat/generic-device-plugin"],
+      "matchUpdateTypes": ["digest"],
+      "addLabels": ["image", "automerge"],
+      "automerge": true,
+      "minimumReleaseAge": "1 days",
       "bumpVersions": [
         {
           "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
           "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
-          "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+          "bumpType": "patch"
         }
       ]
     }
