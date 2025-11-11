@@ -46,7 +46,7 @@ jobs:
           url: '${{ secrets.NTFY_URL }}'
           topic: '${{ secrets.NTFY_TOPIC }}'
           title: 'Test Failure - Helm Charts'
-          priority: 4
+          priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
           details: 'Tests have failed for Helm Charts'
