@@ -38,3 +38,18 @@ jobs:
       - name: Run Chart Testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
+
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@master
+        if: failure()
+        with:
+          url: '${{ secrets.NTFY_URL }}'
+          topic: '${{ secrets.NTFY_TOPIC }}'
+          title: 'Test Failure - Helm Charts'
+          priority: 4
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: 'Tests have failed for Helm Charts'
+          icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
+          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/site-profile/actions?workflow=lint-test.yaml", "clear": true}]'
+          image: true
