@@ -28,19 +28,19 @@ jobs:
       - name: Package Helm Chart
         run: |
           cd $WORKFLOW_DIR
-          helm dependency build
+          helm dependency build --debug
           echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITEA_ENV
 
       - name: Publish Helm Chart to Harbor
         run: |
-          helm registry login ${{ vars.REGISTRY_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }}
-          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REGISTRY_HOST }}/helm-charts
+          helm registry login ${{ vars.REGISTRY_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }} --debug
+          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REGISTRY_HOST }}/helm-charts --debug
 
       - name: Publish Helm Chart to Gitea
         run: |
-          helm plugin install https://github.com/chartmuseum/helm-push
-          helm repo add --username ${{ gitea.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm
-          helm cm-push ${{ env.PACKAGE_PATH }} helm-charts
+          helm plugin install https://github.com/chartmuseum/helm-push --debug
+          helm repo add --username ${{ gitea.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm --debug
+          helm cm-push ${{ env.PACKAGE_PATH }} helm-charts --debug
 
       - name: Extract Chart Metadata
         run: |
