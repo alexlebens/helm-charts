@@ -59,7 +59,7 @@ jobs:
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo ""
             echo ">> Checking for changes in a pull request ..."
-            GIT_DIFF=$(git diff --name-only "${BASE_BRANCH}" | xargs -I {} dirname {} | sort -u | grep -E "charts/)
+            GIT_DIFF=$(git diff --name-only "${BASE_BRANCH}" | xargs -I {} dirname {} | sort -u | grep -E "charts/")
           else
             echo ""
             echo ">> Checking for changes from a push ..."
