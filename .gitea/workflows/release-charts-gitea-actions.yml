@@ -30,7 +30,7 @@ jobs:
           cd ${WORKFLOW_DIR}
 
           echo ">> Adding repositories for chart dependencies ..."
-          helm dependency list --max-col-width 120 ${WORKFLOW_DIR} 2> /dev/null \
+          helm dependency list --max-col-width 120 2> /dev/null \
             | tail +2 | head -n -1 \
             | awk '{ print "helm repo add " $1 " " $3 }' \
             | while read cmd; do echo "$cmd" | sh; done || true
