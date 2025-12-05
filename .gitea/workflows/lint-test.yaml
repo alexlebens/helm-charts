@@ -48,6 +48,16 @@ jobs:
           token: ${{ secrets.GITEA_TOKEN }}
           version: v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+
+      - name: Set up Chart Testing
+        uses: helm/chart-testing-action@v2.7.0
+        with:
+          yamale_version: "6.0.0"
+
       - name: Check Directories for Changes
         id: check-dir-changes
         if: steps.branch-exists.outputs.exists == 'true'
@@ -145,6 +155,18 @@ jobs:
               echo ""
             fi
           done
+
+      - name: Run Chart Testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --target-branch ${{ gitea.event.repository.default_branch }})
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Chart Testing (lint)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@master
