@@ -32,6 +32,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           python-version: 3.14
+          enable-cache: true
 
       - name: Set up Chart Testing
         uses: helm/chart-testing-action@v2.8.0
