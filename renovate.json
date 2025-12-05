@@ -6,7 +6,6 @@
     ":rebaseStalePrs"
   ],
   "timezone": "US/Central",
-  "schedule": ["* */1 * * *"],
   "labels": [],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
