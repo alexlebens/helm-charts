@@ -2,6 +2,19 @@ name: lint-and-test
 
 on:
   pull_request:
+    branches:
+      - main
+    paths:
+      - 'charts/**'
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/**'
+
+env:
+  BASE_BRANCH: "origin/${{ gitea.base_ref }}"
 
 jobs:
   lint-test:
@@ -12,42 +25,126 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check Branch Exists
+        id: check-branch-exists
+        if: github.event_name == 'pull_request'
+        uses: GuillaumeFalourd/branch-exists@v1.1
+        with:
+          branch: ${{ gitea.base_ref }}
+
+      - name: Report Branch Exists
+        id: branch-exists
+        if: github.event_name == 'push' || steps.check-branch-exists.outputs.exists == 'true' && github.event_name == 'pull_request'
+        run: |
+          echo ">> Branch ${{ gitea.base_ref }} exists, will continue with linting"
+
+          echo "----"
+
+          echo "exists=true" >> $GITEA_OUTPUT
+
       - name: Set up Helm
         uses: azure/setup-helm@v4
         with:
-          version: latest
+          token: ${{ secrets.GITEA_TOKEN }}
+          version: v3
 
-      - name: Set up Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.14'
-          check-latest: true
-
-      - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          python-version: 3.14
-          enable-cache: true
-
-      - name: Set up Chart Testing
-        uses: helm/chart-testing-action@v2.8.0
-
-      - name: Run Chart Testing (list-changed)
-        id: list-changed
+      - name: Check Directories for Changes
+        id: check-dir-changes
+        if: steps.branch-exists.outputs.exists == 'true'
         run: |
-          changed=$(ct list-changed --target-branch ${{ gitea.event.repository.default_branch }})
-          if [[ -n "$changed" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
+          CHANGED_CHARTS=()
+
+          echo ">> Target branch for diff is: ${BASE_BRANCH}"
+
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo ""
+            echo ">> Checking for changes in a pull request ..."
+            GIT_DIFF=$(git diff --name-only "${BASE_BRANCH}" | xargs -I {} dirname {} | sort -u | grep -E "charts/)
+          else
+            echo ""
+            echo ">> Checking for changes from a push ..."
+            GIT_DIFF=$(git diff --name-only ${{ gitea.event.before }}..HEAD | xargs -I {} dirname {} | sort -u | grep -E "charts/")
           fi
 
-      - name: Run Chart Testing (lint)
-        if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
+          if [ -n "${GIT_DIFF}" ]; then
+            echo ""
+            echo ">> Changes detected:"
+            echo "$GIT_DIFF"
+
+            for path in $GIT_DIFF; do
+              CHANGED_CHARTS+=$(echo "$path" | awk -F '/' '{print $2}')
+            done
+
+          else
+            echo ""
+            echo ">> No changes detected"
+
+          fi
+
+          if [ -n "${CHANGED_CHARTS}" ]; then
+            echo ""
+            echo ">> Chart to Lint:"
+            echo "$(echo "${CHANGED_CHARTS[@]}" | sort -u)"
+
+            echo "----"
+
+            echo "changes-detected=true" >> $GITEA_OUTPUT
+            echo "chart-dir<<EOF" >> $GITEA_OUTPUT
+            echo "$(echo "${CHANGED_CHARTS[@]}" | sort -u)" >> $GITEA_OUTPUT
+            echo "EOF" >> $GITEA_OUTPUT
+          else
+            echo "changes-detected=false" >> $GITEA_OUTPUT
+          fi
+
+      - name: Add Repositories
+        if: steps.check-dir-changes.outputs.changes-detected == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
+        run: |
+          echo ">> Adding repositories for chart dependencies ..."
+          for dir in ${CHANGED_CHARTS}; do
+            helm dependency list --max-col-width 120 charts/$dir 2> /dev/null \
+              | tail +2 | head -n -1 \
+              | awk '{ print "helm repo add " $1 " " $3 }' \
+              | while read cmd; do echo "$cmd" | sh; done || true
+          done
+
+          if helm repo list | tail +2 | read -r; then
+            echo ""
+            echo ">> Update repository cache ..."
+            helm repo update
+          fi
+
+          echo "----"
+
+      - name: Lint Helm Chart
+        if: steps.check-dir-changes.outputs.changes-detected == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
+        run: |
+          echo ">> Running linting on changed charts ..."
+
+          for dir in ${CHANGED_CHARTS}; do
+            chart_path=charts/$dir
+            chart_name=$(basename "$chart_path")
+
+            if [ -f "$chart_path/Chart.yaml" ]; then
+              cd $chart_path
+
+              echo ""
+              echo ">> Building helm dependency ..."
+              helm dependency build --skip-refresh
+
+              echo ""
+              echo ">> Linting helm ..."
+              helm lint --namespace "$chart_name"
+
+            else
+              echo ""
+              echo ">> Directory $chart_path does not contain a Chart.yaml. Skipping ..."
+              echo ""
+            fi
+          done
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@master
