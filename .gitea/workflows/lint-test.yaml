@@ -92,7 +92,13 @@ jobs:
         id: branch-exists
         if: github.event_name == 'push' || steps.check-branch-exists.outputs.exists == 'true' && github.event_name == 'pull_request'
         run: |
-          echo ">> Branch ${{ gitea.base_ref }} exists, will continue with linting"
+          if [ ${{ github.event_name == 'push' }} ]; then
+            echo ">> Action is from a push event, will continue with linting"
+
+          else
+            echo ">> Branch ${{ gitea.base_ref }} exists, will continue with linting"
+
+          fi
 
           echo "----"
 
@@ -100,6 +106,7 @@ jobs:
 
       - name: Set up Helm
         uses: azure/setup-helm@v4
+        if: steps.branch-exists.outputs.exists == 'true'
         with:
           token: ${{ secrets.GITEA_TOKEN }}
           version: v3
@@ -129,7 +136,7 @@ jobs:
 
             for path in $GIT_DIFF; do
               CHANGED_CHARTS+=$(echo "$path" | awk -F '/' '{print $2}')
-              RENDER_DIR+=$(echo " ")
+              CHANGED_CHARTS+=$(echo " ")
             done
 
           else
