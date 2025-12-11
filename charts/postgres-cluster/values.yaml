@@ -330,7 +330,7 @@ recovery:
       port: 5432
       username: ""
       database: "app"
-      sslMode: "verify-full"
+      sslMode: "disable"
       passwordSecret:
 
         # -- Whether to create a secret for the password
