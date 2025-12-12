@@ -63,7 +63,7 @@ externalClusters:
         {{- end }}
       {{- if eq .Values.recovery.import.type "monolith" }}
       roles:
-        {{- with .Values.replica.importRoles }}
+        {{- with .Values.recovery.import.roles }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
       {{- end }}
