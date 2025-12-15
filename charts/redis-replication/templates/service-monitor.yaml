@@ -23,7 +23,7 @@ spec:
       scrapeTimeout: {{ .Values.redisReplication.redisExporter.serviceMonitor.scrapeTimeout }}
 {{- end }}
 
-{{- if .Values.redisSentinel.redisExporter.serviceMonitor.enabled }}
+{{- if and (.Values.redisSentinel.redisExporter.serviceMonitor.enabled) (.Values.redisSentinel.enabled) }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
