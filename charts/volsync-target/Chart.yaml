@@ -1,0 +1,16 @@
+apiVersion: v2
+name: volsync-target
+version: 0.1.0
+description: Volsync Replication set to target specific PVC with preconfigured settings
+keywords:
+  - volsync-target
+  - volsync
+  - storage
+  - kubernetes
+sources:
+  - https://github.com/backube/volsync
+  - https://github.com/backube/volsync/tree/main/helm/volsync
+maintainers:
+  - name: alexlebens
+icon: https://raw.githubusercontent.com/backube/volsync/main/docs/media/volsync.svg?sanitize=true
+appVersion: 0.14.0

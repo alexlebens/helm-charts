@@ -1,0 +1,89 @@
+{{- if .Values.local.enabled }}
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: {{ include "volsync.name" . }}-source-local
+  namespace: {{ include "volsync.namespace" . }}
+  labels:
+    {{- include "volsync.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "volsync.name" . }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  sourcePVC: {{ .Values.pvcTarget }}
+  trigger:
+    schedule: {{ .Values.local.schedule }}
+  restic:
+    pruneIntervalDays: {{ .Values.local.restic.pruneIntervalDays }}
+    repository: {{ include "volsync.localRepoName" . }}
+    retain:
+    {{- with .Values.local.restic.retain }}
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    copyMethod: {{ .Values.local.restic.copyMethod }}
+    storageClassName: {{ .Values.local.restic.storageClassName }}
+    volumeSnapshotClassName: {{ .Values.local.restic.volumeSnapshotClassName }}
+    cacheCapacity: {{ .Values.local.restic.cacheCapacity }}
+{{- end }}
+
+{{- if .Values.remote.enabled }}
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: {{ include "volsync.name" . }}-source-remote
+  namespace: {{ include "volsync.namespace" . }}
+  labels:
+    {{- include "volsync.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "volsync.name" . }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  sourcePVC: {{ .Values.pvcTarget | required "PVC target is required" }}
+  trigger:
+    schedule: {{ .Values.remote.schedule }}
+  restic:
+    pruneIntervalDays: {{ .Values.remote.restic.pruneIntervalDays }}
+    repository: {{ include "volsync.remoteRepoName" . }}
+    retain:
+    {{- with .Values.remote.restic.retain }}
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    copyMethod: {{ .Values.remote.restic.copyMethod }}
+    storageClassName: {{ .Values.remote.restic.storageClassName }}
+    volumeSnapshotClassName: {{ .Values.remote.restic.volumeSnapshotClassName }}
+    cacheCapacity: {{ .Values.remote.restic.cacheCapacity }}
+{{- end }}
+
+{{- if .Values.external.enabled }}
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: {{ include "volsync.name" . }}-source-external
+  namespace: {{ include "volsync.namespace" . }}
+  labels:
+    {{- include "volsync.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "volsync.name" . }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  sourcePVC: {{ .Values.pvcTarget }}
+  trigger:
+    schedule: {{ .Values.external.schedule }}
+  restic:
+    pruneIntervalDays: {{ .Values.external.restic.pruneIntervalDays }}
+    repository: {{ include "volsync.externalRepoName" . }}
+    retain:
+    {{- with .Values.external.restic.retain }}
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    copyMethod: {{ .Values.external.restic.copyMethod }}
+    storageClassName: {{ .Values.external.restic.storageClassName }}
+    volumeSnapshotClassName: {{ .Values.external.restic.volumeSnapshotClassName }}
+    cacheCapacity: {{ .Values.external.restic.cacheCapacity }}
+{{- end }}

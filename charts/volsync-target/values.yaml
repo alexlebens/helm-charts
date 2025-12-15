@@ -1,0 +1,102 @@
+# -- Default pattern follows <pvcTarget>-backup
+nameOverride: ""
+
+# -- Override the namespace of the chart
+namespaceOverride: ""
+
+# -- Add additional labels
+additionalLabels: {}
+
+# -- Name of the PVC target
+pvcTarget: "data"
+
+# -- Use external secrets
+externalSecrets:
+  enabled: true
+
+# -- Local backup configuration
+local:
+  enabled: true
+
+  # -- 5 character cron schedule
+  schedule: 0 2 * * *
+
+  # -- Backup configuration, inserted directly into the yaml
+  restic:
+    pruneIntervalDays: 7
+    repository: ""
+    retain:
+      hourly: 1
+      daily: 3
+      weekly: 2
+      monthly: 2
+      yearly: 4
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-blockpool-snapshot
+    cacheCapacity: 1Gi
+
+  # -- External Secret configuration
+  externalSecret:
+    # This path must contain the BUCKET_ENDPOINT and RESTIC_PASSWORD
+    volsyncPath: /volsync/restic/garage-local
+    # This path must contain the AWS/S3 credentials
+    credentialPath: /garage/home-infra/volsync-backups
+
+# -- Remote backup configuration
+remote:
+  enabled: true
+
+  # -- 5 character cron schedule
+  schedule: 0 3 * * *
+
+  # -- Backup configuration, inserted directly into the yaml
+  restic:
+    pruneIntervalDays: 7
+    repository: ""
+    retain:
+      hourly: 1
+      daily: 3
+      weekly: 2
+      monthly: 2
+      yearly: 4
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-blockpool-snapshot
+    cacheCapacity: 1Gi
+
+  # -- External Secret configuration
+  externalSecret:
+    # This path must contain the BUCKET_ENDPOINT and RESTIC_PASSWORD
+    volsyncPath: /volsync/restic/garage-remote
+    # This path must contain the AWS/S3 credentials
+    credentialPath: /garage/home-infra/volsync-backups
+
+# -- External backup configuration
+external:
+  enabled: true
+
+  # -- 5 character cron schedule
+  schedule: 0 4 * * *
+
+  # -- Backup configuration, inserted directly into the yaml
+  restic:
+    pruneIntervalDays: 7
+    repository: ""
+    retain:
+      hourly: 1
+      daily: 3
+      weekly: 2
+      monthly: 2
+      yearly: 4
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-blockpool-snapshot
+    cacheCapacity: 1Gi
+
+  # -- External Secret configuration
+  externalSecret:
+    # This path must contain the BUCKET_ENDPOINT and RESTIC_PASSWORD
+    volsyncPath: /volsync/restic/digital-ocean
+    # This path must contain the AWS/S3 credentials
+    credentialPath: /digital-ocean/home-infra/volsync-backups
