@@ -38,4 +38,9 @@ spec:
       name: {{ .Values.existingSecret.name }}
       key: {{ .Values.existingSecret.key }}
     {{ end }}
+
+  redisExporter:
+    enabled: {{ .Values.redisSentinel.redisExporter.enabled }}
+    image: "{{ .Values.redisSentinel.redisExporter.image.repository }}:{{ .Values.redisSentinel.redisExporter.image.tag }}"
+
 {{- end }}

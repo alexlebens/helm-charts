@@ -1,0 +1,49 @@
+{{- if .Values.redisReplication.redisExporter.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "redis.replicationName" . }}
+  namespace: {{ include "redis.namespace" . }}
+  labels:
+    {{- include "redis.labels" . | nindent 4 }}
+    {{- include "redis.replicationSelectorLabels" . | nindent 4 }}
+    {{- with .Values.redisReplication.redisExporter.serviceMonitor.extraLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "redis.replicationName" . }}
+      redis_setup_type: replication
+      role: replication
+  endpoints:
+    - port: redis-exporter
+      interval: {{ .Values.redisReplication.redisExporter.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.redisReplication.redisExporter.serviceMonitor.scrapeTimeout }}
+{{- end }}
+
+{{- if .Values.redisSentinel.redisExporter.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "redis.sentinelName" . }}
+  namespace: {{ include "redis.namespace" . }}
+  labels:
+    {{- include "redis.labels" . | nindent 4 }}
+    {{- include "redis.sentinelSelectorLabels" . | nindent 4 }}
+    {{- with .Values.redisSentinel.redisExporter.serviceMonitor.extraLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "redis.sentinelName" . }}
+      redis_setup_type: sentinel
+      role: sentinel
+  endpoints:
+    - port: sentinel-client
+      interval: {{ .Values.redisSentinel.redisExporter.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.redisSentinel.redisExporter.serviceMonitor.scrapeTimeout }}
+{{- end }}

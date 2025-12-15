@@ -50,6 +50,11 @@ redisReplication:
     image:
       repository: quay.io/opstree/redis-exporter
       tag: v1.80.1
+    serviceMonitor:
+      enabled: true
+      interval: 30s
+      scrapeTimeout: 10s
+      extraLabels: {}
 
 # -- Redis Sentinel settings
 redisSentinel:
@@ -72,3 +77,15 @@ redisSentinel:
     requests:
       cpu: 10m
       memory: 128Mi
+
+  # -- Metrics
+  redisExporter:
+    enabled: true
+    image:
+      repository: quay.io/opstree/redis-exporter
+      tag: v1.80.1
+    serviceMonitor:
+      enabled: true
+      interval: 30s
+      scrapeTimeout: 10s
+      extraLabels: {}
