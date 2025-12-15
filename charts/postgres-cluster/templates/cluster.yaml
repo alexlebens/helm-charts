@@ -19,32 +19,6 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
-  plugins:
-  {{- range $objectStore := .Values.backup.objectStore }}
-    - name: barman-cloud.cloudnative-pg.io
-      enabled: true
-      {{- if $objectStore.isWALArchiver }}
-      isWALArchiver: true
-      {{- else }}
-      isWALArchiver: false
-      {{- end }}
-      parameters:
-        barmanObjectName: "{{ include "cluster.name" $ }}-{{ $objectStore.name }}-backup"
-        {{- if $objectStore.clusterName }}
-        serverName: "{{ $objectStore.clusterName }}-backup-{{ $objectStore.index }}"
-        {{- else }}
-        serverName: "{{ include "cluster.name" $ }}-backup-{{ $objectStore.index }}"
-        {{- end }}
-  {{- end }}
-  {{ if (eq .Values.recovery.method "objectStore") }}
-  externalClusters:
-    - name: recovery
-      plugin:
-        name: barman-cloud.cloudnative-pg.io
-        parameters:
-          barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
-          serverName: {{ include "cluster.recoveryServerName" . }}
-  {{ end }}
   storage:
     size: {{ .Values.cluster.storage.size }}
     {{- if not (empty .Values.cluster.storage.storageClass) }}
@@ -154,5 +128,23 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{ end }}
     {{- end }}
+
+  plugins:
+  {{- range $objectStore := .Values.backup.objectStore }}
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: true
+      {{- if $objectStore.isWALArchiver }}
+      isWALArchiver: true
+      {{- else }}
+      isWALArchiver: false
+      {{- end }}
+      parameters:
+        barmanObjectName: "{{ include "cluster.name" $ }}-{{ $objectStore.name }}-backup"
+        {{- if $objectStore.clusterName }}
+        serverName: "{{ $objectStore.clusterName }}-backup-{{ $objectStore.index }}"
+        {{- else }}
+        serverName: "{{ include "cluster.name" $ }}-backup-{{ $objectStore.index }}"
+        {{- end }}
+  {{- end }}
 
   {{ include "cluster.bootstrap" . | nindent 2 }}
