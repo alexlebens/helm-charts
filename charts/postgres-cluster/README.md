@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 6.18.0](https://img.shields.io/badge/Version-6.18.0-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
+![Version: 6.19.0](https://img.shields.io/badge/Version-6.19.0-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -58,6 +58,7 @@ Cloudnative-pg Cluster
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage | object | `{"size":"10Gi","storageClass":""}` | Default storage size |
+| databases | list | `[]` | Database management configuration |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - Default mode. Creates new or updates an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup |
 | nameOverride | string | `""` | Override the name of the cluster |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
