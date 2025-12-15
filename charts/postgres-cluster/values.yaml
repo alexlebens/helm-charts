@@ -109,7 +109,7 @@ cluster:
   monitoring:
 
     # -- Whether to enable monitoring
-    enabled: false
+    enabled: true
 
     podMonitor:
 
@@ -127,7 +127,7 @@ cluster:
     prometheusRule:
 
       # -- Whether to enable the PrometheusRule automated alerts
-      enabled: false
+      enabled: true
 
       # -- Exclude specified rules
       excludeRules:
@@ -199,7 +199,7 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
   initdb:
     database: app
-    owner: "" # Defaults to the database name
+    owner: app
     # secret:
     #   name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
     # options: []
