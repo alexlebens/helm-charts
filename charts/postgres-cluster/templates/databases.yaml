@@ -10,7 +10,7 @@ metadata:
 spec:
   name: {{ .name }}
   cluster:
-    name: {{ include "cluster.name" $ }}
+    name: {{ include "cluster.name" . }}-cluster
   ensure: {{ .ensure | default "present" }}
   owner: {{ .owner }}
   template: {{ .template | default "template1" }}
