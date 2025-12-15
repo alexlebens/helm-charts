@@ -1,0 +1,74 @@
+# -- Override the name of the resources
+replicationNameOverride: ""
+sentinelNameOverride: ""
+
+# -- Override the namespace of the chart
+namespaceOverride: ""
+
+# -- Password
+existingSecret:
+  enabled: false
+  name: secret-name
+  key: password
+
+# -- Add additional labels
+additionalLabels: {}
+
+# -- Redis Replication settings
+redisReplication:
+  clusterSize: 3
+
+  # -- Security
+  podSecurityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+
+  # -- Image
+  image:
+    repository: quay.io/opstree/redis
+    tag: v8.4.0
+    pullPolicy: IfNotPresent
+
+  # -- Resources
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
+  # -- Storage
+  volumeClaimTemplate:
+    spec:
+      storageClassName: ceph-block
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+
+  # -- Metrics
+  redisExporter:
+    enabled: true
+    image:
+      repository: quay.io/opstree/redis-exporter
+      tag: v1.80.1
+
+# -- Redis Sentinel settings
+redisSentinel:
+  enabled: false
+  clusterSize: 3
+
+  # -- Security
+  podSecurityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+
+  # -- Image
+  image:
+    repository: quay.io/opstree/redis-sentinel
+    tag: v8.4.0
+    pullPolicy: IfNotPresent
+
+  # -- Resources
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi

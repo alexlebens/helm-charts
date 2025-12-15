@@ -1,0 +1,39 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisReplication
+metadata:
+  name: {{ include "redis.replicationName" . }}
+  namespace: {{ include "redis.namespace" . }}
+  labels:
+    {{- include "redis.labels" . | nindent 4 }}
+    {{- include "redis.replicationSelectorLabels" . | nindent 4 }}
+spec:
+  clusterSize: {{ .Values.redisReplication.clusterSize }}
+
+  podSecurityContext:
+  {{- with .Values.redisReplication.podSecurityContext }}
+    {{- toYaml . | nindent 10 }}
+  {{ end }}
+
+  kubernetesConfig:
+    image: "{{ .Values.redisReplication.image.repository }}:{{ .Values.redisReplication.image.tag }}"
+    imagePullPolicy: {{ .Values.redisReplication.image.pullPolicy }}
+    resources:
+    {{- with .Values.redisReplication.resources }}
+      {{- toYaml . | nindent 10 }}
+    {{ end }}
+
+    {{ if .Values.existingSecret.enabled }}
+    redisSecret:
+      name: {{ .Values.existingSecret.name }}
+      key: {{ .Values.existingSecret.key }}
+    {{ end }}
+
+  storage:
+    volumeClaimTemplate:
+    {{- with .Values.redisReplication.volumeClaimTemplate }}
+      {{- toYaml . | nindent 10 }}
+    {{ end }}
+
+  redisExporter:
+    enabled: {{ .Values.redisReplication.redisExporter.enabled }}
+    image: "{{ .Values.redisReplication.redisExporter.image.repository }}:{{ .Values.redisReplication.redisExporter.image.tag }}"

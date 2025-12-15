@@ -1,0 +1,41 @@
+{{- if .Values.redisSentinel.enabled }}
+---
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisSentinel
+metadata:
+  name: {{ include "redis.sentinelName" . }}
+  namespace: {{ include "redis.namespace" . }}
+  labels:
+    {{- include "redis.labels" . | nindent 4 }}
+    {{- include "redis.sentinelSelectorLabels" . | nindent 4 }}
+spec:
+  clusterSize: {{ .Values.redisSentinel.clusterSize }}
+
+  podSecurityContext:
+  {{- with .Values.redisSentinel.podSecurityContext }}
+    {{- toYaml . | nindent 10 }}
+  {{ end }}
+
+  redisSentinelConfig:
+    redisReplicationName: {{ include "redis.replicationName" . }}
+    {{ if .Values.existingSecret.enabled }}
+    redisReplicationPassword:
+      secretKeyRef:
+        name: {{ .Values.existingSecret.name }}
+        key: {{ .Values.existingSecret.key }}
+    {{ end }}
+
+  kubernetesConfig:
+    image: "{{ .Values.redisSentinel.image.repository }}:{{ .Values.redisSentinel.image.tag }}"
+    imagePullPolicy: {{ .Values.redisSentinel.image.pullPolicy }}
+    resources:
+    {{- with .Values.redisSentinel.resources }}
+      {{- toYaml . | nindent 10 }}
+    {{ end }}
+
+    {{ if .Values.existingSecret.enabled }}
+    redisSecret:
+      name: {{ .Values.existingSecret.name }}
+      key: {{ .Values.existingSecret.key }}
+    {{ end }}
+{{- end }}
