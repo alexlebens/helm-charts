@@ -1,6 +1,6 @@
 # redis-replication
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![AppVersion: v0.21.0](https://img.shields.io/badge/AppVersion-v0.21.0-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![AppVersion: v0.21.0](https://img.shields.io/badge/AppVersion-v0.21.0-informational?style=flat-square)
 
 Redis Replication with Sentinel
 
@@ -28,11 +28,11 @@ Redis Replication with Sentinel
 | redisReplication.redisExporter | object | `{"enabled":true,"image":{"repository":"quay.io/opstree/redis-exporter","tag":"v1.80.1"},"serviceMonitor":{"enabled":true,"extraLabels":{},"interval":"30s","scrapeTimeout":"10s"}}` | Metrics |
 | redisReplication.resources | object | `{"requests":{"cpu":"10m","memory":"32Mi"}}` | Resources |
 | redisReplication.volumeClaimTemplate | object | `{"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"1Gi"}},"storageClassName":"ceph-block"}}` | Storage |
-| redisSentinel | object | `{"clusterSize":3,"enabled":false,"image":{"pullPolicy":"IfNotPresent","repository":"quay.io/opstree/redis-sentinel","tag":"v8.4.0"},"podSecurityContext":{"fsGroup":1000,"runAsUser":1000},"redisExporter":{"enabled":true,"image":{"repository":"quay.io/opstree/redis-exporter","tag":"v1.80.1"},"serviceMonitor":{"enabled":true,"extraLabels":{},"interval":"30s","scrapeTimeout":"10s"}},"resources":{"requests":{"cpu":"10m","memory":"128Mi"}}}` | Redis Sentinel settings |
+| redisSentinel | object | `{"clusterSize":3,"enabled":false,"image":{"pullPolicy":"IfNotPresent","repository":"quay.io/opstree/redis-sentinel","tag":"v8.4.0"},"podSecurityContext":{"fsGroup":1000,"runAsUser":1000},"redisExporter":{"enabled":true,"image":{"repository":"quay.io/opstree/redis-exporter","tag":"v1.80.1"},"serviceMonitor":{"enabled":true,"extraLabels":{},"interval":"30s","scrapeTimeout":"10s"}},"resources":{"requests":{"cpu":"10m","memory":"32Mi"}}}` | Redis Sentinel settings |
 | redisSentinel.image | object | `{"pullPolicy":"IfNotPresent","repository":"quay.io/opstree/redis-sentinel","tag":"v8.4.0"}` | Image |
 | redisSentinel.podSecurityContext | object | `{"fsGroup":1000,"runAsUser":1000}` | Security |
 | redisSentinel.redisExporter | object | `{"enabled":true,"image":{"repository":"quay.io/opstree/redis-exporter","tag":"v1.80.1"},"serviceMonitor":{"enabled":true,"extraLabels":{},"interval":"30s","scrapeTimeout":"10s"}}` | Metrics |
-| redisSentinel.resources | object | `{"requests":{"cpu":"10m","memory":"128Mi"}}` | Resources |
+| redisSentinel.resources | object | `{"requests":{"cpu":"10m","memory":"32Mi"}}` | Resources |
 | replicationNameOverride | string | `""` | Override the name of the resources |
 | sentinelNameOverride | string | `""` |  |
 

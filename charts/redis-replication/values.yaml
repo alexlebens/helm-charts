@@ -77,7 +77,7 @@ redisSentinel:
   resources:
     requests:
       cpu: 10m
-      memory: 128Mi
+      memory: 32Mi
 
   # -- Metrics
   redisExporter:
