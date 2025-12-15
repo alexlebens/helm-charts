@@ -14,7 +14,7 @@ externalClusters:
       name: barman-cloud.cloudnative-pg.io
       enabled: true
       isWALArchiver: false
-      barmanObjectStore:
+      parameters:
         barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
         serverName: {{ include "cluster.recoveryServerName" . }}
   {{- end }}
