@@ -20,8 +20,8 @@ redisReplication:
 
   # -- Security
   podSecurityContext:
-    runAsUser: 1000
     fsGroup: 1000
+    runAsUser: 1000
 
   # -- Image
   image:
@@ -33,16 +33,17 @@ redisReplication:
   resources:
     requests:
       cpu: 10m
-      memory: 128Mi
+      memory: 32Mi
 
   # -- Storage
   volumeClaimTemplate:
     spec:
-      storageClassName: ceph-block
-      accessModes: ["ReadWriteOnce"]
+      accessModes:
+        - ReadWriteOnce
       resources:
         requests:
           storage: 1Gi
+      storageClassName: ceph-block
 
   # -- Metrics
   redisExporter:

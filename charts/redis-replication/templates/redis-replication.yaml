@@ -11,7 +11,7 @@ spec:
 
   podSecurityContext:
   {{- with .Values.redisReplication.podSecurityContext }}
-    {{- toYaml . | nindent 10 }}
+    {{- toYaml . | nindent 4 }}
   {{ end }}
 
   kubernetesConfig:
@@ -19,7 +19,7 @@ spec:
     imagePullPolicy: {{ .Values.redisReplication.image.pullPolicy }}
     resources:
     {{- with .Values.redisReplication.resources }}
-      {{- toYaml . | nindent 10 }}
+      {{- toYaml . | nindent 6 }}
     {{ end }}
 
     {{ if .Values.existingSecret.enabled }}
@@ -31,7 +31,7 @@ spec:
   storage:
     volumeClaimTemplate:
     {{- with .Values.redisReplication.volumeClaimTemplate }}
-      {{- toYaml . | nindent 10 }}
+      {{- toYaml . | nindent 6 }}
     {{ end }}
 
   redisExporter:
