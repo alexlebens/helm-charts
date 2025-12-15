@@ -23,7 +23,7 @@ bootstrap:
 {{- else if eq .Values.mode "recovery" -}}
 bootstrap:
 
-{{- if eq .Values.recovery.method "pgBaseBackup" }}
+  {{- if eq .Values.recovery.method "pgBaseBackup" }}
   pg_basebackup:
     source: pgBaseBackupSource
     {{ with .Values.recovery.pgBaseBackup.database }}
@@ -36,10 +36,8 @@ bootstrap:
     secret:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" .Values.recovery.pgBaseBackup.source) | nindent 2 }}
 
-{{- else if eq .Values.recovery.method "import" }}
+  {{- else if eq .Values.recovery.method "import" }}
   initdb:
     {{- with .Values.cluster.initdb }}
       {{- with (omit . "owner" "import" "postInitApplicationSQL") }}
@@ -82,10 +80,8 @@ externalClusters:
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
 
-{{- else if eq .Values.recovery.method "backup" }}
+  {{- else if eq .Values.recovery.method "backup" }}
   recovery:
     {{- with .Values.recovery.backup.pitrTarget.time }}
     recoveryTarget:
@@ -100,7 +96,7 @@ externalClusters:
     backup:
       name: {{ .Values.recovery.backup.backupName }}
 
-{{- else if eq .Values.recovery.method "objectStore" }}
+  {{- else if eq .Values.recovery.method "objectStore" }}
   recovery:
     {{- with .Values.recovery.objectStore.pitrTarget.time }}
     recoveryTarget:
@@ -114,19 +110,9 @@ externalClusters:
     {{- end }}
     source: {{ include "cluster.recoveryServerName" . }}
 
-externalClusters:
-  - name: {{ include "cluster.recoveryServerName" . }}
-    plugin:
-      name: barman-cloud.cloudnative-pg.io
-      enabled: true
-      isWALArchiver: false
-      parameters:
-        barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
-        serverName: {{ include "cluster.recoveryServerName" . }}
-
-{{-  else }}
-  {{ fail "Invalid recovery mode!" }}
-{{- end }}
+  {{-  else }}
+    {{ fail "Invalid recovery mode!" }}
+  {{- end }}
 
 {{-  else }}
   {{ fail "Invalid cluster mode!" }}
