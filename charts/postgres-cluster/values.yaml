@@ -197,9 +197,9 @@ cluster:
   # -- Bootstrap is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
-  initdb: {}
-    # database: app
-    # owner: "" # Defaults to the database name
+  initdb:
+    database: app
+    owner: "" # Defaults to the database name
     # secret:
     #   name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
     # options: []
