@@ -1,6 +1,6 @@
 # volsync-target
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![AppVersion: 0.14.0](https://img.shields.io/badge/AppVersion-0.14.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![AppVersion: 0.14.0](https://img.shields.io/badge/AppVersion-0.14.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
 
@@ -29,6 +29,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | local.externalSecret | object | `{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-local"}` | External Secret configuration |
 | local.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":3,"hourly":1,"monthly":2,"weekly":2,"yearly":4},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | local.schedule | string | `"0 2 * * *"` | 5 character cron schedule |
+| moverSecurityContext | object | `{}` | Glocal security context for restic mover |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | pvcTarget | string | `"data"` | Name of the PVC target |

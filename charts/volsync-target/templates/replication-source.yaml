@@ -21,7 +21,13 @@ spec:
     retain:
     {{- with .Values.local.restic.retain }}
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
+    {{- if .Values.moverSecurityContext }}
+      moverSecurityContext:
+      {{- with .Values.moverSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
     copyMethod: {{ .Values.local.restic.copyMethod }}
     storageClassName: {{ .Values.local.restic.storageClassName }}
     volumeSnapshotClassName: {{ .Values.local.restic.volumeSnapshotClassName }}
@@ -51,7 +57,13 @@ spec:
     retain:
     {{- with .Values.remote.restic.retain }}
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
+    {{- if .Values.moverSecurityContext }}
+      moverSecurityContext:
+      {{- with .Values.moverSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
     copyMethod: {{ .Values.remote.restic.copyMethod }}
     storageClassName: {{ .Values.remote.restic.storageClassName }}
     volumeSnapshotClassName: {{ .Values.remote.restic.volumeSnapshotClassName }}
@@ -81,7 +93,13 @@ spec:
     retain:
     {{- with .Values.external.restic.retain }}
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
+    {{- if .Values.moverSecurityContext }}
+      moverSecurityContext:
+      {{- with .Values.moverSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
     copyMethod: {{ .Values.external.restic.copyMethod }}
     storageClassName: {{ .Values.external.restic.storageClassName }}
     volumeSnapshotClassName: {{ .Values.external.restic.volumeSnapshotClassName }}

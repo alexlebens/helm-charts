@@ -10,6 +10,9 @@ additionalLabels: {}
 # -- Name of the PVC target
 pvcTarget: "data"
 
+# -- Glocal security context for restic mover
+moverSecurityContext: {}
+
 # -- Use external secrets
 externalSecrets:
   enabled: true
