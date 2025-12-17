@@ -22,7 +22,7 @@ local:
   enabled: true
 
   # -- 5 character cron schedule
-  schedule: 0 2 * * *
+  schedule: 0 8 * * *
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
@@ -51,7 +51,7 @@ remote:
   enabled: true
 
   # -- 5 character cron schedule
-  schedule: 0 3 * * *
+  schedule: 0 10 * * *
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
@@ -80,7 +80,7 @@ external:
   enabled: true
 
   # -- 5 character cron schedule
-  schedule: 0 4 * * *
+  schedule: 0 9 * * *
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
