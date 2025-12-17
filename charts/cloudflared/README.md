@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 2.1.1](https://img.shields.io/badge/Version-2.1.1-informational?style=flat-square) ![AppVersion: 2025.11.1](https://img.shields.io/badge/AppVersion-2025.11.1-informational?style=flat-square)
+![Version: 2.1.2](https://img.shields.io/badge/Version-2.1.2-informational?style=flat-square) ![AppVersion: 2025.11.1](https://img.shields.io/badge/AppVersion-2025.11.1-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -26,7 +26,7 @@ Cloudflared Tunnel
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2025.11.1"}` | Default image |
-| name | string | `"rgw"` | Name override of release |
+| name | string | `""` | Name override of release |
 | resources | object | `{"requests":{"cpu":"10m","memory":"128Mi"}}` | Default resources |
 | secret | object | `{"existingSecret":{"key":"cf-tunnel-token","name":"cloudflared-secret"},"externalSecret":{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"vault","path":"/cloudflare/tunnels","property":"token"}}}` | Secret configuration |
 | secret.existingSecret | object | `{"key":"cf-tunnel-token","name":"cloudflared-secret"}` | Name of existing secret that contains Cloudflare token |
