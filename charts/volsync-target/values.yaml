@@ -29,11 +29,11 @@ local:
     pruneIntervalDays: 7
     repository: ""
     retain:
-      hourly: 1
-      daily: 3
-      weekly: 2
-      monthly: 2
-      yearly: 4
+      hourly: 0
+      daily: 7
+      weekly: 4
+      monthly: 3
+      yearly: 1
     copyMethod: Snapshot
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
@@ -58,11 +58,11 @@ remote:
     pruneIntervalDays: 7
     repository: ""
     retain:
-      hourly: 1
-      daily: 3
-      weekly: 2
-      monthly: 2
-      yearly: 4
+      hourly: 0
+      daily: 7
+      weekly: 4
+      monthly: 3
+      yearly: 1
     copyMethod: Snapshot
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
@@ -87,11 +87,11 @@ external:
     pruneIntervalDays: 7
     repository: ""
     retain:
-      hourly: 1
-      daily: 3
-      weekly: 2
-      monthly: 2
-      yearly: 4
+      hourly: 0
+      daily: 7
+      weekly: 4
+      monthly: 3
+      yearly: 1
     copyMethod: Snapshot
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
