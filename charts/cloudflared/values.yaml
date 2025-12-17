@@ -1,5 +1,5 @@
 # -- Name override of release
-name: ""
+name: "rgw"
 
 # -- Secret configuration
 secret:

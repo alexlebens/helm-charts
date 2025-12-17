@@ -3,9 +3,9 @@ Generate the root name
 */}}
 {{- define "cloudflared.name" -}}
   {{- if .Values.name }}
-    {{- printf "%s-%s-cloudflared" .Release.Name .Values.name -}}
+    {{- printf "%s-cloudflared" .Values.name -}}
   {{- else }}
-    {{- printf "%s-cloudflared" .Release.Name -}}
+    {{- printf "cloudflared" -}}
   {{- end }}
 {{- end }}
 

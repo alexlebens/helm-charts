@@ -1,11 +1,9 @@
 {{- include "bjw-s.common.loader.init" . }}
 
 {{- define "cloudflared.hardcodedValues" -}}
-{{ if not .Values.global.nameOverride }}
 global:
   nameOverride: {{ include "cloudflared.name" . }}
   fullNameOverride: {{ include "cloudflared.name" . }}
-{{ end }}
 controllers:
   main:
     type: deployment
