@@ -12,7 +12,7 @@ secret:
     # -- Cluster store config
     store:
       name: vault
-      path: /cloudflare/tunnels/
+      path: /cloudflare/tunnels
       property: token
 
     # -- Add additional labels
