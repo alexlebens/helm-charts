@@ -27,8 +27,8 @@ controllers:
           - name: CF_MANAGED_TUNNEL_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.existingSecretName }}
-                key: {{ .Values.existingSecretKey }}
+                name: {{ include "secret.name" . }}
+                key: {{ include "secret.key" . }}
         resources:
         {{- with .Values.resources }}
         resources:

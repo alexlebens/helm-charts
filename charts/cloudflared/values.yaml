@@ -1,11 +1,27 @@
 # -- Name override of release
 name: cloudflared
 
-# -- Name of existing secret that contains Cloudflare token
-existingSecretName: cloudflared-secret
+# -- Secret configuration
+secret:
 
-# -- Name of key that contains the token in the existingSecret
-existingSecretKey: cf-tunnel-token
+  # -- External Secret configuration
+  externalSecret:
+    enabled: true
+    nameOverride: ""
+
+    # -- Cluster store config
+    store:
+      name: vault
+      path: /cloudflare/tunnels/
+      property: token
+
+    # -- Add additional labels
+    additionalLabels: {}
+
+  # -- Name of existing secret that contains Cloudflare token
+  existingSecret:
+    name: cloudflared-secret
+    key: cf-tunnel-token
 
 # -- Default image
 image:
