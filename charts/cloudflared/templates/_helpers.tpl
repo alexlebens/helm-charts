@@ -1,4 +1,15 @@
 {{/*
+Generate the root name
+*/}}
+{{- define "cloudflared.name" -}}
+  {{- if .Values.name }}
+    {{- printf "%s-%s-cloudflared" .Release.Name .Values.name -}}
+  {{- else }}
+    {{- printf "%s-cloudflared" .Release.Name -}}
+  {{- end }}
+{{- end }}
+
+{{/*
 Generate the secret name
 */}}
 {{- define "secret.name" -}}
@@ -6,7 +17,7 @@ Generate the secret name
     {{- if .Values.secret.externalSecret.nameOverride }}
       {{- .Values.secret.externalSecret.nameOverride | trunc 63 | trimSuffix "-" }}
     {{- else }}
-      {{- printf "%s-cloudflared-secret" .Release.Name -}}
+      {{- printf "%s-secret" (include "cloudflared.name" .) -}}
     {{- end }}
   {{- else if .Values.secret.existingSecret.name }}
     {{- printf "%s" .Values.secret.existingSecret.name -}}

@@ -3,7 +3,8 @@
 {{- define "cloudflared.hardcodedValues" -}}
 {{ if not .Values.global.nameOverride }}
 global:
-  nameOverride: {{ .Values.name }}
+  nameOverride: {{ include "cloudflared.name" . }}
+  fullNameOverride: {{ include "cloudflared.name" . }}
 {{ end }}
 controllers:
   main:
