@@ -17,7 +17,7 @@ Generate the secret name
     {{- if .Values.secret.externalSecret.nameOverride }}
       {{- .Values.secret.externalSecret.nameOverride | trunc 63 | trimSuffix "-" }}
     {{- else }}
-      {{- printf "%s-secret" (include "cloudflared.name" .) -}}
+      {{- printf "%s-%s-secret" .Release.Name (include "cloudflared.name" .) -}}
     {{- end }}
   {{- else if .Values.secret.existingSecret.name }}
     {{- printf "%s" .Values.secret.existingSecret.name -}}
@@ -44,7 +44,11 @@ Generate path in the secret store
 */}}
 {{- define "secret.path" -}}
   {{- if and (.Values.secret.externalSecret.enabled) (.Values.secret.externalSecret.store.path) }}
-    {{- printf "%s/%s" .Values.secret.externalSecret.store.path .Release.Name -}}
+    {{- if .Values.name }}
+      {{- printf "%s/%s-%s" .Values.secret.externalSecret.store.path .Release.Name .Values.name -}}
+    {{- else }}
+      {{- printf "%s/%s" .Values.secret.externalSecret.store.path .Release.Name -}}
+    {{- end }}
   {{- else }}
     {{ fail "No Secret Store Path Found!" }}
   {{- end }}
