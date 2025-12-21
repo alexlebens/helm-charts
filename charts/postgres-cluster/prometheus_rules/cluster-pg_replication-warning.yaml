@@ -6,7 +6,7 @@ annotations:
   description: |-
     Standby is lagging behind by over 300 seconds (5 minutes)
 expr: |
-  cnpg_pg_replication_lag > 300
+  cnpg_pg_replication_lag{namespace="{{ .namespace }}"} > 300
 for: 1m
 labels:
   severity: warning
