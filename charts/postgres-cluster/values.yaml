@@ -394,12 +394,6 @@ backup:
 
   # -- Options for object store backups
   objectStore:
-      - name: garage-local
-        index: 1
-        destinationBucket: postres-backups
-        externalSecretCredentialPath: /garage/home-infra/postgres-backups
-        isWALArchiver: true
-
     # -
     #   # -- Object store backup name
     #   name: external

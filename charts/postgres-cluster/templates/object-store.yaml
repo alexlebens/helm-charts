@@ -46,11 +46,9 @@ spec:
       secretAccessKey:
         name: {{ include "cluster.backupSecretName" (dict "instance" . "global" $context) }}
         key: ACCESS_SECRET_KEY
-    {{- if .endpointCredentialsIncludeRegion }}
       region:
         name: {{ include "cluster.backupSecretName" (dict "instance" . "global" $context) }}
         key: ACCESS_REGION
-    {{- end }}
 {{ end -}}
 {{ end }}
 
@@ -95,9 +93,7 @@ spec:
       secretAccessKey:
         name: {{ include "cluster.recoverySecretName" . }}
         key: ACCESS_SECRET_KEY
-      {{- if .Values.recovery.objectStore.endpointCredentialsIncludeRegion }}
       region:
         name: {{ include "cluster.recoverySecretName" . }}
         key: ACCESS_REGION
-      {{- end }}
 {{ end }}

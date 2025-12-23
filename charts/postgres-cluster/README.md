@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 7.4.2](https://img.shields.io/badge/Version-7.4.2-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
+![Version: 7.4.3](https://img.shields.io/badge/Version-7.4.3-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -19,10 +19,10 @@ Cloudnative-pg Cluster
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backup | object | `{"externalSecret":{"enabled":true},"method":"objectStore","objectStore":[{"destinationBucket":"postres-backups","externalSecretCredentialPath":"/garage/home-infra/postgres-backups","index":1,"isWALArchiver":true,"name":"garage-local"}],"scheduledBackups":[]}` | Backup settings |
+| backup | object | `{"externalSecret":{"enabled":true},"method":"objectStore","objectStore":null,"scheduledBackups":[]}` | Backup settings |
 | backup.externalSecret | object | `{"enabled":true}` | Use generated External Secrets, credentialPath points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
 | backup.method | string | `"objectStore"` | Method to create backups, options currently are only objectStore |
-| backup.objectStore | list | `[{"destinationBucket":"postres-backups","externalSecretCredentialPath":"/garage/home-infra/postgres-backups","index":1,"isWALArchiver":true,"name":"garage-local"}]` | Options for object store backups |
+| backup.objectStore | string | `nil` | Options for object store backups |
 | backup.scheduledBackups | list | `[]` | List of scheduled backups |
 | cluster | object | `{"additionalLabels":{},"affinity":{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"},"annotations":{},"certificates":{},"enablePDB":true,"enableSuperuserAccess":false,"image":{"repository":"ghcr.io/cloudnative-pg/postgresql","tag":"18.1-standard-trixie"},"imagePullPolicy":"IfNotPresent","imagePullSecrets":[],"initdb":{"database":"app","owner":"app"},"instances":3,"logLevel":"info","monitoring":{"customQueries":[],"customQueriesSecret":[],"disableDefaultQueries":false,"enabled":true,"podMonitor":{"enabled":true,"metricRelabelings":[],"relabelings":[]},"prometheusRule":{"enabled":true,"excludeRules":["CNPGClusterLastFailedArchiveTimeWarning"]}},"postgresGID":-1,"postgresUID":-1,"postgresql":{"ldap":{},"parameters":{"hot_standby_feedback":"on","max_slot_wal_keep_size":"2000MB","shared_buffers":"128MB"},"pg_hba":[],"pg_ident":[],"shared_preload_libraries":[],"synchronous":{}},"primaryUpdateMethod":"switchover","primaryUpdateStrategy":"unsupervised","priorityClassName":"","resources":{"limits":{"hugepages-2Mi":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"roles":[],"serviceAccountTemplate":{},"services":{},"storage":{"size":"10Gi","storageClass":"local-path"},"superuserSecret":"","walStorage":{"enabled":true,"size":"2Gi","storageClass":"local-path"}}` | Cluster settings |
 | cluster.affinity | object | `{"enablePodAntiAffinity":true,"topologyKey":"kubernetes.io/hostname"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
