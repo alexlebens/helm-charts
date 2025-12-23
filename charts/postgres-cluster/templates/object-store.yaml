@@ -14,7 +14,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  retentionPolicy: {{ .retentionPolicy | default "30d" }}
+  retentionPolicy: {{ .retentionPolicy | default "7d" }}
   configuration:
     destinationPath: {{ include "cluster.backupDestinationPath" (dict "instance" . "global" $context) }}
     endpointURL: {{ .endpointURL | default "http://garage-main.garage:3900" }}

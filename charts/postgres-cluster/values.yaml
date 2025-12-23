@@ -396,7 +396,6 @@ backup:
   objectStore:
       - name: garage-local
         index: 1
-        retentionPolicy: "3d"
         destinationBucket: postres-backups
         externalSecretCredentialPath: /garage/home-infra/postgres-backups
         isWALArchiver: true
