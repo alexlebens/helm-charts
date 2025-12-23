@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 7.3.0](https://img.shields.io/badge/Version-7.3.0-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
+![Version: 7.4.0](https://img.shields.io/badge/Version-7.4.0-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -65,7 +65,7 @@ Cloudnative-pg Cluster
 | nameOverride | string | `""` | Override the name of the cluster |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | poolers | list | `[]` | List of PgBouncer poolers |
-| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"backup","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationBucket":"postgres-backups","destinationPathOverride":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointCredentialsIncludeRegion":true,"endpointURL":"http://garage-main.garage:3900","externalSecret":{"credentialPath":"/garage/home-infra/postgres-backups","enabled":true},"index":1,"owner":"","pitrTarget":{"time":""},"wal":{"compression":"snappy","encryption":"","maxParallel":1}},"pgBaseBackup":{"database":"app","owner":"","secret":"","source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"disable","sslRootCertSecret":{"key":"","name":""},"username":""}}}` | Recovery settings when booting cluster from external cluster |
+| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"backup","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationBucket":"postgres-backups","destinationPathOverride":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointCredentialsIncludeRegion":true,"endpointURL":"http://garage-main.garage:3900","externalSecret":{"credentialPath":"/garage/home-infra/postgres-backups","enabled":true},"index":1,"owner":"","pitrTarget":{"time":""},"wal":{"compression":"snappy","encryption":"","maxParallel":1}}}` | Recovery settings when booting cluster from external cluster |
 | recovery.backup.backupName | string | `""` | Name of the backup to recover from. |
 | recovery.backup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.backup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
@@ -83,7 +83,7 @@ Cloudnative-pg Cluster
 | recovery.import.source.passwordSecret.name | string | `""` | Name of the secret containing the password |
 | recovery.import.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
 | recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works |
-| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pgBaseBackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster. |
+| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported). * `import` - Import one or more databases from an existing Postgres cluster. |
 | recovery.objectStore.clusterName | string | `""` | Override the name of the backup cluster, defaults to "cluster.name" |
 | recovery.objectStore.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
@@ -105,14 +105,6 @@ Cloudnative-pg Cluster
 | recovery.objectStore.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | recovery.objectStore.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
-| recovery.pgBaseBackup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
-| recovery.pgBaseBackup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
-| recovery.pgBaseBackup.secret | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
-| recovery.pgBaseBackup.source | object | `{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"disable","sslRootCertSecret":{"key":"","name":""},"username":""}` | Configuration for the source database |
-| recovery.pgBaseBackup.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
-| recovery.pgBaseBackup.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |
-| recovery.pgBaseBackup.source.passwordSecret.name | string | `""` | Name of the secret containing the password |
-| recovery.pgBaseBackup.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
 | type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` |
 
 ----------------------------------------------

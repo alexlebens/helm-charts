@@ -23,21 +23,7 @@ bootstrap:
 {{- else if eq .Values.mode "recovery" -}}
 bootstrap:
 
-  {{- if eq .Values.recovery.method "pgBaseBackup" }}
-  pg_basebackup:
-    source: pgBaseBackupSource
-    {{ with .Values.recovery.pgBaseBackup.database }}
-    database: {{ . }}
-    {{- end }}
-    {{ with .Values.recovery.pgBaseBackup.owner }}
-    owner: {{ . }}
-    {{- end }}
-    {{ with .Values.recovery.pgBaseBackup.secret }}
-    secret:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-
-  {{- else if eq .Values.recovery.method "import" }}
+  {{- if eq .Values.recovery.method "import" }}
   initdb:
     {{- with .Values.cluster.initdb }}
       {{- with (omit . "owner" "import" "postInitApplicationSQL") }}

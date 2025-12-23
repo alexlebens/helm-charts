@@ -224,8 +224,6 @@ recovery:
   # -- Available recovery methods:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported).
-  # * `pgBaseBackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
-  #        migrate databases to CloudNativePG, even from outside Kubernetes.
   # * `import` - Import one or more databases from an existing Postgres cluster.
   method: backup
 
@@ -323,48 +321,6 @@ recovery:
 
       # -- Number of data files to be archived or restored in parallel.
       jobs: 1
-
-  # See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
-  pgBaseBackup:
-
-    # -- Name of the database used by the application. Default: `app`.
-    database: app
-
-    # -- Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
-    secret: ""
-
-    # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
-    owner: ""
-
-    # -- Configuration for the source database
-    source:
-      host: ""
-      port: 5432
-      username: ""
-      database: "app"
-      sslMode: "disable"
-      passwordSecret:
-
-        # -- Whether to create a secret for the password
-        create: false
-
-        # -- Name of the secret containing the password
-        name: ""
-
-        # -- The key in the secret containing the password
-        key: "password"
-
-        # -- The password value to use when creating the secret
-        value: ""
-      sslKeySecret:
-        name: ""
-        key: ""
-      sslCertSecret:
-        name: ""
-        key: ""
-      sslRootCertSecret:
-        name: ""
-        key: ""
 
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
   import:

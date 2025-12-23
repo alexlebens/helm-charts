@@ -2,10 +2,7 @@
 externalClusters:
 {{- if eq .Values.mode "standalone" }}
 {{- else if eq .Values.mode "recovery" }}
-  {{- if eq .Values.recovery.method "pgBaseBackup" }}
-  - name: pgBaseBackupSource
-     {{- include "cluster.externalSourceCluster" .Values.recovery.pgBaseBackup.source | nindent 4 }}
-  {{- else if eq .Values.recovery.method "import" }}
+  {{- if eq .Values.recovery.method "import" }}
   - name: importSource
      {{- include "cluster.externalSourceCluster" .Values.recovery.import.source | nindent 4 }}
   {{- else if eq .Values.recovery.method "objectStore" }}
@@ -15,7 +12,7 @@ externalClusters:
       enabled: true
       isWALArchiver: false
       parameters:
-        barmanObjectName: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
+        barmanObjectName: "{{ include "cluster.name" . }}-recovery"
         serverName: {{ include "cluster.recoveryServerName" . }}
   {{- end }}
 {{- else }}
