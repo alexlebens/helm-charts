@@ -36,12 +36,12 @@ cluster:
   # -- Default storage size
   storage:
     size: 10Gi
-    storageClass: ""
+    storageClass: local-path
 
   walStorage:
     enabled: true
     size: 2Gi
-    storageClass: ""
+    storageClass: local-path
 
   # -- The UID and GID of the postgres user inside the image, defaults to 26
   postgresUID: -1
