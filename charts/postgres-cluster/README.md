@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 7.1.4](https://img.shields.io/badge/Version-7.1.4-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
+![Version: 7.2.0](https://img.shields.io/badge/Version-7.2.0-informational?style=flat-square) ![AppVersion: v1.28.0](https://img.shields.io/badge/AppVersion-v1.28.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -59,11 +59,12 @@ Cloudnative-pg Cluster
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage | object | `{"size":"10Gi","storageClass":""}` | Default storage size |
 | databases | list | `[]` | Database management configuration |
+| kubernetesClusterName | string | `"cl01tl"` | Kubernetes cluster name |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - Default mode. Creates new or updates an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup |
 | nameOverride | string | `""` | Override the name of the cluster |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | poolers | list | `[]` | List of PgBouncer poolers |
-| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"backup","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationPath":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointURL":"https://nyc3.digitaloceanspaces.com","index":1,"name":"recovery","owner":"","pitrTarget":{"time":""},"wal":{"compression":"snappy","encryption":"","maxParallel":1}},"pgBaseBackup":{"database":"app","owner":"","secret":"","source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"disable","sslRootCertSecret":{"key":"","name":""},"username":""}}}` | Recovery settings when booting cluster from external cluster |
+| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"backup","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationBucket":"postgres-backups","destinationPathOverride":"","endpointCA":{"create":false,"key":"","name":""},"endpointCredentials":"","endpointCredentialsIncludeRegion":true,"endpointURL":"http://garage-main.garage:3900","externalSecret":{"credentialPath":"/garage/home-infra/postgres-backups","enabled":true},"index":1,"owner":"","pitrTarget":{"time":""},"wal":{"compression":"snappy","encryption":"","maxParallel":1}},"pgBaseBackup":{"database":"app","owner":"","secret":"","source":{"database":"app","host":"","passwordSecret":{"create":false,"key":"password","name":"","value":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"disable","sslRootCertSecret":{"key":"","name":""},"username":""}}}` | Recovery settings when booting cluster from external cluster |
 | recovery.backup.backupName | string | `""` | Name of the backup to recover from. |
 | recovery.backup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.backup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
@@ -87,13 +88,15 @@ Cloudnative-pg Cluster
 | recovery.objectStore.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | recovery.objectStore.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
 | recovery.objectStore.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
-| recovery.objectStore.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| recovery.objectStore.destinationBucket | string | `"postgres-backups"` | Desitination bucket |
+| recovery.objectStore.destinationPathOverride | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
 | recovery.objectStore.endpointCA | object | `{"create":false,"key":"","name":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | recovery.objectStore.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
-| recovery.objectStore.endpointCredentials | string | `""` | Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
-| recovery.objectStore.endpointURL | string | `"https://nyc3.digitaloceanspaces.com"` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
+| recovery.objectStore.endpointCredentials | string | `""` | Defaults to <cluster name>-recovery-secret for the existing secret |
+| recovery.objectStore.endpointCredentialsIncludeRegion | bool | `true` | If the S3 endpoint require the ACCESS_REGION variable set in credentials |
+| recovery.objectStore.endpointURL | string | `"http://garage-main.garage:3900"` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
+| recovery.objectStore.externalSecret | object | `{"credentialPath":"/garage/home-infra/postgres-backups","enabled":true}` | Use generated External Secrets, credentialPath points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY |
 | recovery.objectStore.index | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }} |
-| recovery.objectStore.name | string | `"recovery"` | Object store backup name |
 | recovery.objectStore.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | recovery.objectStore.pitrTarget | object | `{"time":""}` | Point in time recovery target. Specify one of the following: |
 | recovery.objectStore.pitrTarget.time | string | `""` | Time in RFC3339 format |

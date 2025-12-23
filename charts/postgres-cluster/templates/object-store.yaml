@@ -9,6 +9,10 @@ metadata:
   namespace: {{ include "cluster.namespace" $context }}
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
+    app.kubernetes.io/name: "{{ include "cluster.name" $context }}-{{ .name }}-backup"
+    {{- with .Values.cluster.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   retentionPolicy: {{ .retentionPolicy | default "30d" }}
   configuration:
@@ -55,13 +59,17 @@ spec:
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: "{{ include "cluster.name" . }}-{{ .Values.recovery.objectStore.name }}"
+  name: "{{ include "cluster.name" . }}-recovery"
   namespace: {{ include "cluster.namespace" . }}
   labels:
     {{- include "cluster.labels" . | nindent 4 }}
+    app.kubernetes.io/name: "{{ include "cluster.name" . }}-recovery"
+    {{- with .Values.cluster.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   configuration:
-    destinationPath: {{ .Values.recovery.objectStore.destinationPath }}
+    destinationPath: {{ include "cluster.recoveryDestinationPath" . }}
     endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
     {{- if .Values.recovery.objectStore.endpointCA.name }}
     endpointCA:
@@ -82,9 +90,14 @@ spec:
       jobs: {{ .Values.recovery.objectStore.data.jobs }}
     s3Credentials:
       accessKeyId:
-        name: {{ .Values.recovery.objectStore.endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
+        name: {{ include "cluster.recoverySecretName" . }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ .Values.recovery.objectStore.endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-") }}
+        name: {{ include "cluster.recoverySecretName" . }}
         key: ACCESS_SECRET_KEY
+      {{- if .Values.recovery.objectStore.endpointCredentialsIncludeRegion }}
+      region:
+        name: {{ include "cluster.recoverySecretName" . }}
+        key: ACCESS_REGION
+      {{- end }}
 {{ end }}

@@ -83,3 +83,25 @@ Generate recovery server name
     {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.objectStore.index) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
+
+{{/*
+Generate recovery destination path
+*/}}
+{{- define "cluster.recoveryDestinationPath" -}}
+  {{- if .Values.recovery.objectStore.destinationPathOverride -}}
+    {{- .Values.recovery.objectStore.destinationPathOverride -}}
+  {{- else -}}
+    {{- printf "s3://%s/%s/%s/%s" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+  {{- end }}
+{{- end }}
+
+{{/*
+Generate recovery credentials name
+*/}}
+{{- define "cluster.recoverySecretName" -}}
+  {{- if and (.Values.recovery.objectStore.endpointCredentials) (not .Values.recovery.objectStore.externalSecret.enabled) }}
+    {{- .Values.recovery.objectStore.endpointCredentials | trunc 63 | trimSuffix "-" }}
+  {{- else -}}
+    {{- printf "%s-recovery-secret" (include "cluster.name" .) -}}
+  {{- end }}
+{{- end }}

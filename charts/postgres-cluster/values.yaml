@@ -4,6 +4,9 @@ nameOverride: ""
 # -- Override the namespace of the chart
 namespaceOverride: ""
 
+# -- Kubernetes cluster name
+kubernetesClusterName: cl01tl
+
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
 type: postgresql
@@ -259,19 +262,19 @@ recovery:
     # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     owner: ""
 
-    # -- Object store backup name
-    name: recovery
+    # -- Desitination bucket
+    destinationBucket: postgres-backups
 
     # -- Overrides the provider specific default path. Defaults to:
     # S3: s3://<bucket><path>
     # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
     # Google: gs://<bucket><path>
-    destinationPath: ""
+    destinationPathOverride: ""
 
     # -- Overrides the provider specific default endpoint. Defaults to:
     # S3: https://s3.<region>.amazonaws.com"
     # Leave empty if using the default S3 endpoint
-    endpointURL: "https://nyc3.digitaloceanspaces.com"
+    endpointURL: "http://garage-main.garage:3900"
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
@@ -287,8 +290,17 @@ recovery:
     # -- Override the name of the backup cluster, defaults to "cluster.name"
     clusterName: ""
 
+    # -- Use generated External Secrets, credentialPath points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+    externalSecret:
+      enabled: true
+      credentialPath: /garage/home-infra/postgres-backups
+
     # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+    # -- Defaults to <cluster name>-recovery-secret for the existing secret
     endpointCredentials: ""
+
+    # -- If the S3 endpoint require the ACCESS_REGION variable set in credentials
+    endpointCredentialsIncludeRegion: true
 
     # -- Storage
     wal:
