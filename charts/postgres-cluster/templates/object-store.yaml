@@ -5,19 +5,19 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: "{{ include "cluster.name" $context }}-{{ .name }}-backup"
+  name: {{ include "cluster.name" $context }}-backup-{{ .name }}
   namespace: {{ include "cluster.namespace" $context }}
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
-    app.kubernetes.io/name: "{{ include "cluster.name" $context }}-{{ .name }}-backup"
-    {{- with .Values.cluster.additionalLabels }}
+    app.kubernetes.io/name: {{ include "cluster.name" $context }}-backup-{{ .name }}
+    {{- with $context.Values.cluster.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   retentionPolicy: {{ .retentionPolicy | default "30d" }}
   configuration:
-    destinationPath: {{ .destinationPath | required "Destination path is required" }}
-    endpointURL: {{ .endpointURL | default "https://nyc3.digitaloceanspaces.com" }}
+    destinationPath: {{ include "cluster.backupDestinationPath" (dict "instance" . "global" $context) }}
+    endpointURL: {{ .endpointURL | default "http://garage-main.garage:3900" }}
     {{- if .endpointCA }}
     endpointCA:
       name: {{ .endpointCA.name }}
@@ -41,14 +41,14 @@ spec:
     {{- end }}
     s3Credentials:
       accessKeyId:
-        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
+        name: {{ include "cluster.backupSecretName" (dict "instance" . "global" $context) }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
+        name: {{ include "cluster.backupSecretName" (dict "instance" . "global" $context) }}
         key: ACCESS_SECRET_KEY
     {{- if .endpointCredentialsIncludeRegion }}
       region:
-        name: {{ .endpointCredentials | default (printf "%s-cluster-backup-secret" (include "cluster.name" $context) | trunc 63 | trimSuffix "-") }}
+        name: {{ include "cluster.backupSecretName" (dict "instance" . "global" $context) }}
         key: ACCESS_REGION
     {{- end }}
 {{ end -}}

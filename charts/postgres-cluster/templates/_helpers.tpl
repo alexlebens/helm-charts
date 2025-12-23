@@ -91,7 +91,7 @@ Generate recovery destination path
   {{- if .Values.recovery.objectStore.destinationPathOverride -}}
     {{- .Values.recovery.objectStore.destinationPathOverride -}}
   {{- else -}}
-    {{- printf "s3://%s/%s/%s/%s" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "s3://%s/%s/%s/%s-cluster" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) (include "cluster.name" .) | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -104,4 +104,30 @@ Generate recovery credentials name
   {{- else -}}
     {{- printf "%s-recovery-secret" (include "cluster.name" .) -}}
   {{- end }}
+{{- end }}
+
+{{/*
+Generate backup destination path
+*/}}
+{{- define "cluster.backupDestinationPath" -}}
+  {{- if .instance.destinationPathOverride -}}
+    {{- .instance.destinationPathOverride -}}
+  {{- else if .instance.destinationBucket -}}
+    {{- printf "s3://%s/%s/%s/%s-cluster" .instance.destinationBucket .global.Values.kubernetesClusterName (include "cluster.namespace" .global) (include "cluster.name" .global) | trimSuffix "-" -}}
+  {{-  else -}}
+    {{ fail "Invalid destination path!" }}
+  {{- end -}}
+{{- end }}
+
+{{/*
+Generate backup destination path
+*/}}
+{{- define "cluster.backupSecretName" -}}
+  {{- if .instance.endpointCredentialsOverride -}}
+    {{- .instance.endpointCredentialsOverride -}}
+  {{- else if .instance.name -}}
+    {{- printf "%s-backup-%s-secret" (include "cluster.name" .global) .instance.name | trunc 63 | trimSuffix "-" -}}
+  {{-  else -}}
+    {{ fail "Invalid backup secret name!" }}
+  {{- end -}}
 {{- end }}

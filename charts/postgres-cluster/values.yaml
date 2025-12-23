@@ -432,22 +432,41 @@ backup:
   # -- Method to create backups, options currently are only objectStore
   method: objectStore
 
+  # -- Use generated External Secrets, credentialPath points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+  externalSecret:
+    enabled: true
+
   # -- Options for object store backups
-  objectStore: []
+  objectStore:
+      - name: garage-local
+        index: 1
+        retentionPolicy: "3d"
+        destinationBucket: postres-backups
+        externalSecretCredentialPath: /garage/home-infra/postgres-backups
+        isWALArchiver: true
 
     # -
     #   # -- Object store backup name
     #   name: external
 
+    #   # -- Desitination bucket
+    #   destinationBucket: postgres-backups
+
     #   # -- Overrides the provider specific default path. Defaults to:
     #   # S3: s3://<bucket><path>
     #   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
     #   # Google: gs://<bucket><path>
-    #   destinationPath: ""
+    #   destinationPathOverride: ""
 
     #   # -- Overrides the provider specific default endpoint. Defaults to:
-    #   # https://nyc3.digitaloceanspaces.com
+    #   # http://garage-main.garage:3900
     #   endpointURL: ""
+
+    #   # -- Override secret name that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+    #   endpointCredentialsOverride: ""
+
+    #   # -- Path points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+    #   externalSecretCredentialPath
 
     #   # -- Specifies a CA bundle to validate a privately signed certificate.
     #   endpointCA:
@@ -459,12 +478,6 @@ backup:
 
     #   # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
     #   index: 1
-
-    #   # -- Override the name of the backup cluster, defaults to "cluster.name"
-    #   clusterName: ""
-
-    #   # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-    #   endpointCredentials: ""
 
     #   # -- Retention policy for backups
     #   retentionPolicy: "30d"
