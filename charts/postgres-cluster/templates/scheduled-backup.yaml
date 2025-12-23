@@ -4,10 +4,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: "{{ include "cluster.name" $context }}-{{ .name }}-scheduled-backup"
+  name: "{{ include "cluster.name" $context }}-scheduled-backup-{{ .name }}"
   namespace: {{ include "cluster.namespace" $context }}
   labels:
     {{- include "cluster.labels" $context | nindent 4 }}
+    app.kubernetes.io/name: "{{ include "cluster.name" $context }}-scheduled-backup-{{ .name }}"
 spec:
   immediate: {{ .immediate | default false }}
   suspend: {{ .suspend | default false }}
@@ -19,5 +20,5 @@ spec:
   pluginConfiguration:
     name: {{ .plugin | default "barman-cloud.cloudnative-pg.io" }}
     parameters:
-      barmanObjectName: "{{ include "cluster.name" $context }}-{{ .backupName }}-backup"
+      barmanObjectName: "{{ include "cluster.name" $context }}-backup-{{ .backupName }}"
 {{ end -}}
