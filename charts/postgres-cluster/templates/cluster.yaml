@@ -139,7 +139,7 @@ spec:
       isWALArchiver: false
       {{- end }}
       parameters:
-        barmanObjectName: "{{ include "cluster.name" $ }}-{{ $objectStore.name }}-backup"
+        barmanObjectName: "{{ include "cluster.name" $ }}-backup-{{ $objectStore.name }}"
         {{- if $objectStore.clusterName }}
         serverName: "{{ $objectStore.clusterName }}-backup-{{ $objectStore.index }}"
         {{- else }}
