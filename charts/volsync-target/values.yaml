@@ -19,7 +19,7 @@ externalSecrets:
 
 # -- Local backup configuration
 local:
-  enabled: true
+  enabled: false
 
   # -- 5 character cron schedule
   schedule: 0 8 * * *
@@ -48,7 +48,7 @@ local:
 
 # -- Remote backup configuration
 remote:
-  enabled: true
+  enabled: false
 
   # -- 5 character cron schedule
   schedule: 0 10 * * *

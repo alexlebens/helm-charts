@@ -1,6 +1,6 @@
 # volsync-target
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![AppVersion: 0.14.0](https://img.shields.io/badge/AppVersion-0.14.0-informational?style=flat-square)
+![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![AppVersion: 0.14.0](https://img.shields.io/badge/AppVersion-0.14.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
 
@@ -25,7 +25,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | external.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | external.schedule | string | `"0 9 * * *"` | 5 character cron schedule |
 | externalSecrets | object | `{"enabled":true}` | Use external secrets |
-| local | object | `{"enabled":true,"externalSecret":{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-local"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 8 * * *"}` | Local backup configuration |
+| local | object | `{"enabled":false,"externalSecret":{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-local"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 8 * * *"}` | Local backup configuration |
 | local.externalSecret | object | `{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-local"}` | External Secret configuration |
 | local.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | local.schedule | string | `"0 8 * * *"` | 5 character cron schedule |
@@ -33,7 +33,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | pvcTarget | string | `"data"` | Name of the PVC target |
-| remote | object | `{"enabled":true,"externalSecret":{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-remote"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 10 * * *"}` | Remote backup configuration |
+| remote | object | `{"enabled":false,"externalSecret":{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-remote"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 10 * * *"}` | Remote backup configuration |
 | remote.externalSecret | object | `{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-remote"}` | External Secret configuration |
 | remote.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | remote.schedule | string | `"0 10 * * *"` | 5 character cron schedule |
