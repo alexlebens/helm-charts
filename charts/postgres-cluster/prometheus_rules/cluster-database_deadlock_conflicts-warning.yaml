@@ -7,7 +7,7 @@ annotations:
     There are over 10 deadlock conflicts in
     {{`{{`}} $labels.pod {{`}}`}}
 expr: |
-  cnpg_pg_stat_database_deadlocks > 10
+  cnpg_pg_stat_database_deadlocks{namespace="{{ .namespace }}"} > 10
 for: 1m
 labels:
   severity: warning

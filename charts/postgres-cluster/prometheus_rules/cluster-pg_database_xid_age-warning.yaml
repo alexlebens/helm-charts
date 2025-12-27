@@ -7,7 +7,7 @@ annotations:
     Over 300,000,000 transactions from frozen xid
     on pod {{`{{`}} $labels.pod {{`}}`}}
 expr: |
-  cnpg_pg_database_xid_age > 300000000
+  cnpg_pg_database_xid_age{namespace="{{ .namespace }}"} > 300000000
 for: 1m
 labels:
   severity: warning

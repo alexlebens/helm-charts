@@ -7,7 +7,7 @@ annotations:
     CloudNativePG Cluster Pod {{`{{`}} $labels.pod {{`}}`}}
     is taking more than 5 minutes (300 seconds) for a query.
 expr: |-
-  cnpg_backends_max_tx_duration_seconds > 300
+  cnpg_backends_max_tx_duration_seconds{namespace="{{ .namespace }}"} > 300
 for: 1m
 labels:
   severity: warning

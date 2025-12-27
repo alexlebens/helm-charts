@@ -6,7 +6,7 @@ annotations:
   description: |-
     Archiving failed for {{`{{`}} $labels.pod {{`}}`}}
 expr: |
-  (cnpg_pg_stat_archiver_last_failed_time - cnpg_pg_stat_archiver_last_archived_time) > 2
+  (cnpg_pg_stat_archiver_last_failed_time{namespace="{{ .namespace }}"} - cnpg_pg_stat_archiver_last_archived_time{namespace="{{ .namespace }}"}) > 2
 for: 1m
 labels:
   severity: warning
