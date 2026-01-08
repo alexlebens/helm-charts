@@ -37,3 +37,22 @@ spec:
   redisExporter:
     enabled: {{ .Values.redisReplication.redisExporter.enabled }}
     image: "{{ .Values.redisReplication.redisExporter.image.repository }}:{{ .Values.redisReplication.redisExporter.image.tag }}"
+
+  {{- if .Values.redisSentinel.enabled }}
+  sentinel:
+    image: "{{ .Values.redisSentinel.image.repository }}:{{ .Values.redisSentinel.image.tag }}"
+    imagePullPolicy: {{ .Values.redisSentinel.image.pullPolicy }}
+
+    {{ if .Values.existingSecret.enabled }}
+    redisSecret:
+      name: {{ .Values.existingSecret.name }}
+      key: {{ .Values.existingSecret.key }}
+    {{ end }}
+
+    resources:
+    {{- with .Values.redisSentinel.resources }}
+      {{- toYaml . | nindent 10 }}
+    {{ end }}
+
+    size: {{ .Values.redisSentinel.clusterSize }}
+  {{- end }}
