@@ -37,12 +37,12 @@ spec:
     enabled: {{ .Values.redisReplication.redisExporter.enabled }}
     image: "{{ .Values.redisReplication.redisExporter.image.repository }}:{{ .Values.redisReplication.redisExporter.image.tag }}"
 
-  {{- if .Values.redisReplication.sentinel.enabled }}
+  {{ if .Values.redisReplication.sentinel.enabled -}}
   sentinel:
     image: "{{ .Values.redisReplication.sentinel.image.repository }}:{{ .Values.redisReplication.sentinel.image.tag }}"
     imagePullPolicy: {{ .Values.redisReplication.sentinel.image.pullPolicy }}
 
-    {{ if .Values.existingSecret.enabled }}
+    {{- if .Values.existingSecret.enabled }}
     redisSecret:
       name: {{ .Values.existingSecret.name }}
       key: {{ .Values.existingSecret.key }}
