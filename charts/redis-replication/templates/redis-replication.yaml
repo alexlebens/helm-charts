@@ -12,7 +12,7 @@ spec:
   podSecurityContext:
   {{- with .Values.redisReplication.podSecurityContext }}
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
 
   kubernetesConfig:
     image: "{{ .Values.redisReplication.image.repository }}:{{ .Values.redisReplication.image.tag }}"
@@ -26,13 +26,13 @@ spec:
     redisSecret:
       name: {{ .Values.existingSecret.name }}
       key: {{ .Values.existingSecret.key }}
-    {{ end }}
+    {{- end }}
 
   storage:
     volumeClaimTemplate:
     {{- with .Values.redisReplication.volumeClaimTemplate }}
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
 
   redisExporter:
     enabled: {{ .Values.redisReplication.redisExporter.enabled }}
@@ -47,12 +47,12 @@ spec:
     redisSecret:
       name: {{ .Values.existingSecret.name }}
       key: {{ .Values.existingSecret.key }}
-    {{ end }}
+    {{- end }}
 
     resources:
     {{- with .Values.redisSentinel.resources }}
       {{- toYaml . | nindent 10 }}
-    {{ end }}
+    {{- end }}
 
     size: {{ .Values.redisSentinel.clusterSize }}
   {{- end }}
