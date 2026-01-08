@@ -1,6 +1,5 @@
 # -- Override the name of the resources
 replicationNameOverride: ""
-sentinelNameOverride: ""
 
 # -- Override the namespace of the chart
 namespaceOverride: ""
@@ -57,36 +56,19 @@ redisReplication:
       scrapeTimeout: 10s
       extraLabels: {}
 
-# -- Redis Sentinel settings
-redisSentinel:
-  enabled: false
-  clusterSize: 3
+  # -- Redis Sentinel settings
+  sentinel:
+    enabled: false
+    size: 3
 
-  # -- Security
-  podSecurityContext:
-    runAsUser: 1000
-    fsGroup: 1000
-
-  # -- Image
-  image:
-    repository: quay.io/opstree/redis-sentinel
-    tag: v8.4.0
-    pullPolicy: IfNotPresent
-
-  # -- Resources
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-
-  # -- Metrics
-  redisExporter:
-    enabled: true
+    # -- Image
     image:
-      repository: quay.io/opstree/redis-exporter
-      tag: v1.80.1
-    serviceMonitor:
-      enabled: true
-      interval: 30s
-      scrapeTimeout: 10s
-      extraLabels: {}
+      repository: quay.io/opstree/redis-sentinel
+      tag: v8.4.0
+      pullPolicy: IfNotPresent
+
+    # -- Resources
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi

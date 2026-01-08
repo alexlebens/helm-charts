@@ -9,14 +9,6 @@ Expand the names
   {{- end }}
 {{- end }}
 
-{{- define "redis.sentinelName" -}}
-  {{- if .Values.sentinelNameOverride }}
-    {{- .Values.sentinelNameOverride | trunc 63 | trimSuffix "-" }}
-  {{- else }}
-    {{- printf "redis-sentinel-%s" .Release.Name -}}
-  {{- end }}
-{{- end }}
-
 {{/*
 Allow the release namespace to be overridden for multi-namespace deployments in combined charts
 */}}
@@ -54,12 +46,6 @@ Selector labels
 */}}
 {{- define "redis.replicationSelectorLabels" -}}
 app.kubernetes.io/name: {{ include "redis.replicationName" $ }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/part-of: {{ .Release.Name }}
-{{- end }}
-
-{{- define "redis.sentinelSelectorLabels" -}}
-app.kubernetes.io/name: {{ include "redis.sentinelName" $ }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- end }}
