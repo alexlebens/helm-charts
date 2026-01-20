@@ -68,7 +68,7 @@ jobs:
         run: |
           echo ">> Adding repositories for chart dependencies ..."
           for dir in ${CHANGED_CHARTS}; do
-            helm dependency list --max-col-width 120 charts/$dir 2> /dev/null \
+            helm dependency list --max-col-width 120 $dir 2> /dev/null \
               | tail +2 | head -n -1 \
               | awk '{ print "helm repo add " $1 " " $3 }' \
               | while read cmd; do
