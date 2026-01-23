@@ -1,6 +1,6 @@
 apiVersion: v2
 name: postgres-cluster
-version: 7.4.5
+version: 7.5.0
 description: Cloudnative-pg Cluster
 keywords:
   - database

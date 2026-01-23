@@ -15,6 +15,14 @@ metadata:
     {{- end }}
 spec:
   retentionPolicy: {{ .retentionPolicy | default "7d" }}
+  # Required when not using AWS S3
+  # https://github.com/cloudnative-pg/cloudnative-pg/issues/8599
+  instanceSidecarConfiguration:
+    env:
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
   configuration:
     destinationPath: {{ include "cluster.backupDestinationPath" (dict "instance" . "global" $context) }}
     endpointURL: {{ .endpointURL | default "http://garage-main.garage:3900" }}
