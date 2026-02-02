@@ -49,7 +49,7 @@ redisReplication:
     enabled: true
     image:
       repository: quay.io/opstree/redis-exporter
-      tag: v1.80.1
+      tag: v1.80.2
     serviceMonitor:
       enabled: true
       interval: 30s
