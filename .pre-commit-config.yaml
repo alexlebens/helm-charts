@@ -9,3 +9,11 @@ repos:
         exclude: 'charts/'
         args:
           - --multi
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: v1.14.2
+    hooks:
+      - id: helm-docs
+        args:
+          - --chart-search-root=charts
+          - --template-files=./_templates.gotmpl
+          - --template-files=README.md.gotmpl
