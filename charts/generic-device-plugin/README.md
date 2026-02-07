@@ -1,6 +1,6 @@
 # generic-device-plugin
 
-![Version: 0.20.17](https://img.shields.io/badge/Version-0.20.17-informational?style=flat-square) ![AppVersion: 0.20.16](https://img.shields.io/badge/AppVersion-0.20.16-informational?style=flat-square)
+![Version: 0.20.17](https://img.shields.io/badge/Version-0.20.17-informational?style=flat-square) ![AppVersion: 0.20.17](https://img.shields.io/badge/AppVersion-0.20.17-informational?style=flat-square)
 
 Generic Device Plugin
 

@@ -12,4 +12,5 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+# renovate: datasource=github-releases depName=gitea/act_runner
 appVersion: 0.2.11

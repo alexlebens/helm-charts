@@ -11,4 +11,5 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+# renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg
 appVersion: v1.28.0

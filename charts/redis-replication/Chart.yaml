@@ -12,4 +12,5 @@ sources:
 maintainers:
   - name: alexlebens
 icon: https://github.com/OT-CONTAINER-KIT/redis-operator/raw/main/static/redis-operator-logo.svg
+# renovate: datasource=github-releases depName=OT-CONTAINER-KIT/redis-operator
 appVersion: v0.23.0

@@ -5,6 +5,16 @@
     "mergeConfidence:all-badges",
     ":rebaseStalePrs"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/)Chart\\.yaml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+appVersion:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ],
   "timezone": "US/Central",
   "labels": [],
   "prHourlyLimit": 0,
@@ -35,6 +45,14 @@
           "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
         }
       ]
+    },
+    {
+      "description": "Label images, helm",
+      "matchManagers": ["custom.regex", "helm-values"],
+      "groupName": "{{#if packageName}}{{{replace 'ghcr.io/' '' (replace 'docker.io/' '' packageName)}}}{{else}}{{{replace 'ghcr.io/' '' (replace 'docker.io/' '' depName)}}}{{/if}}",
+      "groupSlug": "unified-{{{groupName}}}",
+      "addLabels": ["image"],
+      "automerge": false
     },
     {
       "description": "Automerge generic-device-plugin image on digest",
