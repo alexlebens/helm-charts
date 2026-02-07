@@ -1,6 +1,6 @@
 apiVersion: v2
 name: postgres-cluster
-version: 7.5.0
+version: 7.5.1
 description: Cloudnative-pg Cluster
 keywords:
   - database
@@ -12,4 +12,4 @@ maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
 # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg
-appVersion: v1.28.0
+appVersion: v1.28.1
