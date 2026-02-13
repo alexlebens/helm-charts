@@ -1,7 +1,7 @@
 {{- define "cluster.externalClusters" -}}
-externalClusters:
 {{- if eq .Values.mode "standalone" }}
 {{- else if eq .Values.mode "recovery" }}
+externalClusters:
   {{- if eq .Values.recovery.method "import" }}
   - name: importSource
      {{- include "cluster.externalSourceCluster" .Values.recovery.import.source | nindent 4 }}
