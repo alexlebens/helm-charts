@@ -1,0 +1,21 @@
+apiVersion: v2
+name: valkey
+version: 0.1.0
+description: Valkey chart with preconfigured settings
+keywords:
+  - valkey
+  - redis
+  - storage
+  - kubernetes
+sources:
+  - https://github.com/valkey-io/valkey
+  - https://github.com/valkey-io/valkey-helm
+maintainers:
+  - name: alexlebens
+dependencies:
+  - name: valkey
+    repository: https://valkey.io/valkey-helm/
+    version: 0.9.3
+icon: https://dyltqmyl993wv.cloudfront.net/assets/stacks/valkey/img/valkey-stack-220x234.png
+# renovate: datasource=github-releases depName=valkey-io/valkey
+appVersion: 9.0.3
