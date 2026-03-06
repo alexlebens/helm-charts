@@ -1,4 +1,5 @@
 valkey:
+  nameOverride: ""
   image:
     registry: docker.io
     repository: valkey/valkey
