@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -36,7 +36,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.enabled | bool | `true` |  |
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
-| valkey.metrics.exporter.image.tag | string | `"v1.81.0"` |  |
+| valkey.metrics.exporter.image.tag | string | `"v1.82.0"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"10m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"64M"` |  |
 | valkey.metrics.podMonitor.enabled | bool | `true` |  |

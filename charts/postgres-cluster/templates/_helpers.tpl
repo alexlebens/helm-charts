@@ -91,7 +91,7 @@ Generate recovery destination path
   {{- if .Values.recovery.objectStore.destinationPathOverride -}}
     {{- .Values.recovery.objectStore.destinationPathOverride -}}
   {{- else -}}
-    {{- printf "s3://%s/%s/%s/%s-cluster/" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) (include "cluster.name" .) | trimSuffix "-" -}}
+    {{- printf "s3://%s/%s/%s/%s-cluster" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) (include "cluster.name" .) | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -113,7 +113,7 @@ Generate backup destination path
   {{- if .instance.destinationPathOverride -}}
     {{- .instance.destinationPathOverride -}}
   {{- else if .instance.destinationBucket -}}
-    {{- printf "s3://%s/%s/%s/%s-cluster/" .instance.destinationBucket .global.Values.kubernetesClusterName (include "cluster.namespace" .global) (include "cluster.name" .global) | trimSuffix "-" -}}
+    {{- printf "s3://%s/%s/%s/%s-cluster" .instance.destinationBucket .global.Values.kubernetesClusterName (include "cluster.namespace" .global) (include "cluster.name" .global) | trimSuffix "-" -}}
   {{-  else -}}
     {{ fail "Invalid destination path!" }}
   {{- end -}}
