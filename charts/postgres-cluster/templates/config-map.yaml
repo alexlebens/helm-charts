@@ -5,6 +5,7 @@ metadata:
   name: {{ include "cluster.name" $ }}-monitoring
   namespace: {{ include "cluster.namespace" $ }}
   labels:
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}-monitoring
     cnpg.io/reload: ""
     {{- include "cluster.labels" $ | nindent 4 }}
 data:

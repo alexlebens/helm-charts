@@ -6,6 +6,7 @@ metadata:
   name: {{ include "cluster.name" $ }}-pooler-{{ .name }}
   namespace: {{ include "cluster.namespace" $ }}
   labels:
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}-pooler-{{ .name }}
     {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   cluster:

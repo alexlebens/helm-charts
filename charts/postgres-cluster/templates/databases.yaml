@@ -6,6 +6,7 @@ metadata:
   name: {{ include "cluster.name" $ }}-database-{{ .name | replace "_" "-" }}
   namespace: {{ include "cluster.namespace" $ }}
   labels:
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}-database-{{ .name | replace "_" "-" }}
     {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   name: {{ .name }}

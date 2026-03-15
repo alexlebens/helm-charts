@@ -5,6 +5,7 @@ metadata:
   name: {{ include "cluster.name" $ }}-alert-rules
   namespace: {{ include "cluster.namespace" $ }}
   labels:
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}-alert-rules
     {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   groups:

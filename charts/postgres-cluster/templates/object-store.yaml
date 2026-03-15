@@ -8,8 +8,8 @@ metadata:
   name: {{ include "cluster.name" $context }}-backup-{{ .name }}
   namespace: {{ include "cluster.namespace" $context }}
   labels:
-    {{- include "cluster.labels" $context | nindent 4 }}
     app.kubernetes.io/name: {{ include "cluster.name" $context }}-backup-{{ .name }}
+    {{- include "cluster.labels" $context | nindent 4 }}
     {{- with $context.Values.cluster.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
