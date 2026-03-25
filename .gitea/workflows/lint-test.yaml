@@ -118,7 +118,7 @@ jobs:
       - name: Check Branch Exists
         id: check-branch-exists
         if: github.event_name == 'pull_request'
-        uses: GuillaumeFalourd/branch-exists@v1.1
+        uses: GuillaumeFalourd/branch-exists@v1.2
         with:
           branch: ${{ gitea.base_ref }}
 
