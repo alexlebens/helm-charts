@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -37,8 +37,8 @@ Valkey chart with preconfigured settings
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
 | valkey.metrics.exporter.image.tag | string | `"v1.82.0"` |  |
-| valkey.metrics.exporter.resources.requests.cpu | string | `"10m"` |  |
-| valkey.metrics.exporter.resources.requests.memory | string | `"64M"` |  |
+| valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
+| valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
 | valkey.metrics.podMonitor.enabled | bool | `true` |  |
 | valkey.metrics.prometheusRule.enabled | bool | `true` |  |
 | valkey.metrics.prometheusRule.rules[0].alert | string | `"ValkeyDown"` |  |
@@ -67,7 +67,7 @@ Valkey chart with preconfigured settings
 | valkey.replica.persistence.storageClass | string | `"ceph-block"` |  |
 | valkey.replica.replicas | int | `2` |  |
 | valkey.resources.requests.cpu | string | `"10m"` |  |
-| valkey.resources.requests.memory | string | `"128Mi"` |  |
+| valkey.resources.requests.memory | string | `"20Mi"` |  |
 | valkey.serviceAccount.create | bool | `true` |  |
 
 ----------------------------------------------

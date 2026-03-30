@@ -9,7 +9,7 @@ valkey:
   resources:
     requests:
       cpu: 10m
-      memory: 128Mi
+      memory: 20Mi
   dataStorage:
     enabled: true
     requestedSize: 1Gi
@@ -34,8 +34,8 @@ valkey:
         tag: v1.82.0
       resources:
         requests:
-          cpu: 10m
-          memory: 64M
+          cpu: 1m
+          memory: 10M
     serviceMonitor:
       enabled: true
     podMonitor:
