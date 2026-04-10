@@ -3,7 +3,7 @@ valkey:
   image:
     registry: docker.io
     repository: valkey/valkey
-    tag: 9.0.3
+    tag: 9.0.3@sha256:3b55fbaa0cd93cf0d9d961f405e4dfcc70efe325e2d84da207a0a8e6d8fde4f9
   serviceAccount:
     create: true
   resources:
@@ -31,7 +31,7 @@ valkey:
       image:
         registry: ghcr.io
         repository: oliver006/redis_exporter
-        tag: v1.82.0
+        tag: v1.82.0@sha256:6a97d4dd743b533e1f950c677b87d880e44df363c61af3f406fc9e53ed65ee03
       resources:
         requests:
           cpu: 1m

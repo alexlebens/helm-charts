@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -13,6 +13,9 @@ Valkey chart with preconfigured settings
 ## Source Code
 
 * <https://github.com/valkey-io/valkey>
+* <https://github.com/oliver006/redis_exporter>
+* <https://hub.docker.com/r/valkey/valkey>
+* <https://github.com/oliver006/redis_exporter/pkgs/container/redis_exporter>
 * <https://github.com/valkey-io/valkey-helm>
 
 ## Requirements
@@ -32,11 +35,11 @@ Valkey chart with preconfigured settings
 | valkey.dataStorage.requestedSize | string | `"1Gi"` |  |
 | valkey.image.registry | string | `"docker.io"` |  |
 | valkey.image.repository | string | `"valkey/valkey"` |  |
-| valkey.image.tag | string | `"9.0.3"` |  |
+| valkey.image.tag | string | `"9.0.3@sha256:3b55fbaa0cd93cf0d9d961f405e4dfcc70efe325e2d84da207a0a8e6d8fde4f9"` |  |
 | valkey.metrics.enabled | bool | `true` |  |
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
-| valkey.metrics.exporter.image.tag | string | `"v1.82.0"` |  |
+| valkey.metrics.exporter.image.tag | string | `"v1.82.0@sha256:6a97d4dd743b533e1f950c677b87d880e44df363c61af3f406fc9e53ed65ee03"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
 | valkey.metrics.podMonitor.enabled | bool | `true` |  |
