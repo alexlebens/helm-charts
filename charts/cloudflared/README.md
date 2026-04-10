@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 2.4.0](https://img.shields.io/badge/Version-2.4.0-informational?style=flat-square) ![AppVersion: 2026.3.0](https://img.shields.io/badge/AppVersion-2026.3.0-informational?style=flat-square)
+![Version: 2.5.0](https://img.shields.io/badge/Version-2.5.0-informational?style=flat-square) ![AppVersion: 2026.3.0](https://img.shields.io/badge/AppVersion-2026.3.0-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -13,6 +13,7 @@ Cloudflared Tunnel
 ## Source Code
 
 * <https://github.com/cloudflare/cloudflared>
+* <https://hub.docker.com/r/cloudflare/cloudflared>
 * <https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common>
 
 ## Requirements
@@ -25,9 +26,9 @@ Cloudflared Tunnel
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.3.0"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.3.0@sha256:6b599ca3e974349ead3286d178da61d291961182ec3fe9c505e1dd02c8ac31b0"}` | Default image |
 | name | string | `""` | Name override of release |
-| resources | object | `{"requests":{"cpu":"10m","memory":"128Mi"}}` | Default resources |
+| resources | object | `{"requests":{"cpu":"1m","memory":"20Mi"}}` | Default resources |
 | secret | object | `{"existingSecret":{"key":"cf-tunnel-token","name":"cloudflared-secret"},"externalSecret":{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"vault","path":"/cloudflare/tunnels","property":"token"}}}` | Secret configuration |
 | secret.existingSecret | object | `{"key":"cf-tunnel-token","name":"cloudflared-secret"}` | Name of existing secret that contains Cloudflare token |
 | secret.externalSecret | object | `{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"vault","path":"/cloudflare/tunnels","property":"token"}}` | External Secret configuration |
