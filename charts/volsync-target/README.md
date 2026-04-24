@@ -1,6 +1,6 @@
 # volsync-target
 
-![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
 
@@ -20,21 +20,22 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalLabels | object | `{}` | Add additional labels |
-| external | object | `{"enabled":true,"externalSecret":{"credentialPath":"/digital-ocean/home-infra/volsync-backups","volsyncPath":"/volsync/restic/digital-ocean"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 9 * * *"}` | External backup configuration |
-| external.externalSecret | object | `{"credentialPath":"/digital-ocean/home-infra/volsync-backups","volsyncPath":"/volsync/restic/digital-ocean"}` | External Secret configuration |
+| external | object | `{"enabled":true,"externalSecret":{"bucketPath":"/digital-ocean/config","credentialPath":"/digital-ocean/home-infra/volsync-backups"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 9 * * *"}` | External backup configuration |
+| external.externalSecret | object | `{"bucketPath":"/digital-ocean/config","credentialPath":"/digital-ocean/home-infra/volsync-backups"}` | External Secret configuration |
 | external.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | external.schedule | string | `"0 9 * * *"` | 5 character cron schedule |
 | externalSecrets | object | `{"enabled":true}` | Use external secrets |
-| local | object | `{"enabled":false,"externalSecret":{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-local"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 8 * * *"}` | Local backup configuration |
-| local.externalSecret | object | `{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-local"}` | External Secret configuration |
+| kubernetesClusterName | string | `"cl01tl"` | Kubernetes cluster name |
+| local | object | `{"enabled":false,"externalSecret":{"bucketPath":"/garage/config","credentialPath":"/garage/home-infra/volsync-backups"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 8 * * *"}` | Local backup configuration |
+| local.externalSecret | object | `{"bucketPath":"/garage/config","credentialPath":"/garage/home-infra/volsync-backups"}` | External Secret configuration |
 | local.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | local.schedule | string | `"0 8 * * *"` | 5 character cron schedule |
 | moverSecurityContext | object | `{}` | Glocal security context for restic mover |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | pvcTarget | string | `"data"` | Name of the PVC target |
-| remote | object | `{"enabled":false,"externalSecret":{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-remote"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 10 * * *"}` | Remote backup configuration |
-| remote.externalSecret | object | `{"credentialPath":"/garage/home-infra/volsync-backups","volsyncPath":"/volsync/restic/garage-remote"}` | External Secret configuration |
+| remote | object | `{"enabled":false,"externalSecret":{"bucketPath":"/garage/config","credentialPath":"/garage/home-infra/volsync-backups"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 10 * * *"}` | Remote backup configuration |
+| remote.externalSecret | object | `{"bucketPath":"/garage/config","credentialPath":"/garage/home-infra/volsync-backups"}` | External Secret configuration |
 | remote.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | remote.schedule | string | `"0 10 * * *"` | 5 character cron schedule |
 

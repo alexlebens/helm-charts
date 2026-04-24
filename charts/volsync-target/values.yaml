@@ -4,6 +4,9 @@ nameOverride: ""
 # -- Override the namespace of the chart
 namespaceOverride: ""
 
+# -- Kubernetes cluster name
+kubernetesClusterName: cl01tl
+
 # -- Add additional labels
 additionalLabels: {}
 
@@ -41,9 +44,9 @@ local:
 
   # -- External Secret configuration
   externalSecret:
-    # This path must contain the BUCKET_ENDPOINT and RESTIC_PASSWORD
-    volsyncPath: /volsync/restic/garage-local
-    # This path must contain the AWS/S3 credentials
+    # This path must contain the BUCKET_ENDPOINT
+    bucketPath: /garage/config
+    # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
     credentialPath: /garage/home-infra/volsync-backups
 
 # -- Remote backup configuration
@@ -70,9 +73,9 @@ remote:
 
   # -- External Secret configuration
   externalSecret:
-    # This path must contain the BUCKET_ENDPOINT and RESTIC_PASSWORD
-    volsyncPath: /volsync/restic/garage-remote
-    # This path must contain the AWS/S3 credentials
+    # This path must contain the BUCKET_ENDPOINT
+    bucketPath: /garage/config
+    # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
     credentialPath: /garage/home-infra/volsync-backups
 
 # -- External backup configuration
@@ -99,7 +102,7 @@ external:
 
   # -- External Secret configuration
   externalSecret:
-    # This path must contain the BUCKET_ENDPOINT and RESTIC_PASSWORD
-    volsyncPath: /volsync/restic/digital-ocean
-    # This path must contain the AWS/S3 credentials
+    # This path must contain the ENDPOINT
+    bucketPath: /digital-ocean/config
+    # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
     credentialPath: /digital-ocean/home-infra/volsync-backups
