@@ -11,7 +11,7 @@ secret:
 
     # -- Cluster store config
     store:
-      name: vault
+      name: openbao
       path: /cloudflare/tunnels
       property: token
 
