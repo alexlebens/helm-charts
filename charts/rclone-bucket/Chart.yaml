@@ -1,0 +1,20 @@
+apiVersion: v2
+name: rclone-bucket
+version: 0.1.0
+description: Rclone CronJob to replicate buckets
+keywords:
+  - rclone-bucket
+  - rclone
+  - storage
+sources:
+  - https://github.com/rclone/rclone
+  - https://hub.docker.com/r/rclone/rclone
+maintainers:
+  - name: alexlebens
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts/
+    version: 4.6.2
+icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/rclone.png
+# renovate: datasource=github-releases depName=rclone/rclone
+appVersion: v1.73.5
