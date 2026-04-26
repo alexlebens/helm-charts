@@ -17,7 +17,7 @@ Generate the secret name
     {{- if .Values.secret.externalSecret.source.nameOverride }}
       {{- .Values.secret.externalSecret.source.nameOverride | trunc 63 | trimSuffix "-" }}
     {{- else }}
-      {{- printf "%s-rclone-config" .Values.rclone.source.bucketName -}}
+      {{- printf "%s-rclone-source-config" .Values.rclone.source.bucketName -}}
     {{- end }}
   {{- else if .Values.secret.existingSecretSource.name }}
     {{- printf "%s" .Values.secret.existingSecretSource.name -}}
@@ -31,7 +31,7 @@ Generate the secret name
     {{- if .Values.secret.externalSecret.destination.nameOverride }}
       {{- .Values.secret.externalSecret.destination.nameOverride | trunc 63 | trimSuffix "-" }}
     {{- else }}
-      {{- printf "%s-rclone-config" .Values.rclone.destination.bucketName -}}
+      {{- printf "%s-rclone-destination-config" .Values.rclone.destination.bucketName -}}
     {{- end }}
   {{- else if .Values.secret.existingSecretDestination.name }}
     {{- printf "%s" .Values.secret.existingSecretDestination.name -}}
