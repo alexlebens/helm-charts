@@ -22,6 +22,10 @@ controllers:
           - src:{{ .Values.rclone.source.bucketName }}
           - dest:{{ .Values.rclone.destination.bucketName }}
           - --s3-no-check-bucket
+          {{- if .Values.prune.enabled }}
+          - --min-age
+          - {{ .Values.prune.ageToPrune }}
+          {{- end }}
           - --verbose
         env:
           - name: RCLONE_S3_PROVIDER
