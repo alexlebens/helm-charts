@@ -48,22 +48,22 @@ controllers:
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.sourceSecretName" . }}
-                key: {{ include "secret.envAccessKey" . }}
+                key: {{ include "secretRclone.envAccessKey" . }}
           - name: RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.sourceSecretName" . }}
-                key: {{ include "secret.envSecretKey" . }}
+                key: {{ include "secretRclone.envSecretKey" . }}
           - name: RCLONE_CONFIG_SRC_REGION
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.sourceSecretName" . }}
-                key: {{ include "secret.envRegion" . }}
+                key: {{ include "secretRclone.envRegion" . }}
           - name: RCLONE_CONFIG_SRC_ENDPOINT
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.sourceSecretName" . }}
-                key: {{ include "secret.envSrcEndpoint" . }}
+                key: {{ include "secretRclone.envSrcEndpoint" . }}
           - name: RCLONE_CONFIG_SRC_S3_FORCE_PATH_STYLE
             value: {{ .Values.rclone.source.forcePathStyle }}
           - name: RCLONE_CONFIG_DEST_TYPE
@@ -76,22 +76,22 @@ controllers:
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envAccessKey" . }}
+                key: {{ include "secretRclone.envAccessKey" . }}
           - name: RCLONE_CONFIG_DEST_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envSecretKey" . }}
+                key: {{ include "secretRclone.envSecretKey" . }}
           - name: RCLONE_CONFIG_DEST_REGION
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envRegion" . }}
+                key: {{ include "secretRclone.envRegion" . }}
           - name: RCLONE_CONFIG_DEST_ENDPOINT
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envDestEndpoint" . }}
+                key: {{ include "secretRclone.envDestEndpoint" . }}
           - name: RCLONE_CONFIG_SRC_DEST_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle }}
       {{- if .Values.prune.enabled }}
@@ -117,22 +117,22 @@ controllers:
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envAccessKey" . }}
+                key: {{ include "secretRclone.envAccessKey" . }}
           - name: RCLONE_CONFIG_DEST_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envSecretKey" . }}
+                key: {{ include "secretRclone.envSecretKey" . }}
           - name: RCLONE_CONFIG_DEST_REGION
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envRegion" . }}
+                key: {{ include "secretRclone.envRegion" . }}
           - name: RCLONE_CONFIG_DEST_ENDPOINT
             valueFrom:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
-                key: {{ include "secret.envDestEndpoint" . }}
+                key: {{ include "secretRclone.envDestEndpoint" . }}
           - name: RCLONE_CONFIG_SRC_S3_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle }}
       {{- end }}

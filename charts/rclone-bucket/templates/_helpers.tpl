@@ -43,35 +43,35 @@ Generate the secret name
 {{/*
 Common env names
 */}}
-{{- define "secret.envAccessKey" -}}
+{{- define "secretRclone.envAccessKey" -}}
 ACCESS_KEY_ID
 {{- end }}
-{{- define "secret.envSecretKey" -}}
+{{- define "secretRclone.envSecretKey" -}}
 ACCESS_SECRET_KEY
 {{- end }}
-{{- define "secret.envRegion" -}}
+{{- define "secretRclone.envRegion" -}}
 ACCESS_REGION
 {{- end }}
-{{- define "secret.envSrcEndpoint" -}}
+{{- define "secretRclone.envSrcEndpoint" -}}
 SRC_ENDPOINT
 {{- end }}
-{{- define "secret.envDestEndpoint" -}}
+{{- define "secretRclone.envDestEndpoint" -}}
 DEST_ENDPOINT
 {{- end }}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "secret.chart" -}}
+{{- define "secretRclone.chart" -}}
   {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "secret.labels" -}}
-helm.sh/chart: {{ include "secret.chart" $ }}
-{{ include "secret.selectorLabels" $ }}
+{{- define "secretRclone.labels" -}}
+helm.sh/chart: {{ include "secretRclone.chart" $ }}
+{{ include "secretRclone.selectorLabels" $ }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.Version | quote }}
 {{- end }}
@@ -84,7 +84,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "secret.selectorLabels" -}}
+{{- define "secretRclone.selectorLabels" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- end }}
