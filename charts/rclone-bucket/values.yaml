@@ -38,6 +38,8 @@ rclone:
 prune:
   enabled: false
   ageToPrune: 90d
+  include: ""
+  exclude: ""
 
 # -- Secret configuration
 secret:

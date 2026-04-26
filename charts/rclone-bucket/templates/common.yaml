@@ -26,6 +26,14 @@ controllers:
           - --min-age
           - {{ .Values.prune.ageToPrune }}
           {{- end }}
+          {{- if .Values.prune.include }}
+          - --include
+          - {{ .Values.prune.include }}
+          {{- end }}
+          {{- if .Values.prune.exclude }}
+          - --exclude
+          - {{ .Values.prune.exclude }}
+          {{- end }}
           - --verbose
         env:
           - name: RCLONE_S3_PROVIDER
