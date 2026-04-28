@@ -7,7 +7,7 @@ metadata:
   namespace: {{ include "volsync.namespace" . }}
   labels:
     {{- include "volsync.labels" . | nindent 4 }}
-    app.kubernetes.io/name: {{ include "volsync.name" . }}
+    app.kubernetes.io/name: {{ include "volsync.name" . }}-source-local
     {{- with .Values.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

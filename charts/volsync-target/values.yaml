@@ -16,6 +16,10 @@ pvcTarget: "data"
 # -- Glocal security context for restic mover
 moverSecurityContext: {}
 
+# -- Prometheus Rule
+prometheusRule:
+  enabled: true
+
 # -- Use external secrets
 externalSecrets:
   enabled: true

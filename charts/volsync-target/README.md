@@ -1,6 +1,6 @@
 # volsync-target
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
+![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
 
@@ -33,6 +33,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | moverSecurityContext | object | `{}` | Glocal security context for restic mover |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
+| prometheusRule | object | `{"enabled":true}` | Prometheus Rule |
 | pvcTarget | string | `"data"` | Name of the PVC target |
 | remote | object | `{"enabled":false,"externalSecret":{"bucketPath":"/garage/config","credentialPath":"/garage/home-infra/volsync-backups"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":7,"repository":"","retain":{"daily":7,"hourly":0,"monthly":3,"weekly":4,"yearly":1},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 10 * * *"}` | Remote backup configuration |
 | remote.externalSecret | object | `{"bucketPath":"/garage/config","credentialPath":"/garage/home-infra/volsync-backups"}` | External Secret configuration |
