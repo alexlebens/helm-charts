@@ -103,7 +103,7 @@ controllers:
         args:
           - delete
           - dest:{{ .Values.rclone.destination.bucketName }}
-          - --max-age
+          - --min-age
           - {{ .Values.prune.ageToPrune | quote }}
           - --verbose
         env:
