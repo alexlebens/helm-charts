@@ -64,7 +64,7 @@ controllers:
               secretKeyRef:
                 name: {{ include "rclone.sourceSecretName" . }}
                 key: {{ include "secretRclone.envSrcEndpoint" . }}
-          - name: RCLONE_CONFIG_SRC_S3_FORCE_PATH_STYLE
+          - name: RCLONE_CONFIG_SRC_FORCE_PATH_STYLE
             value: {{ .Values.rclone.source.forcePathStyle | quote }}
           - name: RCLONE_CONFIG_DEST_TYPE
             value: s3
@@ -92,7 +92,7 @@ controllers:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
                 key: {{ include "secretRclone.envDestEndpoint" . }}
-          - name: RCLONE_CONFIG_DEST_S3_FORCE_PATH_STYLE
+          - name: RCLONE_CONFIG_DEST_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle | quote }}
       {{- if .Values.prune.enabled }}
       prune:
@@ -133,7 +133,7 @@ controllers:
               secretKeyRef:
                 name: {{ include "rclone.destinationSecretName" . }}
                 key: {{ include "secretRclone.envDestEndpoint" . }}
-          - name: RCLONE_CONFIG_DEST_S3_FORCE_PATH_STYLE
+          - name: RCLONE_CONFIG_DEST_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle | quote }}
       {{- end }}
 {{- end -}}
