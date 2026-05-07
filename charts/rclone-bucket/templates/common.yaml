@@ -23,7 +23,7 @@ controllers:
           - dest:{{ .Values.rclone.destination.bucketName }}
           - --s3-no-check-bucket
           {{- if .Values.prune.enabled }}
-          - --min-age
+          - --max-age
           - {{ .Values.prune.ageToPrune | quote }}
           {{- end }}
           {{- if .Values.prune.include }}
@@ -103,7 +103,7 @@ controllers:
         args:
           - delete
           - dest:{{ .Values.rclone.destination.bucketName }}
-          - --min-age
+          - --max-age
           - {{ .Values.prune.ageToPrune | quote }}
           - --verbose
         env:
