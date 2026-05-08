@@ -20,8 +20,8 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalLabels | object | `{}` | Add additional labels |
-| external | object | `{"enabled":true,"externalSecret":{"bucketPath":"/digital-ocean/config","credentialPath":"/digital-ocean/home-infra/volsync-backups"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":35,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":12,"yearly":0},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 9 * * 0"}` | External backup configuration |
-| external.externalSecret | object | `{"bucketPath":"/digital-ocean/config","credentialPath":"/digital-ocean/home-infra/volsync-backups"}` | External Secret configuration |
+| external | object | `{"enabled":true,"externalSecret":{"bucketPath":"/backblaze/config","credentialPath":"/backblaze/home-infra/volsync-backups"},"restic":{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":35,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":12,"yearly":0},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"schedule":"0 9 * * 0"}` | External backup configuration |
+| external.externalSecret | object | `{"bucketPath":"/backblaze/config","credentialPath":"/backblaze/home-infra/volsync-backups"}` | External Secret configuration |
 | external.restic | object | `{"cacheCapacity":"1Gi","copyMethod":"Snapshot","pruneIntervalDays":35,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":12,"yearly":0},"storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | external.schedule | string | `"0 9 * * 0"` | 5 character cron schedule |
 | externalSecrets | object | `{"enabled":true}` | Use external secrets |

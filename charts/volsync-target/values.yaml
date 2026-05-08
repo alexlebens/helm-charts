@@ -107,6 +107,6 @@ external:
   # -- External Secret configuration
   externalSecret:
     # This path must contain the ENDPOINT
-    bucketPath: /digital-ocean/config
+    bucketPath: /backblaze/config
     # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
-    credentialPath: /digital-ocean/home-infra/volsync-backups
+    credentialPath: /backblaze/home-infra/volsync-backups
