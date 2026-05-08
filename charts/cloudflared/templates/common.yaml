@@ -24,7 +24,8 @@ controllers:
           - {{ .Values.protocol }}
           - --no-autoupdate
           {{- if .Values.metrics.enabled }}
-          - --metrics 0.0.0.0:20241
+          - --metrics
+          - 0.0.0.0:20241
           {{- end }}
           - run
           - --token
