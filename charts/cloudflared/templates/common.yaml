@@ -4,14 +4,14 @@
 global:
   nameOverride: {{ include "cloudflared.name" . }}
   fullNameOverride: {{ include "cloudflared.name" . }}
-  createDefaultServiceAccount: false
+  createDefaultServiceAccount: true
 controllers:
   main:
     type: deployment
     replicas: 1
     strategy: Recreate
     serviceAccount:
-      name: {{ include "cloudflared.name" . }}
+      identifier: {{ .Release.Name }}
     containers:
       main:
         image:
@@ -39,10 +39,6 @@ controllers:
           {{- with .Values.resources }}
           {{- toYaml . | nindent 10 }}
           {{ end }}
-serviceAccount:
-  main:
-    enabled: true
-    forceRename: {{ include "cloudflared.name" . }}
 {{- if .Values.metrics.enabled }}
 service:
   main:
