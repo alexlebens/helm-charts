@@ -162,7 +162,7 @@ serviceMonitor:
     selector:
       matchLabels:
         app.kubernetes.io/name: {{ include "rclone.name" . }}
-        app.kubernetes.io/instance: {{ include "rclone.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Namespace }}
     serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
     endpoints:
       - port: metrics
