@@ -7,7 +7,10 @@ global:
 controllers:
   main:
     type: deployment
+    replicas: 1
     strategy: Recreate
+    serviceAccount:
+      name: {{ include "cloudflared.name" . }}
     containers:
       main:
         image:
