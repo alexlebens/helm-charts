@@ -4,6 +4,10 @@ name: ""
 # -- Protocol - Available values are auto, http2, and quic.
 protocol: auto
 
+# -- Metrics
+metrics:
+  enabled: true
+
 # -- Secret configuration
 secret:
 

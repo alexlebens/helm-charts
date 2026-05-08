@@ -27,6 +27,7 @@ Cloudflared Tunnel
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.3.0@sha256:6b599ca3e974349ead3286d178da61d291961182ec3fe9c505e1dd02c8ac31b0"}` | Default image |
+| metrics | object | `{"enabled":true}` | Metrics |
 | name | string | `""` | Name override of release |
 | protocol | string | `"auto"` | Protocol - Available values are auto, http2, and quic. |
 | resources | object | `{"requests":{"cpu":"1m","memory":"20Mi"}}` | Default resources |
