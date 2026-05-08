@@ -40,7 +40,7 @@ controllers:
           {{- if .Values.metrics.enabled }}
           - --rc
           - --rc-enable-metrics
-          - --metrics-addr=0.0.0.0:5572
+          - --metrics-addr=0.0.0.0:5573
           {{- end }}
           - --verbose
         env:
@@ -117,7 +117,7 @@ controllers:
           {{- if .Values.metrics.enabled }}
           - --rc
           - --rc-enable-metrics
-          - --metrics-addr=0.0.0.0:5572
+          - --metrics-addr=0.0.0.0:5574
           {{- end }}
         env:
           - name: RCLONE_CONFIG_DEST_TYPE
@@ -154,9 +154,15 @@ service:
   main:
     controller: main
     ports:
-      metrics:
+      rc:
         port: 5572
         targetPort: 5572
+      metrics-sync:
+        port: 5573
+        targetPort: 5573
+      metrics-prune:
+        port: 5574
+        targetPort: 5574
 serviceMonitor:
   main:
     selector:
@@ -165,9 +171,13 @@ serviceMonitor:
         app.kubernetes.io/instance: {{ .Release.Namespace }}
     serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
     endpoints:
-      - port: metrics
-        interval: 30s
-        scrapeTimeout: 10s
+      - port: metrics-sync
+        interval: 10s
+        scrapeTimeout: 5s
+        path: /metrics
+      - port: metrics-prune
+        interval: 10s
+        scrapeTimeout: 5s
         path: /metrics
 {{- end }}
 {{- end -}}
