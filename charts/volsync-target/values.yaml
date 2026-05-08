@@ -39,8 +39,8 @@ local:
       hourly: 0
       daily: 7
       weekly: 4
-      monthly: 3
-      yearly: 1
+      monthly: 0
+      yearly: 0
     copyMethod: Snapshot
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
@@ -58,7 +58,7 @@ remote:
   enabled: false
 
   # -- 5 character cron schedule
-  schedule: 0 10 * * *
+  schedule: 0 10 * * 0
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
@@ -66,10 +66,10 @@ remote:
     repository: ""
     retain:
       hourly: 0
-      daily: 7
-      weekly: 4
-      monthly: 3
-      yearly: 1
+      daily: 0
+      weekly: 12
+      monthly: 0
+      yearly: 0
     copyMethod: Snapshot
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
@@ -87,18 +87,18 @@ external:
   enabled: true
 
   # -- 5 character cron schedule
-  schedule: 0 9 * * *
+  schedule: 0 9 * * 0
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
-    pruneIntervalDays: 7
+    pruneIntervalDays: 35
     repository: ""
     retain:
       hourly: 0
-      daily: 7
-      weekly: 4
-      monthly: 3
-      yearly: 1
+      daily: 0
+      weekly: 12
+      monthly: 0
+      yearly: 0
     copyMethod: Snapshot
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
