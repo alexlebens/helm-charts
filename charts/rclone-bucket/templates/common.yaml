@@ -4,6 +4,7 @@
 global:
   nameOverride: {{ include "rclone.name" . }}
   fullNameOverride: {{ include "rclone.name" . }}
+  createDefaultServiceAccount: true
 controllers:
   main:
     type: cronjob
@@ -11,6 +12,8 @@ controllers:
     cronjob:
       {{- toYaml . | nindent 6 }}
     {{ end }}
+    serviceAccount:
+      identifier: {{ .Release.Name }}
     containers:
       sync:
         image:
