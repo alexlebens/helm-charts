@@ -4,6 +4,7 @@
 global:
   nameOverride: {{ include "cloudflared.name" . }}
   fullNameOverride: {{ include "cloudflared.name" . }}
+  createDefaultServiceAccount: false
 controllers:
   main:
     type: deployment
@@ -38,6 +39,10 @@ controllers:
           {{- with .Values.resources }}
           {{- toYaml . | nindent 10 }}
           {{ end }}
+serviceAccount:
+  main:
+    enabled: true
+    forceRename: {{ include "cloudflared.name" . }}
 {{- if .Values.metrics.enabled }}
 service:
   main:
