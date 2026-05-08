@@ -82,3 +82,7 @@ secret:
 
   existingSecretDestination:
     name: rclone-destination-secret
+
+# -- Metrics
+metrics:
+  enabled: true

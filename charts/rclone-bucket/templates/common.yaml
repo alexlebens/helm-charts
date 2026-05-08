@@ -37,6 +37,11 @@ controllers:
           - --exclude
           - {{ .Values.prune.exclude | quote }}
           {{- end }}
+          {{- if .Values.metrics.enabled }}
+          - --rc
+          - --rc-enable-metrics
+          - --metrics-addr=0.0.0.0:5572
+          {{- end }}
           - --verbose
         env:
           - name: RCLONE_S3_PROVIDER
@@ -109,6 +114,11 @@ controllers:
           - --min-age
           - {{ .Values.prune.ageToPrune | quote }}
           - --verbose
+          {{- if .Values.metrics.enabled }}
+          - --rc
+          - --rc-enable-metrics
+          - --metrics-addr=0.0.0.0:5572
+          {{- end }}
         env:
           - name: RCLONE_CONFIG_DEST_TYPE
             value: s3
@@ -139,6 +149,27 @@ controllers:
           - name: RCLONE_CONFIG_DEST_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle | quote }}
       {{- end }}
+{{- if .Values.metrics.enabled }}
+service:
+  main:
+    controller: main
+    ports:
+      metrics:
+        port: 5572
+        targetPort: 5572
+serviceMonitor:
+  main:
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: {{ include "rclone.name" . }}
+        app.kubernetes.io/instance: {{ include "rclone.name" . }}
+    serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
+    endpoints:
+      - port: metrics
+        interval: 30s
+        scrapeTimeout: 10s
+        path: /metrics
+{{- end }}
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "rclone.hardcodedValues" . | fromYaml) -}}
 
