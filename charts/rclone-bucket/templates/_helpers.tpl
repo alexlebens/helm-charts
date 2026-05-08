@@ -62,16 +62,16 @@ DEST_ENDPOINT
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "secretRclone.chart" -}}
+{{- define "rclone.chart" -}}
   {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "secretRclone.labels" -}}
-helm.sh/chart: {{ include "secretRclone.chart" $ }}
-{{ include "secretRclone.selectorLabels" $ }}
+{{- define "rclone.labels" -}}
+helm.sh/chart: {{ include "rclone.chart" $ }}
+{{ include "rclone.selectorLabels" $ }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.Version | quote }}
 {{- end }}
@@ -84,7 +84,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "secretRclone.selectorLabels" -}}
+{{- define "rclone.selectorLabels" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- end }}

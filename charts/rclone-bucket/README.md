@@ -1,6 +1,6 @@
 # rclone-bucket
 
-![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![AppVersion: v1.74.0](https://img.shields.io/badge/AppVersion-v1.74.0-informational?style=flat-square)
+![Version: 0.10.1](https://img.shields.io/badge/Version-0.10.1-informational?style=flat-square) ![AppVersion: v1.74.1](https://img.shields.io/badge/AppVersion-v1.74.1-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
 
@@ -27,9 +27,10 @@ Rclone CronJob to replicate buckets
 |-----|------|---------|-------------|
 | additionalLabels | object | `{}` | Add additional labels |
 | cronJob | object | `{"backoffLimit":3,"parallelism":1,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"}` | CronJob configuration |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.74.0@sha256:d2e0e88359d0b2e67cfcd2c43d5405185eb8adfc207079df27c42da82c5207bc"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.74.1@sha256:eb8788b795f0009324e9572b0e2acb9b56885327c2746b07d67a9d3b893a6602"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
+| prometheusRule | object | `{"enabled":true}` | Prometheus Rule |
 | prune | object | `{"ageToPrune":"90d","enabled":false,"exclude":"","include":""}` | Enable prune job |
 | rclone | object | `{"destination":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"},"providerType":"Other","source":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"}}` | rclone configuration |
 | rclone.destination | object | `{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"}` | Destination configuration |

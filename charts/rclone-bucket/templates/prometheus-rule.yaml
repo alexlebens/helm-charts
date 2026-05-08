@@ -1,0 +1,32 @@
+{{- if .Values.prometheusRule.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "rclone.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "rclone.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "rclone.name" . }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    - name: rclone.alerts
+      rules:
+        - alert: RclonePodFailed
+          expr: |
+            (kube_pod_container_status_last_terminated_exitcode > 0)
+            * on(pod, namespace) group_left(owner_name)
+            kube_pod_owner{owner_kind="Job", owner_name=~"rclone-.*"}
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Rclone Pod failed in {{ `{{ $labels.namespace }}` }}"
+            description: |
+              A pod for the Rclone sync of s3 bucket '{{ .Values.rclone.source.bucketName }}' failed with exit code {{ `{{ $value }}` }}.
+              Job: {{ `{{ $labels.owner_name }}` }}
+              Namespace: {{ `{{ $labels.namespace }}` }}
+{{- end }}

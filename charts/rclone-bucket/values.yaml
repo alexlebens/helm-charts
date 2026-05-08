@@ -86,3 +86,7 @@ secret:
 # -- Metrics
 metrics:
   enabled: true
+
+# -- Prometheus Rule
+prometheusRule:
+  enabled: true
