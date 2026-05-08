@@ -20,7 +20,7 @@ controllers:
         args:
           - tunnel
           - --protocol
-          - http2
+          - {{ .Values.protocol }}
           - --no-autoupdate
           - run
           - --token

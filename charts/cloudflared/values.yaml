@@ -1,6 +1,9 @@
 # -- Name override of release
 name: ""
 
+# -- Protocol - Available values are auto, http2, and quic.
+protocol: auto
+
 # -- Secret configuration
 secret:
 
