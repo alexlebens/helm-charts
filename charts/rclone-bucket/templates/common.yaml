@@ -39,6 +39,7 @@ controllers:
           {{- end }}
           {{- if .Values.metrics.enabled }}
           - --rc
+          - --rc-addr==0.0.0.0:5572
           - --rc-enable-metrics
           - --metrics-addr=0.0.0.0:5573
           {{- end }}
@@ -116,8 +117,9 @@ controllers:
           - --verbose
           {{- if .Values.metrics.enabled }}
           - --rc
+          - --rc-addr==0.0.0.0:5574
           - --rc-enable-metrics
-          - --metrics-addr=0.0.0.0:5574
+          - --metrics-addr=0.0.0.0:5575
           {{- end }}
         env:
           - name: RCLONE_CONFIG_DEST_TYPE
@@ -154,15 +156,18 @@ service:
   main:
     controller: main
     ports:
-      rc:
+      rc-sync:
         port: 5572
         targetPort: 5572
+      rc-prune:
+        port: 5574
+        targetPort: 5574
       metrics-sync:
         port: 5573
         targetPort: 5573
       metrics-prune:
-        port: 5574
-        targetPort: 5574
+        port: 5575
+        targetPort: 5575
 serviceMonitor:
   main:
     selector:
