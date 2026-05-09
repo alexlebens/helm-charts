@@ -39,7 +39,7 @@ controllers:
           {{- end }}
           {{- if .Values.metrics.enabled }}
           - --rc
-          - --rc-addr==0.0.0.0:5572
+          - --rc-addr=0.0.0.0:5572
           - --rc-enable-metrics
           - --metrics-addr=0.0.0.0:5573
           {{- end }}
@@ -117,7 +117,7 @@ controllers:
           - --verbose
           {{- if .Values.metrics.enabled }}
           - --rc
-          - --rc-addr==0.0.0.0:5574
+          - --rc-addr=0.0.0.0:5574
           - --rc-enable-metrics
           - --metrics-addr=0.0.0.0:5575
           {{- end }}
