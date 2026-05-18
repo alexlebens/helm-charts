@@ -3,15 +3,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: {{ include "cluster.name" $ }}
+  name: {{ include "cluster.name" $ }}-cluster
   namespace: {{ include "cluster.namespace" $ }}
   labels:
-    app.kubernetes.io/name: {{ include "cluster.name" $ }}
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}-cluster
     {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      cnpg.io/cluster: {{ include "cluster.name" $ }}
+      cnpg.io/cluster: {{ include "cluster.name" $ }}-cluster
       cnpg.io/podRole: instance
   podMetricsEndpoints:
     - port: metrics
