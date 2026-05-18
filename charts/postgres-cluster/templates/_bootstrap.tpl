@@ -1,12 +1,11 @@
-{{- define "cluster.bootstrap" -}}
-
+{{- define "cluster.bootstrap" }}
 {{- if eq .Values.mode "standalone" }}
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
-            {{- . | toYaml | nindent 4 }}
-        {{- end }}
+      {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
+      {{- . | toYaml | nindent 4 }}
+      {{- end }}
     {{- end }}
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
@@ -14,20 +13,18 @@ bootstrap:
     {{- if (.Values.cluster.initdb.postInitApplicationSQL) }}
     postInitApplicationSQL:
       {{- with .Values.cluster.initdb }}
-        {{- range .postInitApplicationSQL }}
-          {{- printf "- %s" . | nindent 6 }}
-        {{- end -}}
+      {{- range .postInitApplicationSQL }}
+      {{- printf "- %s" . | nindent 6 }}
+      {{- end }}
       {{- end }}
     {{- end }}
-
-{{- else if eq .Values.mode "recovery" -}}
+{{- else if eq .Values.mode "recovery" }}
 bootstrap:
-
   {{- if eq .Values.recovery.method "import" }}
   initdb:
     {{- with .Values.cluster.initdb }}
       {{- with (omit . "owner" "import" "postInitApplicationSQL") }}
-        {{- . | toYaml | nindent 4 }}
+      {{- . | toYaml | nindent 4 }}
       {{- end }}
     {{- end }}
     {{- if .Values.cluster.initdb.owner }}
@@ -66,7 +63,6 @@ bootstrap:
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-
   {{- else if eq .Values.recovery.method "backup" }}
   recovery:
     {{- with .Values.recovery.backup.pitrTarget.time }}
@@ -81,7 +77,6 @@ bootstrap:
     {{- end }}
     backup:
       name: {{ .Values.recovery.backup.backupName }}
-
   {{- else if eq .Values.recovery.method "objectStore" }}
   recovery:
     {{- with .Values.recovery.objectStore.pitrTarget.time }}
@@ -95,13 +90,10 @@ bootstrap:
     owner: {{ . }}
     {{- end }}
     source: {{ include "cluster.recoveryServerName" . }}
-
-  {{-  else }}
+  {{- else }}
     {{ fail "Invalid recovery mode!" }}
   {{- end }}
-
-{{-  else }}
+{{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
-
 {{- end }}

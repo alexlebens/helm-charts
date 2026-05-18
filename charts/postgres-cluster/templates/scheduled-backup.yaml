@@ -1,5 +1,5 @@
-{{ $context := . -}}
-{{ range .Values.backup.scheduledBackups -}}
+{{- $context := . }}
+{{- range .Values.backup.scheduledBackups }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
@@ -21,4 +21,4 @@ spec:
     name: {{ .plugin | default "barman-cloud.cloudnative-pg.io" }}
     parameters:
       barmanObjectName: "{{ include "cluster.name" $context }}-backup-{{ .backupName }}"
-{{ end -}}
+{{- end }}

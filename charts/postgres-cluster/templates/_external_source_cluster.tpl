@@ -30,4 +30,4 @@
     name: {{ $config.sslRootCertSecret.name }}
     key: {{ $config.sslRootCertSecret.key }}
   {{- end }}
-{{- end }}
+{{- end -}}

@@ -1,4 +1,4 @@
-{{- if and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.prometheusRule.enabled -}}
+{{- if and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.prometheusRule.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
@@ -26,4 +26,4 @@ spec:
         - {{ $tpl }}
         {{- end -}}
         {{- end }}
-{{ end }}
+{{- end }}

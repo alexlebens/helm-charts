@@ -1,6 +1,6 @@
-{{ if (eq .Values.backup.method "objectStore") }}
-{{ $context := . -}}
-{{ range .Values.backup.objectStore -}}
+{{- if (eq .Values.backup.method "objectStore") }}
+{{- $context := . }}
+{{- range .Values.backup.objectStore }}
 ---
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
@@ -57,10 +57,9 @@ spec:
       region:
         name: {{ include "cluster.backupSecretName" (dict "instance" . "global" $context) }}
         key: ACCESS_REGION
-{{ end -}}
-{{ end }}
-
-{{ if eq .Values.recovery.method "objectStore" }}
+{{- end }}
+{{- end }}
+{{- if eq .Values.recovery.method "objectStore" }}
 ---
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
@@ -104,4 +103,4 @@ spec:
       region:
         name: {{ include "cluster.recoverySecretName" . }}
         key: ACCESS_REGION
-{{ end }}
+{{- end }}

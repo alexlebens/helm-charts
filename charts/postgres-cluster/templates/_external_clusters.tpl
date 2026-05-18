@@ -1,4 +1,4 @@
-{{- define "cluster.externalClusters" -}}
+{{- define "cluster.externalClusters" }}
 {{- if eq .Values.mode "standalone" }}
 {{- else if eq .Values.mode "recovery" }}
 externalClusters:
@@ -18,4 +18,4 @@ externalClusters:
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
-{{ end }}
+{{- end }}
