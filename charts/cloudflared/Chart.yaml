@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cloudflared
-version: 3.3.0
+version: 3.3.1
 description: Cloudflared Tunnel
 keywords:
   - cloudflare
@@ -14,7 +14,7 @@ maintainers:
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts/
-    version: 5.0.0
+    version: 5.0.1
 icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/cloudflare.png
 # renovate: datasource=docker depName=cloudflare/cloudflared
 appVersion: 2026.5.0
