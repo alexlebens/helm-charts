@@ -1,6 +1,6 @@
-{{- define "cluster.externalClusters" }}
-{{- if eq .Values.mode "standalone" }}
-{{- else if eq .Values.mode "recovery" }}
+{{- define "cluster.externalClusters" -}}
+{{- if eq .Values.mode "standalone" -}}
+{{- else if eq .Values.mode "recovery" -}}
 externalClusters:
   {{- if eq .Values.recovery.method "import" }}
   - name: importSource
@@ -15,7 +15,7 @@ externalClusters:
         barmanObjectName: "{{ include "cluster.name" . }}-recovery"
         serverName: {{ include "cluster.recoveryServerName" . }}
   {{- end }}
-{{- else }}
+{{- else -}}
   {{ fail "Invalid cluster mode!" }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}

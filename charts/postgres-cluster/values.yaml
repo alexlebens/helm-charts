@@ -394,7 +394,8 @@ backup:
     enabled: true
 
   # -- Options for object store backups
-  objectStore:
+  objectStore: []
+
     # -
     #   # -- Object store backup name
     #   name: external

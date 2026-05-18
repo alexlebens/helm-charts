@@ -1,5 +1,5 @@
-{{- define "cluster.bootstrap" }}
-{{- if eq .Values.mode "standalone" }}
+{{- define "cluster.bootstrap" -}}
+{{- if eq .Values.mode "standalone" -}}
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
@@ -18,7 +18,7 @@ bootstrap:
       {{- end }}
       {{- end }}
     {{- end }}
-{{- else if eq .Values.mode "recovery" }}
+{{- else if eq .Values.mode "recovery" -}}
 bootstrap:
   {{- if eq .Values.recovery.method "import" }}
   initdb:
@@ -55,11 +55,11 @@ bootstrap:
         {{- end }}
       {{- end }}
       schemaOnly: {{ .Values.recovery.import.schemaOnly }}
-      {{ with .Values.recovery.import.pgDumpExtraOptions }}
+      {{- with .Values.recovery.import.pgDumpExtraOptions }}
       pgDumpExtraOptions:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-      {{ with .Values.recovery.import.pgRestoreExtraOptions }}
+      {{- with .Values.recovery.import.pgRestoreExtraOptions }}
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
@@ -69,10 +69,10 @@ bootstrap:
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.backup.database }}
+    {{- with .Values.recovery.backup.database }}
     database: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.backup.owner }}
+    {{- with .Values.recovery.backup.owner }}
     owner: {{ . }}
     {{- end }}
     backup:
@@ -83,17 +83,17 @@ bootstrap:
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.objectStore.database }}
+    {{- with .Values.recovery.objectStore.database }}
     database: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.objectStore.owner }}
+    {{- with .Values.recovery.objectStore.owner }}
     owner: {{ . }}
     {{- end }}
     source: {{ include "cluster.recoveryServerName" . }}
-  {{- else }}
+  {{- else -}}
     {{ fail "Invalid recovery mode!" }}
-  {{- end }}
-{{- else }}
+  {{- end -}}
+{{- else -}}
   {{ fail "Invalid cluster mode!" }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
