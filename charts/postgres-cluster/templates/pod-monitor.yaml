@@ -1,0 +1,18 @@
+{{- if and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "cluster.name" $ }}
+  namespace: {{ include "cluster.namespace" $ }}
+  labels:
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}
+    {{- include "cluster.labels" $ | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: {{ include "cluster.name" $ }}
+      cnpg.io/podRole: instance
+  podMetricsEndpoints:
+    - port: metrics
+{{- end -}}

@@ -127,6 +127,7 @@ cluster:
       # Applied to samples before ingestion.
       metricRelabelings: []
 
+    # -- Prometheus rule
     prometheusRule:
 
       # -- Whether to enable the PrometheusRule automated alerts

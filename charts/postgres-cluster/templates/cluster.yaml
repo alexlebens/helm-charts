@@ -35,7 +35,7 @@ spec:
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
   {{- with .Values.cluster.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
@@ -43,7 +43,6 @@ spec:
   {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
   {{- end }}
-
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
   logLevel: {{ .Values.cluster.logLevel }}
@@ -57,7 +56,6 @@ spec:
     name: {{ . }}
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
-
   postgresql:
     {{- if .Values.cluster.postgresql.shared_preload_libraries }}
     shared_preload_libraries:
@@ -85,7 +83,6 @@ spec:
     parameters:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
     {{- with .Values.cluster.services }}
@@ -97,14 +94,12 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{ end }}
   {{- end }}
-
   {{- with .Values.cluster.serviceAccountTemplate }}
   serviceAccountTemplate:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-
   monitoring:
-    enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
+    enablePodMonitor: false
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
     customQueriesConfigMap:
@@ -127,9 +122,9 @@ spec:
     {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
     podMonitorMetricRelabelings:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
     {{- end }}
-
+    {{- end }}
+  {{- if not (empty .Values.backup.objectStore) -}}
   plugins:
   {{- range $objectStore := .Values.backup.objectStore }}
     - name: barman-cloud.cloudnative-pg.io
@@ -146,7 +141,7 @@ spec:
         {{- else }}
         serverName: "{{ include "cluster.name" $ }}-backup-{{ $objectStore.index }}"
         {{- end }}
-  {{- end }}
-
-  {{ include "cluster.bootstrap" . | nindent 2 }}
-  {{ include "cluster.externalClusters" . | nindent 2 }}
+  {{- end -}}
+  {{- end -}}
+  {{- include "cluster.bootstrap" . | nindent 2 -}}
+  {{- include "cluster.externalClusters" . | nindent 2 -}}

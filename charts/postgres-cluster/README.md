@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 7.12.1](https://img.shields.io/badge/Version-7.12.1-informational?style=flat-square) ![AppVersion: v1.29.0](https://img.shields.io/badge/AppVersion-v1.29.0-informational?style=flat-square)
+![Version: 7.13.0](https://img.shields.io/badge/Version-7.13.0-informational?style=flat-square) ![AppVersion: v1.29.0](https://img.shields.io/badge/AppVersion-v1.29.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
@@ -42,6 +42,7 @@ Cloudnative-pg Cluster
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
 | cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
+| cluster.monitoring.prometheusRule | object | `{"enabled":true,"excludeRules":["CNPGClusterLastFailedArchiveTimeWarning"]}` | Prometheus rule |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `["CNPGClusterLastFailedArchiveTimeWarning"]` | Exclude specified rules |
 | cluster.postgresUID | int | `-1` | The UID and GID of the postgres user inside the image, defaults to 26 |
