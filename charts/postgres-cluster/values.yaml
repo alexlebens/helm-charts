@@ -56,8 +56,8 @@ cluster:
   # See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/
   resources:
     requests:
-      memory: 80Mi
-      cpu: 20m
+      memory: 512Mi
+      cpu: 50m
     limits:
       hugepages-2Mi: 256Mi
 
