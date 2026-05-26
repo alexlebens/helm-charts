@@ -10,7 +10,7 @@ metadata:
     {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   cluster:
-    name: {{ include "cluster.name" $ }}
+    name: {{ include "cluster.name" . }}-cluster
   instances: {{ .instances }}
   type: {{ default "rw" .type }}
   pgbouncer:
