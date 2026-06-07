@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rclone-bucket
-version: 0.11.6
+version: 0.11.7
 description: Rclone CronJob to replicate buckets
 keywords:
   - rclone-bucket
@@ -17,4 +17,4 @@ dependencies:
     version: 5.0.1
 icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/rclone.png
 # renovate: datasource=github-releases depName=rclone/rclone
-appVersion: v1.74.2
+appVersion: v1.74.3
