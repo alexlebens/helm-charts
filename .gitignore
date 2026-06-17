@@ -1,2 +1,9 @@
 # Compiled Helm chart dependencies
 charts/**/charts/
+
+# macOS-specific files
+.DS_Store
+
+# ide
+.vscode/
+helm-charts.code-workspace
