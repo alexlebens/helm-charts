@@ -29,7 +29,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             if [ -n "${{ inputs.chart }}" ]; then
-              echo "matrix=[\"${{ inputs.chart }}\"]" >> $GITEA_OUTPUT
+              echo "matrix=[{\"chart\":\"${{ inputs.chart }}\"}]" >> $GITEA_OUTPUT
               exit 0
 
             else
@@ -51,7 +51,7 @@ jobs:
           fi
 
           if [ ${#CHARTS[@]} -gt 0 ]; then
-            UNIQUE_CHARTS=$(printf "%s\n" "${CHARTS[@]}" | sort -u | awk '{printf "\"%s\",", $0}' | sed 's/,$//')
+            UNIQUE_CHARTS=$(printf "%s\n" "${CHARTS[@]}" | sort -u | awk '{printf "{\"chart\":\"%s\"},", $0}' | sed 's/,$//')
             echo "matrix=[$UNIQUE_CHARTS]" >> $GITEA_OUTPUT
 
           else
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        chart: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
       fail-fast: false
     steps:
       - name: Checkout
@@ -101,6 +101,7 @@ jobs:
         env:
           CHART_NAME: ${{ matrix.chart }}
         run: |
+          echo ">> Packaging chart: ${CHART_NAME}"
           cd charts/${CHART_NAME}
 
           echo ">> Building helm dependency ..."
