@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - 'charts/**'
+      - "charts/**"
 
   push:
     branches:
       - main
     paths:
-      - 'charts/**'
+      - "charts/**"
 
 env:
   BASE_BRANCH: "origin/${{ gitea.base_ref }}"
@@ -34,12 +34,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: "24"
 
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.14'
+          python-version: "3.14"
 
       - name: Set up Chart Testing
         uses: helm/chart-testing-action@v2.7.0
@@ -96,14 +96,14 @@ jobs:
         uses: niniyas/ntfy-action@master
         if: failure()
         with:
-          url: '${{ secrets.NTFY_URL }}'
-          topic: '${{ secrets.NTFY_TOPIC }}'
-          title: 'Test Failure - Helm Charts'
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Test Failure - Helm Charts"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: 'Tests have failed for Helm Charts'
-          icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
+          details: "Tests have failed for Helm Charts"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=lint-test.yaml", "clear": true}]'
           image: true
 
@@ -237,11 +237,11 @@ jobs:
 
               echo ""
               echo ">> Building helm dependency ..."
-              helm dependency build --skip-refresh
+              helm dependency build . --skip-refresh
 
               echo ""
               echo ">> Linting helm ..."
-              helm lint --namespace "$chart_name"
+              helm lint . --namespace "$chart_name"
 
             else
               echo ""
@@ -254,13 +254,13 @@ jobs:
         uses: niniyas/ntfy-action@master
         if: failure()
         with:
-          url: '${{ secrets.NTFY_URL }}'
-          topic: '${{ secrets.NTFY_TOPIC }}'
-          title: 'Test Failure - Helm Charts'
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Test Failure - Helm Charts"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: 'Tests have failed for Helm Charts'
-          icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
+          details: "Tests have failed for Helm Charts"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=lint-test.yaml", "clear": true}]'
           image: true

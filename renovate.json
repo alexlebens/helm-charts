@@ -19,6 +19,8 @@
   "labels": [],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
+  "pinDigests": true,
+  "baseBranchPatterns": ["main"],
   "packageRules": [
     {
       "description": "Label charts",
