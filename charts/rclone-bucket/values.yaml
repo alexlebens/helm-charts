@@ -44,6 +44,7 @@ prune:
 # -- Notification configuration
 ntfy:
   enabled: true
+  url: ""
 
   # -- Provide an existing secret for the ntfy url
   existingSecret:

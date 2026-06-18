@@ -170,9 +170,6 @@ controllers:
             rclone delete \
               "dest:{{ .Values.rclone.destination.bucketName }}" \
               --min-age {{ .Values.prune.ageToPrune | quote }} \
-              {{- if .Values.metrics.enabled }}
-              --rc --rc-addr=0.0.0.0:5573 --rc-enable-metrics --rc-no-auth \
-              {{- end }}
               --verbose 2>&1 | tee /tmp/rclone-prune.log
 
             res=$?
@@ -265,9 +262,6 @@ service:
       rc-sync:
         port: 5572
         targetPort: 5572
-      rc-prune:
-        port: 5573
-        targetPort: 5573
 serviceMonitor:
   main:
     selector:
@@ -277,14 +271,6 @@ serviceMonitor:
     serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
     endpoints:
       - port: rc-sync
-        interval: 10s
-        scrapeTimeout: 5s
-        path: /metrics
-        relabelings:
-          - sourceLabels: [__meta_kubernetes_pod_phase]
-            action: drop
-            regex: Succeeded|Failed
-      - port: rc-prune
         interval: 10s
         scrapeTimeout: 5s
         path: /metrics

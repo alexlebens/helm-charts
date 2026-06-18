@@ -1,6 +1,6 @@
 # rclone-bucket
 
-![Version: 0.12.4](https://img.shields.io/badge/Version-0.12.4-informational?style=flat-square) ![AppVersion: v1.74.3](https://img.shields.io/badge/AppVersion-v1.74.3-informational?style=flat-square)
+![Version: 0.12.5](https://img.shields.io/badge/Version-0.12.5-informational?style=flat-square) ![AppVersion: v1.74.3](https://img.shields.io/badge/AppVersion-v1.74.3-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
 
@@ -30,7 +30,7 @@ Rclone CronJob to replicate buckets
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.74.3@sha256:623378ad0ff3ebd5cebf77720843c0e02edfe46e2d5b5ac6bed54c6371780dfb"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
-| ntfy | object | `{"enabled":true,"existingSecret":{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"},"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/ntfy","tokenProperty":"token","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}}` | Notification configuration |
+| ntfy | object | `{"enabled":true,"existingSecret":{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"},"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/ntfy","tokenProperty":"token","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"},"url":""}` | Notification configuration |
 | ntfy.existingSecret | object | `{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"}` | Provide an existing secret for the ntfy url |
 | ntfy.externalSecret | object | `{"enabled":true,"storeName":"openbao","tokenPath":"/ntfy","tokenProperty":"token","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}` | Generate a secret using ExternalSecret |
 | prometheusRule | object | `{"enabled":true}` | Prometheus Rule |
