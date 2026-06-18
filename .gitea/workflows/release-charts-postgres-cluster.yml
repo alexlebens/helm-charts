@@ -67,7 +67,7 @@ jobs:
       - name: Publish Helm Chart to Gitea
         run: |
           echo ">> Installing Chart Museum plugin ..."
-          helm plugin install https://github.com/chartmuseum/helm-push --debug
+          helm plugin install https://github.com/chartmuseum/helm-push --verify=false --debug
 
           echo ""
           echo ">> Adding Gitea repository ..."
