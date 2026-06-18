@@ -29,7 +29,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             if [ -n "${{ inputs.chart }}" ]; then
-              echo "matrix=[{\"chart\":\"${{ inputs.chart }}\"}]" >> $GITEA_OUTPUT
+              echo "matrix=[\"${{ inputs.chart }}\"]" >> $GITEA_OUTPUT
               exit 0
 
             else
@@ -51,7 +51,7 @@ jobs:
           fi
 
           if [ ${#CHARTS[@]} -gt 0 ]; then
-            UNIQUE_CHARTS=$(printf "%s\n" "${CHARTS[@]}" | sort -u | awk '{printf "{\"chart\":\"%s\"},", $0}' | sed 's/,$//')
+            UNIQUE_CHARTS=$(printf "%s\n" "${CHARTS[@]}" | sort -u | awk '{printf "\"%s\",", $0}' | sed 's/,$//')
             echo "matrix=[$UNIQUE_CHARTS]" >> $GITEA_OUTPUT
 
           else
@@ -65,19 +65,32 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+        chart: [cloudflared, generic-device-plugin, postgres-cluster, rclone-bucket, valkey, volsync-target]
       fail-fast: false
     steps:
+      - name: Check if chart should be processed
+        id: check
+        run: |
+          CHARTS='${{ needs.prepare.outputs.matrix }}'
+          if echo "$CHARTS" | grep -q "\"${{ matrix.chart }}\""; then
+            echo "process=true" >> $GITEA_OUTPUT
+          else
+            echo "process=false" >> $GITEA_OUTPUT
+          fi
+
       - name: Checkout
+        if: steps.check.outputs.process == 'true'
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Set up Helm
+        if: steps.check.outputs.process == 'true'
         uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
           version: v4.2.2
 
       - name: Add Repositories
+        if: steps.check.outputs.process == 'true'
         env:
           CHART_NAME: ${{ matrix.chart }}
         run: |
@@ -98,6 +111,7 @@ jobs:
           echo "----"
 
       - name: Package Helm Chart
+        if: steps.check.outputs.process == 'true'
         env:
           CHART_NAME: ${{ matrix.chart }}
         run: |
@@ -112,6 +126,7 @@ jobs:
           echo "PACKAGE_PATH=$(helm package . | awk '{print $NF}')" >> $GITEA_ENV
 
       - name: Publish Helm Chart to Harbor
+        if: steps.check.outputs.process == 'true'
         run: |
           echo ">> Logging into Harbor ..."
           helm registry login ${{ vars.REGISTRY_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }} --debug
@@ -123,6 +138,7 @@ jobs:
           echo "----"
 
       - name: Publish Helm Chart to Gitea
+        if: steps.check.outputs.process == 'true'
         run: |
           echo ">> Installing Chart Museum plugin ..."
           helm plugin install https://github.com/chartmuseum/helm-push --verify=false --debug
@@ -136,6 +152,7 @@ jobs:
           helm cm-push ${{ env.PACKAGE_PATH }} helm-charts --debug
 
       - name: Extract Chart Metadata
+        if: steps.check.outputs.process == 'true'
         env:
           CHART_NAME: ${{ matrix.chart }}
         run: |
@@ -152,6 +169,7 @@ jobs:
           echo "CHART_NAME=$(yq '.name' Chart.yaml)" >> $GITEA_ENV
 
       - name: Release Helm Chart
+        if: steps.check.outputs.process == 'true'
         uses: akkuman/gitea-release-action@b8d9144f302c68610911db1aaf722708d5c02d94 # v1
         with:
           name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
@@ -161,7 +179,7 @@ jobs:
 
       - name: ntfy Success
         uses: niniyas/ntfy-action@fcbd1469d91ef0f1a13fa1f9eee8a59baddc2c19 # master
-        if: success()
+        if: success() && steps.check.outputs.process == 'true'
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
@@ -174,7 +192,7 @@ jobs:
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@fcbd1469d91ef0f1a13fa1f9eee8a59baddc2c19 # master
-        if: failure()
+        if: failure() && steps.check.outputs.process == 'true'
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
