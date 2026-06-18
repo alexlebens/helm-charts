@@ -1,20 +1,74 @@
-name: release-charts-generic-device-plugin
+name: release-charts
 
 on:
   push:
     branches:
       - main
     paths:
-      - "charts/generic-device-plugin/**"
+      - "charts/**"
 
   workflow_dispatch:
-
-env:
-  WORKFLOW_DIR: "charts/generic-device-plugin"
+    inputs:
+      chart:
+        description: "Specific chart to release (leave empty for all)"
+        required: false
 
 jobs:
-  release:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Get Changed Charts
+        id: set-matrix
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            if [ -n "${{ inputs.chart }}" ]; then
+              echo "matrix=[\"${{ inputs.chart }}\"]" >> $GITEA_OUTPUT
+              exit 0
+
+            else
+              CHARTS=($(ls -1d charts/*/ | awk -F '/' '{print $2}'))
+
+            fi
+          else
+            GIT_DIFF=$(git diff --name-only ${{ gitea.event.before }}..HEAD | grep -E "^charts/" || true)
+            CHARTS=()
+            if [ -n "$GIT_DIFF" ]; then
+              for path in $GIT_DIFF; do
+                chart_name=$(echo "$path" | awk -F '/' '{print $2}')
+                if [ -n "$chart_name" ]; then
+                  CHARTS+=("$chart_name")
+
+                fi
+              done
+            fi
+          fi
+
+          if [ ${#CHARTS[@]} -gt 0 ]; then
+            UNIQUE_CHARTS=$(printf "%s\n" "${CHARTS[@]}" | sort -u | awk '{printf "\"%s\",", $0}' | sed 's/,$//')
+            echo "matrix=[$UNIQUE_CHARTS]" >> $GITEA_OUTPUT
+
+          else
+            echo "matrix=[]" >> $GITEA_OUTPUT
+
+          fi
+
+  release:
+    needs: prepare
+    if: needs.prepare.outputs.matrix != '[]' && needs.prepare.outputs.matrix != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+      fail-fast: false
+    env:
+      WORKFLOW_DIR: "charts/${{ matrix.chart }}"
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -38,6 +92,7 @@ jobs:
           if helm repo list | tail +2 | read -r; then
             echo ">> Update repository cache ..."
             helm repo update
+
           fi
 
           echo "----"
@@ -103,26 +158,26 @@ jobs:
         uses: niniyas/ntfy-action@master
         if: success()
         with:
-          url: '${{ secrets.NTFY_URL }}'
-          topic: '${{ secrets.NTFY_TOPIC }}'
-          title: 'Release Success - ${{ env.CHART_NAME }}'
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Release Success - ${{ env.CHART_NAME }}"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,successfully,completed
-          details: 'Helm Chart ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }} has been released!'
-          icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
+          details: "Helm Chart ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }} has been released!"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@master
         if: failure()
         with:
-          url: '${{ secrets.NTFY_URL }}'
-          topic: '${{ secrets.NTFY_TOPIC }}'
-          title: 'Release Failure - ${{ env.CHART_NAME }}'
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Release Failure - ${{ matrix.chart }}"
           priority: 4
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: 'Helm Chart ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }} has failed to be released.'
-          icon: 'https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png'
-          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=release-charts-generic-device-plugin.yml", "clear": true}]'
+          details: "Helm Chart ${{ matrix.chart }} has failed to be released."
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=release-charts.yml", "clear": true}]'
           image: true

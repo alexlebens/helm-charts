@@ -59,6 +59,7 @@ jobs:
 
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "changed-charts=$changed" >> $GITHUB_OUTPUT
+
           fi
 
       - name: Add Repositories
@@ -74,8 +75,10 @@ jobs:
               | while read cmd; do
                 if [[ "$cmd" == "*oci://*" ]]; then
                   echo ">> Ignoring OCI repo"
+
                 else
                   echo "$cmd" | sh;
+
                 fi
               done || true
           done
@@ -84,6 +87,7 @@ jobs:
             echo ""
             echo ">> Update repository cache ..."
             helm repo update
+
           fi
 
           echo "----"
@@ -157,10 +161,12 @@ jobs:
             echo ""
             echo ">> Checking for changes in a pull request ..."
             GIT_DIFF=$(git diff --name-only "${BASE_BRANCH}" | xargs -I {} dirname {} | sort -u | grep -E "charts/")
+
           else
             echo ""
             echo ">> Checking for changes from a push ..."
             GIT_DIFF=$(git diff --name-only ${{ gitea.event.before }}..HEAD | xargs -I {} dirname {} | sort -u | grep -E "charts/")
+
           fi
 
           if [ -n "${GIT_DIFF}" ]; then
@@ -171,6 +177,7 @@ jobs:
             for path in $GIT_DIFF; do
               CHANGED_CHARTS+=$(echo "$path" | awk -F '/' '{print $2}')
               CHANGED_CHARTS+=$(echo " ")
+
             done
 
           else
@@ -190,8 +197,10 @@ jobs:
             echo "chart-dir<<EOF" >> $GITEA_OUTPUT
             echo "$(echo "${CHANGED_CHARTS}" | sort -u)" >> $GITEA_OUTPUT
             echo "EOF" >> $GITEA_OUTPUT
+
           else
             echo "changes-detected=false" >> $GITEA_OUTPUT
+
           fi
 
       - name: Add Repositories
@@ -207,8 +216,10 @@ jobs:
               | while read cmd; do
                 if [[ "$cmd" == "*oci://*" ]]; then
                   echo ">> Ignoring OCI repo"
+
                 else
                   echo "$cmd" | sh;
+
                 fi
               done || true
           done
@@ -217,6 +228,7 @@ jobs:
             echo ""
             echo ">> Update repository cache ..."
             helm repo update
+
           fi
 
           echo "----"
@@ -247,6 +259,7 @@ jobs:
               echo ""
               echo ">> Directory $chart_path does not contain a Chart.yaml. Skipping ..."
               echo ""
+
             fi
           done
 
