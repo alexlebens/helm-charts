@@ -30,9 +30,9 @@ Rclone CronJob to replicate buckets
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.74.3@sha256:623378ad0ff3ebd5cebf77720843c0e02edfe46e2d5b5ac6bed54c6371780dfb"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
-| ntfy | object | `{"enabled":false,"existingSecret":{"key":"ntfy-url","name":""},"externalSecret":{"enabled":false,"storeName":"openbao","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}}` | Notification configuration |
+| ntfy | object | `{"enabled":true,"existingSecret":{"key":"ntfy-url","name":""},"externalSecret":{"enabled":true,"storeName":"openbao","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}}` | Notification configuration |
 | ntfy.existingSecret | object | `{"key":"ntfy-url","name":""}` | Provide an existing secret for the ntfy url |
-| ntfy.externalSecret | object | `{"enabled":false,"storeName":"openbao","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}` | Generate a secret using ExternalSecret |
+| ntfy.externalSecret | object | `{"enabled":true,"storeName":"openbao","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}` | Generate a secret using ExternalSecret |
 | prometheusRule | object | `{"enabled":true}` | Prometheus Rule |
 | prune | object | `{"ageToPrune":"90d","enabled":false,"exclude":"","include":""}` | Enable prune job |
 | rclone | object | `{"destination":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"},"providerType":"Other","source":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"}}` | rclone configuration |

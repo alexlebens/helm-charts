@@ -43,7 +43,7 @@ prune:
 
 # -- Notification configuration
 ntfy:
-  enabled: false
+  enabled: true
 
   # -- Provide an existing secret for the ntfy url
   existingSecret:
@@ -52,7 +52,7 @@ ntfy:
 
   # -- Generate a secret using ExternalSecret
   externalSecret:
-    enabled: false
+    enabled: true
     storeName: openbao
     urlPath: /ntfy
     urlProperty: url
