@@ -23,6 +23,12 @@
   "baseBranchPatterns": ["main"],
   "packageRules": [
     {
+      "description": "Disable digest pinning for action tool versions",
+      "matchManagers": ["github-actions"],
+      "matchDepNames": ["node", "python", "helm"],
+      "pinDigests": false
+    },
+    {
       "description": "Label charts",
       "matchDatasources": ["helm"],
       "addLabels": ["chart"],
