@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![AppVersion: 9.1.0](https://img.shields.io/badge/AppVersion-9.1.0-informational?style=flat-square)
+![Version: 0.12.1](https://img.shields.io/badge/Version-0.12.1-informational?style=flat-square) ![AppVersion: 9.1.0](https://img.shields.io/badge/AppVersion-9.1.0-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -22,7 +22,7 @@ Valkey chart with preconfigured settings
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://valkey.io/valkey-helm/ | valkey | 0.9.4 |
+| https://valkey.io/valkey-helm/ | valkey | 0.10.0 |
 
 ## Values
 
