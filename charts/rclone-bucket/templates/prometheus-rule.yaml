@@ -29,4 +29,16 @@ spec:
               A pod for the Rclone sync of s3 bucket '{{ .Values.rclone.source.bucketName }}' failed with exit code {{ `{{ $value }}` }}.
               Job: {{ `{{ $labels.owner_name }}` }}
               Namespace: {{ `{{ $labels.namespace }}` }}
+        - alert: RcloneJobRunningTooLong
+          expr: |
+            kube_job_status_active{job_name=~"rclone-.*"} > 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Rclone Job running too long in {{ `{{ $labels.namespace }}` }}"
+            description: |
+              A job for the Rclone sync of s3 bucket '{{ .Values.rclone.source.bucketName }}' has been running for more than 1 hour.
+              Job: {{ `{{ $labels.job_name }}` }}
+              Namespace: {{ `{{ $labels.namespace }}` }}
 {{- end }}
