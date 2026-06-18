@@ -61,9 +61,17 @@ controllers:
             fi
 
             if [ $res -eq 0 ]; then
-              wget -qO- --header "Title: Rclone Sync Success - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Job for bucket {{ .Values.rclone.source.bucketName }} transferred: $DATA_TRANS" "$TARGET_URL"
+              if [ -n "${NTFY_TOKEN:-}" ]; then
+                wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Rclone Sync Success - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Job for bucket {{ .Values.rclone.source.bucketName }} transferred: $DATA_TRANS" "$TARGET_URL"
+              else
+                wget -qO- --header "Title: Rclone Sync Success - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Job for bucket {{ .Values.rclone.source.bucketName }} transferred: $DATA_TRANS" "$TARGET_URL"
+              fi
             else
-              wget -qO- --header "Title: Rclone Sync Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Job for {{ .Values.rclone.source.bucketName }} failed, but transferred: $DATA_TRANS" "$TARGET_URL"
+              if [ -n "${NTFY_TOKEN:-}" ]; then
+                wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Rclone Sync Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Job for {{ .Values.rclone.source.bucketName }} failed, but transferred: $DATA_TRANS" "$TARGET_URL"
+              else
+                wget -qO- --header "Title: Rclone Sync Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Job for {{ .Values.rclone.source.bucketName }} failed, but transferred: $DATA_TRANS" "$TARGET_URL"
+              fi
             fi
             {{- end }}
             exit $res
@@ -136,6 +144,16 @@ controllers:
                 {{- else }}
                 key: ntfy-url
                 {{- end }}
+          - name: NTFY_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "rclone.ntfySecretName" . }}
+                {{- if .Values.ntfy.existingSecret.name }}
+                key: {{ .Values.ntfy.existingSecret.tokenKey | default "ntfy-token" }}
+                {{- else }}
+                key: ntfy-token
+                {{- end }}
+                optional: true
           {{- end }}
       {{- if .Values.prune.enabled }}
       prune:
@@ -174,9 +192,17 @@ controllers:
             fi
 
             if [ $res -eq 0 ]; then
-              wget -qO- --header "Title: Rclone Prune Success  - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' pruned: $FILES_PRUNED" "$TARGET_URL"
+              if [ -n "${NTFY_TOKEN:-}" ]; then
+                wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Rclone Prune Success  - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' pruned: $FILES_PRUNED" "$TARGET_URL"
+              else
+                wget -qO- --header "Title: Rclone Prune Success  - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' pruned: $FILES_PRUNED" "$TARGET_URL"
+              fi
             else
-              wget -qO- --header "Title: Rclone Prune Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' failed, but did prune: $FILES_PRUNED" "$TARGET_URL"
+              if [ -n "${NTFY_TOKEN:-}" ]; then
+                wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Rclone Prune Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' failed, but did prune: $FILES_PRUNED" "$TARGET_URL"
+              else
+                wget -qO- --header "Title: Rclone Prune Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' failed, but did prune: $FILES_PRUNED" "$TARGET_URL"
+              fi
             fi
             {{- end }}
             exit $res
@@ -219,6 +245,16 @@ controllers:
                 {{- else }}
                 key: ntfy-url
                 {{- end }}
+          - name: NTFY_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "rclone.ntfySecretName" . }}
+                {{- if .Values.ntfy.existingSecret.name }}
+                key: {{ .Values.ntfy.existingSecret.tokenKey | default "ntfy-token" }}
+                {{- else }}
+                key: ntfy-token
+                {{- end }}
+                optional: true
           {{- end }}
       {{- end }}
 {{- if .Values.metrics.enabled }}

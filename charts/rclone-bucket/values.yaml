@@ -49,6 +49,7 @@ ntfy:
   existingSecret:
     name: ""
     key: ntfy-url
+    tokenKey: ntfy-token
 
   # -- Generate a secret using ExternalSecret
   externalSecret:
@@ -58,6 +59,8 @@ ntfy:
     urlProperty: url
     topicPath: /ntfy
     topicProperty: topic
+    tokenPath: /ntfy
+    tokenProperty: token
 
 # -- Secret configuration
 secret:
