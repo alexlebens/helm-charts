@@ -23,7 +23,7 @@ jobs:
         uses: azure/setup-helm@v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
-          version: v4.2.1
+          version: v4.2.2
 
       - name: Add Repositories
         run: |
