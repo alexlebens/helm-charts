@@ -77,8 +77,10 @@ jobs:
           version: v4.2.2
 
       - name: Add Repositories
+        env:
+          CHART_NAME: ${{ matrix.chart }}
         run: |
-          cd charts/${{ matrix.chart }}
+          cd charts/${CHART_NAME}
 
           echo ">> Adding repositories for chart dependencies ..."
           helm dependency list . --max-col-width 120 2> /dev/null \
@@ -95,8 +97,10 @@ jobs:
           echo "----"
 
       - name: Package Helm Chart
+        env:
+          CHART_NAME: ${{ matrix.chart }}
         run: |
-          cd charts/${{ matrix.chart }}
+          cd charts/${CHART_NAME}
 
           echo ">> Building helm dependency ..."
           helm dependency build . --skip-refresh --debug
@@ -130,8 +134,10 @@ jobs:
           helm cm-push ${{ env.PACKAGE_PATH }} helm-charts --debug
 
       - name: Extract Chart Metadata
+        env:
+          CHART_NAME: ${{ matrix.chart }}
         run: |
-          cd charts/${{ matrix.chart }}
+          cd charts/${CHART_NAME}
 
           echo ">> Adding Chart metadata to workflow ENV ..."
           echo ""
