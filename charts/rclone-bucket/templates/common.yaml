@@ -244,10 +244,18 @@ serviceMonitor:
         interval: 10s
         scrapeTimeout: 5s
         path: /metrics
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_phase]
+            action: drop
+            regex: Succeeded|Failed
       - port: rc-prune
         interval: 10s
         scrapeTimeout: 5s
         path: /metrics
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_phase]
+            action: drop
+            regex: Succeeded|Failed
 {{- end }}
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "rclone.hardcodedValues" . | fromYaml) -}}
