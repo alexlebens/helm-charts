@@ -19,6 +19,13 @@ env:
 jobs:
   chart-testing:
     runs-on: ubuntu-latest
+    env:
+      # renovate: datasource=github-releases depName=helm/chart-testing
+      CT_VERSION: v3.12.0
+      # renovate: datasource=pypi depName=yamale
+      YAMALE_VERSION: 6.0.0
+      # renovate: datasource=pypi depName=yamllint
+      YAMLLINT_VERSION: 1.35.1
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -41,10 +48,29 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Set up Chart Testing
-        uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b # v2.7.0
+      - name: Cache Tools
+        uses: actions/cache@v4
         with:
-          yamale_version: "6.0.0"
+          path: |
+            ~/.ct-bin
+            ~/.ct
+            ~/.cache/pip
+          key: tools-${{ runner.os }}-ct-${{ env.CT_VERSION }}-pip-${{ env.YAMLLINT_VERSION }}-${{ env.YAMALE_VERSION }}
+
+      - name: Set up Chart Testing
+        run: |
+          if [ ! -f "$HOME/.ct-bin/ct" ]; then
+            # Strip the 'v' prefix for the tarball name
+            CT_VERSION_NO_V=${CT_VERSION#v}
+            curl -sSLo ct.tar.gz "https://github.com/helm/chart-testing/releases/download/${CT_VERSION}/chart-testing_${CT_VERSION_NO_V}_linux_amd64.tar.gz"
+            tar -xzf ct.tar.gz
+            mkdir -p $HOME/.ct-bin
+            mv ct $HOME/.ct-bin/
+            mkdir -p $HOME/.ct
+            mv etc/* $HOME/.ct/
+          fi
+          echo "$HOME/.ct-bin" >> $GITHUB_PATH
+          pip3 install yamllint==${YAMLLINT_VERSION} yamale==${YAMALE_VERSION}
 
       - name: Run Chart Testing (list-changed)
         id: list-changed
