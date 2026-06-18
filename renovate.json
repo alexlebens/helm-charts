@@ -23,6 +23,11 @@
   "baseBranchPatterns": ["main"],
   "packageRules": [
     {
+      "description": "Disable digest pinning for node and python versions",
+      "matchDatasources": ["node-version", "python-version"],
+      "pinDigests": false
+    },
+    {
       "description": "Label charts",
       "matchDatasources": ["helm"],
       "addLabels": ["chart"],
