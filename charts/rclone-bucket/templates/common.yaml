@@ -25,6 +25,7 @@ controllers:
           - -c
         args:
           - |
+            set -o pipefail
             rclone sync \
               "src:{{ .Values.rclone.source.bucketName }}" \
               "dest:{{ .Values.rclone.destination.bucketName }}" \
@@ -41,10 +42,9 @@ controllers:
               {{- if .Values.metrics.enabled }}
               --rc --rc-addr=0.0.0.0:5572 --rc-enable-metrics --rc-no-auth \
               {{- end }}
-              --verbose > /tmp/rclone-sync.log 2>&1
+              --verbose 2>&1 | tee /tmp/rclone-sync.log
 
             res=$?
-            cat /tmp/rclone-sync.log
 
             {{- if .Values.ntfy.enabled }}
             STATS=$(grep "Transferred:" /tmp/rclone-sync.log | tail -n 2)
@@ -166,16 +166,16 @@ controllers:
           - -c
         args:
           - |
+            set -o pipefail
             rclone delete \
               "dest:{{ .Values.rclone.destination.bucketName }}" \
               --min-age {{ .Values.prune.ageToPrune | quote }} \
               {{- if .Values.metrics.enabled }}
               --rc --rc-addr=0.0.0.0:5573 --rc-enable-metrics --rc-no-auth \
               {{- end }}
-              --verbose > /tmp/rclone-prune.log 2>&1
+              --verbose 2>&1 | tee /tmp/rclone-prune.log
 
             res=$?
-            cat /tmp/rclone-prune.log
 
             {{- if .Values.ntfy.enabled }}
             STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
