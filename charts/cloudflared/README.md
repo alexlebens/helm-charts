@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 3.3.1](https://img.shields.io/badge/Version-3.3.1-informational?style=flat-square) ![AppVersion: 2026.5.0](https://img.shields.io/badge/AppVersion-2026.5.0-informational?style=flat-square)
+![Version: 3.4.0](https://img.shields.io/badge/Version-3.4.0-informational?style=flat-square) ![AppVersion: 2026.6.0](https://img.shields.io/badge/AppVersion-2026.6.0-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -26,7 +26,7 @@ Cloudflared Tunnel
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.5.0@sha256:59bab8d3aceec09bf6bdb07d6beca0225ca5cd7ab79436a87ea97978fe1dc4f9"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.6.0@sha256:ba461b8aa9c042156dbd39c38657fe7431bafa063220eab8d5330a523863da9f"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | name | string | `""` | Name override of release |
 | protocol | string | `"auto"` | Protocol - Available values are auto, http2, and quic. |

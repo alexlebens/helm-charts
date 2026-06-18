@@ -1,6 +1,6 @@
 # rclone-bucket
 
-![Version: 0.11.6](https://img.shields.io/badge/Version-0.11.6-informational?style=flat-square) ![AppVersion: v1.74.2](https://img.shields.io/badge/AppVersion-v1.74.2-informational?style=flat-square)
+![Version: 0.11.7](https://img.shields.io/badge/Version-0.11.7-informational?style=flat-square) ![AppVersion: v1.74.3](https://img.shields.io/badge/AppVersion-v1.74.3-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
 
@@ -27,9 +27,12 @@ Rclone CronJob to replicate buckets
 |-----|------|---------|-------------|
 | additionalLabels | object | `{}` | Add additional labels |
 | cronJob | object | `{"backoffLimit":3,"parallelism":1,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"}` | CronJob configuration |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.74.2@sha256:9ce0d49b611d3781233e25334e9e23d7af01e5546da7087f90d55f034ef13637"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.74.3@sha256:623378ad0ff3ebd5cebf77720843c0e02edfe46e2d5b5ac6bed54c6371780dfb"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
+| ntfy | object | `{"enabled":false,"existingSecret":{"key":"ntfy-url","name":""},"externalSecret":{"enabled":false,"path":"/ntfy","storeName":"openbao","topicProperty":"topic","urlProperty":"url"}}` | Notification configuration |
+| ntfy.existingSecret | object | `{"key":"ntfy-url","name":""}` | Provide an existing secret for the ntfy url |
+| ntfy.externalSecret | object | `{"enabled":false,"path":"/ntfy","storeName":"openbao","topicProperty":"topic","urlProperty":"url"}` | Generate a secret using ExternalSecret |
 | prometheusRule | object | `{"enabled":true}` | Prometheus Rule |
 | prune | object | `{"ageToPrune":"90d","enabled":false,"exclude":"","include":""}` | Enable prune job |
 | rclone | object | `{"destination":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"},"providerType":"Other","source":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"}}` | rclone configuration |

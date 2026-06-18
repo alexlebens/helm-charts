@@ -41,6 +41,17 @@ Generate the secret name
 {{- end }}
 
 {{/*
+Generate the ntfy secret name
+*/}}
+{{- define "rclone.ntfySecretName" -}}
+  {{- if .Values.ntfy.existingSecret.name }}
+    {{- printf "%s" .Values.ntfy.existingSecret.name -}}
+  {{- else }}
+    {{- printf "%s-ntfy" (include "rclone.name" .) -}}
+  {{- end }}
+{{- end }}
+
+{{/*
 Common env names
 */}}
 {{- define "secretRclone.envAccessKey" -}}

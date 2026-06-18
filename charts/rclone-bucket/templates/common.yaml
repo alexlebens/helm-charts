@@ -20,30 +20,53 @@ controllers:
           repository: {{ .Values.image.repository }}
           tag: {{ .Values.image.tag }}
           pullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/sh
+          - -c
         args:
-          - sync
-          - src:{{ .Values.rclone.source.bucketName }}
-          - dest:{{ .Values.rclone.destination.bucketName }}
-          - --s3-no-check-bucket
-          {{- if .Values.prune.enabled }}
-          - --max-age
-          - {{ .Values.prune.ageToPrune | quote }}
-          {{- end }}
-          {{- if .Values.prune.include }}
-          - --include
-          - {{ .Values.prune.include | quote }}
-          {{- end }}
-          {{- if .Values.prune.exclude }}
-          - --exclude
-          - {{ .Values.prune.exclude | quote }}
-          {{- end }}
-          {{- if .Values.metrics.enabled }}
-          - --rc
-          - --rc-addr=0.0.0.0:5572
-          - --rc-enable-metrics
-          - --rc-no-auth
-          {{- end }}
-          - --verbose
+          - |
+            rclone sync \
+              "src:{{ .Values.rclone.source.bucketName }}" \
+              "dest:{{ .Values.rclone.destination.bucketName }}" \
+              --s3-no-check-bucket \
+              {{- if .Values.prune.enabled }}
+              --max-age {{ .Values.prune.ageToPrune | quote }} \
+              {{- end }}
+              {{- if .Values.prune.include }}
+              --include {{ .Values.prune.include | quote }} \
+              {{- end }}
+              {{- if .Values.prune.exclude }}
+              --exclude {{ .Values.prune.exclude | quote }} \
+              {{- end }}
+              {{- if .Values.metrics.enabled }}
+              --rc --rc-addr=0.0.0.0:5572 --rc-enable-metrics --rc-no-auth \
+              {{- end }}
+              --verbose > /tmp/rclone-sync.log 2>&1
+
+            res=$?
+            cat /tmp/rclone-sync.log
+
+            {{- if .Values.ntfy.enabled }}
+            STATS=$(grep "Transferred:" /tmp/rclone-sync.log | tail -n 2)
+            DATA_TRANS=$(echo "$STATS" | head -n 1 | sed 's/.*Transferred:[ \t]*//')
+
+            if [ -z "$DATA_TRANS" ]; then
+              DATA_TRANS="Unknown"
+
+            fi
+
+            TARGET_URL="{{ .Values.ntfy.url }}"
+            if [ -n "${NTFY_URL:-}" ]; then
+              TARGET_URL="$NTFY_URL"
+            fi
+
+            if [ $res -eq 0 ]; then
+              wget -qO- --header "Title: Rclone Sync Success - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Job for bucket {{ .Values.rclone.source.bucketName }} transferred: $DATA_TRANS" "$TARGET_URL"
+            else
+              wget -qO- --header "Title: Rclone Sync Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Job for {{ .Values.rclone.source.bucketName }} failed, but transferred: $DATA_TRANS" "$TARGET_URL"
+            fi
+            {{- end }}
+            exit $res
         env:
           - name: RCLONE_S3_PROVIDER
             value: {{ .Values.rclone.providerType }}
@@ -103,24 +126,60 @@ controllers:
                 key: {{ include "secretRclone.envDestEndpoint" . }}
           - name: RCLONE_CONFIG_DEST_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle | quote }}
+          {{- if and .Values.ntfy.enabled (or .Values.ntfy.externalSecret.enabled .Values.ntfy.existingSecret.name) }}
+          - name: NTFY_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "rclone.ntfySecretName" . }}
+                {{- if .Values.ntfy.existingSecret.name }}
+                key: {{ .Values.ntfy.existingSecret.key | default "ntfy-url" }}
+                {{- else }}
+                key: ntfy-url
+                {{- end }}
+          {{- end }}
       {{- if .Values.prune.enabled }}
       prune:
         image:
           repository: {{ .Values.image.repository }}
           tag: {{ .Values.image.tag }}
           pullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/sh
+          - -c
         args:
-          - delete
-          - dest:{{ .Values.rclone.destination.bucketName }}
-          - --min-age
-          - {{ .Values.prune.ageToPrune | quote }}
-          - --verbose
-          {{- if .Values.metrics.enabled }}
-          - --rc
-          - --rc-addr=0.0.0.0:5573
-          - --rc-enable-metrics
-          - --rc-no-auth
-          {{- end }}
+          - |
+            rclone delete \
+              "dest:{{ .Values.rclone.destination.bucketName }}" \
+              --min-age {{ .Values.prune.ageToPrune | quote }} \
+              {{- if .Values.metrics.enabled }}
+              --rc --rc-addr=0.0.0.0:5573 --rc-enable-metrics --rc-no-auth \
+              {{- end }}
+              --verbose > /tmp/rclone-prune.log 2>&1
+
+            res=$?
+            cat /tmp/rclone-prune.log
+
+            {{- if .Values.ntfy.enabled }}
+            STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
+            FILES_PRUNED=$(echo "$STATS" | sed 's/.*Deleted:[ \t]*//')
+
+            if [ -z "$FILES_PRUNED" ]; then
+              FILES_PRUNED="0 files"
+
+            fi
+
+            TARGET_URL="{{ .Values.ntfy.url }}"
+            if [ -n "${NTFY_URL:-}" ]; then
+              TARGET_URL="$NTFY_URL"
+            fi
+
+            if [ $res -eq 0 ]; then
+              wget -qO- --header "Title: Rclone Prune Success  - {{ .Values.rclone.source.bucketName }}" --header "Priority: default" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' pruned: $FILES_PRUNED" "$TARGET_URL"
+            else
+              wget -qO- --header "Title: Rclone Prune Failed - {{ .Values.rclone.source.bucketName }}" --header "Priority: urgent" --post-data "Rclone prune job for bucket '{{ .Values.rclone.destination.bucketName }}' failed, but did prune: $FILES_PRUNED" "$TARGET_URL"
+            fi
+            {{- end }}
+            exit $res
         env:
           - name: RCLONE_CONFIG_DEST_TYPE
             value: s3
@@ -150,6 +209,17 @@ controllers:
                 key: {{ include "secretRclone.envDestEndpoint" . }}
           - name: RCLONE_CONFIG_DEST_FORCE_PATH_STYLE
             value: {{ .Values.rclone.destination.forcePathStyle | quote }}
+          {{- if and .Values.ntfy.enabled (or .Values.ntfy.externalSecret.enabled .Values.ntfy.existingSecret.name) }}
+          - name: NTFY_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "rclone.ntfySecretName" . }}
+                {{- if .Values.ntfy.existingSecret.name }}
+                key: {{ .Values.ntfy.existingSecret.key | default "ntfy-url" }}
+                {{- else }}
+                key: ntfy-url
+                {{- end }}
+          {{- end }}
       {{- end }}
 {{- if .Values.metrics.enabled }}
 service:

@@ -41,9 +41,25 @@ prune:
   include: ""
   exclude: ""
 
+# -- Notification configuration
+ntfy:
+  enabled: false
+
+  # -- Provide an existing secret for the ntfy url
+  existingSecret:
+    name: ""
+    key: ntfy-url
+
+  # -- Generate a secret using ExternalSecret
+  externalSecret:
+    enabled: false
+    storeName: openbao
+    path: /ntfy
+    urlProperty: url
+    topicProperty: topic
+
 # -- Secret configuration
 secret:
-
   # -- External Secret configuration
   externalSecret:
     enabled: true
