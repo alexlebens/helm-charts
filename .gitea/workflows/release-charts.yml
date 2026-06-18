@@ -67,8 +67,6 @@ jobs:
       matrix:
         chart: ${{ fromJSON(needs.prepare.outputs.matrix) }}
       fail-fast: false
-    env:
-      WORKFLOW_DIR: "charts/${{ matrix.chart }}"
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -81,7 +79,7 @@ jobs:
 
       - name: Add Repositories
         run: |
-          cd ${WORKFLOW_DIR}
+          cd charts/${{ matrix.chart }}
 
           echo ">> Adding repositories for chart dependencies ..."
           helm dependency list . --max-col-width 120 2> /dev/null \
@@ -99,7 +97,7 @@ jobs:
 
       - name: Package Helm Chart
         run: |
-          cd ${WORKFLOW_DIR}
+          cd charts/${{ matrix.chart }}
 
           echo ">> Building helm dependency ..."
           helm dependency build . --skip-refresh --debug
@@ -134,7 +132,7 @@ jobs:
 
       - name: Extract Chart Metadata
         run: |
-          cd ${WORKFLOW_DIR}
+          cd charts/${{ matrix.chart }}
 
           echo ">> Adding Chart metadata to workflow ENV ..."
           echo ""
