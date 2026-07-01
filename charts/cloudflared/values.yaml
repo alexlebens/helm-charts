@@ -1,6 +1,9 @@
 # -- Name override of release
 name: ""
 
+# -- Number of replicas for high availability (Cloudflare recommends at least 2)
+replicas: 2
+
 # -- Protocol - Available values are auto, http2, and quic.
 protocol: auto
 

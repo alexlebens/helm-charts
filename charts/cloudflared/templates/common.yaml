@@ -8,8 +8,8 @@ global:
 controllers:
   main:
     type: deployment
-    replicas: 1
-    strategy: Recreate
+    replicas: {{ .Values.replicas }}
+    strategy: RollingUpdate
     serviceAccount:
       identifier: {{ .Release.Name }}
     containers:

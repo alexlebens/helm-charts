@@ -31,6 +31,7 @@ Cloudflared Tunnel
 | name | string | `""` | Name override of release |
 | probes | object | `{"liveness":{"enabled":true},"readiness":{"enabled":true}}` | Probes configuration |
 | protocol | string | `"auto"` | Protocol - Available values are auto, http2, and quic. |
+| replicas | int | `2` | Number of replicas for high availability (Cloudflare recommends at least 2) |
 | resources | object | `{"requests":{"cpu":"1m","memory":"20Mi"}}` | Default resources |
 | secret | object | `{"existingSecret":{"key":"cf-tunnel-token","name":"cloudflared-secret"},"externalSecret":{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"openbao","path":"/cloudflare/tunnels","property":"token"}}}` | Secret configuration |
 | secret.existingSecret | object | `{"key":"cf-tunnel-token","name":"cloudflared-secret"}` | Name of existing secret that contains Cloudflare token |
