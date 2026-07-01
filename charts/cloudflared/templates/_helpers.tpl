@@ -10,6 +10,25 @@ Generate the root name
 {{- end }}
 
 {{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "cloudflared.chart" -}}
+  {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "cloudflared.labels" -}}
+helm.sh/chart: {{ include "cloudflared.chart" $ }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.Version | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/instance: {{ .Release.Namespace }}
+{{- end }}
+
+{{/*
 Generate the secret name
 */}}
 {{- define "secret.name" -}}
@@ -52,35 +71,4 @@ Generate path in the secret store
   {{- else }}
     {{ fail "No Secret Store Path Found!" }}
   {{- end }}
-{{- end }}
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "secret.chart" -}}
-  {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Common labels
-*/}}
-{{- define "secret.labels" -}}
-helm.sh/chart: {{ include "secret.chart" $ }}
-{{ include "secret.selectorLabels" $ }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.Version | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/name: {{ include "secret.name" . }}
-{{- with .Values.secret.externalSecret.additionalLabels }}
-{{ toYaml . }}
-{{- end }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "secret.selectorLabels" -}}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- end }}

@@ -36,8 +36,10 @@ metrics:
   enabled: true
   prometheusRule:
     enabled: true
+
     # -- PrometheusRule additional labels
     labels: {}
+
     # -- Prometheus rules
     rules:
       - alert: CloudflaredDown
@@ -51,7 +53,6 @@ metrics:
 
 # -- Secret configuration
 secret:
-
   # -- External Secret configuration
   externalSecret:
     enabled: true
