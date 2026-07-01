@@ -33,6 +33,11 @@ Cloudflared Tunnel
 | metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
 | name | string | `""` | Name override of release |
 | podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532}` | Pod-level security context |
+| probe | object | `{"enabled":false,"labels":{},"module":"http_2xx","proberUrl":"kube-prometheus-stack-prometheus-blackbox-exporter.kube-prometheus-stack.svc.cluster.local:9115","targetUrl":""}` | Probe CRD configuration (Blackbox Exporter) |
+| probe.labels | object | `{}` | Probe additional labels |
+| probe.module | string | `"http_2xx"` | Blackbox exporter module to use |
+| probe.proberUrl | string | `"kube-prometheus-stack-prometheus-blackbox-exporter.kube-prometheus-stack.svc.cluster.local:9115"` | URL of the prober |
+| probe.targetUrl | string | `""` | Target URL to probe |
 | probes | object | `{"liveness":{"enabled":true},"readiness":{"enabled":true}}` | Probes configuration |
 | protocol | string | `"auto"` | Protocol - Available values are auto, http2, and quic. |
 | replicas | int | `2` | Number of replicas for high availability (Cloudflare recommends at least 2) |

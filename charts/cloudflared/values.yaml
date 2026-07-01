@@ -63,6 +63,22 @@ metrics:
           summary: "Cloudflared tunnel {{ $labels.tunnel_id }} is down"
           description: "Cloudflared tunnel has lost connection to the edge."
 
+# -- Probe CRD configuration (Blackbox Exporter)
+probe:
+  enabled: false
+
+  # -- Probe additional labels
+  labels: {}
+
+  # -- URL of the prober
+  proberUrl: kube-prometheus-stack-prometheus-blackbox-exporter.kube-prometheus-stack.svc.cluster.local:9115
+
+  # -- Target URL to probe
+  targetUrl: ""
+
+  # -- Blackbox exporter module to use
+  module: http_2xx
+
 # -- Secret configuration
 secret:
   # -- External Secret configuration
