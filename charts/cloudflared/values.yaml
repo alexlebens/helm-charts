@@ -1,14 +1,26 @@
 # -- Name override of release
 name: ""
 
-# -- Number of replicas for high availability (Cloudflare recommends at least 2)
-replicas: 2
-
 # -- Protocol - Available values are auto, http2, and quic.
 protocol: auto
 
+# -- Default image
+image:
+  repository: cloudflare/cloudflared
+  tag: 2026.6.1@sha256:6d91c121b803126f7a5344005d17a9324788fc09d305b6e2560ec6040a7ae283
+  pullPolicy: IfNotPresent
+
+# -- Number of replicas for high availability (Cloudflare recommends at least 2)
+replicas: 2
+
 # -- Additional arguments to pass to the cloudflared container
 extraArgs: []
+
+# -- Default resources
+resources:
+  requests:
+    cpu: 1m
+    memory: 20Mi
 
 # -- Pod-level security context
 podSecurityContext:
@@ -71,15 +83,3 @@ secret:
   existingSecret:
     name: cloudflared-secret
     key: cf-tunnel-token
-
-# -- Default image
-image:
-  repository: cloudflare/cloudflared
-  tag: 2026.6.1@sha256:6d91c121b803126f7a5344005d17a9324788fc09d305b6e2560ec6040a7ae283
-  pullPolicy: IfNotPresent
-
-# -- Default resources
-resources:
-  requests:
-    cpu: 1m
-    memory: 20Mi
