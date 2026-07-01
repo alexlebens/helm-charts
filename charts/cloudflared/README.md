@@ -29,6 +29,7 @@ Cloudflared Tunnel
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.6.1@sha256:6d91c121b803126f7a5344005d17a9324788fc09d305b6e2560ec6040a7ae283"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | name | string | `""` | Name override of release |
+| probes | object | `{"liveness":{"enabled":true},"readiness":{"enabled":true}}` | Probes configuration |
 | protocol | string | `"auto"` | Protocol - Available values are auto, http2, and quic. |
 | resources | object | `{"requests":{"cpu":"1m","memory":"20Mi"}}` | Default resources |
 | secret | object | `{"existingSecret":{"key":"cf-tunnel-token","name":"cloudflared-secret"},"externalSecret":{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"openbao","path":"/cloudflare/tunnels","property":"token"}}}` | Secret configuration |

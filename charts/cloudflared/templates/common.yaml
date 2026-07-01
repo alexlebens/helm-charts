@@ -36,6 +36,35 @@ controllers:
               secretKeyRef:
                 name: {{ include "secret.name" . }}
                 key: {{ include "secret.key" . }}
+        {{- if or .Values.probes.liveness.enabled .Values.probes.readiness.enabled }}
+        probes:
+          {{- if .Values.probes.liveness.enabled }}
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ready
+                port: 20241
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          {{- end }}
+          {{- if .Values.probes.readiness.enabled }}
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ready
+                port: 20241
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          {{- end }}
+        {{- end }}
         resources:
           {{- with .Values.resources }}
           {{- toYaml . | nindent 10 }}

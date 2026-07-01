@@ -4,6 +4,13 @@ name: ""
 # -- Protocol - Available values are auto, http2, and quic.
 protocol: auto
 
+# -- Probes configuration
+probes:
+  liveness:
+    enabled: true
+  readiness:
+    enabled: true
+
 # -- Metrics
 metrics:
   enabled: true
