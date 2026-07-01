@@ -7,6 +7,23 @@ replicas: 2
 # -- Protocol - Available values are auto, http2, and quic.
 protocol: auto
 
+# -- Additional arguments to pass to the cloudflared container
+extraArgs: []
+
+# -- Pod-level security context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+
+# -- Container-level security context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
 # -- Probes configuration
 probes:
   liveness:

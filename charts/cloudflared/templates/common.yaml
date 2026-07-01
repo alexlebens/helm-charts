@@ -5,6 +5,9 @@ global:
   nameOverride: {{ include "cloudflared.name" . }}
   fullNameOverride: {{ include "cloudflared.name" . }}
   createDefaultServiceAccount: true
+defaultPodOptions:
+  securityContext:
+    {{- toYaml .Values.podSecurityContext | nindent 4 }}
 controllers:
   main:
     type: deployment
@@ -26,6 +29,9 @@ controllers:
           {{- if .Values.metrics.enabled }}
           - --metrics
           - 0.0.0.0:20241
+          {{- end }}
+          {{- with .Values.extraArgs }}
+          {{- toYaml . | nindent 10 }}
           {{- end }}
           - run
           - --token
@@ -69,6 +75,8 @@ controllers:
           {{- with .Values.resources }}
           {{- toYaml . | nindent 10 }}
           {{ end }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
 {{- if .Values.metrics.enabled }}
 service:
   main:
