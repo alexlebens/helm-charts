@@ -262,14 +262,13 @@ service:
       rc-sync:
         port: 5572
         targetPort: 5572
-serviceMonitor:
+podMonitor:
   main:
     selector:
       matchLabels:
         app.kubernetes.io/name: {{ include "rclone.name" . }}
         app.kubernetes.io/instance: {{ .Release.Namespace }}
-    serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
-    endpoints:
+    podMetricsEndpoints:
       - port: rc-sync
         interval: 10s
         scrapeTimeout: 5s
