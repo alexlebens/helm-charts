@@ -1,0 +1,18 @@
+{{- if and .Values.metrics.enabled .Values.metrics.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "cloudflared.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "cloudflared.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Namespace }}
+    {{- with .Values.metrics.prometheusRule.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    - name: {{ include "cloudflared.name" . }}.rules
+      rules:
+        {{- toYaml .Values.metrics.prometheusRule.rules | nindent 8 }}
+{{- end }}

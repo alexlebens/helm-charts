@@ -28,7 +28,9 @@ Cloudflared Tunnel
 |-----|------|---------|-------------|
 | extraArgs | list | `[]` | Additional arguments to pass to the cloudflared container |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.6.1@sha256:6d91c121b803126f7a5344005d17a9324788fc09d305b6e2560ec6040a7ae283"}` | Default image |
-| metrics | object | `{"enabled":true}` | Metrics |
+| metrics | object | `{"enabled":true,"prometheusRule":{"enabled":true,"labels":{},"rules":[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]}}` | Metrics |
+| metrics.prometheusRule.labels | object | `{}` | PrometheusRule additional labels |
+| metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
 | name | string | `""` | Name override of release |
 | podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532}` | Pod-level security context |
 | probes | object | `{"liveness":{"enabled":true},"readiness":{"enabled":true}}` | Probes configuration |
