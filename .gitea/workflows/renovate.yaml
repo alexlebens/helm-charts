@@ -13,7 +13,7 @@ on:
 jobs:
   renovate:
     runs-on: ubuntu-latest
-    container: ghcr.io/renovatebot/renovate:43.252.7@sha256:2021e64c8e820eed4defa37cc7755f660d3dc58c5390fb48617ec72b7d5cb89c
+    container: ghcr.io/renovatebot/renovate:43.255.2@sha256:305873398333424693d0a59c08ec3629124d7bd2aab5268341b2993bb0ff4477
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
