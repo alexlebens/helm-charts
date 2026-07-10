@@ -36,7 +36,7 @@ jobs:
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
-          version: v4.2.2
+          version: v4.2.3
 
       - name: Set up Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
@@ -173,7 +173,7 @@ jobs:
         if: steps.branch-exists.outputs.exists == 'true'
         with:
           token: ${{ secrets.GITEA_TOKEN }}
-          version: v4.2.2
+          version: v4.2.3
 
       - name: Check Directories for Changes
         id: check-dir-changes
