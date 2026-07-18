@@ -5,9 +5,15 @@ description: Cloudnative-pg Cluster
 keywords:
   - database
   - postgres
+home: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster
 sources:
+  - https://gitea.alexlebens.net/alexlebens/helm-charts
   - https://github.com/cloudnative-pg/cloudnative-pg
   - https://github.com/cloudnative-pg/charts/tree/main/charts/cluster
+annotations:
+  artifacthub.io/links: |
+    - name: source
+      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster
 maintainers:
   - name: alexlebens
 icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4

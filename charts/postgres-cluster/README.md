@@ -4,6 +4,8 @@
 
 Cloudnative-pg Cluster
 
+**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster>
+
 ## Maintainers
 
 | Name | Email | Url |
@@ -12,6 +14,7 @@ Cloudnative-pg Cluster
 
 ## Source Code
 
+* <https://gitea.alexlebens.net/alexlebens/helm-charts>
 * <https://github.com/cloudnative-pg/cloudnative-pg>
 * <https://github.com/cloudnative-pg/charts/tree/main/charts/cluster>
 
