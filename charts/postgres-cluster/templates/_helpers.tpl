@@ -105,8 +105,8 @@ Generate recovery destination path
 Generate recovery credentials name
 */}}
 {{- define "cluster.recoverySecretName" -}}
-  {{- if and (.Values.recovery.objectStore.endpointCredentials) (not .Values.recovery.objectStore.externalSecret.enabled) }}
-    {{- .Values.recovery.objectStore.endpointCredentials | trunc 63 | trimSuffix "-" }}
+  {{- if .Values.recovery.objectStore.endpointCredentials.name -}}
+    {{- .Values.recovery.objectStore.endpointCredentials.name -}}
   {{- else -}}
     {{- printf "%s-recovery-secret" (include "cluster.name" .) -}}
   {{- end }}
@@ -158,8 +158,8 @@ Generate backup destination path
 Generate backup destination path
 */}}
 {{- define "cluster.backupSecretName" -}}
-  {{- if .Values.backup.objectStore.endpointCredentialsOverride -}}
-    {{- .Values.backup.objectStore.endpointCredentialsOverride -}}
+  {{- if .Values.backup.objectStore.endpointCredentials.name -}}
+    {{- .Values.backup.objectStore.endpointCredentials.name -}}
   {{- else -}}
     {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
   {{- end -}}

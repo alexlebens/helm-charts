@@ -242,6 +242,7 @@ recovery:
   # See https://cloudnative-pg.io/documentation/current/recovery/#recovery-from-an-object-store
   objectStore:
     enabled: false
+
     # -- Point in time recovery target. Specify one of the following:
     pitrTarget:
       # -- Time in RFC3339 format
@@ -265,7 +266,21 @@ recovery:
     # -- Overrides the provider specific default endpoint. Defaults to:
     # S3: https://s3.<region>.amazonaws.com"
     # Leave empty if using the default S3 endpoint
-    endpointURL: "http://garage-main.garage:3900"
+    endpointURL: http://garage-main.garage:3900
+
+    # -- Configure S3 credentials
+    endpointCredentials:
+      # -- Override secret name that contains S3 credentials
+      name: ""
+
+      # -- Generates an ExternalSecret if external secrets are enabled.
+      createExternalSecret: true
+
+      # -- If the S3 endpoint require the ACCESS_REGION variable set in credentials
+      includeRegion: true
+
+      # -- Path in the external secret store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+      externalSecretCredentialPath: /garage/home-infra/postgres-backups
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
@@ -287,18 +302,6 @@ recovery:
 
     # -- Override the name of the backup cluster, defaults to "cluster.name"
     clusterName: ""
-
-    # -- Use generated External Secrets, credentialPath points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-    externalSecret:
-      enabled: true
-      credentialPath: /garage/home-infra/postgres-backups
-
-    # -- Specifies secret that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-    # -- Defaults to <cluster name>-recovery-secret for the existing secret
-    endpointCredentials: ""
-
-    # -- If the S3 endpoint require the ACCESS_REGION variable set in credentials
-    endpointCredentialsIncludeRegion: true
 
     # -- Storage
     wal:
@@ -387,10 +390,6 @@ backup:
   # -- Override name of the backup server, usually this does not need to be used.
   backupServerName: ""
 
-  # -- Use generated External Secrets, credentialPath points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-  externalSecret:
-    enabled: true
-
   # -- Options for object store backups
   objectStore:
     enabled: false
@@ -407,11 +406,19 @@ backup:
     # -- Overrides the provider specific default endpoint.
     endpointURL: http://garage-main.garage:3900
 
-    # -- Override secret name that contains S3 credentials, should contain the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-    endpointCredentialsOverride: ""
+    # -- Configure S3 credentials
+    endpointCredentials:
+      # -- Override secret name that contains S3 credentials
+      name: ""
 
-    # -- Path points at path in cluster store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
-    externalSecretCredentialPath: /garage/home-infra/postgres-backups
+      # -- Generates an ExternalSecret if external secrets are enabled.
+      createExternalSecret: true
+
+      # -- If the S3 endpoint require the ACCESS_REGION variable set in credentials
+      includeRegion: true
+
+      # -- Path in the external secret store that contains the keys ACCESS_KEY_ID and ACCESS_SECRET_KEY
+      externalSecretCredentialPath: /garage/home-infra/postgres-backups
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
