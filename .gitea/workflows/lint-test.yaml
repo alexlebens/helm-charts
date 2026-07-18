@@ -119,22 +119,38 @@ jobs:
           echo "----"
 
       - name: Run Chart Testing (lint)
+        id: ct-lint
         if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
 
-      - name: ntfy Failed
+      - name: ntfy Chart Testing Lint Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure()
+        if: failure() && steps.ct-lint.outcome == 'failure'
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Test Failure - Helm Charts"
+          title: "Chart Testing Lint Failure - Helm Charts"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Tests have failed for Helm Charts"
+          details: "Chart Testing (ct lint) has failed for Helm Charts"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=lint-test.yaml", "clear": true}]'
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
+
+      - name: ntfy Chart Testing Pipeline Failed
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        if: failure() && steps.ct-lint.outcome != 'failure'
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Chart Testing Pipeline Failure - Helm Charts"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "An unexpected error occurred during Chart Testing pipeline setup"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
 
   lint-test:
@@ -272,6 +288,7 @@ jobs:
           echo "----"
 
       - name: Lint Helm Chart
+        id: lint-helm-chart
         if: steps.check-dir-changes.outputs.changes-detected == 'true'
         env:
           CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
@@ -301,6 +318,7 @@ jobs:
           done
 
       - name: Run Helm Unittest
+        id: run-helm-unittest
         if: steps.check-dir-changes.outputs.changes-detected == 'true'
         env:
           CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
@@ -326,17 +344,47 @@ jobs:
             fi
           done
 
-      - name: ntfy Failed
+      - name: ntfy Lint Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure()
+        if: failure() && steps.lint-helm-chart.outcome == 'failure'
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Test Failure - Helm Charts"
+          title: "Lint Failure - Helm Charts"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Tests have failed for Helm Charts"
+          details: "Linting failed for Helm Charts"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "Open Gitea", "url": "https://gitea.alexlebens.dev/alexlebens/helm-charts/actions?workflow=lint-test.yaml", "clear": true}]'
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
+
+      - name: ntfy Unittest Failed
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        if: failure() && steps.run-helm-unittest.outcome == 'failure'
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Unittest Failure - Helm Charts"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "Unit testing failed for Helm Charts"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
+
+      - name: ntfy Pipeline Failed
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        if: failure() && steps.lint-helm-chart.outcome != 'failure' && steps.run-helm-unittest.outcome != 'failure'
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Pipeline Failure - Helm Charts"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "An unexpected error occurred during pipeline setup"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
