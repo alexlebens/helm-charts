@@ -211,18 +211,6 @@ jobs:
           token: ${{ secrets.GITEA_TOKEN }}
           version: v4.2.3
 
-      - name: Cache Helm Plugins
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        if: steps.branch-exists.outputs.exists == 'true'
-        id: cache-helm-plugins
-        with:
-          path: ~/.local/share/helm/plugins
-          key: helm-plugins-${{ runner.os }}-unittest
-
-      - name: Install Helm Unittest Plugin
-        if: steps.branch-exists.outputs.exists == 'true' && steps.cache-helm-plugins.outputs.cache-hit != 'true'
-        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
-
       - name: Check Directories for Changes
         id: check-dir-changes
         if: steps.branch-exists.outputs.exists == 'true'
@@ -356,6 +344,18 @@ jobs:
             echo "----"
 
           fi
+
+      - name: Cache Helm Plugins
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        if: steps.branch-exists.outputs.exists == 'true'
+        id: cache-helm-plugins
+        with:
+          path: ~/.local/share/helm/plugins
+          key: helm-plugins-${{ runner.os }}-unittest
+
+      - name: Install Helm Unittest Plugin
+        if: steps.branch-exists.outputs.exists == 'true' && steps.cache-helm-plugins.outputs.cache-hit != 'true'
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
 
       - name: Run Helm Unittest
         id: run-helm-unittest
