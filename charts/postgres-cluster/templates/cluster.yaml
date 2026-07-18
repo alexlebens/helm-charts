@@ -98,8 +98,8 @@ spec:
   serviceAccountTemplate:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if .Values.cluster.monitoring.enabled }}
   monitoring:
-    enablePodMonitor: false
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
     customQueriesConfigMap:
@@ -112,18 +112,7 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{ end }}
     {{- end }}
-    {{- if not (empty .Values.cluster.monitoring.podMonitor.relabelings) }}
-    {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
-    podMonitorRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
-    {{- end }}
-    {{- if not (empty .Values.cluster.monitoring.podMonitor.metricRelabelings) }}
-    {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
-    podMonitorMetricRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- end }}
+  {{- end }}
   {{- if not (empty .Values.backup.objectStore) }}
   plugins:
     - name: barman-cloud.cloudnative-pg.io
