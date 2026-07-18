@@ -199,7 +199,7 @@ jobs:
         with:
           name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
           tag_name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
-          note_page: release_notes.md
+          body_path: release_notes.md
           files: |-
             ${{ env.PACKAGE_PATH }}
 
