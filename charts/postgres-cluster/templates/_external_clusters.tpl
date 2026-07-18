@@ -3,8 +3,7 @@
 {{- else if eq .Values.mode "recovery" -}}
 externalClusters:
   {{- if eq .Values.recovery.method "import" }}
-  - name: importSource
-     {{- include "cluster.externalSourceCluster" .Values.recovery.import.source | nindent 4 }}
+  {{- include "cluster.externalSourceCluster" . | nindent 2 }}
   {{- else if eq .Values.recovery.method "objectStore" }}
   - name: {{ include "cluster.recoveryServerName" . }}
     plugin:
@@ -21,35 +20,35 @@ externalClusters:
 {{- end -}}
 
 {{- define "cluster.externalSourceCluster" -}}
-{{- $name := first . -}}
-{{- $config := last . -}}
-- name: {{ first . }}
+{{- with .Values.recovery.import.source }}
+- name: importSource
   connectionParameters:
-    host: {{ $config.host | quote }}
-    port: {{ $config.port | quote }}
-    user: {{ $config.username | quote }}
-    {{- with $config.database }}
+    host: {{ .host | quote }}
+    port: {{ .port | quote }}
+    user: {{ .username | quote }}
+    {{- with .database }}
     dbname: {{ . | quote }}
     {{- end }}
-    sslmode: {{ $config.sslMode | quote }}
-  {{- if $config.passwordSecret.name }}
+    sslmode: {{ .sslMode | quote }}
+  {{- if .passwordSecret.name }}
   password:
-    name: {{ $config.passwordSecret.name }}
-    key: {{ $config.passwordSecret.key }}
+    name: {{ .passwordSecret.name }}
+    key: {{ .passwordSecret.key }}
   {{- end }}
-  {{- if $config.sslKeySecret.name }}
+  {{- if .sslKeySecret.name }}
   sslKey:
-    name: {{ $config.sslKeySecret.name }}
-    key: {{ $config.sslKeySecret.key }}
+    name: {{ .sslKeySecret.name }}
+    key: {{ .sslKeySecret.key }}
   {{- end }}
-  {{- if $config.sslCertSecret.name }}
+  {{- if .sslCertSecret.name }}
   sslCert:
-    name: {{ $config.sslCertSecret.name }}
-    key: {{ $config.sslCertSecret.key }}
+    name: {{ .sslCertSecret.name }}
+    key: {{ .sslCertSecret.key }}
   {{- end }}
-  {{- if $config.sslRootCertSecret.name }}
+  {{- if .sslRootCertSecret.name }}
   sslRootCert:
-    name: {{ $config.sslRootCertSecret.name }}
-    key: {{ $config.sslRootCertSecret.key }}
+    name: {{ .sslRootCertSecret.name }}
+    key: {{ .sslRootCertSecret.key }}
   {{- end }}
+{{- end }}
 {{- end -}}

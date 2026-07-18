@@ -360,18 +360,10 @@ recovery:
       username: app
       database: app
       sslMode: "verify-full"
+      # -- Name and key of the existing secret containing the password
       passwordSecret:
-        # -- Whether to create a secret for the password
-        create: false
-
-        # -- Name of the secret containing the password
         name: ""
-
-        # -- The key in the secret containing the password
         key: "password"
-
-        # -- The password value to use when creating the secret
-        value: ""
       sslKeySecret:
         name: ""
         key: ""
