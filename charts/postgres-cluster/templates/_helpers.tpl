@@ -23,7 +23,7 @@ Common labels
 helm.sh/chart: {{ include "cluster.chart" $ }}
 {{ include "cluster.selectorLabels" $ }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.Version | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.cluster.additionalLabels }}
@@ -83,11 +83,7 @@ Generate recovery name
 Generate recovery server name
 */}}
 {{- define "cluster.recoveryServerName" -}}
-  {{- if .Values.recovery.recoveryServerName -}}
-    {{- .Values.recovery.recoveryServerName -}}
-  {{- else -}}
-    {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.objectStore.index) | trunc 63 | trimSuffix "-" -}}
-  {{- end }}
+  {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.objectStore.index) | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 
 {{/*
@@ -155,7 +151,7 @@ Generate backup destination path
 {{- end }}
 
 {{/*
-Generate backup destination path
+Generate backup secret name
 */}}
 {{- define "cluster.backupSecretName" -}}
   {{- if .Values.backup.objectStore.endpointCredentials.name -}}
