@@ -1,0 +1,182 @@
+suite: test Cluster generation
+templates:
+  - cluster.yaml
+tests:
+  - it: should generate a Cluster resource
+    asserts:
+      - isKind:
+          of: Cluster
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.instances
+          value: 3
+      - equal:
+          path: spec.storage.size
+          value: 10Gi
+
+  - it: should map resources and storage classes correctly
+    set:
+      cluster:
+        instances: 2
+        storage:
+          size: 20Gi
+          storageClass: custom-sc
+        walStorage:
+          enabled: true
+          size: 5Gi
+          storageClass: custom-wal-sc
+        resources:
+          requests:
+            cpu: 100m
+            memory: 1Gi
+    asserts:
+      - equal:
+          path: spec.instances
+          value: 2
+      - equal:
+          path: spec.storage.size
+          value: 20Gi
+      - equal:
+          path: spec.storage.storageClass
+          value: custom-sc
+      - equal:
+          path: spec.walStorage.size
+          value: 5Gi
+      - equal:
+          path: spec.walStorage.storageClass
+          value: custom-wal-sc
+      - equal:
+          path: spec.resources.requests.cpu
+          value: 100m
+
+  - it: should configure postgres UID and GID
+    set:
+      cluster:
+        postgresUID: 999
+        postgresGID: 999
+    asserts:
+      - equal:
+          path: spec.postgresUID
+          value: 999
+      - equal:
+          path: spec.postgresGID
+          value: 999
+
+  - it: should configure custom image repository and tag
+    set:
+      cluster:
+        image:
+          repository: custom-registry.io/my-postgres
+          tag: "v1.2.3"
+    asserts:
+      - equal:
+          path: spec.imageName
+          value: custom-registry.io/my-postgres:v1.2.3
+
+  - it: should configure postgresql parameters
+    set:
+      cluster:
+        postgresql:
+          parameters:
+            cron.database_name: "testDB"
+    asserts:
+      - isSubset:
+          path: spec.postgresql.parameters
+          content:
+            cron.database_name: "testDB"
+
+  - it: should configure shared preload libraries
+    set:
+      cluster:
+        postgresql:
+          shared_preload_libraries:
+            - vchord.so
+    asserts:
+      - equal:
+          path: spec.postgresql.shared_preload_libraries[0]
+          value: vchord.so
+
+  - it: should configure multiple shared preload libraries
+    set:
+      cluster:
+        postgresql:
+          shared_preload_libraries:
+            - pg_cron
+            - pg_documentdb_core
+            - pg_documentdb
+    asserts:
+      - equal:
+          path: spec.postgresql.shared_preload_libraries[0]
+          value: pg_cron
+      - equal:
+          path: spec.postgresql.shared_preload_libraries[1]
+          value: pg_documentdb_core
+      - equal:
+          path: spec.postgresql.shared_preload_libraries[2]
+          value: pg_documentdb
+
+  - it: should configure postInitSQL
+    set:
+      cluster:
+        initdb:
+          postInitSQL:
+            - CREATE EXTENSION IF NOT EXISTS "vector";
+            - CREATE EXTENSION IF NOT EXISTS "vchord" CASCADE;
+            - CREATE EXTENSION IF NOT EXISTS "cube" CASCADE;
+            - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
+    asserts:
+      - equal:
+          path: spec.bootstrap.initdb.postInitSQL[0]
+          value: CREATE EXTENSION IF NOT EXISTS "vector";
+      - equal:
+          path: spec.bootstrap.initdb.postInitSQL[1]
+          value: CREATE EXTENSION IF NOT EXISTS "vchord" CASCADE;
+      - equal:
+          path: spec.bootstrap.initdb.postInitSQL[2]
+          value: CREATE EXTENSION IF NOT EXISTS "cube" CASCADE;
+      - equal:
+          path: spec.bootstrap.initdb.postInitSQL[3]
+          value: CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
+
+  - it: should configure postgresql pg_hba
+    set:
+      cluster:
+        postgresql:
+          pg_hba:
+            - host testDB postgres localhost trust
+            - host testDB ferret localhost trust
+    asserts:
+      - equal:
+          path: spec.postgresql.pg_hba[0]
+          value: host testDB postgres localhost trust
+      - equal:
+          path: spec.postgresql.pg_hba[1]
+          value: host testDB ferret localhost trust
+
+  - it: should configure initdb settings
+    set:
+      cluster:
+        initdb:
+          database: testDB
+          owner: test
+          postInitApplicationSQL:
+            - CREATE EXTENSION IF NOT EXISTS pg_cron;
+            - CREATE EXTENSION IF NOT EXISTS documentdb CASCADE;
+            - GRANT documentdb_admin_role TO test;
+    asserts:
+      - equal:
+          path: spec.bootstrap.initdb.database
+          value: testDB
+      - equal:
+          path: spec.bootstrap.initdb.owner
+          value: test
+      - equal:
+          path: spec.bootstrap.initdb.postInitApplicationSQL[0]
+          value: CREATE EXTENSION IF NOT EXISTS pg_cron;
+      - equal:
+          path: spec.bootstrap.initdb.postInitApplicationSQL[1]
+          value: CREATE EXTENSION IF NOT EXISTS documentdb CASCADE;
+      - equal:
+          path: spec.bootstrap.initdb.postInitApplicationSQL[2]
+          value: GRANT documentdb_admin_role TO test;

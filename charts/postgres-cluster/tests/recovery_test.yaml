@@ -1,0 +1,88 @@
+suite: test Recovery generation
+templates:
+  - cluster.yaml
+  - external-secret.yaml
+  - object-store.yaml
+tests:
+  - it: should generate recovery method import
+    set:
+      mode: recovery
+      recovery:
+        method: import
+        import:
+          type: monolith
+          source:
+            host: "postgres-host"
+            port: "5432"
+            username: "postgres"
+            sslMode: "require"
+    asserts:
+      - isKind:
+          of: Cluster
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.bootstrap.initdb.import
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.externalClusters
+        template: cluster.yaml
+      - equal:
+          path: spec.externalClusters[0].name
+          value: importSource
+        template: cluster.yaml
+
+  - it: should generate recovery method backup
+    set:
+      mode: recovery
+      recovery:
+        method: backup
+        backup:
+          backupName: "my-backup"
+    asserts:
+      - isKind:
+          of: Cluster
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.bootstrap.recovery.backup.name
+        template: cluster.yaml
+      - equal:
+          path: spec.bootstrap.recovery.backup.name
+          value: my-backup
+        template: cluster.yaml
+
+  - it: should generate recovery method objectStore
+    set:
+      mode: recovery
+      recovery:
+        method: objectStore
+        objectStore:
+          enabled: true
+          index: 1
+          endpointURL: "https://s3.example.com"
+          endpointCredentials:
+            createExternalSecret: true
+            externalSecretCredentialPath: "secret/path"
+    asserts:
+      - isKind:
+          of: Cluster
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.bootstrap.recovery.source
+        template: cluster.yaml
+      - matchRegex:
+          path: spec.bootstrap.recovery.source
+          pattern: -backup-1$
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.externalClusters
+        template: cluster.yaml
+      - equal:
+          path: spec.externalClusters[0].plugin.name
+          value: barman-cloud.cloudnative-pg.io
+        template: cluster.yaml
+      - isKind:
+          of: ExternalSecret
+        template: external-secret.yaml
+      - isKind:
+          of: ObjectStore
+        template: object-store.yaml

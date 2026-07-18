@@ -1,0 +1,27 @@
+suite: test Pooler generation
+templates:
+  - pooler.yaml
+tests:
+  - it: should not generate a Pooler by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate a Pooler when defined in poolers
+    set:
+      poolers:
+        - name: read-only
+          instances: 2
+          type: ro
+          poolMode: session
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Pooler
+      - equal:
+          path: spec.instances
+          value: 2
+      - equal:
+          path: spec.pgbouncer.poolMode
+          value: session

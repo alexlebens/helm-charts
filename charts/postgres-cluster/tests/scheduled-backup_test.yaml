@@ -1,0 +1,23 @@
+suite: test ScheduledBackup generation
+templates:
+  - scheduled-backup.yaml
+tests:
+  - it: should not generate a ScheduledBackup by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate a ScheduledBackup when enabled
+    set:
+      backup:
+        scheduledBackup:
+          enabled: true
+          schedule: "0 0 0 * * *"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ScheduledBackup
+      - equal:
+          path: spec.schedule
+          value: "0 0 0 * * *"

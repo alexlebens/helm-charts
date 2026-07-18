@@ -1,0 +1,25 @@
+suite: test DatabaseRole generation
+templates:
+  - database-role.yaml
+tests:
+  - it: should generate a DatabaseRole when roles are defined
+    set:
+      roles:
+        - name: app_user
+          login: true
+    asserts:
+      - isKind:
+          of: DatabaseRole
+      - equal:
+          path: spec.name
+          value: app_user
+      - equal:
+          path: spec.login
+          value: true
+
+  - it: should not generate any DatabaseRoles when empty
+    set:
+      roles: []
+    asserts:
+      - hasDocuments:
+          count: 0

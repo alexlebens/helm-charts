@@ -1,0 +1,72 @@
+suite: test Backup generation
+templates:
+  - cluster.yaml
+  - external-secret.yaml
+  - object-store.yaml
+  - scheduled-backup.yaml
+
+tests:
+  - it: should match default backup resources generation
+    asserts:
+      - isKind:
+          of: Cluster
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.plugins
+        template: cluster.yaml
+      - hasDocuments:
+          count: 1
+        template: external-secret.yaml
+      - hasDocuments:
+          count: 0
+        template: object-store.yaml
+
+  - it: should generate backup resources for objectStore method
+    set:
+      backup:
+        method: objectStore
+        objectStore:
+          enabled: true
+          endpointURL: "https://s3.example.com"
+          endpointCredentials:
+            createExternalSecret: true
+            externalSecretCredentialPath: "secret/path"
+        scheduledBackup:
+          enabled: true
+          schedule: "0 0 0 * * *"
+    asserts:
+      - isKind:
+          of: Cluster
+        template: cluster.yaml
+      - isNotNullOrEmpty:
+          path: spec.plugins
+        template: cluster.yaml
+      - equal:
+          path: spec.plugins[0].name
+          value: barman-cloud.cloudnative-pg.io
+        template: cluster.yaml
+      - isKind:
+          of: ExternalSecret
+        template: external-secret.yaml
+      - equal:
+          path: spec.data[0].secretKey
+          value: ACCESS_REGION
+        template: external-secret.yaml
+      - equal:
+          path: spec.data[1].secretKey
+          value: ACCESS_KEY_ID
+        template: external-secret.yaml
+      - isKind:
+          of: ObjectStore
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.endpointURL
+          value: "https://s3.example.com"
+        template: object-store.yaml
+      - isKind:
+          of: ScheduledBackup
+        template: scheduled-backup.yaml
+      - equal:
+          path: spec.schedule
+          value: "0 0 0 * * *"
+        template: scheduled-backup.yaml

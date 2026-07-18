@@ -1,0 +1,52 @@
+suite: test Monitoring generation
+templates:
+  - pod-monitor.yaml
+  - prometheus-rule.yaml
+tests:
+  - it: should generate Monitoring resources by default
+    asserts:
+      - template: pod-monitor.yaml
+        hasDocuments:
+          count: 1
+      - template: prometheus-rule.yaml
+        hasDocuments:
+          count: 1
+      - template: pod-monitor.yaml
+        isKind:
+          of: PodMonitor
+      - template: prometheus-rule.yaml
+        isKind:
+          of: PrometheusRule
+
+  - it: should not generate Monitoring resources when disabled
+    set:
+      cluster:
+        monitoring:
+          enabled: false
+    asserts:
+      - template: pod-monitor.yaml
+        hasDocuments:
+          count: 0
+      - template: prometheus-rule.yaml
+        hasDocuments:
+          count: 0
+
+  - it: should disable only PodMonitor
+    set:
+      cluster:
+        monitoring:
+          enabled: true
+          podMonitor:
+            enabled: false
+          prometheusRule:
+            enabled: true
+    asserts:
+      - template: pod-monitor.yaml
+        hasDocuments:
+          count: 0
+      - template: prometheus-rule.yaml
+        hasDocuments:
+          count: 1
+      - template: prometheus-rule.yaml
+        isKind:
+          of: PrometheusRule

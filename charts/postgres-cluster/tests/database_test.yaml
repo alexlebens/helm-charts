@@ -1,0 +1,51 @@
+suite: test Database generation
+templates:
+  - database.yaml
+tests:
+  - it: should not generate any Database resources by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate Database resources when configured
+    set:
+      databases:
+        - name: test-db-1
+          ensure: present
+          owner: app
+        - name: test-db-2
+          ensure: present
+          owner: app
+    asserts:
+      - hasDocuments:
+          count: 2
+      - isKind:
+          of: Database
+        documentIndex: 0
+      - equal:
+          path: spec.name
+          value: test-db-1
+        documentIndex: 0
+      - equal:
+          path: spec.ensure
+          value: present
+        documentIndex: 0
+      - equal:
+          path: spec.owner
+          value: app
+        documentIndex: 0
+      - isKind:
+          of: Database
+        documentIndex: 1
+      - equal:
+          path: spec.name
+          value: test-db-2
+        documentIndex: 1
+      - equal:
+          path: spec.ensure
+          value: present
+        documentIndex: 1
+      - equal:
+          path: spec.owner
+          value: app
+        documentIndex: 1
