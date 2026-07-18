@@ -1,0 +1,57 @@
+{{- range .Values.roles }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Role
+metadata:
+  name: {{ include "cluster.name" $ }}-role-{{ .name | replace "_" "-" }}
+  namespace: {{ include "cluster.namespace" $ }}
+  labels:
+    app.kubernetes.io/name: {{ include "cluster.name" $ }}-role-{{ .name | replace "_" "-" }}
+    {{- include "cluster.labels" $ | nindent 4 }}
+spec:
+  name: {{ .name }}
+  cluster:
+    name: {{ include "cluster.name" $ }}-cluster
+  ensure: {{ .ensure | default "present" }}
+  {{- if hasKey . "passwordSecret" }}
+  passwordSecret:
+    name: {{ .passwordSecret.name }}
+  {{- end }}
+  {{- if hasKey . "login" }}
+  login: {{ .login }}
+  {{- end }}
+  {{- if hasKey . "superuser" }}
+  superuser: {{ .superuser }}
+  {{- end }}
+  {{- if hasKey . "createdb" }}
+  createdb: {{ .createdb }}
+  {{- end }}
+  {{- if hasKey . "createrole" }}
+  createrole: {{ .createrole }}
+  {{- end }}
+  {{- if hasKey . "inherit" }}
+  inherit: {{ .inherit }}
+  {{- end }}
+  {{- if hasKey . "replication" }}
+  replication: {{ .replication }}
+  {{- end }}
+  {{- if hasKey . "bypassrls" }}
+  bypassrls: {{ .bypassrls }}
+  {{- end }}
+  {{- if hasKey . "connectionLimit" }}
+  connectionLimit: {{ .connectionLimit }}
+  {{- end }}
+  {{- with .validUntil }}
+  validUntil: {{ . | quote }}
+  {{- end }}
+  {{- with .comment }}
+  comment: {{ . | quote }}
+  {{- end }}
+  {{- with .inRoles }}
+  inRoles:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .disablePassword }}
+  disablePassword: {{ . }}
+  {{- end }}
+{{- end }}

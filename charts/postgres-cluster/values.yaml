@@ -95,19 +95,6 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
   enablePDB: true
 
-  # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
-  # already present in the database.
-  # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
-  roles: []
-    # - name: dante
-    #   ensure: present
-    #   comment: Dante Alighieri
-    #   login: true
-    #   superuser: false
-    #   inRoles:
-    #     - pg_monitor
-    #     - pg_signal_backend
-
   # -- Enable default monitoring and alert rules
   monitoring:
     # -- Whether to enable monitoring
@@ -443,6 +430,19 @@ backup:
 
     # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
     plugin: ""
+
+# -- Role management configuration.
+# Define a list of roles to be managed by the operator via Role CRDs.
+# See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Role
+# Example:
+# roles:
+#   - name: my_role
+#     ensure: present
+#     login: true
+#     connectionLimit: 10
+#     inRoles:
+#       - another_role
+roles: []
 
 # -- Database management configuration.
 # Define a list of databases, schemas, and extensions to be managed by the operator.
