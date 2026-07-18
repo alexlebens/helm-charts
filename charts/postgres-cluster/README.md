@@ -130,7 +130,7 @@ Cloudnative-pg Cluster
 | recovery.objectStore.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | recovery.objectStore.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
-| roles | list | `[]` | Role management configuration. Define a list of roles to be managed by the operator via Role CRDs. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Role Example: roles:   - name: my_role     ensure: present     login: true     connectionLimit: 10     inRoles:       - another_role |
+| roles | list | `[]` | Role management configuration. Define a list of roles to be managed by the operator via DatabaseRole CRDs. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-DatabaseRole Example: roles:   - name: my_role     ensure: present     login: true     connectionLimit: 10     inRoles:       - another_role |
 | type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` |
 
 ----------------------------------------------

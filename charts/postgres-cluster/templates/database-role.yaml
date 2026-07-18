@@ -1,7 +1,7 @@
 {{- range .Values.roles }}
 ---
 apiVersion: postgresql.cnpg.io/v1
-kind: Role
+kind: DatabaseRole
 metadata:
   name: {{ include "cluster.name" $ }}-role-{{ .name | replace "_" "-" }}
   namespace: {{ include "cluster.namespace" $ }}

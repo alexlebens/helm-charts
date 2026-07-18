@@ -432,8 +432,8 @@ backup:
     plugin: ""
 
 # -- Role management configuration.
-# Define a list of roles to be managed by the operator via Role CRDs.
-# See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Role
+# Define a list of roles to be managed by the operator via DatabaseRole CRDs.
+# See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-DatabaseRole
 # Example:
 # roles:
 #   - name: my_role
