@@ -1,8 +1,10 @@
 # cloudflared
 
-![Version: 4.1.0](https://img.shields.io/badge/Version-4.1.0-informational?style=flat-square) ![AppVersion: 2026.7.1](https://img.shields.io/badge/AppVersion-2026.7.1-informational?style=flat-square)
+![Version: 4.1.1](https://img.shields.io/badge/Version-4.1.1-informational?style=flat-square) ![AppVersion: 2026.7.2](https://img.shields.io/badge/AppVersion-2026.7.2-informational?style=flat-square)
 
 Cloudflared Tunnel
+
+**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/cloudflared>
 
 ## Maintainers
 
@@ -12,6 +14,7 @@ Cloudflared Tunnel
 
 ## Source Code
 
+* <https://gitea.alexlebens.net/alexlebens/helm-charts>
 * <https://github.com/cloudflare/cloudflared>
 * <https://hub.docker.com/r/cloudflare/cloudflared>
 * <https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common>
@@ -27,7 +30,7 @@ Cloudflared Tunnel
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | extraArgs | list | `[]` | Additional arguments to pass to the cloudflared container |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.7.1@sha256:188bb03589a32affed3cf4d0590565ffe67b78866e6b5582574afab2b705bafe"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.7.2@sha256:4f6655284ab3d252b7f28fedb19fe6c8fc82ee5b1295c20ac74d475e5398a52d"}` | Default image |
 | metrics | object | `{"enabled":true,"prometheusRule":{"enabled":true,"labels":{},"rules":[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]}}` | Metrics |
 | metrics.prometheusRule.labels | object | `{}` | PrometheusRule additional labels |
 | metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |

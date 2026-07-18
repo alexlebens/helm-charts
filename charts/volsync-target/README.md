@@ -1,8 +1,10 @@
 # volsync-target
 
-![Version: 2.2.0](https://img.shields.io/badge/Version-2.2.0-informational?style=flat-square) ![AppVersion: 0.16.0](https://img.shields.io/badge/AppVersion-0.16.0-informational?style=flat-square)
+![Version: 2.2.1](https://img.shields.io/badge/Version-2.2.1-informational?style=flat-square) ![AppVersion: 0.16.0](https://img.shields.io/badge/AppVersion-0.16.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
+
+**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/volsync-target>
 
 ## Maintainers
 
@@ -12,6 +14,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 
 ## Source Code
 
+* <https://gitea.alexlebens.net/alexlebens/helm-charts>
 * <https://github.com/backube/volsync>
 * <https://github.com/backube/volsync/tree/main/helm/volsync>
 

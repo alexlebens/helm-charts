@@ -1,8 +1,10 @@
 # rclone-bucket
 
-![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square) ![AppVersion: v1.74.4](https://img.shields.io/badge/AppVersion-v1.74.4-informational?style=flat-square)
+![Version: 1.0.2](https://img.shields.io/badge/Version-1.0.2-informational?style=flat-square) ![AppVersion: v1.74.4](https://img.shields.io/badge/AppVersion-v1.74.4-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
+
+**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/rclone-bucket>
 
 ## Maintainers
 
@@ -12,6 +14,7 @@ Rclone CronJob to replicate buckets
 
 ## Source Code
 
+* <https://gitea.alexlebens.net/alexlebens/helm-charts>
 * <https://github.com/rclone/rclone>
 * <https://hub.docker.com/r/rclone/rclone>
 

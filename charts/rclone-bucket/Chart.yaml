@@ -1,14 +1,20 @@
 apiVersion: v2
 name: rclone-bucket
-version: 1.0.1
+version: 1.0.2
 description: Rclone CronJob to replicate buckets
 keywords:
   - rclone-bucket
   - rclone
   - storage
+home: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/rclone-bucket
 sources:
+  - https://gitea.alexlebens.net/alexlebens/helm-charts
   - https://github.com/rclone/rclone
   - https://hub.docker.com/r/rclone/rclone
+annotations:
+  artifacthub.io/links: |
+    - name: source
+      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/rclone-bucket
 maintainers:
   - name: alexlebens
 dependencies:

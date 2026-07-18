@@ -1,14 +1,20 @@
 apiVersion: v2
 name: generic-device-plugin
-version: 0.21.6
+version: 0.21.7
 description: Generic Device Plugin
 keywords:
   - generic-device-plugin
   - device
   - plugin
+home: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/generic-device-plugin
 sources:
+  - https://gitea.alexlebens.net/alexlebens/helm-charts
   - https://github.com/squat/generic-device-plugin
   - https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+annotations:
+  artifacthub.io/links: |
+    - name: source
+      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/generic-device-plugin
 maintainers:
   - name: alexlebens
 dependencies:

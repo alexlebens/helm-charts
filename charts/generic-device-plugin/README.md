@@ -1,8 +1,10 @@
 # generic-device-plugin
 
-![Version: 0.21.6](https://img.shields.io/badge/Version-0.21.6-informational?style=flat-square) ![AppVersion: 0.21.1](https://img.shields.io/badge/AppVersion-0.21.1-informational?style=flat-square)
+![Version: 0.21.7](https://img.shields.io/badge/Version-0.21.7-informational?style=flat-square) ![AppVersion: 0.21.1](https://img.shields.io/badge/AppVersion-0.21.1-informational?style=flat-square)
 
 Generic Device Plugin
+
+**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/generic-device-plugin>
 
 ## Maintainers
 
@@ -12,6 +14,7 @@ Generic Device Plugin
 
 ## Source Code
 
+* <https://gitea.alexlebens.net/alexlebens/helm-charts>
 * <https://github.com/squat/generic-device-plugin>
 * <https://github.com/bjw-s/helm-charts/tree/main/charts/library/common>
 

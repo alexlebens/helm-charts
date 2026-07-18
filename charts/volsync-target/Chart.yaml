@@ -1,15 +1,21 @@
 apiVersion: v2
 name: volsync-target
-version: 2.2.0
+version: 2.2.1
 description: Volsync Replication set to target specific PVC with preconfigured settings
 keywords:
   - volsync-target
   - volsync
   - storage
   - kubernetes
+home: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/volsync-target
 sources:
+  - https://gitea.alexlebens.net/alexlebens/helm-charts
   - https://github.com/backube/volsync
   - https://github.com/backube/volsync/tree/main/helm/volsync
+annotations:
+  artifacthub.io/links: |
+    - name: source
+      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/volsync-target
 maintainers:
   - name: alexlebens
 icon: https://raw.githubusercontent.com/backube/volsync/main/docs/media/volsync.svg?sanitize=true
