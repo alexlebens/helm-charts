@@ -110,12 +110,10 @@ cluster:
 
   # -- Enable default monitoring and alert rules
   monitoring:
-
     # -- Whether to enable monitoring
     enabled: true
 
     podMonitor:
-
       # -- Whether to enable the PodMonitor
       enabled: true
 
@@ -129,7 +127,6 @@ cluster:
 
     # -- Prometheus rule
     prometheusRule:
-
       # -- Whether to enable the PrometheusRule automated alerts
       enabled: true
 
@@ -162,7 +159,6 @@ cluster:
   # -- Parameters to be set for the database itself
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
   postgresql:
-
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters:
       shared_buffers: 512MB
@@ -191,12 +187,12 @@ cluster:
       # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
       # server: 'openldap.default.svc.cluster.local'
       # bindSearchAuth:
-        # baseDN: 'ou=org,dc=example,dc=com'
-        # bindDN: 'cn=admin,dc=example,dc=com'
-        # bindPassword:
-          # name: 'ldapBindPassword'
-          # key: 'data'
-        # searchAttribute: 'uid'
+      # baseDN: 'ou=org,dc=example,dc=com'
+      # bindDN: 'cn=admin,dc=example,dc=com'
+      # bindPassword:
+      # name: 'ldapBindPassword'
+      # key: 'data'
+      # searchAttribute: 'uid'
 
   # -- Bootstrap is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
@@ -210,8 +206,8 @@ cluster:
     # encoding: UTF8
     # postInitSQL:
     #   - CREATE EXTENSION IF NOT EXISTS vector;
-    # postInitApplicationSQL: []
-    # postInitTemplateSQL: []
+    postInitApplicationSQL: []
+    postInitTemplateSQL: []
 
   # -- Configure the metadata of the generated service account
   serviceAccountTemplate: {}
@@ -221,7 +217,6 @@ cluster:
 
 # -- Recovery settings when booting cluster from external cluster
 recovery:
-
   # -- Available recovery methods:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported).
@@ -230,10 +225,8 @@ recovery:
 
   # See https://cloudnative-pg.io/documentation/current/recovery/#recovery-from-a-backup-object
   backup:
-
     # -- Point in time recovery target. Specify one of the following:
     pitrTarget:
-
       # -- Time in RFC3339 format
       time: ""
 
@@ -248,10 +241,8 @@ recovery:
 
   # See https://cloudnative-pg.io/documentation/current/recovery/#recovery-from-an-object-store
   objectStore:
-
     # -- Point in time recovery target. Specify one of the following:
     pitrTarget:
-
       # -- Time in RFC3339 format
       time: ""
 
@@ -303,7 +294,6 @@ recovery:
 
     # -- Storage
     wal:
-
       # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
       compression: snappy
 
@@ -325,7 +315,6 @@ recovery:
 
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
   import:
-
     # -- One of `microservice` or `monolith.`
     # See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works
     type: "microservice"
@@ -361,7 +350,6 @@ recovery:
       database: app
       sslMode: "verify-full"
       passwordSecret:
-
         # -- Whether to create a secret for the password
         create: false
 
@@ -385,7 +373,6 @@ recovery:
 
 # -- Backup settings
 backup:
-
   # -- Method to create backups, options currently are only objectStore
   method: objectStore
 
@@ -485,32 +472,32 @@ backup:
 
 # -- Database management configuration
 databases: []
- # - name: app                      # -- Name of the database to be created.
- #   ensure: present                # -- Ensure the PostgreSQL database is present or absent - defaults to "present".
- #   owner: app                     # -- Owner of the database, defaults to the value of the `name` key.
- #   template: template1            # -- Maps to the TEMPLATE parameter.
- #   encoding: UTF8                 # -- Maps to the ENCODING parameter.
- #   connectionLimit: -1            # -- Maps to the CONNECTION LIMIT parameter. -1 (the default) means no limit.
- #   tablespace: ""                 # -- Maps to the TABLESPACE parameter and ALTER DATABASE.
- #   databaseReclaimPolicy: retain  # -- One of: retain / delete (retain by default).
- #   schemas: []                    # -- List of schemas to be created in the database.
- #    # - name: myschema
- #    #   owner: app                # -- Owner of the schema, defaults to the database owner.
- #    #   ensure: present           # -- Ensure the PostgreSQL schema is present or absent - defaults to "present".
- #   extensions: []                 # -- List of extensions to be created in the database.
- #    # - name: pg_search
- #    #   ensure: present           # -- Ensure the PostgreSQL extension is present or absent - defaults to "present".
- #    #   version: "0.15.21"        # -- Version of the extension to be installed, if not specified the latest version will be used.
- #    #   schema: ""                # -- Schema where the extension will be installed, if not specified the extensions or current default object creation schema will be used.
- #   isTemplate: false              # -- Maps to the IS_TEMPLATE parameter. If true, the database is considered a template for new databases.
- #   locale: ""                     # -- Maps to the LC_COLLATE and LC_CTYPE parameters
- #   localeProvider: ""             # -- Maps to the LOCALE_PROVIDER parameter. Available from PostgreSQL 16.
- #   localeCollate: ""              # -- Maps to the LC_COLLATE parameter
- #   localeCType: ""                # -- Maps to the LC_CTYPE parameter
- #   icuLocale: ""                  # -- Maps to the ICU_LOCALE parameter. Available from PostgreSQL 15.
- #   icuRules: ""                   # -- Maps to the ICU_RULES parameter. Available from PostgreSQL 16.
- #   builtinLocale: ""              # -- Maps to the BUILTIN_LOCALE parameter. Available from PostgreSQL 17.
- #   collationVersion: ""           # -- Maps to the COLLATION_VERSION parameter.
+  # - name: app                      # -- Name of the database to be created.
+  #   ensure: present                # -- Ensure the PostgreSQL database is present or absent - defaults to "present".
+  #   owner: app                     # -- Owner of the database, defaults to the value of the `name` key.
+  #   template: template1            # -- Maps to the TEMPLATE parameter.
+  #   encoding: UTF8                 # -- Maps to the ENCODING parameter.
+  #   connectionLimit: -1            # -- Maps to the CONNECTION LIMIT parameter. -1 (the default) means no limit.
+  #   tablespace: ""                 # -- Maps to the TABLESPACE parameter and ALTER DATABASE.
+  #   databaseReclaimPolicy: retain  # -- One of: retain / delete (retain by default).
+  #   schemas: []                    # -- List of schemas to be created in the database.
+  #    # - name: myschema
+  #    #   owner: app                # -- Owner of the schema, defaults to the database owner.
+  #    #   ensure: present           # -- Ensure the PostgreSQL schema is present or absent - defaults to "present".
+  #   extensions: []                 # -- List of extensions to be created in the database.
+  #    # - name: pg_search
+  #    #   ensure: present           # -- Ensure the PostgreSQL extension is present or absent - defaults to "present".
+  #    #   version: "0.15.21"        # -- Version of the extension to be installed, if not specified the latest version will be used.
+  #    #   schema: ""                # -- Schema where the extension will be installed, if not specified the extensions or current default object creation schema will be used.
+  #   isTemplate: false              # -- Maps to the IS_TEMPLATE parameter. If true, the database is considered a template for new databases.
+  #   locale: ""                     # -- Maps to the LC_COLLATE and LC_CTYPE parameters
+  #   localeProvider: ""             # -- Maps to the LOCALE_PROVIDER parameter. Available from PostgreSQL 16.
+  #   localeCollate: ""              # -- Maps to the LC_COLLATE parameter
+  #   localeCType: ""                # -- Maps to the LC_CTYPE parameter
+  #   icuLocale: ""                  # -- Maps to the ICU_LOCALE parameter. Available from PostgreSQL 15.
+  #   icuRules: ""                   # -- Maps to the ICU_RULES parameter. Available from PostgreSQL 16.
+  #   builtinLocale: ""              # -- Maps to the BUILTIN_LOCALE parameter. Available from PostgreSQL 17.
+  #   collationVersion: ""           # -- Maps to the COLLATION_VERSION parameter.
 
 # -- List of PgBouncer poolers
 poolers: []

@@ -2,30 +2,24 @@
 {{- if eq .Values.mode "standalone" -}}
 bootstrap:
   initdb:
-    {{- with .Values.cluster.initdb }}
-      {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
-      {{- . | toYaml | nindent 4 }}
-      {{- end }}
+    {{- $initdbOpts := omit .Values.cluster.initdb "postInitApplicationSQL" "owner" "import" }}
+    {{- if $initdbOpts }}
+    {{- toYaml $initdbOpts | nindent 4 }}
     {{- end }}
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
-    {{- if (.Values.cluster.initdb.postInitApplicationSQL) }}
+    {{- with .Values.cluster.initdb.postInitApplicationSQL }}
     postInitApplicationSQL:
-      {{- with .Values.cluster.initdb }}
-      {{- range .postInitApplicationSQL }}
-      {{- printf "- %s" . | nindent 6 }}
-      {{- end }}
-      {{- end }}
+      {{- toYaml . | nindent 6 }}
     {{- end }}
 {{- else if eq .Values.mode "recovery" -}}
 bootstrap:
   {{- if eq .Values.recovery.method "import" }}
   initdb:
-    {{- with .Values.cluster.initdb }}
-      {{- with (omit . "owner" "import" "postInitApplicationSQL") }}
-      {{- . | toYaml | nindent 4 }}
-      {{- end }}
+    {{- $initdbOpts := omit .Values.cluster.initdb "owner" "import" "postInitApplicationSQL" }}
+    {{- if $initdbOpts }}
+    {{- toYaml $initdbOpts | nindent 4 }}
     {{- end }}
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
@@ -34,34 +28,33 @@ bootstrap:
       source:
         externalCluster: importSource
       type: {{ .Values.recovery.import.type }}
-      databases:
-        {{- if and (gt (len .Values.recovery.import.databases) 1) (eq .Values.recovery.import.type "microservice") }}
-          {{ fail "Too many databases in import type of microservice!" }}
-        {{- else}}
-        {{- with .Values.recovery.import.databases }}
-        {{- . | toYaml | nindent 8 }}
-        {{- end }}
-        {{- end }}
-      {{- if eq .Values.recovery.import.type "monolith" }}
-      roles:
-        {{- with .Values.recovery.import.roles }}
-        {{- . | toYaml | nindent 8 }}
-        {{- end }}
+      {{- if and (ne (len .Values.recovery.import.databases) 1) (eq .Values.recovery.import.type "microservice") }}
+        {{ fail "Exactly one database must be specified for import type of microservice!" }}
       {{- end }}
-      {{- if and (.Values.recovery.import.postImportApplicationSQL) (eq .Values.recovery.import.type "microservice") }}
+      {{- with .Values.recovery.import.databases }}
+      databases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if eq .Values.recovery.import.type "monolith" }}
+      {{- with .Values.recovery.import.roles }}
+      roles:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if eq .Values.recovery.import.type "microservice" }}
+      {{- with .Values.recovery.import.postImportApplicationSQL }}
       postImportApplicationSQL:
-        {{- with .Values.recovery.import.postImportApplicationSQL }}
-        {{- . | toYaml | nindent 8 }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
       schemaOnly: {{ .Values.recovery.import.schemaOnly }}
       {{- with .Values.recovery.import.pgDumpExtraOptions }}
       pgDumpExtraOptions:
-        {{- . | toYaml | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.recovery.import.pgRestoreExtraOptions }}
       pgRestoreExtraOptions:
-        {{- . | toYaml | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
   {{- else if eq .Values.recovery.method "backup" }}
   recovery:
