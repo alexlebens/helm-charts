@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 4.0.0](https://img.shields.io/badge/Version-4.0.0-informational?style=flat-square) ![AppVersion: 2026.6.1](https://img.shields.io/badge/AppVersion-2026.6.1-informational?style=flat-square)
+![Version: 4.1.0](https://img.shields.io/badge/Version-4.1.0-informational?style=flat-square) ![AppVersion: 2026.7.1](https://img.shields.io/badge/AppVersion-2026.7.1-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -27,7 +27,7 @@ Cloudflared Tunnel
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | extraArgs | list | `[]` | Additional arguments to pass to the cloudflared container |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.6.1@sha256:6d91c121b803126f7a5344005d17a9324788fc09d305b6e2560ec6040a7ae283"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.7.1@sha256:188bb03589a32affed3cf4d0590565ffe67b78866e6b5582574afab2b705bafe"}` | Default image |
 | metrics | object | `{"enabled":true,"prometheusRule":{"enabled":true,"labels":{},"rules":[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]}}` | Metrics |
 | metrics.prometheusRule.labels | object | `{}` | PrometheusRule additional labels |
 | metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
