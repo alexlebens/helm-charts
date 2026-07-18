@@ -452,27 +452,24 @@ backup:
       # -- Number of data files to be archived or restored in parallel.
       jobs: 4
 
-  # -- List of scheduled backups
-  scheduledBackups: []
+  # -- Scheduled backup configuration
+  scheduledBackup:
+    enabled: false
 
-    # -
-    #   # -- Scheduled backup name
-    #   name: daily-backup
+    # -- Start backup on deployment
+    immediate: true
 
-    #   # -- Schedule in cron format
-    #   schedule: "0 0 0 * * *"
+    # -- Temporarily stop scheduled backups from running
+    suspend: false
 
-    #   # -- Start backup on deployment
-    #   immediate: false
+    # -- Schedule in cron format
+    schedule: "0 0 0 * * *"
 
-    #   # -- Temporarily stop scheduled backups from running
-    #   suspend: false
+    # -- Backup owner reference
+    backupOwnerReference: ""
 
-    #   # -- Backup owner reference
-    #   backupOwnerReference: self
-
-    #   # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
-    #   plugin: barman-cloud.cloudnative-pg.io
+    # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
+    plugin: ""
 
 # -- Database management configuration
 databases: []
