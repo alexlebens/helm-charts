@@ -76,14 +76,16 @@ jobs:
           ]
       fail-fast: false
     steps:
-      - name: Check if chart should be processed
+      - name: Check Chart to Process
         id: check
         run: |
           CHARTS='${{ needs.prepare.outputs.matrix }}'
           if echo "$CHARTS" | grep -q "\"${{ matrix.chart }}\""; then
             echo "process=true" >> $GITEA_OUTPUT
+
           else
             echo "process=false" >> $GITEA_OUTPUT
+
           fi
 
       - name: Checkout
@@ -183,9 +185,13 @@ jobs:
 
           if [ -z "$LAST_TAG" ]; then
             git log --format="- %s" -- charts/${{ env.CHART_NAME }} > release_notes.md
+
           else
             git log ${LAST_TAG}..HEAD --format="- %s" -- charts/${{ env.CHART_NAME }} > release_notes.md
+
           fi
+
+          echo "----"
 
       - name: Release Helm Chart
         if: steps.check.outputs.process == 'true'
