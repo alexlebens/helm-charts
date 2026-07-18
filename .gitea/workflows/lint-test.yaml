@@ -215,52 +215,38 @@ jobs:
         id: check-dir-changes
         if: steps.branch-exists.outputs.exists == 'true'
         run: |
-          CHANGED_CHARTS=()
-
           echo ">> Target branch for diff is: ${BASE_BRANCH}"
 
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo ""
             echo ">> Checking for changes in a pull request ..."
-            GIT_DIFF=$(git diff --name-only "${BASE_BRANCH}" | xargs -I {} dirname {} | sort -u | grep -E "charts/")
+            CHANGED_CHARTS=$(git diff --name-only "${BASE_BRANCH}" | grep -E "^charts/" | awk -F '/' '{print $2}' | sort -u | tr '\n' ' ')
 
           else
             echo ""
             echo ">> Checking for changes from a push ..."
-            GIT_DIFF=$(git diff --name-only ${{ gitea.event.before }}..HEAD | xargs -I {} dirname {} | sort -u | grep -E "charts/")
+            CHANGED_CHARTS=$(git diff --name-only ${{ gitea.event.before }}..HEAD | grep -E "^charts/" | awk -F '/' '{print $2}' | sort -u | tr '\n' ' ')
 
           fi
 
-          if [ -n "${GIT_DIFF}" ]; then
-            echo ""
-            echo ">> Changes detected:"
-            echo "$GIT_DIFF"
-
-            for path in $GIT_DIFF; do
-              CHANGED_CHARTS+=$(echo "$path" | awk -F '/' '{print $2}')
-              CHANGED_CHARTS+=$(echo " ")
-
-            done
-
-          else
-            echo ""
-            echo ">> No changes detected"
-
-          fi
+          CHANGED_CHARTS=$(echo "$CHANGED_CHARTS" | xargs)
 
           if [ -n "${CHANGED_CHARTS}" ]; then
             echo ""
-            echo ">> Chart to Lint:"
-            echo "$(echo "${CHANGED_CHARTS}" | sort -u)"
+            echo ">> Charts to Lint:"
+            echo "${CHANGED_CHARTS}"
 
             echo "----"
 
             echo "changes-detected=true" >> $GITEA_OUTPUT
             echo "chart-dir<<EOF" >> $GITEA_OUTPUT
-            echo "$(echo "${CHANGED_CHARTS}" | sort -u)" >> $GITEA_OUTPUT
+            echo "${CHANGED_CHARTS}" >> $GITEA_OUTPUT
             echo "EOF" >> $GITEA_OUTPUT
 
           else
+            echo ""
+            echo ">> No changes detected"
+
             echo "----"
 
             echo "changes-detected=false" >> $GITEA_OUTPUT
