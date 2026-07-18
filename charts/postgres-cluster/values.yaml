@@ -425,7 +425,7 @@ backup:
       encryption: ""
 
       # -- Number of WAL files to be archived or restored in parallel.
-      maxParallel: 1
+      maxParallel: 4
 
     data:
       # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
@@ -435,7 +435,7 @@ backup:
       encryption: ""
 
       # -- Number of data files to be archived or restored in parallel.
-      jobs: 1
+      jobs: 4
 
   # -- List of scheduled backups
   scheduledBackups: []

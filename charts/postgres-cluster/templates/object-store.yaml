@@ -31,21 +31,21 @@ spec:
       name: {{ .endpointCA.name }}
       key: {{ .endpointCA.key }}
     {{- end }}
-    {{- if .wal }}
+    {{- with .wal }}
     wal:
-      compression: {{ .wal.compression | default "snappy" }}
-      {{ with .wal.encryption }}
-      encryption: {{ . }}
-      {{ end }}
-      maxParallel: {{ .wal.maxParallel | default "1" }}
-    {{- end }}
-    {{- if .data }}
-    data:
-      compression: {{ .data.compression | default "snappy"  }}
-      {{- with .data.encryption }}
-      encryption: {{ . }}
+      compression: {{ .compression | default "snappy" }}
+      {{- if .encryption }}
+      encryption: {{ .encryption }}
       {{- end }}
-      jobs: {{ .data.jobs | default 1 }}
+      maxParallel: {{ .maxParallel | default "2" }}
+    {{- end }}
+    {{- with .data }}
+    data:
+      compression: {{ .compression | default "snappy" }}
+      {{- if .encryption }}
+      encryption: {{ .encryption }}
+      {{- end }}
+      jobs: {{ .jobs | default 2 }}
     {{- end }}
     s3Credentials:
       accessKeyId:
