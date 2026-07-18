@@ -12,7 +12,7 @@ externalClusters:
       enabled: true
       isWALArchiver: false
       parameters:
-        barmanObjectName: "{{ include "cluster.name" . }}-recovery"
+        barmanObjectName: {{ include "cluster.recoveryName" . }}
         serverName: {{ include "cluster.recoveryServerName" . }}
   {{- end }}
 {{- else -}}

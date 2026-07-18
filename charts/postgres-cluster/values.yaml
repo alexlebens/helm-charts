@@ -268,11 +268,18 @@ recovery:
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
-      # -- Creates a secret with the given value if true, otherwise uses an existing secret.
-      create: false
-
+      # -- Name and key of existing secret containing the certificate.
       name: ""
       key: ""
+
+      # -- Generates an ExternalSecret if external secrets are enabled.
+      createExternalSecret: false
+
+      # -- Path to the secret in the external secret store if external secrets are enabled.
+      externalSecretCredentialPath: ""
+
+      # -- Property within the external secret that contains the CA certificate.
+      externalSecretProperty: "ca.crt"
 
     # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
     index: 1
@@ -405,10 +412,18 @@ backup:
 
     # -- Specifies a CA bundle to validate a privately signed certificate.
     endpointCA:
-      # -- Creates a secret with the given value if true, otherwise uses an existing secret.
-      create: false
+      # -- Name and key of existing secret containing the certificate.
       name: ""
       key: ""
+
+      # -- Generates an ExternalSecret if external secrets are enabled.
+      createExternalSecret: false
+
+      # -- Path to the secret in the external secret store if external secrets are enabled.
+      externalSecretCredentialPath: ""
+
+      # -- Property within the external secret that contains the CA certificate.
+      externalSecretProperty: "ca.crt"
 
     # -- Retention policy for backups
     retentionPolicy: "30d"

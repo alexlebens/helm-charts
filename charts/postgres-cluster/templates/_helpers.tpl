@@ -73,6 +73,13 @@ Postgres GID
 {{- end -}}
 
 {{/*
+Generate recovery name
+*/}}
+{{- define "cluster.recoveryName" -}}
+  {{- printf "%s-recovery" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+
+{{/*
 Generate recovery server name
 */}}
 {{- define "cluster.recoveryServerName" -}}
@@ -106,13 +113,31 @@ Generate recovery credentials name
 {{- end }}
 
 {{/*
+Generate recovery CA secret name
+*/}}
+{{- define "cluster.recoveryCaSecretName" -}}
+  {{- if .Values.recovery.objectStore.endpointCA.name -}}
+    {{- .Values.recovery.objectStore.endpointCA.name -}}
+  {{- else -}}
+    {{- printf "%s-recovery-ca" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+  {{- end -}}
+{{- end }}
+
+{{/*
 Generate backup name
 */}}
 {{- define "cluster.backupName" -}}
+  {{- printf "%s-backup" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+
+{{/*
+Generate backup server name
+*/}}
+{{- define "cluster.backupServerName" -}}
   {{- if .Values.backup.backupServerName -}}
     {{- .Values.backup.backupServerName -}}
   {{- else -}}
-    {{- printf "%s-backup" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s" (include "cluster.backupName" .) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -137,5 +162,16 @@ Generate backup destination path
     {{- .Values.backup.objectStore.endpointCredentialsOverride -}}
   {{- else -}}
     {{- printf "%s-backup-secret" (include "cluster.name" .) | trunc 63 | trimSuffix "-" -}}
+  {{- end -}}
+{{- end }}
+
+{{/*
+Generate backup CA secret name
+*/}}
+{{- define "cluster.backupCaSecretName" -}}
+  {{- if .Values.backup.objectStore.endpointCA.name -}}
+    {{- .Values.backup.objectStore.endpointCA.name -}}
+  {{- else -}}
+    {{- printf "%s-ca" (include "cluster.backupName" .) | trunc 63 | trimSuffix "-" -}}
   {{- end -}}
 {{- end }}

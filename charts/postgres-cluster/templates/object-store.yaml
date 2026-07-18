@@ -10,9 +10,6 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ include "cluster.backupName" $context }}
     {{- include "cluster.labels" $context | nindent 4 }}
-    {{- with $context.Values.cluster.additionalLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
 spec:
   retentionPolicy: {{ .retentionPolicy | default "7d" }}
   # Required when not using AWS S3
@@ -27,9 +24,11 @@ spec:
     destinationPath: {{ include "cluster.backupDestinationPath" $context }}
     endpointURL: {{ .endpointURL }}
     {{- if .endpointCA }}
+    {{- if or .endpointCA.name .endpointCA.createExternalSecret }}
     endpointCA:
-      name: {{ .endpointCA.name }}
-      key: {{ .endpointCA.key }}
+      name: {{ include "cluster.backupCaSecretName" $context }}
+      key: {{ .endpointCA.key | default "ca.crt" }}
+    {{- end }}
     {{- end }}
     {{- with .wal }}
     wal:
@@ -61,47 +60,53 @@ spec:
 {{- end }}
 
 {{- if eq .Values.recovery.method "objectStore" }}
+{{- $context := . }}
+{{- with .Values.recovery.objectStore }}
 ---
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: "{{ include "cluster.name" . }}-recovery"
-  namespace: {{ include "cluster.namespace" . }}
+  name: {{ include "cluster.recoveryName" $context }}
+  namespace: {{ include "cluster.namespace" $context }}
   labels:
-    {{- include "cluster.labels" . | nindent 4 }}
-    app.kubernetes.io/name: "{{ include "cluster.name" . }}-recovery"
-    {{- with .Values.cluster.additionalLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    app.kubernetes.io/name: {{ include "cluster.recoveryName" $context }}
+    {{- include "cluster.labels" $context | nindent 4 }}
 spec:
   configuration:
-    destinationPath: {{ include "cluster.recoveryDestinationPath" . }}
-    endpointURL: {{ .Values.recovery.objectStore.endpointURL }}
-    {{- if .Values.recovery.objectStore.endpointCA.name }}
+    destinationPath: {{ include "cluster.recoveryDestinationPath" $context }}
+    endpointURL: {{ .endpointURL }}
+    {{- if .endpointCA }}
+    {{- if or .endpointCA.name .endpointCA.createExternalSecret }}
     endpointCA:
-      name: {{ .Values.recovery.objectStore.endpointCA.name }}
-      key: {{ .Values.recovery.objectStore.endpointCA.key }}
+      name: {{ include "cluster.recoveryCaSecretName" $context }}
+      key: {{ .endpointCA.key | default "ca.crt" }}
     {{- end }}
+    {{- end }}
+    {{- with .wal }}
     wal:
-      compression: {{ .Values.recovery.objectStore.wal.compression }}
-      {{- with .Values.recovery.objectStore.wal.encryption}}
-      encryption: {{ . }}
+      compression: {{ .compression | default "snappy" }}
+      {{- if .encryption }}
+      encryption: {{ .encryption }}
       {{- end }}
-      maxParallel: {{ .Values.recovery.objectStore.wal.maxParallel }}
+      maxParallel: {{ .maxParallel | default "2" }}
+    {{- end }}
+    {{- with .data }}
     data:
-      compression: {{ .Values.recovery.objectStore.data.compression }}
-      {{- with .Values.recovery.objectStore.data.encryption }}
-      encryption: {{ . }}
+      compression: {{ .compression | default "snappy" }}
+      {{- if .encryption }}
+      encryption: {{ .encryption }}
       {{- end }}
-      jobs: {{ .Values.recovery.objectStore.data.jobs }}
+      jobs: {{ .jobs | default 2 }}
+    {{- end }}
     s3Credentials:
       accessKeyId:
-        name: {{ include "cluster.recoverySecretName" . }}
+        name: {{ include "cluster.recoverySecretName" $context }}
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: {{ include "cluster.recoverySecretName" . }}
+        name: {{ include "cluster.recoverySecretName" $context }}
         key: ACCESS_SECRET_KEY
       region:
-        name: {{ include "cluster.recoverySecretName" . }}
+        name: {{ include "cluster.recoverySecretName" $context }}
         key: ACCESS_REGION
+{{- end }}
 {{- end }}

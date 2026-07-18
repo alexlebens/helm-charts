@@ -131,7 +131,7 @@ spec:
       isWALArchiver: {{ ternary true false .Values.backup.objectStore.isWALArchiver }}
       parameters:
         barmanObjectName: {{ include "cluster.backupName" . }}
-        serverName: {{ include "cluster.backupName" . }}
+        serverName: {{ include "cluster.backupServerName" . }}
   {{- end -}}
   {{- include "cluster.bootstrap" . | nindent 2 -}}
   {{- include "cluster.externalClusters" . | nindent 2 -}}
