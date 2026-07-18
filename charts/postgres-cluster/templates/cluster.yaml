@@ -49,12 +49,12 @@ spec:
   {{- with .Values.cluster.certificates }}
   certificates:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   {{- with .Values.cluster.superuserSecret }}
   superuserSecret:
     name: {{ . }}
-  {{ end }}
+  {{- end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
     {{- if .Values.cluster.postgresql.shared_preload_libraries }}
@@ -66,7 +66,7 @@ spec:
     {{- with .Values.cluster.postgresql.synchronous }}
     synchronous:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
       {{- toYaml . | nindent 6 }}
@@ -75,12 +75,12 @@ spec:
     pg_hba:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-  {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
+  {{- if not (empty .Values.cluster.services) }}
   managed:
     {{- with .Values.cluster.services }}
     services:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
   {{- end }}
   {{- if .Values.cluster.monitoring.enabled }}
   monitoring:
@@ -94,10 +94,10 @@ spec:
     {{- with .Values.cluster.monitoring.customQueriesSecret }}
     customQueriesSecret:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- end }}
   {{- end }}
-  {{- if not (empty .Values.backup.objectStore) }}
+  {{- if .Values.backup.objectStore.enabled }}
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       enabled: true
