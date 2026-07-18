@@ -1,4 +1,5 @@
 {{- if not (empty .Values.cluster.monitoring.customQueries) }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
