@@ -29,7 +29,7 @@ Cloudnative-pg Cluster
 | backup.objectStore.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backup.objectStore.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backup.objectStore.data.jobs | int | `4` | Number of data files to be archived or restored in parallel. |
-| backup.objectStore.destinationBucket | string | `"postgres-backups"` | Desitination bucket |
+| backup.objectStore.destinationBucket | string | `"postgres-backups"` | Destination bucket |
 | backup.objectStore.destinationPathOverride | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
 | backup.objectStore.endpointCA | object | `{"createExternalSecret":false,"externalSecretCredentialPath":"","externalSecretProperty":"ca.crt","key":"","name":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | backup.objectStore.endpointCA.createExternalSecret | bool | `false` | Generates an ExternalSecret if external secrets are enabled. |
@@ -87,6 +87,7 @@ Cloudnative-pg Cluster
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage | object | `{"size":"10Gi","storageClass":"local-path"}` | Default storage size |
 | databases | list | `[]` | Database management configuration. Define a list of databases, schemas, and extensions to be managed by the operator. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Database Example: databases:   - name: app     ensure: present     owner: app     schemas:       - name: myschema         owner: app     extensions:       - name: pg_search         version: "0.15.21" |
+| externalSecretStoreName | string | `"openbao"` | Name of the ClusterSecretStore to use for ExternalSecret resources |
 | kubernetesClusterName | string | `"cl01tl"` | Kubernetes cluster name |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - Default mode. Creates new or updates an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup |
 | nameOverride | string | `""` | Override the name of the cluster |
@@ -113,7 +114,7 @@ Cloudnative-pg Cluster
 | recovery.objectStore.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | recovery.objectStore.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
 | recovery.objectStore.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
-| recovery.objectStore.destinationBucket | string | `"postgres-backups"` | Desitination bucket |
+| recovery.objectStore.destinationBucket | string | `"postgres-backups"` | Destination bucket |
 | recovery.objectStore.destinationPathOverride | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
 | recovery.objectStore.endpointCA | object | `{"createExternalSecret":false,"externalSecretCredentialPath":"","externalSecretProperty":"ca.crt","key":"","name":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | recovery.objectStore.endpointCA.createExternalSecret | bool | `false` | Generates an ExternalSecret if external secrets are enabled. |

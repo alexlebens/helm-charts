@@ -16,6 +16,9 @@ type: postgresql
 # * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup
 mode: standalone
 
+# -- Name of the ClusterSecretStore to use for ExternalSecret resources
+externalSecretStoreName: openbao
+
 # -- Cluster settings
 cluster:
   instances: 3
@@ -216,7 +219,7 @@ recovery:
     # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     owner: ""
 
-    # -- Desitination bucket
+    # -- Destination bucket
     destinationBucket: postgres-backups
 
     # -- Overrides the provider specific default path. Defaults to:
@@ -348,7 +351,7 @@ backup:
   objectStore:
     enabled: false
 
-    # -- Desitination bucket
+    # -- Destination bucket
     destinationBucket: postgres-backups
 
     # -- Overrides the provider specific default path. Defaults to:
