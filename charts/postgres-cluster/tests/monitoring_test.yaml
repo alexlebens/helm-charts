@@ -2,6 +2,7 @@ suite: test Monitoring generation
 templates:
   - pod-monitor.yaml
   - prometheus-rule.yaml
+  - config-map.yaml
 tests:
   - it: should generate Monitoring resources by default
     asserts:
@@ -17,6 +18,9 @@ tests:
       - template: prometheus-rule.yaml
         isKind:
           of: PrometheusRule
+      - template: config-map.yaml
+        hasDocuments:
+          count: 0
 
   - it: should not generate Monitoring resources when disabled
     set:
@@ -50,3 +54,26 @@ tests:
       - template: prometheus-rule.yaml
         isKind:
           of: PrometheusRule
+
+  - it: should generate ConfigMap for custom queries
+    set:
+      cluster:
+        monitoring:
+          enabled: true
+          customQueries:
+            - name: pg_cache_hit_ratio
+              query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+              metrics:
+                - datname:
+                    usage: "LABEL"
+                    description: "Name of the database"
+                - ratio:
+                    usage: GAUGE
+                    description: "Cache hit ratio"
+    asserts:
+      - template: config-map.yaml
+        hasDocuments:
+          count: 1
+      - template: config-map.yaml
+        isKind:
+          of: ConfigMap

@@ -23,3 +23,32 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
+  - it: should generate a DatabaseRole with full configuration
+    set:
+      roles:
+        - name: readonly_user
+          login: true
+          connectionLimit: 10
+          inRoles:
+            - pg_read_all_data
+          passwordSecret:
+            name: my-role-secret
+    asserts:
+      - isKind:
+          of: DatabaseRole
+      - equal:
+          path: spec.name
+          value: readonly_user
+      - equal:
+          path: spec.login
+          value: true
+      - equal:
+          path: spec.connectionLimit
+          value: 10
+      - equal:
+          path: spec.inRoles[0]
+          value: pg_read_all_data
+      - equal:
+          path: spec.passwordSecret.name
+          value: my-role-secret

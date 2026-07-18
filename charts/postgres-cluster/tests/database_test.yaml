@@ -49,3 +49,46 @@ tests:
           path: spec.owner
           value: app
         documentIndex: 1
+
+  - it: should generate Database with extensions and schemas
+    set:
+      databases:
+        - name: app
+          owner: app
+          schemas:
+            - name: myschema
+              owner: app
+          extensions:
+            - name: pg_search
+              version: "0.15.21"
+            - name: vector
+              ensure: present
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.schemas[0].name
+          value: myschema
+      - equal:
+          path: spec.schemas[0].owner
+          value: app
+      - equal:
+          path: spec.extensions[0].name
+          value: pg_search
+      - equal:
+          path: spec.extensions[0].version
+          value: "0.15.21"
+      - equal:
+          path: spec.extensions[1].name
+          value: vector
+
+  - it: should set connection limit on Database
+    set:
+      databases:
+        - name: limited-db
+          owner: app
+          connectionLimit: 50
+    asserts:
+      - equal:
+          path: spec.connectionLimit
+          value: 50

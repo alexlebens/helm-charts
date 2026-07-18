@@ -25,3 +25,21 @@ tests:
       - equal:
           path: spec.pgbouncer.poolMode
           value: session
+
+  - it: should generate a Pooler with monitoring enabled
+    set:
+      poolers:
+        - name: rw
+          instances: 3
+          type: rw
+          poolMode: transaction
+          monitoring:
+            enabled: true
+            podMonitor:
+              enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.monitoring.enablePodMonitor
+          value: true

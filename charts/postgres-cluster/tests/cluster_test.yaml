@@ -180,3 +180,34 @@ tests:
       - equal:
           path: spec.bootstrap.initdb.postInitApplicationSQL[2]
           value: GRANT documentdb_admin_role TO test;
+
+  - it: should not render walStorage when disabled
+    set:
+      cluster:
+        walStorage:
+          enabled: false
+    asserts:
+      - notExists:
+          path: spec.walStorage
+
+  - it: should configure superuser access with secret
+    set:
+      cluster:
+        enableSuperuserAccess: true
+        superuserSecret: my-superuser-secret
+    asserts:
+      - equal:
+          path: spec.enableSuperuserAccess
+          value: true
+      - equal:
+          path: spec.superuserSecret.name
+          value: my-superuser-secret
+
+  - it: should not render plugins when backup objectStore is disabled
+    set:
+      backup:
+        objectStore:
+          enabled: false
+    asserts:
+      - notExists:
+          path: spec.plugins

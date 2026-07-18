@@ -70,3 +70,20 @@ tests:
           path: spec.schedule
           value: "0 0 0 * * *"
         template: scheduled-backup.yaml
+
+  - it: should use configurable secret store name in ExternalSecret
+    set:
+      externalSecretStoreName: my-custom-store
+      backup:
+        method: objectStore
+        objectStore:
+          enabled: true
+          endpointURL: "https://s3.example.com"
+          endpointCredentials:
+            createExternalSecret: true
+            externalSecretCredentialPath: "secret/path"
+    asserts:
+      - equal:
+          path: spec.secretStoreRef.name
+          value: my-custom-store
+        template: external-secret.yaml

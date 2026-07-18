@@ -7,9 +7,27 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should generate a ScheduledBackup when enabled
+  - it: should not generate a ScheduledBackup when enabled but objectStore is disabled
     set:
       backup:
+        objectStore:
+          enabled: false
+        scheduledBackup:
+          enabled: true
+          schedule: "0 0 0 * * *"
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate a ScheduledBackup when both enabled and objectStore enabled
+    set:
+      backup:
+        objectStore:
+          enabled: true
+          endpointURL: "https://s3.example.com"
+          endpointCredentials:
+            createExternalSecret: true
+            externalSecretCredentialPath: "secret/path"
         scheduledBackup:
           enabled: true
           schedule: "0 0 0 * * *"
