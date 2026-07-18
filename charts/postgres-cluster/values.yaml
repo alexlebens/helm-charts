@@ -170,29 +170,9 @@ cluster:
       # method: any
       # number: 1
 
-    # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
-    pg_hba: []
-      # - host all all 10.244.0.0/16 md5
-
-    # -- PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)
-    pg_ident: []
-      # - mymap   /^(.*)@mydomain\.com$      \1
-
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
-
-    # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
-    ldap: {}
-      # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
-      # server: 'openldap.default.svc.cluster.local'
-      # bindSearchAuth:
-      # baseDN: 'ou=org,dc=example,dc=com'
-      # bindDN: 'cn=admin,dc=example,dc=com'
-      # bindPassword:
-      # name: 'ldapBindPassword'
-      # key: 'data'
-      # searchAttribute: 'uid'
 
   # -- Bootstrap is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
@@ -200,17 +180,8 @@ cluster:
   initdb:
     database: app
     owner: app
-    # secret:
-    #   name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
-    # options: []
-    # encoding: UTF8
-    # postInitSQL:
-    #   - CREATE EXTENSION IF NOT EXISTS vector;
     postInitApplicationSQL: []
     postInitTemplateSQL: []
-
-  # -- Configure the metadata of the generated service account
-  serviceAccountTemplate: {}
 
   additionalLabels: {}
   annotations: {}

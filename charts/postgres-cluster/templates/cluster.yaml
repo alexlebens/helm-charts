@@ -63,18 +63,6 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
     {{- end }}
-    {{- with .Values.cluster.postgresql.pg_hba }}
-    pg_hba:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .Values.cluster.postgresql.pg_ident }}
-    pg_ident:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .Values.cluster.postgresql.ldap  }}
-    ldap:
-      {{- toYaml . | nindent 6 }}
-    {{- end}}
     {{- with .Values.cluster.postgresql.synchronous }}
     synchronous:
       {{- toYaml . | nindent 6 }}
@@ -93,10 +81,6 @@ spec:
     roles:
       {{- toYaml . | nindent 6 }}
     {{ end }}
-  {{- end }}
-  {{- with .Values.cluster.serviceAccountTemplate }}
-  serviceAccountTemplate:
-    {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- if .Values.cluster.monitoring.enabled }}
   monitoring:
