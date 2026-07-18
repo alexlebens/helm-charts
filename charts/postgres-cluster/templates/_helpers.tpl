@@ -133,7 +133,7 @@ Generate backup server name
   {{- if .Values.backup.backupServerName -}}
     {{- .Values.backup.backupServerName -}}
   {{- else -}}
-    {{- printf "%s" (include "cluster.backupName" .) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-%s" (include "cluster.backupName" .) (toString .Values.backup.objectStore.index) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 

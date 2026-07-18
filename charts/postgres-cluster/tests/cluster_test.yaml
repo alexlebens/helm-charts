@@ -212,6 +212,17 @@ tests:
       - notExists:
           path: spec.plugins
 
+  - it: should render backup serverName with index
+    set:
+      backup:
+        objectStore:
+          enabled: true
+          index: 5
+    asserts:
+      - matchRegex:
+          path: spec.plugins[0].parameters.serverName
+          pattern: -backup-5$
+
   - it: should support nameOverride
     set:
       nameOverride: "my-custom-name"

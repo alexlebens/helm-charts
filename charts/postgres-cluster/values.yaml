@@ -392,6 +392,9 @@ backup:
       # -- Property within the external secret that contains the CA certificate.
       externalSecretProperty: "ca.crt"
 
+    # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
+    index: 1
+
     # -- Retention policy for backups
     retentionPolicy: "30d"
 
