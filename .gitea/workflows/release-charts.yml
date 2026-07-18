@@ -182,15 +182,29 @@ jobs:
       - name: Generate Release Notes
         if: steps.check.outputs.process == 'true'
         run: |
+          echo "## What's Changed in \`${{ env.CHART_NAME }}\` v${{ env.CHART_VERSION }}" > release_notes.md
+          echo "" >> release_notes.md
+
           LAST_TAG=$(git describe --tags --abbrev=0 --match "${{ env.CHART_NAME }}-*" HEAD^ 2>/dev/null || echo "")
 
           if [ -z "$LAST_TAG" ]; then
-            git log --format="- %s" -- charts/${{ env.CHART_NAME }} > release_notes.md
+            echo "### Initial Release" >> release_notes.md
+            echo "" >> release_notes.md
+            git log --format="* %s (\`%h\`) - *%an*" -- charts/${{ env.CHART_NAME }} >> release_notes.md
 
           else
-            git log ${LAST_TAG}..HEAD --format="- %s" -- charts/${{ env.CHART_NAME }} > release_notes.md
+            echo "### Changes since \`$LAST_TAG\`" >> release_notes.md
+            echo "" >> release_notes.md
+            git log ${LAST_TAG}..HEAD --format="* %s (\`%h\`) - *%an*" -- charts/${{ env.CHART_NAME }} >> release_notes.md
 
           fi
+
+          echo "" >> release_notes.md
+          echo "---" >> release_notes.md
+          echo "**Chart**: \`${{ env.CHART_NAME }}\` | **Version**: \`${{ env.CHART_VERSION }}\`" >> release_notes.md
+
+          echo ">> Generated release_notes.md:"
+          cat release_notes.md
 
           echo "----"
 
