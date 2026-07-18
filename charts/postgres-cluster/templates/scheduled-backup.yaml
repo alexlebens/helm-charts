@@ -1,4 +1,4 @@
-{{- if .Values.backup.scheduledBackup.enabled }}
+{{- if and .Values.backup.scheduledBackup.enabled .Values.backup.objectStore.enabled }}
 {{- $context := . }}
 {{- with .Values.backup.scheduledBackup }}
 ---
