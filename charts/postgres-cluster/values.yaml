@@ -186,7 +186,7 @@ recovery:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported).
   # * `import` - Import one or more databases from an existing Postgres cluster.
-  method: backup
+  method: objectStore
 
   # See https://cloudnative-pg.io/documentation/current/recovery/#recovery-from-a-backup-object
   backup:
@@ -349,7 +349,7 @@ backup:
 
   # -- Options for object store backups
   objectStore:
-    enabled: false
+    enabled: true
 
     # -- Destination bucket
     destinationBucket: postgres-backups
@@ -424,7 +424,7 @@ backup:
 
   # -- Scheduled backup configuration
   scheduledBackup:
-    enabled: false
+    enabled: true
 
     # -- Start backup on deployment
     immediate: true
