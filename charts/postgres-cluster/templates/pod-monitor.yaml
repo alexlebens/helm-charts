@@ -15,4 +15,12 @@ spec:
       cnpg.io/podRole: instance
   podMetricsEndpoints:
     - port: metrics
+      {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}
