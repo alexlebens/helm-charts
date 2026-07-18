@@ -25,6 +25,9 @@ tests:
       - equal:
           path: spec.pgbouncer.poolMode
           value: session
+      - matchRegex:
+          path: spec.cluster.name
+          pattern: .*-cluster
 
   - it: should generate a Pooler with monitoring enabled
     set:
@@ -43,3 +46,22 @@ tests:
       - equal:
           path: spec.monitoring.enablePodMonitor
           value: true
+
+  - it: should generate multiple Pooler resources
+    set:
+      poolers:
+        - name: p1
+          instances: 1
+        - name: p2
+          instances: 2
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-postgresql-18-pooler-p1
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-postgresql-18-pooler-p2
+        documentIndex: 1

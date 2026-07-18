@@ -11,7 +11,7 @@ tests:
       - isKind:
           of: Cluster
         template: cluster.yaml
-      - isNotNullOrEmpty:
+      - notExists:
           path: spec.plugins
         template: cluster.yaml
       - hasDocuments:
@@ -87,3 +87,89 @@ tests:
           path: spec.secretStoreRef.name
           value: my-custom-store
         template: external-secret.yaml
+
+  - it: should not include region in ExternalSecret if disabled
+    set:
+      backup:
+        method: objectStore
+        objectStore:
+          enabled: true
+          endpointCredentials:
+            createExternalSecret: true
+            externalSecretCredentialPath: "secret/path"
+            includeRegion: false
+    asserts:
+      - equal:
+          path: spec.data[0].secretKey
+          value: ACCESS_KEY_ID
+        template: external-secret.yaml
+      - notExists:
+          path: spec.data[2]
+        template: external-secret.yaml
+
+  - it: should configure ObjectStore retention policy and WAL/data config
+    set:
+      backup:
+        method: objectStore
+        objectStore:
+          enabled: true
+          endpointURL: "https://s3.example.com"
+          retentionPolicy: "30d"
+          wal:
+            compression: gzip
+            encryption: AES256
+            maxParallel: 4
+          data:
+            compression: bzip2
+            encryption: aws:kms
+            jobs: 4
+    asserts:
+      - equal:
+          path: spec.retentionPolicy
+          value: "30d"
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.wal.compression
+          value: gzip
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.wal.encryption
+          value: AES256
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.wal.maxParallel
+          value: 4
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.data.compression
+          value: bzip2
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.data.encryption
+          value: aws:kms
+        template: object-store.yaml
+      - equal:
+          path: spec.configuration.data.jobs
+          value: 4
+        template: object-store.yaml
+
+  - it: should generate CA ExternalSecret for backup
+    set:
+      backup:
+        method: objectStore
+        objectStore:
+          enabled: true
+          endpointURL: "https://s3.example.com"
+          endpointCA:
+            createExternalSecret: true
+            externalSecretCredentialPath: "ca/secret/path"
+    asserts:
+      - isKind:
+          of: ExternalSecret
+        template: external-secret.yaml
+        documentIndex: 1
+      - equal:
+          path: spec.data[0].remoteRef.key
+          value: ca/secret/path
+        template: external-secret.yaml
+        documentIndex: 1

@@ -34,6 +34,10 @@ tests:
           path: spec.owner
           value: app
         documentIndex: 0
+      - matchRegex:
+          path: spec.cluster.name
+          pattern: .*-cluster
+        documentIndex: 0
       - isKind:
           of: Database
         documentIndex: 1

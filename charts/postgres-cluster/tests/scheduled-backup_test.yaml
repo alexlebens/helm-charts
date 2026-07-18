@@ -39,3 +39,6 @@ tests:
       - equal:
           path: spec.schedule
           value: "0 0 0 * * *"
+      - matchRegex:
+          path: spec.cluster.name
+          pattern: .*-cluster

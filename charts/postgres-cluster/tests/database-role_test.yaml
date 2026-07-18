@@ -16,6 +16,9 @@ tests:
       - equal:
           path: spec.login
           value: true
+      - matchRegex:
+          path: spec.cluster.name
+          pattern: .*-cluster
 
   - it: should not generate any DatabaseRoles when empty
     set:
@@ -52,3 +55,20 @@ tests:
       - equal:
           path: spec.passwordSecret.name
           value: my-role-secret
+
+  - it: should generate multiple DatabaseRole resources
+    set:
+      roles:
+        - name: role1
+        - name: role2
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-postgresql-18-role-role1
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-postgresql-18-role-role2
+        documentIndex: 1

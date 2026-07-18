@@ -211,3 +211,48 @@ tests:
     asserts:
       - notExists:
           path: spec.plugins
+
+  - it: should support nameOverride
+    set:
+      nameOverride: "my-custom-name"
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-custom-name-cluster
+
+  - it: should configure imagePullSecrets, priorityClassName, and affinity
+    set:
+      cluster:
+        imagePullSecrets:
+          - name: myregistrykey
+        priorityClassName: "high-priority"
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: disktype
+                      operator: In
+                      values:
+                        - ssd
+    asserts:
+      - equal:
+          path: spec.imagePullSecrets[0].name
+          value: myregistrykey
+      - equal:
+          path: spec.priorityClassName
+          value: "high-priority"
+      - equal:
+          path: spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key
+          value: disktype
+
+  - it: should render postInitTemplateSQL
+    set:
+      cluster:
+        initdb:
+          postInitTemplateSQL:
+            - CREATE EXTENSION IF NOT EXISTS my_ext;
+    asserts:
+      - equal:
+          path: spec.bootstrap.initdb.postInitTemplateSQL[0]
+          value: CREATE EXTENSION IF NOT EXISTS my_ext;

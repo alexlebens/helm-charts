@@ -86,3 +86,40 @@ tests:
       - isKind:
           of: ObjectStore
         template: object-store.yaml
+
+  - it: should support pitrTarget in recovery
+    set:
+      mode: recovery
+      recovery:
+        method: backup
+        backup:
+          backupName: "my-backup"
+          pitrTarget:
+            time: "2024-01-01T00:00:00Z"
+    asserts:
+      - equal:
+          path: spec.bootstrap.recovery.recoveryTarget.targetTime
+          value: 2024-01-01T00:00:00Z
+        template: cluster.yaml
+
+  - it: should generate CA ExternalSecret for recovery
+    set:
+      mode: recovery
+      recovery:
+        method: objectStore
+        objectStore:
+          enabled: true
+          endpointURL: "https://s3.example.com"
+          endpointCA:
+            createExternalSecret: true
+            externalSecretCredentialPath: "ca/secret/path"
+    asserts:
+      - isKind:
+          of: ExternalSecret
+        template: external-secret.yaml
+        documentIndex: 2
+      - equal:
+          path: spec.data[0].remoteRef.key
+          value: ca/secret/path
+        template: external-secret.yaml
+        documentIndex: 2
