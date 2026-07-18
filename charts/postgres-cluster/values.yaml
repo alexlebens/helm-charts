@@ -241,6 +241,7 @@ recovery:
 
   # See https://cloudnative-pg.io/documentation/current/recovery/#recovery-from-an-object-store
   objectStore:
+    enabled: false
     # -- Point in time recovery target. Specify one of the following:
     pitrTarget:
       # -- Time in RFC3339 format
@@ -392,6 +393,8 @@ backup:
 
   # -- Options for object store backups
   objectStore:
+    enabled: false
+
     # -- Desitination bucket
     destinationBucket: postgres-backups
 

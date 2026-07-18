@@ -1,4 +1,4 @@
-{{- if (eq .Values.backup.method "objectStore") }}
+{{- if and (eq .Values.backup.method "objectStore") .Values.backup.objectStore.enabled }}
 {{- $context := . }}
 {{- with .Values.backup.objectStore }}
 ---
@@ -59,7 +59,7 @@ spec:
 {{- end }}
 {{- end }}
 
-{{- if eq .Values.recovery.method "objectStore" }}
+{{- if and (eq .Values.recovery.method "objectStore") .Values.recovery.objectStore.enabled }}
 {{- $context := . }}
 {{- with .Values.recovery.objectStore }}
 ---
