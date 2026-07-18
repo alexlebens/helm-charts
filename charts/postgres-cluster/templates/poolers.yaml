@@ -20,8 +20,7 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .authQuery }}
-    authQuery:
-      {{- toYaml . | nindent 6 }}
+    authQuery: {{ . | quote }}
     {{- end }}
     {{- with .parameters }}
     parameters:
@@ -31,18 +30,18 @@ spec:
     pg_hba:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-  {{ with .monitoring }}
-  monitoring:
+  {{- with .monitoring }}
   {{- if not (empty .podMonitor) }}
-    enablePodMonitor: {{ and .enabled .podMonitor.enabled }}
+  monitoring:
+    enablePodMonitor: {{ and (default false .enabled) (default false .podMonitor.enabled) }}
     {{- with .podMonitor.relabelings }}
     podMonitorRelabelings:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- with .podMonitor.metricRelabelings }}
     podMonitorMetricRelabelings:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
   {{- end }}
   {{- end }}
   {{- with .template }}
