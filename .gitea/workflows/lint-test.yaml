@@ -72,6 +72,8 @@ jobs:
           echo "$HOME/.ct-bin" >> $GITHUB_PATH
           pip3 install yamllint==${YAMLLINT_VERSION} yamale==${YAMALE_VERSION}
 
+          echo "----"
+
       - name: Run Chart Testing (list-changed)
         id: list-changed
         run: |
@@ -85,6 +87,9 @@ jobs:
 
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "changed-charts=$changed" >> $GITHUB_OUTPUT
+
+          else
+            echo "----"
 
           fi
 
@@ -133,7 +138,7 @@ jobs:
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Chart Testing (ct lint) has failed for Helm Charts"
+          details: "Chart Testing (ct lint) failed for: ${{ steps.list-changed.outputs.changed-charts }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
@@ -148,7 +153,7 @@ jobs:
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Chart Testing (ct list-changed) has failed for Helm Charts"
+          details: "Chart Testing (ct list-changed) failed. Could not determine changed charts."
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
@@ -268,6 +273,8 @@ jobs:
             echo "EOF" >> $GITEA_OUTPUT
 
           else
+            echo "----"
+
             echo "changes-detected=false" >> $GITEA_OUTPUT
 
           fi
@@ -309,6 +316,7 @@ jobs:
           CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
         run: |
           echo ">> Running linting on changed charts ..."
+          FAILED_CHARTS=""
 
           for dir in ${CHANGED_CHARTS}; do
             chart_path=charts/$dir
@@ -324,13 +332,30 @@ jobs:
                 echo ""
                 echo ">> Linting helm ..."
                 helm lint . --namespace "$chart_name"
-              )
+              ) || {
+                FAILED_CHARTS="$FAILED_CHARTS $chart_name"
+              }
+
             else
               echo ""
               echo ">> Directory $chart_path does not contain a Chart.yaml. Skipping ..."
               echo ""
+
             fi
           done
+
+          if [ -n "$FAILED_CHARTS" ]; then
+            echo ">> Linting failed for the following charts: $FAILED_CHARTS"
+
+            echo "----"
+
+            echo "FAILED_CHART=$FAILED_CHARTS" >> $GITEA_ENV
+            exit 1
+
+          else
+            echo "----"
+
+          fi
 
       - name: Run Helm Unittest
         id: run-helm-unittest
@@ -339,6 +364,7 @@ jobs:
           CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
         run: |
           echo ">> Running unittest on changed charts ..."
+          FAILED_CHARTS=""
 
           for dir in ${CHANGED_CHARTS}; do
             chart_path=charts/$dir
@@ -349,7 +375,9 @@ jobs:
                 echo ""
                 echo ">> Running helm unittest ..."
                 helm unittest .
-              )
+              ) || {
+                FAILED_CHARTS="$FAILED_CHARTS $dir"
+              }
 
             else
               echo ""
@@ -358,6 +386,19 @@ jobs:
 
             fi
           done
+
+          if [ -n "$FAILED_CHARTS" ]; then
+            echo ">> Unit testing failed for the following charts: $FAILED_CHARTS"
+
+            echo "----"
+
+            echo "FAILED_CHART=$FAILED_CHARTS" >> $GITEA_ENV
+            exit 1
+
+          else
+            echo "----"
+
+          fi
 
       - name: ntfy Lint Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -369,7 +410,7 @@ jobs:
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Linting failed for Helm Charts"
+          details: "Linting failed for Chart: ${{ env.FAILED_CHART }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
@@ -384,7 +425,7 @@ jobs:
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Unit testing failed for Helm Charts"
+          details: "Unit testing failed for Chart: ${{ env.FAILED_CHART }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
