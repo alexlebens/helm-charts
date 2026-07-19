@@ -45,7 +45,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.exporter.image.tag | string | `"v1.87.0@sha256:9ca6f929a8abc518d78158757922444f1cf807661a2238f44b28c3cd08a1b652"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
-| valkey.metrics.podMonitor.enabled | bool | `true` |  |
+| valkey.metrics.podMonitor.enabled | bool | `false` |  |
 | valkey.metrics.prometheusRule.enabled | bool | `true` |  |
 | valkey.metrics.prometheusRule.rules[0].alert | string | `"ValkeyDown"` |  |
 | valkey.metrics.prometheusRule.rules[0].annotations.description | string | `"Valkey instance {{ \"{{ $labels.instance }}\" }} is down."` |  |

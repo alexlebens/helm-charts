@@ -39,7 +39,7 @@ valkey:
     serviceMonitor:
       enabled: true
     podMonitor:
-      enabled: true
+      enabled: false
     prometheusRule:
       enabled: true
       rules:
