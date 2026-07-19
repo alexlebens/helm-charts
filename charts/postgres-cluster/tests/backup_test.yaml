@@ -29,6 +29,8 @@ tests:
 
   - it: should generate backup resources for objectStore method
     set:
+      recovery:
+        method: backup
       backup:
         method: objectStore
         objectStore:
@@ -79,6 +81,8 @@ tests:
 
   - it: should use configurable secret store name in ExternalSecret
     set:
+      recovery:
+        method: backup
       externalSecretStoreName: my-custom-store
       backup:
         method: objectStore
@@ -117,6 +121,8 @@ tests:
 
   - it: should configure ObjectStore retention policy and WAL/data config
     set:
+      recovery:
+        method: backup
       backup:
         method: objectStore
         objectStore:
@@ -163,6 +169,8 @@ tests:
 
   - it: should generate CA ExternalSecret for backup
     set:
+      recovery:
+        method: backup
       backup:
         method: objectStore
         objectStore:

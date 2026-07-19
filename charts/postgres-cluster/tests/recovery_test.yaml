@@ -6,6 +6,9 @@ templates:
 tests:
   - it: should generate recovery method import
     set:
+      backup:
+        objectStore:
+          enabled: false
       mode: recovery
       recovery:
         method: import
@@ -33,6 +36,9 @@ tests:
 
   - it: should generate recovery method backup
     set:
+      backup:
+        objectStore:
+          enabled: false
       mode: recovery
       recovery:
         method: backup
@@ -52,6 +58,9 @@ tests:
 
   - it: should generate recovery method objectStore
     set:
+      backup:
+        objectStore:
+          enabled: false
       mode: recovery
       recovery:
         method: objectStore
@@ -89,6 +98,9 @@ tests:
 
   - it: should support pitrTarget in recovery
     set:
+      backup:
+        objectStore:
+          enabled: false
       mode: recovery
       recovery:
         method: backup
@@ -104,6 +116,9 @@ tests:
 
   - it: should generate CA ExternalSecret for recovery
     set:
+      backup:
+        objectStore:
+          enabled: false
       mode: recovery
       recovery:
         method: objectStore
