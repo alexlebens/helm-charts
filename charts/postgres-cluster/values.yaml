@@ -396,7 +396,7 @@ backup:
     index: 1
 
     # -- Retention policy for backups
-    retentionPolicy: "30d"
+    retentionPolicy: "7d"
 
     # -- Specificies if this backup will do WALs
     isWALArchiver: true
