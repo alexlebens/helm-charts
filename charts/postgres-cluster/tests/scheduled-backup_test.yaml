@@ -2,7 +2,11 @@ suite: test ScheduledBackup generation
 templates:
   - scheduled-backup.yaml
 tests:
-  - it: should not generate a ScheduledBackup by default
+  - it: should not generate a ScheduledBackup when disabled
+    set:
+      backup:
+        scheduledBackup:
+          enabled: false
     asserts:
       - hasDocuments:
           count: 0

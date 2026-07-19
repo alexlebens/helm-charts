@@ -6,7 +6,13 @@ templates:
   - scheduled-backup.yaml
 
 tests:
-  - it: should match default backup resources generation
+  - it: should not generate backup resources when disabled
+    set:
+      backup:
+        objectStore:
+          enabled: false
+      recovery:
+        method: backup
     asserts:
       - isKind:
           of: Cluster
@@ -90,6 +96,8 @@ tests:
 
   - it: should not include region in ExternalSecret if disabled
     set:
+      recovery:
+        method: backup
       backup:
         method: objectStore
         objectStore:
