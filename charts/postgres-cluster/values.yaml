@@ -206,7 +206,7 @@ recovery:
 
   # See https://cloudnative-pg.io/documentation/current/recovery/#recovery-from-an-object-store
   objectStore:
-    enabled: false
+    enabled: true
 
     # -- Point in time recovery target. Specify one of the following:
     pitrTarget:
