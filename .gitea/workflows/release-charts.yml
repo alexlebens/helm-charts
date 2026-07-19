@@ -28,17 +28,32 @@ jobs:
       - name: Get Changed Charts
         id: set-matrix
         run: |
+          echo ">> Getting changed charts ..."
+
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             if [ -n "${{ inputs.chart }}" ]; then
+              echo ">> Manual dispatch for specific chart: ${{ inputs.chart }}"
               echo "matrix=[\"${{ inputs.chart }}\"]" >> $GITEA_OUTPUT
+
+              echo "----"
               exit 0
 
             else
+              echo ">> Manual dispatch for all charts"
               CHARTS=($(ls -1d charts/*/ | awk -F '/' '{print $2}'))
 
             fi
           else
-            GIT_DIFF=$(git diff --name-only ${{ gitea.event.before }}..HEAD | grep -E "^charts/" || true)
+            if [ -n "${{ gitea.event.before }}" ]; then
+              echo ">> Getting git diff from event.before ..."
+              GIT_DIFF=$(git diff --name-only ${{ gitea.event.before }}..HEAD | grep -E "^charts/" || true)
+
+            else
+              echo ">> Getting git diff from HEAD^1 ..."
+              GIT_DIFF=$(git diff --name-only HEAD^1 HEAD | grep -E "^charts/" || true)
+
+            fi
+
             CHARTS=()
             if [ -n "$GIT_DIFF" ]; then
               for path in $GIT_DIFF; do
@@ -51,14 +66,19 @@ jobs:
             fi
           fi
 
+          echo ""
           if [ ${#CHARTS[@]} -gt 0 ]; then
             UNIQUE_CHARTS=$(printf "%s\n" "${CHARTS[@]}" | sort -u | awk '{printf "\"%s\",", $0}' | sed 's/,$//')
+            echo ">> Charts to process: $UNIQUE_CHARTS"
             echo "matrix=[$UNIQUE_CHARTS]" >> $GITEA_OUTPUT
 
           else
+            echo ">> No charts changed"
             echo "matrix=[]" >> $GITEA_OUTPUT
 
           fi
+
+          echo "----"
 
   release:
     needs: prepare
