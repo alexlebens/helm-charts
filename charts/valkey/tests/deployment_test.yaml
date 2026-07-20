@@ -1,0 +1,48 @@
+suite: test Deployment generation
+templates:
+  - charts/valkey/templates/deploy_valkey.yaml
+  - charts/valkey/templates/init_config.yaml
+  - charts/valkey/templates/configmap.yaml
+tests:
+  - it: should not generate a Deployment when replica mode is enabled (default)
+    template: charts/valkey/templates/deploy_valkey.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate a Deployment when replica mode is disabled
+    set:
+      valkey:
+        replica:
+          enabled: false
+    template: charts/valkey/templates/deploy_valkey.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - hasDocuments:
+          count: 1
+
+  - it: should have exactly 1 replica in standalone mode
+    set:
+      valkey:
+        replica:
+          enabled: false
+    template: charts/valkey/templates/deploy_valkey.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 1
+
+  - it: should configure resources in standalone mode
+    set:
+      valkey:
+        replica:
+          enabled: false
+    template: charts/valkey/templates/deploy_valkey.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 10m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 20Mi

@@ -1,0 +1,56 @@
+suite: test PVC generation
+templates:
+  - charts/valkey/templates/pvc.yaml
+tests:
+  - it: should not generate a PVC when replica mode is enabled (default)
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate a PVC in standalone mode with dataStorage enabled
+    set:
+      valkey:
+        replica:
+          enabled: false
+        dataStorage:
+          enabled: true
+          requestedSize: 1Gi
+          className: ceph-block
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - hasDocuments:
+          count: 1
+
+  - it: should configure PVC storage class and size
+    set:
+      valkey:
+        replica:
+          enabled: false
+        dataStorage:
+          enabled: true
+          requestedSize: 5Gi
+          className: fast-ssd
+          accessModes:
+            - ReadWriteMany
+    asserts:
+      - equal:
+          path: spec.storageClassName
+          value: fast-ssd
+      - equal:
+          path: spec.resources.requests.storage
+          value: "5Gi"
+      - contains:
+          path: spec.accessModes
+          content: ReadWriteMany
+
+  - it: should not generate a PVC when dataStorage is disabled
+    set:
+      valkey:
+        replica:
+          enabled: false
+        dataStorage:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0

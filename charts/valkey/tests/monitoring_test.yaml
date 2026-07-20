@@ -1,0 +1,126 @@
+suite: test Monitoring resources generation
+templates:
+  - charts/valkey/templates/servicemonitor.yaml
+  - charts/valkey/templates/podmonitor.yaml
+  - charts/valkey/templates/prometheusrules.yaml
+  - charts/valkey/templates/metrics-svc.yaml
+tests:
+  - it: should generate a ServiceMonitor when metrics and serviceMonitor are enabled
+    template: charts/valkey/templates/servicemonitor.yaml
+    asserts:
+      - isKind:
+          of: ServiceMonitor
+      - hasDocuments:
+          count: 1
+
+  - it: should not generate a PodMonitor when podMonitor is disabled (default)
+    template: charts/valkey/templates/podmonitor.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should generate a PodMonitor when enabled
+    set:
+      valkey:
+        metrics:
+          enabled: true
+          podMonitor:
+            enabled: true
+    template: charts/valkey/templates/podmonitor.yaml
+    asserts:
+      - isKind:
+          of: PodMonitor
+      - hasDocuments:
+          count: 1
+
+  - it: should generate a PrometheusRule when enabled
+    template: charts/valkey/templates/prometheusrules.yaml
+    asserts:
+      - isKind:
+          of: PrometheusRule
+      - hasDocuments:
+          count: 1
+
+  - it: should include ValkeyDown alert rule
+    template: charts/valkey/templates/prometheusrules.yaml
+    asserts:
+      - equal:
+          path: spec.groups[0].rules[0].alert
+          value: ValkeyDown
+      - equal:
+          path: spec.groups[0].rules[0].labels.severity
+          value: error
+      - equal:
+          path: spec.groups[0].rules[0].for
+          value: 2m
+
+  - it: should include ValkeyMemoryHigh alert rule
+    template: charts/valkey/templates/prometheusrules.yaml
+    asserts:
+      - equal:
+          path: spec.groups[0].rules[1].alert
+          value: ValkeyMemoryHigh
+      - equal:
+          path: spec.groups[0].rules[1].labels.severity
+          value: error
+
+  - it: should include ValkeyKeyEviction alert rule
+    template: charts/valkey/templates/prometheusrules.yaml
+    asserts:
+      - equal:
+          path: spec.groups[0].rules[2].alert
+          value: ValkeyKeyEviction
+      - equal:
+          path: spec.groups[0].rules[2].labels.severity
+          value: error
+
+  - it: should not generate monitoring resources when metrics are disabled
+    set:
+      valkey:
+        metrics:
+          enabled: false
+    asserts:
+      - template: charts/valkey/templates/servicemonitor.yaml
+        hasDocuments:
+          count: 0
+      - template: charts/valkey/templates/podmonitor.yaml
+        hasDocuments:
+          count: 0
+      - template: charts/valkey/templates/prometheusrules.yaml
+        hasDocuments:
+          count: 0
+      - template: charts/valkey/templates/metrics-svc.yaml
+        hasDocuments:
+          count: 0
+
+  - it: should generate a metrics Service when metrics are enabled
+    template: charts/valkey/templates/metrics-svc.yaml
+    asserts:
+      - isKind:
+          of: Service
+      - hasDocuments:
+          count: 1
+
+  - it: should not generate a PrometheusRule when prometheusRule is disabled
+    set:
+      valkey:
+        metrics:
+          enabled: true
+          prometheusRule:
+            enabled: false
+    template: charts/valkey/templates/prometheusrules.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not generate a ServiceMonitor when serviceMonitor is disabled
+    set:
+      valkey:
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: false
+    template: charts/valkey/templates/servicemonitor.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
