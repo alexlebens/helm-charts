@@ -22,7 +22,7 @@ maintainers:
 dependencies:
   - name: valkey
     repository: https://valkey.io/valkey-helm/
-    version: 0.10.0
+    version: 0.11.0
 icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/valkey.png
 # renovate: datasource=github-releases depName=valkey-io/valkey
 appVersion: 9.1.1
