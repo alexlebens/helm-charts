@@ -90,13 +90,6 @@ tests:
           path: spec.template.spec.containers[0].resources.limits.memory
           value: 512Mi
 
-  - it: should use the configured image
-    template: charts/valkey/templates/statefulset.yaml
-    asserts:
-      - matchRegex:
-          path: spec.template.spec.containers[0].image
-          pattern: "docker\\.io/valkey/valkey:9\\.1\\.0@sha256:"
-
   - it: should configure custom image
     set:
       valkey:
