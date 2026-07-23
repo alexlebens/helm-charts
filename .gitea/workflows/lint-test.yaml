@@ -283,6 +283,40 @@ jobs:
 
           echo "----"
 
+      - name: Verify Chart Lockfiles
+        if: steps.check-dir-changes.outputs.changes-detected == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
+        run: |
+          echo ">> Verifying Chart.lock files are up-to-date ..."
+
+          FAILED_LOCKS=""
+          for dir in ${CHANGED_CHARTS}; do
+            chart_path="charts/$dir"
+            if [ -f "$chart_path/Chart.yaml" ]; then
+              (
+                cd "$chart_path"
+                helm dependency update . --skip-refresh
+
+                if ! git diff --exit-code Chart.lock > /dev/null; then
+                  echo "::error file=$chart_path/Chart.lock::Chart.lock is out of date. Please run 'helm dependency update' locally and commit the changes."
+                  exit 1
+
+                fi
+              ) || {
+                FAILED_LOCKS="$FAILED_LOCKS $dir"
+              }
+            fi
+          done
+
+          if [ -n "$FAILED_LOCKS" ]; then
+            echo ">> Lockfile validation failed for charts: $FAILED_LOCKS"
+            exit 1
+
+          fi
+
+          echo "----"
+
       - name: Lint Helm Chart
         id: lint-helm-chart
         if: steps.check-dir-changes.outputs.changes-detected == 'true'
