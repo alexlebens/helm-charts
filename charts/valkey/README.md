@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 0.16.1](https://img.shields.io/badge/Version-0.16.1-informational?style=flat-square) ![AppVersion: 9.1.1](https://img.shields.io/badge/AppVersion-9.1.1-informational?style=flat-square)
+![Version: 0.17.0](https://img.shields.io/badge/Version-0.17.0-informational?style=flat-square) ![AppVersion: 9.1.1](https://img.shields.io/badge/AppVersion-9.1.1-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -42,7 +42,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.enabled | bool | `true` |  |
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
-| valkey.metrics.exporter.image.tag | string | `"v1.87.0@sha256:9ca6f929a8abc518d78158757922444f1cf807661a2238f44b28c3cd08a1b652"` |  |
+| valkey.metrics.exporter.image.tag | string | `"v1.88.0@sha256:2c8c55c63ce4d915389f03d337b8acef56aaaca9fab8728291287e612d4d6398"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
 | valkey.metrics.podMonitor.enabled | bool | `false` |  |
@@ -65,6 +65,12 @@ Valkey chart with preconfigured settings
 | valkey.metrics.prometheusRule.rules[2].expr | string | `"increase(redis_evicted_keys_total{service=\"{{ include \"valkey.fullname\" . }}-metrics\"}[5m]) > 0\n"` |  |
 | valkey.metrics.prometheusRule.rules[2].for | string | `"1s"` |  |
 | valkey.metrics.prometheusRule.rules[2].labels.severity | string | `"error"` |  |
+| valkey.metrics.prometheusRule.rules[3].alert | string | `"ValkeyBgSaveFailed"` |  |
+| valkey.metrics.prometheusRule.rules[3].annotations.description | string | `"Valkey instance {{ \"{{ $labels.instance }}\" }} failed to write its RDB file to disk.\nThis usually indicates storage exhaustion or permission issues, and causes Valkey to stop accepting writes.\n"` |  |
+| valkey.metrics.prometheusRule.rules[3].annotations.summary | string | `"Valkey instance {{ \"{{ $labels.instance }}\" }} background save failed"` |  |
+| valkey.metrics.prometheusRule.rules[3].expr | string | `"redis_rdb_last_bgsave_status{service=\"{{ include \"valkey.fullname\" . }}-metrics\"} == 0\n"` |  |
+| valkey.metrics.prometheusRule.rules[3].for | string | `"5m"` |  |
+| valkey.metrics.prometheusRule.rules[3].labels.severity | string | `"critical"` |  |
 | valkey.metrics.serviceMonitor.enabled | bool | `true` |  |
 | valkey.nameOverride | string | `""` |  |
 | valkey.replica.enabled | bool | `true` |  |

@@ -75,3 +75,14 @@ valkey:
           for: 1s
           labels:
             severity: error
+        - alert: ValkeyBgSaveFailed
+          annotations:
+            summary: Valkey instance {{ "{{ $labels.instance }}" }} background save failed
+            description: |
+              Valkey instance {{ "{{ $labels.instance }}" }} failed to write its RDB file to disk.
+              This usually indicates storage exhaustion or permission issues, and causes Valkey to stop accepting writes.
+          expr: |
+            redis_rdb_last_bgsave_status{service="{{ include "valkey.fullname" . }}-metrics"} == 0
+          for: 5m
+          labels:
+            severity: critical
