@@ -131,7 +131,15 @@ spec:
                 - name: RCLONE_CONFIG_SRC_PROVIDER
                   value: "Other"
                 - name: RCLONE_CONFIG_SRC_ENDPOINT
-                  value: "http://{{ $.Values.garageCluster.name }}.{{ $.Values.garageCluster.namespace }}.svc.cluster.local:3900"
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "garageKey.name" $ }}
+                      key: endpoint
+                - name: RCLONE_CONFIG_SRC_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "garageKey.name" $ }}
+                      key: region
                 - name: RCLONE_CONFIG_SRC_ENV_AUTH
                   value: "false"
                 - name: RCLONE_CONFIG_SRC_ACCESS_KEY_ID
