@@ -30,12 +30,12 @@ lifecycle:
 # -- Configuration for importing an existing key via ExternalSecret
 # If disabled, Garage operator will auto-generate credentials.
 externalSecret:
-  enabled: false
+  enabled: true
   storeName: openbao
   accessKeyIdPath: ""
-  accessKeyIdProperty: AWS_ACCESS_KEY_ID
+  accessKeyIdProperty: ACCESS_KEY_ID
   secretAccessKeyPath: ""
-  secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+  secretAccessKeyProperty: ACCESS_SECRET_KEY
 
 # -- Bucket Quotas (optional)
 quotas:
@@ -71,19 +71,19 @@ backups:
 
     # -- Destination Bucket
     destination:
-      providerType: "Other"
-      endpoint: "s3.us-west-004.backblazeb2.com"
-      bucketName: "my-offsite-backup-bucket"
-      region: "us-west-004"
+      providerType: Other
+      endpoint: https://garage-ps10rp.boreal-beaufort.ts.net:3900
+      bucketName: ""
+      region: us-east-1
 
     # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
     externalSecret:
       enabled: true
       storeName: openbao
-      accessKeyIdPath: "secret/data/backblaze"
-      accessKeyIdProperty: "AWS_ACCESS_KEY_ID"
-      secretAccessKeyPath: "secret/data/backblaze"
-      secretAccessKeyProperty: "AWS_SECRET_ACCESS_KEY"
+      accessKeyIdPath: ""
+      accessKeyIdProperty: ACCESS_KEY_ID
+      secretAccessKeyPath: ""
+      secretAccessKeyProperty: ACCESS_SECRET_KEY
 
     # -- Prune (optional)
     prune:
@@ -110,19 +110,19 @@ backups:
 
     # -- Destination Bucket
     destination:
-      providerType: "Other"
-      endpoint: "s3.us-west-004.backblazeb2.com"
-      bucketName: "my-offsite-backup-bucket-secondary"
-      region: "us-west-004"
+      providerType: Other
+      endpoint: s3.us-east-005.backblazeb2.com
+      bucketName: ""
+      region: us-east-005
 
     # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
     externalSecret:
       enabled: true
       storeName: openbao
-      accessKeyIdPath: "secret/data/backblaze"
-      accessKeyIdProperty: "AWS_ACCESS_KEY_ID"
-      secretAccessKeyPath: "secret/data/backblaze"
-      secretAccessKeyProperty: "AWS_SECRET_ACCESS_KEY"
+      accessKeyIdPath: ""
+      accessKeyIdProperty: ACCESS_KEY_ID
+      secretAccessKeyPath: ""
+      secretAccessKeyProperty: ACCESS_SECRET_KEY
 
     # -- Prune (optional)
     prune:
