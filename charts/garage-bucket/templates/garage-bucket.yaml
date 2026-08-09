@@ -31,7 +31,7 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
   {{- end }}
-  {{- if .Values.quotas }}
+  {{- if or .Values.quotas.maxSize .Values.quotas.maxObjects }}
   quotas:
     {{- if .Values.quotas.maxSize }}
     maxSize: {{ .Values.quotas.maxSize | quote }}
