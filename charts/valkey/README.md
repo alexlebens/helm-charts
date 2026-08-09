@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 0.17.1](https://img.shields.io/badge/Version-0.17.1-informational?style=flat-square) ![AppVersion: 9.1.1](https://img.shields.io/badge/AppVersion-9.1.1-informational?style=flat-square)
+![Version: 0.18.1](https://img.shields.io/badge/Version-0.18.1-informational?style=flat-square) ![AppVersion: 9.1.1](https://img.shields.io/badge/AppVersion-9.1.1-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -42,7 +42,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.enabled | bool | `true` |  |
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
-| valkey.metrics.exporter.image.tag | string | `"v1.88.0@sha256:2c8c55c63ce4d915389f03d337b8acef56aaaca9fab8728291287e612d4d6398"` |  |
+| valkey.metrics.exporter.image.tag | string | `"v1.89.0@sha256:fed773ffd2bb2eac706e0ed9cc2fff41651193ee4977e2a4f6919658ad2313f4"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
 | valkey.metrics.podMonitor.enabled | bool | `false` |  |
