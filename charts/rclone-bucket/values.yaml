@@ -56,11 +56,11 @@ ntfy:
   externalSecret:
     enabled: true
     storeName: openbao
-    urlPath: /ntfy
-    urlProperty: url
-    topicPath: /ntfy
-    topicProperty: topic
-    tokenPath: /ntfy
+    urlPath: /cl01tl/ntfy/config
+    urlProperty: internal-endpoint
+    topicPath: /cl01tl/ntfy/topics
+    topicProperty: rclone
+    tokenPath: /cl01tl/ntfy/users/cl01tl
     tokenProperty: token
 
 # -- Secret configuration

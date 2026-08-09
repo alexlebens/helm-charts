@@ -33,9 +33,9 @@ Rclone CronJob to replicate buckets
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | nameOverride | string | `""` | Default pattern follows <pvcTarget>-backup |
-| ntfy | object | `{"enabled":true,"existingSecret":{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"},"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/ntfy","tokenProperty":"token","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"},"url":""}` | Notification configuration |
+| ntfy | object | `{"enabled":true,"existingSecret":{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"},"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"},"url":""}` | Notification configuration |
 | ntfy.existingSecret | object | `{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"}` | Provide an existing secret for the ntfy url |
-| ntfy.externalSecret | object | `{"enabled":true,"storeName":"openbao","tokenPath":"/ntfy","tokenProperty":"token","topicPath":"/ntfy","topicProperty":"topic","urlPath":"/ntfy","urlProperty":"url"}` | Generate a secret using ExternalSecret |
+| ntfy.externalSecret | object | `{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"}` | Generate a secret using ExternalSecret |
 | prometheusRule | object | `{"enabled":true}` | Prometheus Rule |
 | prune | object | `{"ageToPrune":"90d","enabled":false,"exclude":"","include":""}` | Enable prune job |
 | rclone | object | `{"destination":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"},"providerType":"Other","source":{"bucketName":"bucket","forcePathStyle":true,"providerType":"Other"}}` | rclone configuration |
