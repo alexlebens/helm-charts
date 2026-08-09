@@ -14,10 +14,8 @@ metadata:
 spec:
   from:
     - kind: GarageKey
-      name: {{ include "garageKey.name" . }}
       namespace: {{ .Release.Namespace }}
     - kind: GarageBucket
-      name: {{ include "garageBucket.name" . }}
       namespace: {{ .Release.Namespace }}
   to:
     - kind: GarageCluster
