@@ -45,7 +45,7 @@ tests:
           pattern: RELEASE-NAME-backup-secondary
         documentIndex: 1
 
-  - it: should include prune container when enabled
+  - it: should include prune commands in backup container when enabled
     set:
       backups:
         primary:
@@ -54,14 +54,27 @@ tests:
             enabled: true
             ageToPrune: "30d"
     asserts:
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[1].name
-          value: prune
       - matchRegex:
-          path: spec.jobTemplate.spec.template.spec.containers[1].args[0]
-          pattern: "--min-age \"30d\""
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[0]
+          pattern: "rclone delete"
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[0]
+          pattern: '--min-age "30d"'
 
-  - it: should correctly inject global ntfy configuration
+  - it: should only have one container even with prune enabled
+    set:
+      backups:
+        primary:
+          enabled: true
+          prune:
+            enabled: true
+            ageToPrune: "30d"
+    asserts:
+      - lengthEqual:
+          path: spec.jobTemplate.spec.template.spec.containers
+          count: 1
+
+  - it: should include ntfy env vars when enabled
     set:
       backups:
         primary:
@@ -71,9 +84,114 @@ tests:
         externalSecret:
           enabled: true
     asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: NTFY_URL
+          any: true
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: NTFY_TOKEN
+          any: true
+
+  - it: should set automountServiceAccountToken to false
+    set:
+      backups:
+        primary:
+          enabled: true
+    asserts:
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].env[13].name
-          value: NTFY_URL
+          path: spec.jobTemplate.spec.template.spec.automountServiceAccountToken
+          value: false
+
+  - it: should include security context from values
+    set:
+      backups:
+        primary:
+          enabled: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+    asserts:
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].env[13].valueFrom.secretKeyRef.name
-          value: RELEASE-NAME-secret-backup-ntfy
+          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.runAsUser
+          value: 1000
+
+  - it: should mount tmp volume
+    set:
+      backups:
+        primary:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.volumes
+          content:
+            name: tmp
+            emptyDir: {}
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].volumeMounts
+          content:
+            name: tmp
+            mountPath: /tmp
+
+  - it: should include resource limits from values
+    set:
+      backups:
+        primary:
+          enabled: true
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
+          value: 200m
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory
+          value: 1Gi
+
+  - it: should set history limits
+    set:
+      backups:
+        primary:
+          enabled: true
+          cronJob:
+            successfulJobsHistoryLimit: 5
+            failedJobsHistoryLimit: 2
+    asserts:
+      - equal:
+          path: spec.successfulJobsHistoryLimit
+          value: 5
+      - equal:
+          path: spec.failedJobsHistoryLimit
+          value: 2
+
+  - it: should set activeDeadlineSeconds
+    set:
+      backups:
+        primary:
+          enabled: true
+          cronJob:
+            activeDeadlineSeconds: 7200
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.activeDeadlineSeconds
+          value: 7200
+
+  - it: should not render when no backups are enabled
+    set:
+      backups:
+        primary:
+          enabled: false
+        secondary:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0

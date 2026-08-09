@@ -1,0 +1,52 @@
+suite: test garage reference grant
+templates:
+  - garage-reference-grant.yaml
+tests:
+  - it: should render by default
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: GarageReferenceGrant
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-grant
+      - equal:
+          path: metadata.namespace
+          value: garage-operator
+
+  - it: should not render when disabled
+    set:
+      referenceGrant:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should reference the correct garage cluster
+    set:
+      garageCluster:
+        name: my-cluster
+        namespace: my-ns
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: my-ns
+      - equal:
+          path: spec.to[0].name
+          value: my-cluster
+      - equal:
+          path: spec.from[0].namespace
+          value: NAMESPACE
+      - equal:
+          path: spec.from[1].namespace
+          value: NAMESPACE
+
+  - it: should include additional labels
+    set:
+      additionalLabels:
+        custom-label: custom-value
+    asserts:
+      - equal:
+          path: metadata.labels.custom-label
+          value: custom-value

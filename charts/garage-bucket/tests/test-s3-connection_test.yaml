@@ -1,0 +1,53 @@
+suite: test s3 connection test pod
+templates:
+  - tests/test-s3-connection.yaml
+tests:
+  - it: should render with default values
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Pod
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-test-connection
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: test
+
+  - it: should use correct image from primary backup config
+    set:
+      backups:
+        primary:
+          image:
+            repository: rclone/rclone
+            tag: "1.75.0"
+    asserts:
+      - equal:
+          path: spec.containers[0].image
+          value: "rclone/rclone:1.75.0"
+
+  - it: should reference correct secret for env vars
+    asserts:
+      - equal:
+          path: spec.containers[0].env[4].valueFrom.secretKeyRef.name
+          value: RELEASE-NAME-key
+
+  - it: should disable automount service account token
+    asserts:
+      - equal:
+          path: spec.automountServiceAccountToken
+          value: false
+
+  - it: should mount tmp volume
+    asserts:
+      - contains:
+          path: spec.volumes
+          content:
+            name: tmp
+            emptyDir: {}
+      - contains:
+          path: spec.containers[0].volumeMounts
+          content:
+            name: tmp
+            mountPath: /tmp

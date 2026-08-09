@@ -51,3 +51,61 @@ tests:
             id: expire-old-objects
             status: Enabled
             expirationDays: 30
+
+  - it: should not render quotas when empty
+    asserts:
+      - notExists:
+          path: spec.quota.maxSize
+      - notExists:
+          path: spec.quota.maxObjects
+
+  - it: should render quotas when set
+    set:
+      quotas:
+        maxSize: "10GB"
+        maxObjects: 1000
+    asserts:
+      - equal:
+          path: spec.quota.maxSize
+          value: "10GB"
+      - equal:
+          path: spec.quota.maxObjects
+          value: 1000
+
+  - it: should not render website by default
+    asserts:
+      - notExists:
+          path: spec.website
+
+  - it: should render website when enabled
+    set:
+      website:
+        enabled: true
+        indexDocument: home.html
+        errorDocument: 404.html
+    asserts:
+      - equal:
+          path: spec.website.indexDocument
+          value: "home.html"
+      - equal:
+          path: spec.website.errorDocument
+          value: "404.html"
+
+  - it: should include additional labels
+    set:
+      additionalLabels:
+        custom-label: custom-value
+    asserts:
+      - equal:
+          path: metadata.labels.custom-label
+          value: custom-value
+
+  - it: should not render lifecycle when all rules are disabled
+    set:
+      lifecycle:
+        abortIncompleteMultipartUploadDays: 0
+        expirationDays: 0
+        rules: []
+    asserts:
+      - notExists:
+          path: spec.lifecycle

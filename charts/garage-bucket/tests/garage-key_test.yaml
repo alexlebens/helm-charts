@@ -28,3 +28,24 @@ tests:
       - equal:
           path: spec.importKey.secretAccessKeyKey
           value: AWS_SECRET_ACCESS_KEY
+
+  - it: should include additional labels
+    set:
+      additionalLabels:
+        custom-label: custom-value
+    asserts:
+      - equal:
+          path: metadata.labels.custom-label
+          value: custom-value
+
+  - it: should grant owner permissions on the bucket
+    asserts:
+      - equal:
+          path: spec.bucketPermissions[0].read
+          value: true
+      - equal:
+          path: spec.bucketPermissions[0].write
+          value: true
+      - equal:
+          path: spec.bucketPermissions[0].owner
+          value: true
