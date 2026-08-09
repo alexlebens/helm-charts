@@ -18,39 +18,64 @@ spec:
   suspend: {{ $backupConfig.cronJob.suspend }}
   {{- end }}
   concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ $backupConfig.cronJob.successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ $backupConfig.cronJob.failedJobsHistoryLimit | default 3 }}
   jobTemplate:
     spec:
       backoffLimit: {{ $backupConfig.cronJob.backoffLimit | default 3 }}
+      {{- if $backupConfig.cronJob.activeDeadlineSeconds }}
+      activeDeadlineSeconds: {{ $backupConfig.cronJob.activeDeadlineSeconds }}
+      {{- end }}
       template:
         metadata:
           labels:
             app.kubernetes.io/name: {{ include "garageCronJob.name" $ }}-{{ $backupName }}
         spec:
           restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          {{- with $.Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumes:
+            - name: tmp
+              emptyDir: {}
           containers:
             - name: backup
               image: "{{ $backupConfig.image.repository }}:{{ $backupConfig.image.tag }}"
+              {{- with $.Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with $.Values.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
               command:
                 - /bin/sh
                 - -c
               args:
                 - |
                   set -o pipefail
-                  # Garage is natively S3 compatible
+
+                  # --- Sync Phase ---
                   rclone sync \
                     "src:{{ include "garageBucket.name" $ }}" \
                     "dest:{{ $backupConfig.destination.bucketName }}" \
                     --s3-no-check-bucket \
                     --verbose 2>&1 | tee /tmp/rclone-sync.log
 
-                  res=$?
+                  sync_res=$?
 
                   {{- if $.Values.ntfy.enabled }}
                   STATS=$(grep "Transferred:" /tmp/rclone-sync.log | tail -n 2)
                   DATA_TRANS=$(echo "$STATS" | head -n 1 | sed 's/.*Transferred:[ \t]*//')
                   if [ -z "$DATA_TRANS" ]; then DATA_TRANS="Unknown"; fi
 
-                  if [ $res -eq 0 ]; then
+                  if [ $sync_res -eq 0 ]; then
                     if [ -n "${NTFY_TOKEN:-}" ]; then
                       wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Backup Success - {{ include "garageBucket.name" $ }}" --post-data "Job transferred: $DATA_TRANS" "$NTFY_URL"
                     else
@@ -62,9 +87,44 @@ spec:
                     else
                       wget -qO- --header "Title: Backup Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, transferred: $DATA_TRANS" "$NTFY_URL"
                     fi
+                    exit $sync_res
+                  fi
+                  {{- else }}
+                  if [ $sync_res -ne 0 ]; then exit $sync_res; fi
+                  {{- end }}
+
+                  {{- if $backupConfig.prune.enabled }}
+
+                  # --- Prune Phase ---
+                  rclone delete \
+                    "dest:{{ $backupConfig.destination.bucketName }}" \
+                    --min-age {{ $backupConfig.prune.ageToPrune | quote }} \
+                    --verbose 2>&1 | tee /tmp/rclone-prune.log
+
+                  prune_res=$?
+
+                  {{- if $.Values.ntfy.enabled }}
+                  STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
+                  FILES_PRUNED=$(echo "$STATS" | sed 's/.*Deleted:[ \t]*//')
+                  if [ -z "$FILES_PRUNED" ]; then FILES_PRUNED="0 files"; fi
+
+                  if [ $prune_res -eq 0 ]; then
+                    if [ -n "${NTFY_TOKEN:-}" ]; then
+                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Prune Success - {{ include "garageBucket.name" $ }}" --post-data "Job pruned: $FILES_PRUNED" "$NTFY_URL"
+                    else
+                      wget -qO- --header "Title: Prune Success - {{ include "garageBucket.name" $ }}" --post-data "Job pruned: $FILES_PRUNED" "$NTFY_URL"
+                    fi
+                  else
+                    if [ -n "${NTFY_TOKEN:-}" ]; then
+                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Prune Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, pruned: $FILES_PRUNED" "$NTFY_URL"
+                    else
+                      wget -qO- --header "Title: Prune Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, pruned: $FILES_PRUNED" "$NTFY_URL"
+                    fi
                   fi
                   {{- end }}
-                  exit $res
+
+                  exit $prune_res
+                  {{- end }}
               env:
                 - name: RCLONE_CONFIG_SRC_TYPE
                   value: "s3"
@@ -116,75 +176,5 @@ spec:
                       name: {{ include "garageSecretBackup.name" $ }}-ntfy
                       key: ntfy-token
                 {{- end }}
-            {{- if $backupConfig.prune.enabled }}
-            - name: prune
-              image: "{{ $backupConfig.image.repository }}:{{ $backupConfig.image.tag }}"
-              command:
-                - /bin/sh
-                - -c
-              args:
-                - |
-                  set -o pipefail
-                  rclone delete \
-                    "dest:{{ $backupConfig.destination.bucketName }}" \
-                    --min-age {{ $backupConfig.prune.ageToPrune | quote }} \
-                    --verbose 2>&1 | tee /tmp/rclone-prune.log
-
-                  res=$?
-
-                  {{- if $.Values.ntfy.enabled }}
-                  STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
-                  FILES_PRUNED=$(echo "$STATS" | sed 's/.*Deleted:[ \t]*//')
-                  if [ -z "$FILES_PRUNED" ]; then FILES_PRUNED="0 files"; fi
-
-                  if [ $res -eq 0 ]; then
-                    if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Prune Success - {{ include "garageBucket.name" $ }}" --post-data "Job pruned: $FILES_PRUNED" "$NTFY_URL"
-                    else
-                      wget -qO- --header "Title: Prune Success - {{ include "garageBucket.name" $ }}" --post-data "Job pruned: $FILES_PRUNED" "$NTFY_URL"
-                    fi
-                  else
-                    if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Prune Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, pruned: $FILES_PRUNED" "$NTFY_URL"
-                    else
-                      wget -qO- --header "Title: Prune Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, pruned: $FILES_PRUNED" "$NTFY_URL"
-                    fi
-                  fi
-                  {{- end }}
-                  exit $res
-              env:
-                - name: RCLONE_CONFIG_DEST_TYPE
-                  value: "s3"
-                - name: RCLONE_CONFIG_DEST_PROVIDER
-                  value: {{ $backupConfig.destination.providerType | quote }}
-                - name: RCLONE_CONFIG_DEST_ENDPOINT
-                  value: {{ $backupConfig.destination.endpoint | quote }}
-                - name: RCLONE_CONFIG_DEST_REGION
-                  value: {{ $backupConfig.destination.region | quote }}
-                - name: RCLONE_CONFIG_DEST_ENV_AUTH
-                  value: "false"
-                - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "garageSecretBackup.name" $ }}-{{ $backupName }}
-                      key: AWS_ACCESS_KEY_ID
-                - name: RCLONE_CONFIG_DEST_SECRET_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "garageSecretBackup.name" $ }}-{{ $backupName }}
-                      key: AWS_SECRET_ACCESS_KEY
-                {{- if and $.Values.ntfy.enabled $.Values.ntfy.externalSecret.enabled }}
-                - name: NTFY_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "garageSecretBackup.name" $ }}-ntfy
-                      key: ntfy-url
-                - name: NTFY_TOKEN
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "garageSecretBackup.name" $ }}-ntfy
-                      key: ntfy-token
-                {{- end }}
-            {{- end }}
 {{- end }}
 {{- end }}
