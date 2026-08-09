@@ -65,8 +65,11 @@ backups:
       timeZone: America/Chicago
       schedule: 0 0 * * *
       backoffLimit: 3
+      successfulJobsHistoryLimit: 3
+      failedJobsHistoryLimit: 3
+      activeDeadlineSeconds: 3600
 
-    # -- Desintation Bucket
+    # -- Destination Bucket
     destination:
       providerType: "Other"
       endpoint: "s3.us-west-004.backblazeb2.com"
@@ -101,8 +104,11 @@ backups:
       timeZone: America/Chicago
       schedule: 0 0 * * *
       backoffLimit: 3
+      successfulJobsHistoryLimit: 3
+      failedJobsHistoryLimit: 3
+      activeDeadlineSeconds: 3600
 
-    # -- Desintation Bucket
+    # -- Destination Bucket
     destination:
       providerType: "Other"
       endpoint: "s3.us-west-004.backblazeb2.com"
@@ -122,6 +128,25 @@ backups:
     prune:
       enabled: false
       ageToPrune: "90d"
+
+# -- Security context for CronJob and test containers
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -- Resource requests and limits for CronJob and test containers
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
 
 # -- Ntfy
 # Sends notifications for results of backup and prune
