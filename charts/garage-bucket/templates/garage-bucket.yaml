@@ -14,9 +14,6 @@ spec:
   clusterRef:
     name: {{ .Values.garageCluster.name }}
     namespace: {{ .Values.garageCluster.namespace }}
-  keyRef:
-    name: {{ include "garageKey.name" . }}
-    namespace: {{ .Release.Namespace }}
   {{- if or .Values.lifecycle.abortIncompleteMultipartUploadDays (and .Values.lifecycle.expirationDays (gt (int .Values.lifecycle.expirationDays) 0)) .Values.lifecycle.rules }}
   lifecycle:
     rules:
