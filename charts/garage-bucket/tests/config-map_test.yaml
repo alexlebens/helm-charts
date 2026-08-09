@@ -1,0 +1,29 @@
+suite: test cors config map
+templates:
+  - config-map.yaml
+tests:
+  - it: should not render config map when cors is disabled
+    set:
+      cors:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render config map with policy when cors is enabled
+    set:
+      cors:
+        enabled: true
+        policy: '{"CORSRules": []}'
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-cors
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-install,post-upgrade
+      - equal:
+          path: data["cors.json"]
+          value: '{"CORSRules": []}'

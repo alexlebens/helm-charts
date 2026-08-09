@@ -1,0 +1,35 @@
+suite: test cors job
+templates:
+  - job.yaml
+tests:
+  - it: should not render job when cors is disabled
+    set:
+      cors:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render job when cors is enabled
+    set:
+      cors:
+        enabled: true
+        image:
+          repository: amazon/aws-cli
+          tag: 2.27.51@sha256:123
+        policy: '{"CORSRules": []}'
+    asserts:
+      - isKind:
+          of: Job
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-cors-apply
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-install,post-upgrade
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: amazon/aws-cli:2.27.51@sha256:123
+      - containsDocument:
+          kind: Job
+          apiVersion: batch/v1
