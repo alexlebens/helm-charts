@@ -13,16 +13,13 @@ metadata:
     {{- end }}
 spec:
   from:
-    - group: garage.rajsingh.info
-      kind: GarageKey
+    - kind: GarageKey
       name: {{ include "garageKey.name" . }}
       namespace: {{ .Release.Namespace }}
-    - group: garage.rajsingh.info
-      kind: GarageBucket
+    - kind: GarageBucket
       name: {{ include "garageBucket.name" . }}
       namespace: {{ .Release.Namespace }}
   to:
-    - group: garage.rajsingh.info
-      kind: GarageCluster
+    - kind: GarageCluster
       name: {{ .Values.garageCluster.name }}
 {{- end }}
