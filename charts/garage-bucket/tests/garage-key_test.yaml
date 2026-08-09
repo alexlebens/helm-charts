@@ -1,0 +1,30 @@
+suite: test garage key
+templates:
+  - garage-key.yaml
+tests:
+  - it: should render with default values
+    asserts:
+      - isKind:
+          of: GarageKey
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-key
+      - notExists:
+          path: spec.importKey
+
+  - it: should include importKey when externalSecret is enabled
+    set:
+      externalSecret:
+        enabled: true
+    asserts:
+      - exists:
+          path: spec.importKey
+      - equal:
+          path: spec.importKey.secretRef.name
+          value: RELEASE-NAME-secret
+      - equal:
+          path: spec.importKey.accessKeyIdKey
+          value: AWS_ACCESS_KEY_ID
+      - equal:
+          path: spec.importKey.secretAccessKeyKey
+          value: AWS_SECRET_ACCESS_KEY

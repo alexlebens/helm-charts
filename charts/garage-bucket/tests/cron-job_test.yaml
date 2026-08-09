@@ -1,0 +1,79 @@
+suite: test cron jobs
+templates:
+  - cron-job.yaml
+tests:
+  - it: should render primary cron job when enabled
+    set:
+      backups:
+        primary:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: CronJob
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-backup-primary
+
+  - it: should render multiple cron jobs if configured
+    set:
+      backups:
+        primary:
+          enabled: true
+          destination:
+            bucketName: test-primary
+        secondary:
+          enabled: true
+          destination:
+            bucketName: test-secondary
+    asserts:
+      - hasDocuments:
+          count: 2
+      - isKind:
+          of: CronJob
+        documentIndex: 0
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-backup-primary
+        documentIndex: 0
+      - isKind:
+          of: CronJob
+        documentIndex: 1
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME-backup-secondary
+        documentIndex: 1
+
+  - it: should include prune container when enabled
+    set:
+      backups:
+        primary:
+          enabled: true
+          prune:
+            enabled: true
+            ageToPrune: "30d"
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[1].name
+          value: prune
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[1].args[0]
+          pattern: "--min-age \"30d\""
+
+  - it: should correctly inject global ntfy configuration
+    set:
+      backups:
+        primary:
+          enabled: true
+      ntfy:
+        enabled: true
+        externalSecret:
+          enabled: true
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[13].name
+          value: NTFY_URL
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[13].valueFrom.secretKeyRef.name
+          value: RELEASE-NAME-secret-backup-ntfy

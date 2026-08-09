@@ -1,0 +1,53 @@
+suite: test garage bucket
+templates:
+  - garage-bucket.yaml
+tests:
+  - it: should render with default values
+    asserts:
+      - isKind:
+          of: GarageBucket
+      - matchRegex:
+          path: metadata.name
+          pattern: RELEASE-NAME
+      - matchRegex:
+          path: metadata.namespace
+          pattern: NAMESPACE
+      - equal:
+          path: spec.clusterRef.name
+          value: garage-cluster-a
+      - equal:
+          path: spec.clusterRef.namespace
+          value: garage-operator
+      - equal:
+          path: spec.keyRef.name
+          value: RELEASE-NAME-key
+
+  - it: should respect bucketName override
+    set:
+      bucketName: custom-bucket
+    asserts:
+      - equal:
+          path: metadata.name
+          value: custom-bucket
+      - equal:
+          path: spec.keyRef.name
+          value: custom-bucket-key
+
+  - it: should correctly generate lifecycle rules
+    set:
+      lifecycle:
+        abortIncompleteMultipartUploadDays: 14
+        expirationDays: 30
+    asserts:
+      - contains:
+          path: spec.lifecycle.rules
+          content:
+            id: expire-incomplete-multipart
+            status: Enabled
+            abortIncompleteMultipartUploadDays: 14
+      - contains:
+          path: spec.lifecycle.rules
+          content:
+            id: expire-old-objects
+            status: Enabled
+            expirationDays: 30
