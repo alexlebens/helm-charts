@@ -10,6 +10,11 @@ metadata:
   annotations:
     "helm.sh/hook": test
 spec:
+  automountServiceAccountToken: false
+  restartPolicy: Never
+  volumes:
+    - name: tmp
+      emptyDir: {}
   containers:
     - name: rclone-test
       {{- $image := "rclone/rclone:latest" }}
@@ -17,6 +22,17 @@ spec:
       {{- $image = printf "%s:%s" .Values.backups.primary.image.repository .Values.backups.primary.image.tag }}
       {{- end }}
       image: {{ $image | quote }}
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.resources }}
+      resources:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumeMounts:
+        - name: tmp
+          mountPath: /tmp
       command:
         - /bin/sh
         - -c
@@ -58,4 +74,3 @@ spec:
             secretKeyRef:
               name: {{ include "garageKey.name" . }}
               key: AWS_SECRET_ACCESS_KEY
-  restartPolicy: Never
