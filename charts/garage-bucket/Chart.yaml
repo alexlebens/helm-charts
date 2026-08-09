@@ -1,6 +1,6 @@
 apiVersion: v2
 name: garage-bucket
-version: 0.2.3
+version: 0.2.4
 description: Garage Bucket deployment with Rclone backups
 keywords:
   - garage
