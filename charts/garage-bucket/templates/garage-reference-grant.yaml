@@ -11,6 +11,8 @@ metadata:
     {{- with .Values.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
 spec:
   from:
     - kind: GarageKey
