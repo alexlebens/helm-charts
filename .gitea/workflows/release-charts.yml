@@ -89,6 +89,7 @@ jobs:
         chart:
           [
             cloudflared,
+            garage-bucket,
             generic-device-plugin,
             postgres-cluster,
             rclone-bucket,
