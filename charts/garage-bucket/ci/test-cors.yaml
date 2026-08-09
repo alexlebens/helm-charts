@@ -1,0 +1,15 @@
+bucketName: "test-bucket"
+cors:
+  enabled: true
+  policy: |
+    {
+      "CORSRules": [
+        {
+          "AllowedOrigins": ["https://example.com"],
+          "AllowedHeaders": ["*"],
+          "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+          "MaxAgeSeconds": 3000,
+          "ExposeHeaders": ["ETag"]
+        }
+      ]
+    }
