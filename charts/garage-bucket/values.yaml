@@ -53,6 +53,19 @@ website:
   indexDocument: index.html
   errorDocument: error.html
 
+# -- CORS Configuration (optional)
+# Applies Cross-Origin Resource Sharing rules to the bucket via a post-install hook.
+cors:
+  enabled: false
+
+  # -- Default image for the CORS Job
+  image:
+    repository: amazon/aws-cli
+    tag: 2.27.51@sha256:3960aa7002208c9d26cdca90a16416c6f75da95b522da5bed212ef9bf4a804cb
+
+  # -- Raw JSON string of the CORS policy
+  policy: ""
+
 # -- Rclone Backup Configuration
 # Maps dynamically generated GarageBucket to offsite locations via CronJobs.
 backups:

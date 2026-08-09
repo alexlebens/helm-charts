@@ -41,6 +41,9 @@ Garage Bucket deployment with Rclone backups
 | backups.secondary.image | object | `{"repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"}` | Default image |
 | backups.secondary.prune | object | `{"ageToPrune":"90d","enabled":false}` | Prune (optional) |
 | bucketName | string | `""` | The name of the bucket to create (defaults to .Release.Name) |
+| cors | object | `{"enabled":false,"image":{"repository":"amazon/aws-cli","tag":"2.27.51@sha256:3960aa7002208c9d26cdca90a16416c6f75da95b522da5bed212ef9bf4a804cb"},"policy":""}` | CORS Configuration (optional) Applies Cross-Origin Resource Sharing rules to the bucket via a post-install hook. |
+| cors.image | object | `{"repository":"amazon/aws-cli","tag":"2.27.51@sha256:3960aa7002208c9d26cdca90a16416c6f75da95b522da5bed212ef9bf4a804cb"}` | Default image for the CORS Job |
+| cors.policy | string | `""` | Raw JSON string of the CORS policy |
 | externalSecret | object | `{"accessKeyIdPath":"","accessKeyIdProperty":"ACCESS_KEY_ID","enabled":true,"secretAccessKeyPath":"","secretAccessKeyProperty":"ACCESS_SECRET_KEY","secretPath":"","secretPathPrefix":"/garage/home-infra","storeName":"openbao"}` | Configuration for importing an existing key via ExternalSecret If disabled, Garage operator will auto-generate credentials. |
 | externalSecret.accessKeyIdPath | string | `""` | Override paths per key (takes precedence over secretPath) |
 | externalSecret.secretPath | string | `""` | Shared path for both keys (takes precedence over secretPathPrefix) |

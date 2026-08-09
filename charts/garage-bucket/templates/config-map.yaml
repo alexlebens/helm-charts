@@ -1,0 +1,18 @@
+{{- if .Values.cors.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "garageBucket.name" . }}-cors
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "garageBucket.name" . }}-cors
+    {{- include "garageBucket.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
+data:
+  cors.json: |
+    {{- .Values.cors.policy | nindent 4 }}
+{{- end }}
