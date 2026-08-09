@@ -3,7 +3,7 @@ Generate the bucket name
 */}}
 {{- define "garageBucket.name" -}}
   {{- if .Values.bucketName }}
-    {{- .Values.bucketName | trunc 63 | trimSuffix "-" }}
+    {{- .Values.bucketName | trunc 63 | trimSuffix "-" -}}
   {{- else }}
     {{- printf "%s" .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
@@ -51,7 +51,7 @@ Common labels
 helm.sh/chart: {{ include "garageBucket.chart" $ }}
 {{ include "garageBucket.selectorLabels" $ }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.Version | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
