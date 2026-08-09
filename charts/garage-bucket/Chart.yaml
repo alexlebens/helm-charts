@@ -14,7 +14,7 @@ sources:
 annotations:
   artifacthub.io/links: |
     - name: source
-      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/rclone-bucket
+      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/garage-bucket
 maintainers:
   - name: alexlebens
 dependencies: []
