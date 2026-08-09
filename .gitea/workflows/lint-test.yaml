@@ -655,6 +655,20 @@ jobs:
           wget -q https://raw.githubusercontent.com/rajsinghtech/garage-operator/main/charts/garage-operator/crd-bases/garage.rajsingh.info_garagekeys.yaml
           wget -q https://raw.githubusercontent.com/rajsinghtech/garage-operator/main/charts/garage-operator/crd-bases/garage.rajsingh.info_garagereferencegrants.yaml
 
+          # Download CloudNative-PG CRDs
+          echo ">> Downloading CloudNative-PG CRDs ..."
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_backups.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_clusterimagecatalogs.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_clusters.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_databaseroles.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_databases.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_failoverquorums.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_imagecatalogs.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_poolers.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_publications.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml
+          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_subscriptions.yaml
+
           echo ">> Format schemas ..."
           export FILENAME_FORMAT='{kind}_{version}'
           python3 ~/.local/bin/openapi2jsonschema.py *.yaml
@@ -679,11 +693,21 @@ jobs:
               (
                 cd $chart_path
                 echo ""
-                echo ">> Running kubeconform for $dir ..."
+                echo ">> Running kubeconform for $dir (default values) ..."
                 helm template . | kubeconform -strict -summary \
                   -schema-location default \
                   -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
                   -schema-location "$HOME/.schemas/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+
+                if ls ci/*.yaml 1> /dev/null 2>&1; then
+                  for values_file in ci/*.yaml; do
+                    echo ">> Running kubeconform for $dir ($values_file) ..."
+                    helm template . -f "$values_file" | kubeconform -strict -summary \
+                      -schema-location default \
+                      -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+                      -schema-location "$HOME/.schemas/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+                  done
+                fi
               ) || {
                 FAILED_CHARTS="$FAILED_CHARTS $dir"
               }
