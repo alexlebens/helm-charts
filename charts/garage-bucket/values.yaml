@@ -33,7 +33,7 @@ externalSecret:
   enabled: true
   storeName: openbao
   # -- Prefix for auto-generating secretPath as <prefix>/<bucketName>
-  secretPathPrefix: ""
+  secretPathPrefix: /garage/home-infra
   # -- Shared path for both keys (takes precedence over secretPathPrefix)
   secretPath: ""
   # -- Override paths per key (takes precedence over secretPath)
@@ -86,7 +86,7 @@ backups:
       enabled: true
       storeName: openbao
       # -- Prefix for auto-generating secretPath as <prefix>/<bucketName>
-      secretPathPrefix: ""
+      secretPathPrefix: /garage/home-infra
       # -- Shared path for both keys (takes precedence over secretPathPrefix)
       secretPath: ""
       # -- Override paths per key (takes precedence over secretPath)
@@ -130,7 +130,7 @@ backups:
       enabled: true
       storeName: openbao
       # -- Prefix for auto-generating secretPath as <prefix>/<bucketName>
-      secretPathPrefix: ""
+      secretPathPrefix: /backblaze/home-infra
       # -- Shared path for both keys (takes precedence over secretPathPrefix)
       secretPath: ""
       # -- Override paths per key (takes precedence over secretPath)
