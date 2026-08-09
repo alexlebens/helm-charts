@@ -31,7 +31,7 @@ spec:
           labels:
             app.kubernetes.io/name: {{ include "garageCronJob.name" $ }}-{{ $backupName }}
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           automountServiceAccountToken: false
           {{- with $.Values.podSecurityContext }}
           securityContext:
