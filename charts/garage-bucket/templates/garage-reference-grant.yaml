@@ -1,0 +1,23 @@
+{{- if .Values.referenceGrant.enabled }}
+---
+apiVersion: garage.rajsingh.info/v1beta2
+kind: GarageReferenceGrant
+metadata:
+  name: {{ include "garageBucket.name" . }}-grant
+  namespace: {{ .Values.garageCluster.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "garageBucket.name" . }}-grant
+    {{- include "garageBucket.labels" . | nindent 4 }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  from:
+    - kind: GarageKey
+      namespace: {{ .Release.Namespace }}
+    - kind: GarageBucket
+      namespace: {{ .Release.Namespace }}
+  to:
+    - kind: GarageCluster
+      name: {{ .Values.garageCluster.name }}
+{{- end }}

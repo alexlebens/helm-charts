@@ -1,0 +1,30 @@
+---
+apiVersion: garage.rajsingh.info/v1beta2
+kind: GarageKey
+metadata:
+  name: {{ include "garageKey.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "garageKey.name" . }}
+    {{- include "garageBucket.labels" . | nindent 4 }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  name: {{ include "garageKey.name" . }}
+  clusterRef:
+    name: {{ .Values.garageCluster.name }}
+    namespace: {{ .Values.garageCluster.namespace }}
+  {{- if .Values.externalSecret.enabled }}
+  importKey:
+    secretRef:
+      name: {{ include "garageSecret.name" . }}
+    accessKeyIdKey: AWS_ACCESS_KEY_ID
+    secretAccessKeyKey: AWS_SECRET_ACCESS_KEY
+  {{- end }}
+  bucketPermissions:
+    - bucketRef:
+        name: {{ include "garageBucket.name" . }}
+      read: true
+      write: true
+      owner: true

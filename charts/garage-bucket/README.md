@@ -1,0 +1,50 @@
+# garage-bucket
+
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![AppVersion: v0.7.2](https://img.shields.io/badge/AppVersion-v0.7.2-informational?style=flat-square)
+
+Garage Bucket deployment with Rclone backups
+
+**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/garage-bucket>
+
+## Maintainers
+
+| Name | Email | Url |
+| ---- | ------ | --- |
+| alexlebens |  |  |
+
+## Source Code
+
+* <https://gitea.alexlebens.net/alexlebens/helm-charts>
+* <https://git.deuxfleurs.fr/Deuxfleurs/garage>
+* <https://github.com/rajsinghtech/garage-operator>
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| additionalLabels | object | `{}` | Add additional labels |
+| backups | object | `{"primary":{"cronJob":{"backoffLimit":3,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"},"destination":{"bucketName":"my-offsite-backup-bucket","endpoint":"s3.us-west-004.backblazeb2.com","providerType":"Other","region":"us-west-004"},"enabled":false,"externalSecret":{"accessKeyIdPath":"secret/data/backblaze","accessKeyIdProperty":"AWS_ACCESS_KEY_ID","enabled":true,"secretAccessKeyPath":"secret/data/backblaze","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"},"image":{"repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"},"prune":{"ageToPrune":"90d","enabled":false}},"secondary":{"cronJob":{"backoffLimit":3,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"},"destination":{"bucketName":"my-offsite-backup-bucket-secondary","endpoint":"s3.us-west-004.backblazeb2.com","providerType":"Other","region":"us-west-004"},"enabled":false,"externalSecret":{"accessKeyIdPath":"secret/data/backblaze","accessKeyIdProperty":"AWS_ACCESS_KEY_ID","enabled":true,"secretAccessKeyPath":"secret/data/backblaze","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"},"image":{"repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"},"prune":{"ageToPrune":"90d","enabled":false}}}` | Rclone Backup Configuration Maps dynamically generated GarageBucket to offsite locations via CronJobs. |
+| backups.primary.cronJob | object | `{"backoffLimit":3,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"}` | CronJob configuration |
+| backups.primary.destination | object | `{"bucketName":"my-offsite-backup-bucket","endpoint":"s3.us-west-004.backblazeb2.com","providerType":"Other","region":"us-west-004"}` | Desintation Bucket |
+| backups.primary.externalSecret | object | `{"accessKeyIdPath":"secret/data/backblaze","accessKeyIdProperty":"AWS_ACCESS_KEY_ID","enabled":true,"secretAccessKeyPath":"secret/data/backblaze","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"}` | Using ExternalSecret to pull destination credentials from OpenBao/Vault |
+| backups.primary.image | object | `{"repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"}` | Default image |
+| backups.primary.prune | object | `{"ageToPrune":"90d","enabled":false}` | Prune (optional) |
+| backups.secondary.cronJob | object | `{"backoffLimit":3,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"}` | CronJob configuration |
+| backups.secondary.destination | object | `{"bucketName":"my-offsite-backup-bucket-secondary","endpoint":"s3.us-west-004.backblazeb2.com","providerType":"Other","region":"us-west-004"}` | Desintation Bucket |
+| backups.secondary.externalSecret | object | `{"accessKeyIdPath":"secret/data/backblaze","accessKeyIdProperty":"AWS_ACCESS_KEY_ID","enabled":true,"secretAccessKeyPath":"secret/data/backblaze","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"}` | Using ExternalSecret to pull destination credentials from OpenBao/Vault |
+| backups.secondary.image | object | `{"repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"}` | Default image |
+| backups.secondary.prune | object | `{"ageToPrune":"90d","enabled":false}` | Prune (optional) |
+| bucketName | string | `""` | The name of the bucket to create (defaults to .Release.Name) |
+| externalSecret | object | `{"accessKeyIdPath":"","accessKeyIdProperty":"AWS_ACCESS_KEY_ID","enabled":false,"secretAccessKeyPath":"","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"}` | Configuration for importing an existing key via ExternalSecret If disabled, Garage operator will auto-generate credentials. |
+| garageCluster | object | `{"name":"garage-cluster-a","namespace":"garage-operator"}` | GarageCluster reference |
+| lifecycle | object | `{"abortIncompleteMultipartUploadDays":7,"expirationDays":0,"rules":[]}` | Bucket Lifecycle Rules (optional) |
+| lifecycle.abortIncompleteMultipartUploadDays | int | `7` | Clean up failed multipart uploads after this many days (highly recommended for backups) |
+| lifecycle.expirationDays | int | `0` | Delete objects after this many days (set to 0 to disable) |
+| lifecycle.rules | list | `[]` | Raw rules array to inject custom lifecycle rules |
+| ntfy | object | `{"enabled":true,"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"}}` | Ntfy Sends notifications for results of backup and prune |
+| quotas | object | `{"maxObjects":"","maxSize":""}` | Bucket Quotas (optional) |
+| referenceGrant | object | `{"enabled":true}` | Configuration for the GarageReferenceGrant Usually the bucket and key are created in the app's namespace. This allows the Garage Operator to process them. Adjust as needed if cross-namespace access is required. |
+| website | object | `{"enabled":false,"errorDocument":"error.html","indexDocument":"index.html"}` | Bucket Website (optional) |
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

@@ -1,0 +1,138 @@
+# -- The name of the bucket to create (defaults to .Release.Name)
+bucketName: ""
+
+# -- Add additional labels
+additionalLabels: {}
+
+# -- GarageCluster reference
+garageCluster:
+  name: garage-cluster-a
+  namespace: garage-operator
+
+# -- Configuration for the GarageReferenceGrant
+# Usually the bucket and key are created in the app's namespace.
+# This allows the Garage Operator to process them.
+# Adjust as needed if cross-namespace access is required.
+referenceGrant:
+  enabled: true
+
+# -- Bucket Lifecycle Rules (optional)
+lifecycle:
+  # -- Clean up failed multipart uploads after this many days (highly recommended for backups)
+  abortIncompleteMultipartUploadDays: 7
+
+  # -- Delete objects after this many days (set to 0 to disable)
+  expirationDays: 0
+
+  # -- Raw rules array to inject custom lifecycle rules
+  rules: []
+
+# -- Configuration for importing an existing key via ExternalSecret
+# If disabled, Garage operator will auto-generate credentials.
+externalSecret:
+  enabled: false
+  storeName: openbao
+  accessKeyIdPath: ""
+  accessKeyIdProperty: AWS_ACCESS_KEY_ID
+  secretAccessKeyPath: ""
+  secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+
+# -- Bucket Quotas (optional)
+quotas:
+  maxSize: ""
+  maxObjects: ""
+
+# -- Bucket Website (optional)
+website:
+  enabled: false
+  indexDocument: index.html
+  errorDocument: error.html
+
+# -- Rclone Backup Configuration
+# Maps dynamically generated GarageBucket to offsite locations via CronJobs.
+backups:
+  primary:
+    enabled: false
+
+    # -- Default image
+    image:
+      repository: rclone/rclone
+      tag: 1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548
+
+    # -- CronJob configuration
+    cronJob:
+      suspend: false
+      timeZone: America/Chicago
+      schedule: 0 0 * * *
+      backoffLimit: 3
+
+    # -- Desintation Bucket
+    destination:
+      providerType: "Other"
+      endpoint: "s3.us-west-004.backblazeb2.com"
+      bucketName: "my-offsite-backup-bucket"
+      region: "us-west-004"
+
+    # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      accessKeyIdPath: "secret/data/backblaze"
+      accessKeyIdProperty: "AWS_ACCESS_KEY_ID"
+      secretAccessKeyPath: "secret/data/backblaze"
+      secretAccessKeyProperty: "AWS_SECRET_ACCESS_KEY"
+
+    # -- Prune (optional)
+    prune:
+      enabled: false
+      ageToPrune: "90d"
+
+  secondary:
+    enabled: false
+
+    # -- Default image
+    image:
+      repository: rclone/rclone
+      tag: 1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548
+
+    # -- CronJob configuration
+    cronJob:
+      suspend: false
+      timeZone: America/Chicago
+      schedule: 0 0 * * *
+      backoffLimit: 3
+
+    # -- Desintation Bucket
+    destination:
+      providerType: "Other"
+      endpoint: "s3.us-west-004.backblazeb2.com"
+      bucketName: "my-offsite-backup-bucket-secondary"
+      region: "us-west-004"
+
+    # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      accessKeyIdPath: "secret/data/backblaze"
+      accessKeyIdProperty: "AWS_ACCESS_KEY_ID"
+      secretAccessKeyPath: "secret/data/backblaze"
+      secretAccessKeyProperty: "AWS_SECRET_ACCESS_KEY"
+
+    # -- Prune (optional)
+    prune:
+      enabled: false
+      ageToPrune: "90d"
+
+# -- Ntfy
+# Sends notifications for results of backup and prune
+ntfy:
+  enabled: true
+  externalSecret:
+    enabled: true
+    storeName: openbao
+    urlPath: /cl01tl/ntfy/config
+    urlProperty: internal-endpoint
+    topicPath: /cl01tl/ntfy/topics
+    topicProperty: rclone
+    tokenPath: /cl01tl/ntfy/users/cl01tl
+    tokenProperty: token

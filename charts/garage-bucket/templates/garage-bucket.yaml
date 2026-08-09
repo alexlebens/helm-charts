@@ -1,0 +1,50 @@
+---
+apiVersion: garage.rajsingh.info/v1beta2
+kind: GarageBucket
+metadata:
+  name: {{ include "garageBucket.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "garageBucket.name" . }}
+    {{- include "garageBucket.labels" . | nindent 4 }}
+    {{- with .Values.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  clusterRef:
+    name: {{ .Values.garageCluster.name }}
+    namespace: {{ .Values.garageCluster.namespace }}
+  keyRef:
+    name: {{ include "garageKey.name" . }}
+    namespace: {{ .Release.Namespace }}
+  {{- if or .Values.lifecycle.abortIncompleteMultipartUploadDays (and .Values.lifecycle.expirationDays (gt (int .Values.lifecycle.expirationDays) 0)) .Values.lifecycle.rules }}
+  lifecycle:
+    rules:
+      {{- if .Values.lifecycle.abortIncompleteMultipartUploadDays }}
+      - id: expire-incomplete-multipart
+        status: Enabled
+        abortIncompleteMultipartUploadDays: {{ .Values.lifecycle.abortIncompleteMultipartUploadDays }}
+      {{- end }}
+      {{- if and .Values.lifecycle.expirationDays (gt (int .Values.lifecycle.expirationDays) 0) }}
+      - id: expire-old-objects
+        status: Enabled
+        expirationDays: {{ .Values.lifecycle.expirationDays }}
+      {{- end }}
+      {{- with .Values.lifecycle.rules }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  {{- end }}
+  {{- if .Values.quotas }}
+  quota:
+    {{- if .Values.quotas.maxSize }}
+    maxSize: {{ .Values.quotas.maxSize | quote }}
+    {{- end }}
+    {{- if .Values.quotas.maxObjects }}
+    maxObjects: {{ .Values.quotas.maxObjects }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.website.enabled }}
+  website:
+    indexDocument: {{ .Values.website.indexDocument | quote }}
+    errorDocument: {{ .Values.website.errorDocument | quote }}
+  {{- end }}
