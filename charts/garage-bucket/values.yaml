@@ -32,7 +32,9 @@ lifecycle:
 externalSecret:
   enabled: true
   storeName: openbao
-  # -- Shared path for both keys (used when both live at the same vault path)
+  # -- Prefix for auto-generating secretPath as <prefix>/<bucketName>
+  secretPathPrefix: ""
+  # -- Shared path for both keys (takes precedence over secretPathPrefix)
   secretPath: ""
   # -- Override paths per key (takes precedence over secretPath)
   accessKeyIdPath: ""
@@ -83,7 +85,9 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
-      # -- Shared path for both keys (used when both live at the same vault path)
+      # -- Prefix for auto-generating secretPath as <prefix>/<bucketName>
+      secretPathPrefix: ""
+      # -- Shared path for both keys (takes precedence over secretPathPrefix)
       secretPath: ""
       # -- Override paths per key (takes precedence over secretPath)
       accessKeyIdPath: ""
@@ -125,7 +129,9 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
-      # -- Shared path for both keys (used when both live at the same vault path)
+      # -- Prefix for auto-generating secretPath as <prefix>/<bucketName>
+      secretPathPrefix: ""
+      # -- Shared path for both keys (takes precedence over secretPathPrefix)
       secretPath: ""
       # -- Override paths per key (takes precedence over secretPath)
       accessKeyIdPath: ""

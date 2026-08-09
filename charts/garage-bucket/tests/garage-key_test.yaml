@@ -9,6 +9,14 @@ tests:
       - matchRegex:
           path: metadata.name
           pattern: RELEASE-NAME-key
+      - exists:
+          path: spec.importKey
+
+  - it: should not include importKey when externalSecret is disabled
+    set:
+      externalSecret:
+        enabled: false
+    asserts:
       - notExists:
           path: spec.importKey
 
