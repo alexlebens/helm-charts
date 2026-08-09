@@ -32,6 +32,9 @@ lifecycle:
 externalSecret:
   enabled: true
   storeName: openbao
+  # -- Shared path for both keys (used when both live at the same vault path)
+  secretPath: ""
+  # -- Override paths per key (takes precedence over secretPath)
   accessKeyIdPath: ""
   accessKeyIdProperty: ACCESS_KEY_ID
   secretAccessKeyPath: ""
@@ -80,6 +83,9 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
+      # -- Shared path for both keys (used when both live at the same vault path)
+      secretPath: ""
+      # -- Override paths per key (takes precedence over secretPath)
       accessKeyIdPath: ""
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyPath: ""
@@ -119,6 +125,9 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
+      # -- Shared path for both keys (used when both live at the same vault path)
+      secretPath: ""
+      # -- Override paths per key (takes precedence over secretPath)
       accessKeyIdPath: ""
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyPath: ""
