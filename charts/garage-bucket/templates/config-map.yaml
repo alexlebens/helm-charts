@@ -13,6 +13,6 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-5"
 data:
-  cors.json: |
-    {{- .Values.cors.policy | nindent 4 }}
+  cors.json: |-
+{{ .Values.cors.policy | indent 4 }}
 {{- end }}
