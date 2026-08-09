@@ -90,6 +90,12 @@
       "matchPackageNames": ["/(^|/|-)(renovate)/"],
       "addLabels": ["{{{datasource}}}", "automerge"],
       "automerge": true
+    },
+    {
+      "description": "Schedule amazon/aws-cli for monthly updates to prevent PR spam",
+      "matchPackageNames": ["amazon/aws-cli"],
+      "schedule": ["before 5am on the first day of the month"],
+      "groupName": "aws-cli updates"
     }
   ]
 }
