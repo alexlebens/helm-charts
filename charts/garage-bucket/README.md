@@ -51,10 +51,11 @@ Garage Bucket deployment with Rclone backups
 | lifecycle.expirationDays | int | `0` | Delete objects after this many days (set to 0 to disable) |
 | lifecycle.rules | list | `[]` | Raw rules array to inject custom lifecycle rules |
 | ntfy | object | `{"enabled":true,"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"}}` | Ntfy Sends notifications for results of backup and prune |
+| podSecurityContext | object | `{"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000}` | Security context for CronJob and test pods |
 | quotas | object | `{"maxObjects":"","maxSize":""}` | Bucket Quotas (optional) |
 | referenceGrant | object | `{"enabled":true}` | Configuration for the GarageReferenceGrant Usually the bucket and key are created in the app's namespace. This allows the Garage Operator to process them. Adjust as needed if cross-namespace access is required. |
 | resources | object | `{"limits":{"memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource requests and limits for CronJob and test containers |
-| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000}` | Security context for CronJob and test containers |
+| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | Security context for CronJob and test containers |
 | website | object | `{"enabled":false,"errorDocument":"error.html","indexDocument":"index.html"}` | Bucket Website (optional) |
 
 ----------------------------------------------

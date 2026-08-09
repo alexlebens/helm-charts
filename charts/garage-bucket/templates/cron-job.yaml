@@ -33,7 +33,7 @@ spec:
         spec:
           restartPolicy: OnFailure
           automountServiceAccountToken: false
-          {{- with $.Values.securityContext }}
+          {{- with $.Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}

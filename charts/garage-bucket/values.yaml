@@ -144,11 +144,14 @@ backups:
       enabled: false
       ageToPrune: "90d"
 
-# -- Security context for CronJob and test containers
-securityContext:
+# -- Security context for CronJob and test pods
+podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
   runAsGroup: 1000
+
+# -- Security context for CronJob and test containers
+securityContext:
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:
