@@ -49,9 +49,9 @@ tests:
   - it: should not render quotas when empty
     asserts:
       - notExists:
-          path: spec.quota.maxSize
+          path: spec.quotas.maxSize
       - notExists:
-          path: spec.quota.maxObjects
+          path: spec.quotas.maxObjects
 
   - it: should render quotas when set
     set:
@@ -60,10 +60,10 @@ tests:
         maxObjects: 1000
     asserts:
       - equal:
-          path: spec.quota.maxSize
+          path: spec.quotas.maxSize
           value: "10GB"
       - equal:
-          path: spec.quota.maxObjects
+          path: spec.quotas.maxObjects
           value: 1000
 
   - it: should not render website by default

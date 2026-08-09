@@ -32,7 +32,7 @@ spec:
       {{- end }}
   {{- end }}
   {{- if .Values.quotas }}
-  quota:
+  quotas:
     {{- if .Values.quotas.maxSize }}
     maxSize: {{ .Values.quotas.maxSize | quote }}
     {{- end }}
