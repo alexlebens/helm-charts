@@ -1,0 +1,10 @@
+bucketName: "test-bucket"
+backups:
+  primary:
+    enabled: true
+    destination:
+      bucketName: "test-bucket-backup"
+  secondary:
+    enabled: true
+    destination:
+      bucketName: "test-bucket-backup-secondary"
