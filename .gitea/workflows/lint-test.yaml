@@ -175,6 +175,9 @@ jobs:
 
   lint-test:
     runs-on: ubuntu-latest
+    env:
+      # renovate: datasource=github-releases depName=yannh/kubeconform
+      KUBECONFORM_VERSION: v0.6.4
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -420,6 +423,73 @@ jobs:
 
           fi
 
+      - name: Cache Kubeconform
+        id: cache-kubeconform
+        if: steps.branch-exists.outputs.exists == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.local/bin/kubeconform
+          key: ${{ runner.os }}-kubeconform-${{ env.KUBECONFORM_VERSION }}
+
+      - name: Download Kubeconform
+        if: steps.branch-exists.outputs.exists == 'true' && steps.cache-kubeconform.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.local/bin
+          echo ">> Downloading Kubeconform ${{ env.KUBECONFORM_VERSION }} ..."
+          wget -q https://github.com/yannh/kubeconform/releases/download/${{ env.KUBECONFORM_VERSION }}/kubeconform-linux-amd64.tar.gz
+          tar xf kubeconform-linux-amd64.tar.gz
+          mv kubeconform ~/.local/bin/
+          chmod +x ~/.local/bin/kubeconform
+
+          echo ""
+          echo "----"
+
+      - name: Verify Kubeconform Installation
+        if: steps.branch-exists.outputs.exists == 'true'
+        run: |
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          $HOME/.local/bin/kubeconform -v
+
+          echo ""
+          echo "----"
+
+      - name: Run Kubeconform
+        id: run-kubeconform
+        if: steps.check-dir-changes.outputs.changes-detected == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
+        run: |
+          echo ">> Running kubeconform on changed charts ..."
+          FAILED_CHARTS=""
+
+          for dir in ${CHANGED_CHARTS}; do
+            chart_path=charts/$dir
+            if [ -f "$chart_path/Chart.yaml" ]; then
+              (
+                cd $chart_path
+                echo ""
+                echo ">> Running kubeconform for $dir ..."
+                # Note: -ignore-missing-schemas is required for CRDs not in the Datree catalog.
+                helm template . | kubeconform -strict -summary -ignore-missing-schemas \
+                  -schema-location default \
+                  -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
+              ) || {
+                FAILED_CHARTS="$FAILED_CHARTS $dir"
+              }
+            fi
+          done
+
+          if [ -n "$FAILED_CHARTS" ]; then
+            echo ">> Kubeconform failed for the following charts: $FAILED_CHARTS"
+            echo "----"
+            echo "FAILED_CHART=$FAILED_CHARTS" >> $GITEA_ENV
+            exit 1
+
+          else
+
+            echo "----"
+          fi
+
       - name: ntfy Lint Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
         if: failure() && steps.lint-helm-chart.outcome == 'failure'
@@ -450,9 +520,24 @@ jobs:
           actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
 
+      - name: ntfy Kubeconform Failed
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        if: failure() && steps.run-kubeconform.outcome == 'failure'
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "Kubeconform Failure - Helm Charts"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "Schema validation failed for Chart: ${{ env.FAILED_CHART }}"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
+
       - name: ntfy Pipeline Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.lint-helm-chart.outcome != 'failure' && steps.run-helm-unittest.outcome != 'failure'
+        if: failure() && steps.lint-helm-chart.outcome != 'failure' && steps.run-helm-unittest.outcome != 'failure' && steps.run-kubeconform.outcome != 'failure'
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
