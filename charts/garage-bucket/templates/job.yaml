@@ -40,20 +40,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ include "garageKey.name" . }}
-              {{- if .Values.externalSecret.enabled }}
-              key: AWS_ACCESS_KEY_ID
-              {{- else }}
               key: access-key-id
-              {{- end }}
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
               name: {{ include "garageKey.name" . }}
-              {{- if .Values.externalSecret.enabled }}
-              key: AWS_SECRET_ACCESS_KEY
-              {{- else }}
               key: secret-access-key
-              {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/config

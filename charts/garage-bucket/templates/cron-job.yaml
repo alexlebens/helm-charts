@@ -138,12 +138,12 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: {{ include "garageKey.name" $ }}
-                      key: AWS_ACCESS_KEY_ID
+                      key: access-key-id
                 - name: RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: {{ include "garageKey.name" $ }}
-                      key: AWS_SECRET_ACCESS_KEY
+                      key: secret-access-key
                 - name: RCLONE_CONFIG_DEST_TYPE
                   value: "s3"
                 - name: RCLONE_CONFIG_DEST_PROVIDER
