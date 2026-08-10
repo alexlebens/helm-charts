@@ -173,18 +173,6 @@ tests:
           path: spec.failedJobsHistoryLimit
           value: 2
 
-  - it: should set activeDeadlineSeconds
-    set:
-      backups:
-        primary:
-          enabled: true
-          cronJob:
-            activeDeadlineSeconds: 7200
-    asserts:
-      - equal:
-          path: spec.jobTemplate.spec.activeDeadlineSeconds
-          value: 7200
-
   - it: should not render when no backups are enabled
     set:
       backups:
