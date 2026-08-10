@@ -23,9 +23,6 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: {{ $backupConfig.cronJob.backoffLimit | default 3 }}
-      {{- if $backupConfig.cronJob.activeDeadlineSeconds }}
-      activeDeadlineSeconds: {{ $backupConfig.cronJob.activeDeadlineSeconds }}
-      {{- end }}
       template:
         metadata:
           labels:
