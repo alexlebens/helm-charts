@@ -20,6 +20,7 @@ spec:
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: {{ $backupConfig.cronJob.successfulJobsHistoryLimit | default 3 }}
   failedJobsHistoryLimit: {{ $backupConfig.cronJob.failedJobsHistoryLimit | default 3 }}
+  podReplacementPolicy: Failed
   jobTemplate:
     spec:
       backoffLimit: {{ $backupConfig.cronJob.backoffLimit | default 3 }}
