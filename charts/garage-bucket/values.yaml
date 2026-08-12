@@ -83,7 +83,7 @@ backups:
       timeZone: America/Chicago
       schedule: 0 0 * * *
       backoffLimit: 3
-      successfulJobsHistoryLimit: 3
+      successfulJobsHistoryLimit: 1
       failedJobsHistoryLimit: 3
       activeDeadlineSeconds: 3600
 
@@ -127,7 +127,7 @@ backups:
       timeZone: America/Chicago
       schedule: 0 0 * * *
       backoffLimit: 3
-      successfulJobsHistoryLimit: 3
+      successfulJobsHistoryLimit: 1
       failedJobsHistoryLimit: 3
       activeDeadlineSeconds: 3600
 
