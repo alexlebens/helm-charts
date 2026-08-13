@@ -75,15 +75,15 @@ spec:
 
                   if [ $sync_res -eq 0 ]; then
                     if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Backup Success - {{ include "garageBucket.name" $ }}" --post-data "Job transferred: $DATA_TRANS" "$NTFY_URL"
+                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: ✅ Backup - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} transferred: $DATA_TRANS" "$NTFY_URL"
                     else
-                      wget -qO- --header "Title: Backup Success - {{ include "garageBucket.name" $ }}" --post-data "Job transferred: $DATA_TRANS" "$NTFY_URL"
+                      wget -qO- --header "Title: ✅ Backup - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} transferred: $DATA_TRANS" "$NTFY_URL"
                     fi
                   else
                     if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Backup Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, transferred: $DATA_TRANS" "$NTFY_URL"
+                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: 🚨 Backup - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, transferred: $DATA_TRANS" "$NTFY_URL"
                     else
-                      wget -qO- --header "Title: Backup Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, transferred: $DATA_TRANS" "$NTFY_URL"
+                      wget -qO- --header "Title: 🚨 Backup - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, transferred: $DATA_TRANS" "$NTFY_URL"
                     fi
                     exit $sync_res
                   fi
@@ -108,15 +108,15 @@ spec:
 
                   if [ $prune_res -eq 0 ]; then
                     if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Prune Success - {{ include "garageBucket.name" $ }}" --post-data "Job pruned: $FILES_PRUNED" "$NTFY_URL"
+                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: ✅ Prune - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} pruned: $FILES_PRUNED" "$NTFY_URL"
                     else
-                      wget -qO- --header "Title: Prune Success - {{ include "garageBucket.name" $ }}" --post-data "Job pruned: $FILES_PRUNED" "$NTFY_URL"
+                      wget -qO- --header "Title: ✅ Prune - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} pruned: $FILES_PRUNED" "$NTFY_URL"
                     fi
                   else
                     if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: Prune Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, pruned: $FILES_PRUNED" "$NTFY_URL"
+                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: 🚨 Prune - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, pruned: $FILES_PRUNED" "$NTFY_URL"
                     else
-                      wget -qO- --header "Title: Prune Failed - {{ include "garageBucket.name" $ }}" --header "Priority: urgent" --post-data "Job failed, pruned: $FILES_PRUNED" "$NTFY_URL"
+                      wget -qO- --header "Title: 🚨 Prune - {{ include "garageBucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, pruned: $FILES_PRUNED" "$NTFY_URL"
                     fi
                   fi
                   {{- end }}

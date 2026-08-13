@@ -95,6 +95,30 @@ tests:
             name: NTFY_TOKEN
           any: true
 
+  - it: should include backup name in ntfy notification messages
+    set:
+      backups:
+        primary:
+          enabled: true
+          prune:
+            enabled: true
+            ageToPrune: "30d"
+      ntfy:
+        enabled: true
+    asserts:
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[0]
+          pattern: '✅ Backup - RELEASE-NAME - primary'
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[0]
+          pattern: 'Job for primary transferred:'
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[0]
+          pattern: '✅ Prune - RELEASE-NAME - primary'
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args[0]
+          pattern: 'Job for primary pruned:'
+
   - it: should set automountServiceAccountToken to false
     set:
       backups:
