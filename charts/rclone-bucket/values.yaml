@@ -1,4 +1,4 @@
-# -- Default pattern follows <pvcTarget>-backup
+# -- Overrides the chart release name (defaults to .Release.Name)
 nameOverride: ""
 
 # -- Add additional labels

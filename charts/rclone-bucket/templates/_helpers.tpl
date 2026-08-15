@@ -5,7 +5,7 @@ Generate the root name
   {{- if .Values.nameOverride }}
     {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    {{- printf "%s-rclone" .Values.rclone.source.bucketName | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s" .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -17,7 +17,7 @@ Generate the secret name
     {{- if .Values.secret.externalSecret.source.nameOverride }}
       {{- .Values.secret.externalSecret.source.nameOverride | trunc 63 | trimSuffix "-" }}
     {{- else }}
-      {{- printf "%s-rclone-source-config" .Values.rclone.source.bucketName -}}
+      {{- printf "%s-source-config" (include "rclone.name" .) | trunc 63 | trimSuffix "-" -}}
     {{- end }}
   {{- else if .Values.secret.existingSecretSource.name }}
     {{- printf "%s" .Values.secret.existingSecretSource.name -}}
@@ -31,7 +31,7 @@ Generate the secret name
     {{- if .Values.secret.externalSecret.destination.nameOverride }}
       {{- .Values.secret.externalSecret.destination.nameOverride | trunc 63 | trimSuffix "-" }}
     {{- else }}
-      {{- printf "%s-rclone-destination-config" .Values.rclone.destination.bucketName -}}
+      {{- printf "%s-destination-config" (include "rclone.name" .) | trunc 63 | trimSuffix "-" -}}
     {{- end }}
   {{- else if .Values.secret.existingSecretDestination.name }}
     {{- printf "%s" .Values.secret.existingSecretDestination.name -}}
@@ -47,7 +47,7 @@ Generate the ntfy secret name
   {{- if .Values.ntfy.existingSecret.name }}
     {{- printf "%s" .Values.ntfy.existingSecret.name -}}
   {{- else }}
-    {{- printf "%s-ntfy" (include "rclone.name" .) -}}
+    {{- printf "%s-ntfy" (include "rclone.name" .) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
