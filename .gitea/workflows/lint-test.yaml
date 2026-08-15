@@ -284,6 +284,7 @@ jobs:
           echo "----"
 
       - name: Verify Chart Lockfiles
+        id: verify-chart-lockfiles
         if: steps.check-dir-changes.outputs.changes-detected == 'true'
         env:
           CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
@@ -294,11 +295,20 @@ jobs:
           for dir in ${CHANGED_CHARTS}; do
             chart_path="charts/$dir"
             if [ -f "$chart_path/Chart.yaml" ]; then
+              if [ ! -f "$chart_path/Chart.lock" ] && ! helm dependency list "$chart_path" 2> /dev/null | tail +2 | grep -q '[^[:space:]]'; then
+                echo ""
+                echo ">> No dependencies found for $dir, skipping lockfile verification ..."
+                continue
+
+              fi
+
               (
                 cd "$chart_path"
+                echo ""
+                echo ">> Updating helm dependencies for $dir ..."
                 helm dependency update . --skip-refresh
 
-                if ! git diff --exit-code Chart.lock > /dev/null; then
+                if [ -n "$(git status --porcelain Chart.lock)" ]; then
                   echo "::error file=$chart_path/Chart.lock::Chart.lock is out of date. Please run 'helm dependency update' locally and commit the changes."
                   exit 1
 
