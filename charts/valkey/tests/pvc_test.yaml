@@ -2,16 +2,14 @@ suite: test PVC generation
 templates:
   - charts/valkey/templates/pvc.yaml
 tests:
-  - it: should not generate a PVC when replica mode is enabled (default)
+  - it: should not generate a PVC by default (dataStorage disabled)
     asserts:
       - hasDocuments:
           count: 0
 
-  - it: should generate a PVC in standalone mode with dataStorage enabled
+  - it: should generate a PVC when dataStorage is enabled
     set:
       valkey:
-        replica:
-          enabled: false
         dataStorage:
           enabled: true
           requestedSize: 1Gi
@@ -25,8 +23,6 @@ tests:
   - it: should configure PVC storage class and size
     set:
       valkey:
-        replica:
-          enabled: false
         dataStorage:
           enabled: true
           requestedSize: 5Gi
@@ -44,13 +40,11 @@ tests:
           path: spec.accessModes
           content: ReadWriteMany
 
-  - it: should not generate a PVC when dataStorage is disabled
+  - it: should not generate a PVC when replica mode is enabled
     set:
       valkey:
         replica:
-          enabled: false
-        dataStorage:
-          enabled: false
+          enabled: true
     asserts:
       - hasDocuments:
           count: 0

@@ -4,17 +4,7 @@ templates:
   - charts/valkey/templates/init_config.yaml
   - charts/valkey/templates/configmap.yaml
 tests:
-  - it: should not generate a Deployment when replica mode is enabled (default)
-    template: charts/valkey/templates/deploy_valkey.yaml
-    asserts:
-      - hasDocuments:
-          count: 0
-
-  - it: should generate a Deployment when replica mode is disabled
-    set:
-      valkey:
-        replica:
-          enabled: false
+  - it: should generate a Deployment when replica mode is disabled (default)
     template: charts/valkey/templates/deploy_valkey.yaml
     asserts:
       - isKind:
@@ -22,22 +12,24 @@ tests:
       - hasDocuments:
           count: 1
 
-  - it: should have exactly 1 replica in standalone mode
+  - it: should not generate a Deployment when replica mode is enabled
     set:
       valkey:
         replica:
-          enabled: false
+          enabled: true
+    template: charts/valkey/templates/deploy_valkey.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should have exactly 1 replica in standalone mode (default)
     template: charts/valkey/templates/deploy_valkey.yaml
     asserts:
       - equal:
           path: spec.replicas
           value: 1
 
-  - it: should configure resources in standalone mode
-    set:
-      valkey:
-        replica:
-          enabled: false
+  - it: should configure resources in standalone mode (default)
     template: charts/valkey/templates/deploy_valkey.yaml
     asserts:
       - equal:
