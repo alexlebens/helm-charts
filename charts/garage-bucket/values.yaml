@@ -92,7 +92,6 @@ backups:
       providerType: Other
       endpoint: https://garage-ps10rp.boreal-beaufort.ts.net:3900
       bucketName: ""
-      region: garage
 
     # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
     externalSecret:
@@ -107,6 +106,8 @@ backups:
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyPath: ""
       secretAccessKeyProperty: ACCESS_SECRET_KEY
+      regionKeyPath: ""
+      regionKeyProperty: ACCESS_REGION
 
     # -- Prune (optional)
     prune:
@@ -136,7 +137,6 @@ backups:
       providerType: Other
       endpoint: s3.us-east-005.backblazeb2.com
       bucketName: ""
-      region: us-east-005
 
     # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
     externalSecret:
@@ -151,6 +151,8 @@ backups:
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyPath: ""
       secretAccessKeyProperty: ACCESS_SECRET_KEY
+      regionKeyPath: ""
+      regionKeyProperty: ACCESS_REGION
 
     # -- Prune (optional)
     prune:

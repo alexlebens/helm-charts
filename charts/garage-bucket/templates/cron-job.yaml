@@ -156,10 +156,13 @@ spec:
                   value: {{ $backupConfig.destination.providerType | quote }}
                 - name: RCLONE_CONFIG_DEST_ENDPOINT
                   value: {{ $backupConfig.destination.endpoint | quote }}
-                - name: RCLONE_CONFIG_DEST_REGION
-                  value: {{ $backupConfig.destination.region | quote }}
                 - name: RCLONE_CONFIG_DEST_ENV_AUTH
                   value: "false"
+                - name: RCLONE_CONFIG_DEST_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "garageSecretBackup.name" $ }}-{{ $backupName }}
+                      key: AWS_REGION
                 - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
