@@ -1,6 +1,6 @@
 # rclone-bucket
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![AppVersion: v1.75.0](https://img.shields.io/badge/AppVersion-v1.75.0-informational?style=flat-square)
+![Version: 2.1.0](https://img.shields.io/badge/Version-2.1.0-informational?style=flat-square) ![AppVersion: v1.75.0](https://img.shields.io/badge/AppVersion-v1.75.0-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
 
@@ -22,7 +22,7 @@ Rclone CronJob to replicate buckets
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://bjw-s-labs.github.io/helm-charts/ | common | 5.0.1 |
+| https://bjw-s-labs.github.io/helm-charts/ | common | 5.1.0 |
 
 ## Values
 
