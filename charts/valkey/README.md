@@ -33,7 +33,7 @@ Valkey chart with preconfigured settings
 |-----|------|---------|-------------|
 | valkey.dataStorage.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | valkey.dataStorage.className | string | `"ceph-block"` |  |
-| valkey.dataStorage.enabled | bool | `true` |  |
+| valkey.dataStorage.enabled | bool | `false` |  |
 | valkey.dataStorage.keepPvc | bool | `false` |  |
 | valkey.dataStorage.requestedSize | string | `"1Gi"` |  |
 | valkey.image.registry | string | `"docker.io"` |  |
@@ -73,7 +73,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.prometheusRule.rules[3].labels.severity | string | `"critical"` |  |
 | valkey.metrics.serviceMonitor.enabled | bool | `true` |  |
 | valkey.nameOverride | string | `""` |  |
-| valkey.replica.enabled | bool | `true` |  |
+| valkey.replica.enabled | bool | `false` |  |
 | valkey.replica.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | valkey.replica.persistence.size | string | `"1Gi"` |  |
 | valkey.replica.persistence.storageClass | string | `"ceph-block"` |  |

@@ -11,14 +11,14 @@ valkey:
       cpu: 10m
       memory: 20Mi
   dataStorage:
-    enabled: true
+    enabled: false
     requestedSize: 1Gi
     className: ceph-block
     accessModes:
       - ReadWriteOnce
     keepPvc: false
   replica:
-    enabled: true
+    enabled: false
     replicas: 2
     persistence:
       size: 1Gi
