@@ -92,7 +92,7 @@ backups:
       providerType: Other
       endpoint: https://garage-ps10rp.boreal-beaufort.ts.net:3900
       bucketName: ""
-      region: us-east-1
+      region: garage
 
     # -- Using ExternalSecret to pull destination credentials from OpenBao/Vault
     externalSecret:
