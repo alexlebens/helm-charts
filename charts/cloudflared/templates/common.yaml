@@ -8,6 +8,22 @@ global:
 defaultPodOptions:
   securityContext:
     {{- toYaml .Values.podSecurityContext | nindent 4 }}
+  affinity:
+    {{- with .Values.affinity }}
+    {{- toYaml . | nindent 4 }}
+    {{- else }}
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - {{ include "cloudflared.name" . }}
+            topologyKey: kubernetes.io/hostname
+    {{- end }}
 controllers:
   main:
     type: deployment
