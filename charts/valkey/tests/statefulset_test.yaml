@@ -4,17 +4,7 @@ templates:
   - charts/valkey/templates/init_config.yaml
   - charts/valkey/templates/configmap.yaml
 tests:
-  - it: should not generate a StatefulSet by default (replica mode disabled)
-    template: charts/valkey/templates/statefulset.yaml
-    asserts:
-      - hasDocuments:
-          count: 0
-
-  - it: should generate a StatefulSet when replica mode is enabled
-    set:
-      valkey:
-        replica:
-          enabled: true
+  - it: should generate a StatefulSet when replica mode is enabled (default)
     template: charts/valkey/templates/statefulset.yaml
     asserts:
       - isKind:
@@ -23,10 +13,6 @@ tests:
           count: 1
 
   - it: should set replicas to replica count plus one (for the primary)
-    set:
-      valkey:
-        replica:
-          enabled: true
     template: charts/valkey/templates/statefulset.yaml
     asserts:
       - equal:
@@ -37,7 +23,6 @@ tests:
     set:
       valkey:
         replica:
-          enabled: true
           replicas: 4
     template: charts/valkey/templates/statefulset.yaml
     asserts:
@@ -45,11 +30,7 @@ tests:
           path: spec.replicas
           value: 5
 
-  - it: should configure replica persistence storage class and size
-    set:
-      valkey:
-        replica:
-          enabled: true
+  - it: should configure replica persistence storage class and size (default)
     template: charts/valkey/templates/statefulset.yaml
     asserts:
       - equal:
@@ -63,7 +44,6 @@ tests:
     set:
       valkey:
         replica:
-          enabled: true
           persistence:
             size: 5Gi
             storageClass: fast-ssd
@@ -81,11 +61,7 @@ tests:
           path: spec.volumeClaimTemplates[0].spec.accessModes
           content: ReadWriteMany
 
-  - it: should configure resource requests on the valkey container
-    set:
-      valkey:
-        replica:
-          enabled: true
+  - it: should configure resource requests on the valkey container (default)
     template: charts/valkey/templates/statefulset.yaml
     asserts:
       - equal:
@@ -98,8 +74,6 @@ tests:
   - it: should configure custom resources
     set:
       valkey:
-        replica:
-          enabled: true
         resources:
           requests:
             cpu: 250m
@@ -119,8 +93,6 @@ tests:
   - it: should configure custom image
     set:
       valkey:
-        replica:
-          enabled: true
         image:
           registry: ghcr.io
           repository: custom/valkey
@@ -130,3 +102,13 @@ tests:
       - matchRegex:
           path: spec.template.spec.containers[0].image
           pattern: "ghcr\\.io/custom/valkey:8\\.0\\.0"
+
+  - it: should not generate a StatefulSet when replica mode is disabled
+    set:
+      valkey:
+        replica:
+          enabled: false
+    template: charts/valkey/templates/statefulset.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
