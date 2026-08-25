@@ -1,6 +1,6 @@
 # garage-bucket
 
-![Version: 0.3.10](https://img.shields.io/badge/Version-0.3.10-informational?style=flat-square) ![AppVersion: v0.7.5](https://img.shields.io/badge/AppVersion-v0.7.5-informational?style=flat-square)
+![Version: 0.3.11](https://img.shields.io/badge/Version-0.3.11-informational?style=flat-square) ![AppVersion: v0.7.6](https://img.shields.io/badge/AppVersion-v0.7.6-informational?style=flat-square)
 
 Garage Bucket deployment with Rclone backups
 
