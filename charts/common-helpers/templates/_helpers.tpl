@@ -17,7 +17,7 @@ app.kubernetes.io/part-of: {{ .Release.Name }}
 Domain
 */}}
 {{- define "custom.domain" -}}
-{{ ((.Values.global).domain) }}
+{{ ((.Values.global).domain) | default ".alexlebens.dev" }}
 {{- end -}}
 
 {{/*
@@ -38,7 +38,7 @@ Secrets
 Icon url
 */}}
 {{- define "custom.iconUrl" -}}
-{{ ((.Values.global).iconUrl) }}
+{{ ((.Values.global).iconUrl) | default "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/" }}
 {{- end -}}
 
 {{/*
