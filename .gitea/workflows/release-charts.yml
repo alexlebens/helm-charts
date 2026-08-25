@@ -89,6 +89,7 @@ jobs:
         chart:
           [
             cloudflared,
+            common-helpers,
             garage-bucket,
             generic-device-plugin,
             postgres-cluster,

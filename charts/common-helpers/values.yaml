@@ -1,0 +1,7 @@
+# -- Global configuration accessible across charts
+global:
+  # -- Default base domain
+  domain: ".alexlebens.dev"
+
+  # -- Base URL for dashboard and application icons
+  iconUrl: "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/"
