@@ -1,10 +1,10 @@
 # cloudflared
 
-![Version: 4.3.0](https://img.shields.io/badge/Version-4.3.0-informational?style=flat-square) ![AppVersion: 2026.8.2](https://img.shields.io/badge/AppVersion-2026.8.2-informational?style=flat-square)
+![Version: 4.3.1](https://img.shields.io/badge/Version-4.3.1-informational?style=flat-square) ![AppVersion: 2026.8.2](https://img.shields.io/badge/AppVersion-2026.8.2-informational?style=flat-square)
 
 Cloudflared Tunnel
 
-**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/cloudflared>
+**Homepage:** <https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/cloudflared>
 
 ## Maintainers
 
@@ -14,7 +14,7 @@ Cloudflared Tunnel
 
 ## Source Code
 
-* <https://gitea.alexlebens.net/alexlebens/helm-charts>
+* <https://gitea.alexlebens.dev/alexlebens/helm-charts>
 * <https://github.com/cloudflare/cloudflared>
 * <https://hub.docker.com/r/cloudflare/cloudflared>
 * <https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common>

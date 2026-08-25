@@ -1,19 +1,19 @@
 apiVersion: v2
 name: common-helpers
-version: 0.4.0
+version: 0.4.1
 description: Common Helpers
 keywords:
   - common
   - helpers
   - library
-home: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/common-helpers
+home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/common-helpers
 sources:
-  - https://gitea.alexlebens.net/alexlebens/helm-charts
+  - https://gitea.alexlebens.dev/alexlebens/helm-charts
 type: library
 annotations:
   artifacthub.io/links: |
     - name: source
-      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/common-helpers
+      url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/common-helpers
 maintainers:
   - name: alexlebens
 dependencies: []

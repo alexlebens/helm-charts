@@ -1,10 +1,10 @@
 # valkey
 
-![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![AppVersion: 9.1.1](https://img.shields.io/badge/AppVersion-9.1.1-informational?style=flat-square)
+![Version: 1.1.1](https://img.shields.io/badge/Version-1.1.1-informational?style=flat-square) ![AppVersion: 9.1.1](https://img.shields.io/badge/AppVersion-9.1.1-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
-**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/valkey>
+**Homepage:** <https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/valkey>
 
 ## Maintainers
 
@@ -14,7 +14,7 @@ Valkey chart with preconfigured settings
 
 ## Source Code
 
-* <https://gitea.alexlebens.net/alexlebens/helm-charts>
+* <https://gitea.alexlebens.dev/alexlebens/helm-charts>
 * <https://github.com/valkey-io/valkey>
 * <https://github.com/oliver006/redis_exporter>
 * <https://hub.docker.com/r/valkey/valkey>

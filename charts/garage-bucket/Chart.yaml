@@ -1,20 +1,20 @@
 apiVersion: v2
 name: garage-bucket
-version: 0.3.11
+version: 0.3.12
 description: Garage Bucket deployment with Rclone backups
 keywords:
   - garage
   - s3
   - storage
-home: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/garage-bucket
+home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/garage-bucket
 sources:
-  - https://gitea.alexlebens.net/alexlebens/helm-charts
+  - https://gitea.alexlebens.dev/alexlebens/helm-charts
   - https://git.deuxfleurs.fr/Deuxfleurs/garage
   - https://github.com/rajsinghtech/garage-operator
 annotations:
   artifacthub.io/links: |
     - name: source
-      url: https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/garage-bucket
+      url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/garage-bucket
 maintainers:
   - name: alexlebens
 dependencies: []

@@ -1,10 +1,10 @@
 # garage-bucket
 
-![Version: 0.3.11](https://img.shields.io/badge/Version-0.3.11-informational?style=flat-square) ![AppVersion: v0.7.6](https://img.shields.io/badge/AppVersion-v0.7.6-informational?style=flat-square)
+![Version: 0.3.12](https://img.shields.io/badge/Version-0.3.12-informational?style=flat-square) ![AppVersion: v0.7.6](https://img.shields.io/badge/AppVersion-v0.7.6-informational?style=flat-square)
 
 Garage Bucket deployment with Rclone backups
 
-**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/garage-bucket>
+**Homepage:** <https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/garage-bucket>
 
 ## Maintainers
 
@@ -14,7 +14,7 @@ Garage Bucket deployment with Rclone backups
 
 ## Source Code
 
-* <https://gitea.alexlebens.net/alexlebens/helm-charts>
+* <https://gitea.alexlebens.dev/alexlebens/helm-charts>
 * <https://git.deuxfleurs.fr/Deuxfleurs/garage>
 * <https://github.com/rajsinghtech/garage-operator>
 

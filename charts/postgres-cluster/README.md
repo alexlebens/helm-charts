@@ -1,10 +1,10 @@
 # postgres-cluster
 
-![Version: 8.4.2](https://img.shields.io/badge/Version-8.4.2-informational?style=flat-square) ![AppVersion: v1.30.0](https://img.shields.io/badge/AppVersion-v1.30.0-informational?style=flat-square)
+![Version: 8.4.3](https://img.shields.io/badge/Version-8.4.3-informational?style=flat-square) ![AppVersion: v1.30.0](https://img.shields.io/badge/AppVersion-v1.30.0-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
-**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster>
+**Homepage:** <https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster>
 
 ## Maintainers
 
@@ -14,7 +14,7 @@ Cloudnative-pg Cluster
 
 ## Source Code
 
-* <https://gitea.alexlebens.net/alexlebens/helm-charts>
+* <https://gitea.alexlebens.dev/alexlebens/helm-charts>
 * <https://github.com/cloudnative-pg/cloudnative-pg>
 * <https://github.com/cloudnative-pg/charts/tree/main/charts/cluster>
 

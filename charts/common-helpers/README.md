@@ -1,10 +1,10 @@
 # common-helpers
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square)
+![Version: 0.4.1](https://img.shields.io/badge/Version-0.4.1-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square)
 
 Common Helpers
 
-**Homepage:** <https://gitea.alexlebens.net/alexlebens/helm-charts/src/branch/main/charts/common-helpers>
+**Homepage:** <https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/common-helpers>
 
 ## Maintainers
 
@@ -14,7 +14,7 @@ Common Helpers
 
 ## Source Code
 
-* <https://gitea.alexlebens.net/alexlebens/helm-charts>
+* <https://gitea.alexlebens.dev/alexlebens/helm-charts>
 
 ## Values
 
