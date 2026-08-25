@@ -33,6 +33,9 @@ Secrets
 {{- define "custom.defaultOidcSecret" -}}
 {{ .Release.Name }}-oidc-secret
 {{- end -}}
+{{- define "custom.defaultOauthProxySecret" -}}
+{{ .Release.Name }}-oauth-proxy
+{{- end -}}
 
 {{/*
 Icon url
