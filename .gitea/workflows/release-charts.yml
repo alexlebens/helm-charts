@@ -164,11 +164,11 @@ jobs:
         if: steps.check.outputs.process == 'true'
         run: |
           echo ">> Logging into Harbor ..."
-          helm registry login ${{ vars.REGISTRY_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }} --debug
+          helm registry login ${{ vars.HARBOR_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }} --debug
 
           echo ""
           echo ">> Publishing chart to Harbor ..."
-          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.REGISTRY_HOST }}/helm-charts --debug
+          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.HARBOR_HOST }}/helm-charts --debug
 
           echo "----"
 
@@ -180,7 +180,7 @@ jobs:
 
           echo ""
           echo ">> Adding Gitea repository ..."
-          helm repo add --username ${{ gitea.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts https://${{ vars.REPOSITORY_HOST }}/api/packages/alexlebens/helm --debug
+          helm repo add --username ${{ gitea.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts ${{ gitea.server_url }}/api/packages/alexlebens/helm --debug
 
           echo ""
           echo ">> Pushing chart to gitea"
@@ -250,7 +250,7 @@ jobs:
           tags: action,successfully,completed
           details: "Helm Chart ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }} has been released!"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -264,5 +264,5 @@ jobs:
           tags: action,failed
           details: "Helm Chart ${{ matrix.chart }} has failed to be released."
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.USER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
