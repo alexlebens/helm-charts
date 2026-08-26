@@ -164,7 +164,7 @@ jobs:
         if: steps.check.outputs.process == 'true'
         run: |
           echo ">> Logging into Harbor ..."
-          helm registry login ${{ vars.HARBOR_HOST }} -u ${{ vars.REGISTRY_USER }} -p ${{ secrets.REGISTRY_SECRET }} --debug
+          helm registry login ${{ vars.HARBOR_HOST }} -u ${{ vars.HARBOR_USER }} -p ${{ secrets.REGISTRY_SECRET }} --debug
 
           echo ""
           echo ">> Publishing chart to Harbor ..."
