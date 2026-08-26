@@ -180,7 +180,7 @@ jobs:
 
           echo ""
           echo ">> Adding Gitea repository ..."
-          helm repo add --username ${{ gitea.actor }} --password ${{ secrets.REPOSITORY_TOKEN }} helm-charts ${{ gitea.server_url }}/api/packages/alexlebens/helm --debug
+          helm repo add --username ${{ gitea.actor }} --password ${{ secrets.GIT_TOKEN }} helm-charts ${{ gitea.server_url }}/api/packages/alexlebens/helm --debug
 
           echo ""
           echo ">> Pushing chart to gitea"
