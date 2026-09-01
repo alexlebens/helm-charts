@@ -162,13 +162,17 @@ jobs:
 
       - name: Publish Helm Chart to Harbor
         if: steps.check.outputs.process == 'true'
+        env:
+          HARBOR_HOST: ${{ vars.HARBOR_HOST }}
+          HARBOR_USER: ${{ vars.HARBOR_USER }}
+          HARBOR_SECRET: ${{ secrets.HARBOR_USER_SECRET }}
         run: |
           echo ">> Logging into Harbor ..."
-          helm registry login ${{ vars.HARBOR_HOST }} -u ${{ vars.HARBOR_USER }} -p ${{ secrets.HARBOR_USER_SECRET }} --debug
+          echo "$HARBOR_SECRET" | helm registry login "$HARBOR_HOST" --username "$HARBOR_USER" --password-stdin --debug
 
           echo ""
           echo ">> Publishing chart to Harbor ..."
-          helm push ${{ env.PACKAGE_PATH }} oci://${{ vars.HARBOR_HOST }}/helm-charts --debug
+          helm push ${{ env.PACKAGE_PATH }} "oci://${HARBOR_HOST}/helm-charts" --debug
 
           echo "----"
 
