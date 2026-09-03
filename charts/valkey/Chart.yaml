@@ -1,6 +1,6 @@
 apiVersion: v2
 name: valkey
-version: 1.2.2
+version: 1.3.0
 description: Valkey chart with preconfigured settings
 keywords:
   - valkey
@@ -22,7 +22,7 @@ maintainers:
 dependencies:
   - name: valkey
     repository: https://valkey.io/valkey-helm/
-    version: 0.11.0
+    version: 0.12.0
 icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/valkey.png
 # renovate: datasource=github-releases depName=valkey-io/valkey
 appVersion: 9.1.2
