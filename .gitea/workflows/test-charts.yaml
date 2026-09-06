@@ -109,7 +109,7 @@ jobs:
           fi
 
       - name: Cache Helm Plugins
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: cache-helm-plugins
         with:
           path: ~/.local/share/helm/plugins
@@ -186,7 +186,7 @@ jobs:
           python-version: "3.14"
 
       - name: Cache CT Tools
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: |
             ~/.ct-bin
@@ -263,7 +263,7 @@ jobs:
           done
 
       - name: Cache CRD Schemas
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: cache-schemas
         with:
           path: ~/.schemas
@@ -277,7 +277,7 @@ jobs:
 
       - name: Cache Python Dependencies
         if: steps.cache-schemas.outputs.cache-hit != 'true'
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-pyyaml
@@ -295,7 +295,7 @@ jobs:
           ./.gitea/scripts/generate-crd-schemas.sh
 
       - name: Cache Kubeconform
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.local/bin/kubeconform
           key: ${{ runner.os }}-kubeconform-${{ env.KUBECONFORM_VERSION }}
