@@ -1,42 +1,74 @@
 name: lint-test
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches:
-      - main
+      - "main"
     paths:
       - "charts/**"
 
   push:
     branches:
-      - main
+      - "main"
     paths:
       - "charts/**"
 
+  workflow_dispatch:
+
 env:
-  BASE_BRANCH: "origin/${{ gitea.base_ref }}"
+  BASE_BRANCH: "origin/${{ github.base_ref || 'main' }}"
+  HELM_VERSION: "v4.2.4"
+  CT_VERSION: "v3.12.0"
+  YAMALE_VERSION: "6.0.0"
+  YAMLLINT_VERSION: "1.35.1"
+  KUBECONFORM_VERSION: "v0.6.4"
 
 jobs:
-  chart-testing:
+  detect-changes:
     runs-on: ubuntu-latest
-    env:
-      # renovate: datasource=github-releases depName=helm/chart-testing
-      CT_VERSION: v3.12.0
-      # renovate: datasource=pypi depName=yamale
-      YAMALE_VERSION: 6.0.0
-      # renovate: datasource=pypi depName=yamllint
-      YAMLLINT_VERSION: 1.35.1
+    outputs:
+      matrix: ${{ steps.check-dir-changes.outputs.matrix }}
+      charts: ${{ steps.check-dir-changes.outputs.charts }}
+      changes-detected: ${{ steps.check-dir-changes.outputs.changes-detected }}
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Check Directories for Changes
+        id: check-dir-changes
+        env:
+          BASE_BRANCH: ${{ env.BASE_BRANCH }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: ./.gitea/scripts/detect-helm-changes.sh
+
+  chart-testing:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    if: |
+      needs.detect-changes.result == 'success' &&
+      needs.detect-changes.outputs.changes-detected == 'true'
+    env:
+      CHARTS: ${{ needs.detect-changes.outputs.charts }}
+      FAILED_CHART: ""
+      FAILED_STAGE: "Initialization"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
       - name: Set up Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
-          version: v4.2.4
+          version: ${{ env.HELM_VERSION }}
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
@@ -48,8 +80,8 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Cache Tools
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      - name: Cache CT Tools
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
         with:
           path: |
             ~/.ct-bin
@@ -59,710 +91,224 @@ jobs:
 
       - name: Set up Chart Testing
         run: |
-          if [ ! -f "$HOME/.ct-bin/ct" ]; then
-            # Strip the 'v' prefix for the tarball name
-            CT_VERSION_NO_V=${CT_VERSION#v}
-            curl -sSLo ct.tar.gz "https://github.com/helm/chart-testing/releases/download/${CT_VERSION}/chart-testing_${CT_VERSION_NO_V}_linux_amd64.tar.gz"
-            tar -xzf ct.tar.gz
-            mkdir -p $HOME/.ct-bin
-            mv ct $HOME/.ct-bin/
-            mkdir -p $HOME/.ct
-            mv etc/* $HOME/.ct/
-          fi
-          echo "$HOME/.ct-bin" >> $GITHUB_PATH
-          pip3 install yamllint==${YAMLLINT_VERSION} yamale==${YAMALE_VERSION}
-
-          echo "----"
-
-      - name: Run Chart Testing (list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --target-branch ${{ gitea.event.repository.default_branch }})
-          if [[ -n "$changed" ]]; then
-            echo ""
-            echo ">> Changed Charts:"
-            echo "$(echo "${changed}" | sort -u)"
-
-            echo "----"
-
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "changed-charts<<EOF" >> $GITHUB_OUTPUT
-            echo "$changed" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-
-          else
-            echo "----"
-
-          fi
+          echo "FAILED_STAGE=Setup Chart Testing" >> $GITHUB_ENV
+          ./.gitea/scripts/install-ct.sh
 
       - name: Add Repositories
-        if: steps.list-changed.outputs.changed == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.list-changed.outputs.changed-charts }}
         run: |
-          echo ">> Adding repositories for chart dependencies ..."
-          for dir in ${CHANGED_CHARTS}; do
-            helm dependency list --max-col-width 120 $dir 2> /dev/null \
-              | tail +2 | head -n -1 \
-              | awk '{ print "helm repo add " $1 " " $3 }' \
-              | while read cmd; do
-                if [[ "$cmd" == "*oci://*" ]]; then
-                  echo ">> Ignoring OCI repo"
-
-                else
-                  echo "$cmd" | sh;
-
-                fi
-              done || true
-          done
-
-          if helm repo list | tail +2 | read -r; then
-            echo ""
-            echo ">> Update repository cache ..."
-            helm repo update
-
-          fi
-
-          echo "----"
+          echo "FAILED_STAGE=Add Repositories" >> $GITHUB_ENV
+          ./.gitea/scripts/helm-add-repos.sh --charts "${CHARTS}"
 
       - name: Run Chart Testing (lint)
         id: ct-lint
-        if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
+        run: |
+          echo "FAILED_STAGE=Chart Testing (ct lint)" >> $GITHUB_ENV
+          ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
 
-      - name: ntfy Chart Testing Lint Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.ct-lint.outcome == 'failure'
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Chart Testing Lint Failure - Helm Charts"
+          title: "🚨 Chart Testing Failure - Helm Charts"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Chart Testing (ct lint) failed for: ${{ steps.list-changed.outputs.changed-charts }}"
+          details: "Chart testing failed for: ${{ env.CHARTS }} at stage: ${{ env.FAILED_STAGE }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
 
-      - name: ntfy Chart Testing List Changed Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.list-changed.outcome == 'failure'
-        with:
-          url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Chart Testing List Failure - Helm Charts"
-          priority: 3
-          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,failed
-          details: "Chart Testing (ct list-changed) failed. Could not determine changed charts."
-          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
-          image: true
-
-      - name: ntfy Chart Testing Pipeline Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.ct-lint.outcome != 'failure' && steps.list-changed.outcome != 'failure'
-        with:
-          url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Chart Testing Pipeline Failure - Helm Charts"
-          priority: 3
-          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,failed
-          details: "An unexpected error occurred during Chart Testing pipeline setup"
-          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
-          image: true
-
-  lint-test:
+  lint-and-unittest:
+    needs: detect-changes
     runs-on: ubuntu-latest
+    if: |
+      needs.detect-changes.result == 'success' &&
+      needs.detect-changes.outputs.changes-detected == 'true'
+    env:
+      CHARTS: ${{ needs.detect-changes.outputs.charts }}
+      FAILED_CHART: ""
+      FAILED_STAGE: "Initialization"
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
-      - name: Check Branch Exists
-        id: check-branch-exists
-        if: github.event_name == 'pull_request'
-        uses: GuillaumeFalourd/branch-exists@650358876c774d6ccbd581b5553eb636dab79a97 # v1.2
-        with:
-          branch: ${{ gitea.base_ref }}
-
-      - name: Report Branch Exists
-        id: branch-exists
-        if: github.event_name == 'push' || steps.check-branch-exists.outputs.exists == 'true' && github.event_name == 'pull_request'
-        run: |
-          if [ ${{ github.event_name == 'push' }} ]; then
-            echo ">> Action is from a push event, will continue with linting"
-
-          else
-            echo ">> Branch ${{ gitea.base_ref }} exists, will continue with linting"
-
-          fi
-
-          echo "----"
-
-          echo "exists=true" >> $GITEA_OUTPUT
-
       - name: Set up Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
-        if: steps.branch-exists.outputs.exists == 'true'
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
-          version: v4.2.4
-
-      - name: Check Directories for Changes
-        id: check-dir-changes
-        if: steps.branch-exists.outputs.exists == 'true'
-        run: |
-          echo ">> Target branch for diff is: ${BASE_BRANCH}"
-
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo ""
-            echo ">> Checking for changes in a pull request ..."
-            CHANGED_CHARTS=$(git diff --name-only "${BASE_BRANCH}" | grep -E "^charts/" | awk -F '/' '{print $2}' | sort -u | tr '\n' ' ')
-
-          else
-            echo ""
-            echo ">> Checking for changes from a push ..."
-            CHANGED_CHARTS=$(git diff --name-only ${{ gitea.event.before }}..HEAD | grep -E "^charts/" | awk -F '/' '{print $2}' | sort -u | tr '\n' ' ')
-
-          fi
-
-          CHANGED_CHARTS=$(echo "$CHANGED_CHARTS" | xargs)
-
-          if [ -n "${CHANGED_CHARTS}" ]; then
-            echo ""
-            echo ">> Charts to Lint:"
-            echo "${CHANGED_CHARTS}"
-
-            echo "----"
-
-            echo "changes-detected=true" >> $GITEA_OUTPUT
-            echo "chart-dir<<EOF" >> $GITEA_OUTPUT
-            echo "${CHANGED_CHARTS}" >> $GITEA_OUTPUT
-            echo "EOF" >> $GITEA_OUTPUT
-
-          else
-            echo ""
-            echo ">> No changes detected"
-
-            echo "----"
-
-            echo "changes-detected=false" >> $GITEA_OUTPUT
-
-          fi
+          version: ${{ env.HELM_VERSION }}
 
       - name: Add Repositories
-        if: steps.check-dir-changes.outputs.changes-detected == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
         run: |
-          echo ">> Adding repositories for chart dependencies ..."
-          for dir in ${CHANGED_CHARTS}; do
-            helm dependency list --max-col-width 120 charts/$dir 2> /dev/null \
-              | tail +2 | head -n -1 \
-              | awk '{ print "helm repo add " $1 " " $3 }' \
-              | while read cmd; do
-                if [[ "$cmd" == "*oci://*" ]]; then
-                  echo ">> Ignoring OCI repo"
-
-                else
-                  echo "$cmd" | sh;
-
-                fi
-              done || true
-          done
-
-          if helm repo list | tail +2 | read -r; then
-            echo ""
-            echo ">> Update repository cache ..."
-            helm repo update
-
-          fi
-
-          echo "----"
+          echo "FAILED_STAGE=Add Repositories" >> $GITHUB_ENV
+          ./.gitea/scripts/helm-add-repos.sh --charts "${CHARTS}"
 
       - name: Verify Chart Lockfiles
-        id: verify-chart-lockfiles
-        if: steps.check-dir-changes.outputs.changes-detected == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
         run: |
-          echo ">> Verifying Chart.lock files are up-to-date ..."
+          echo "FAILED_STAGE=Verify Chart Lockfiles" >> $GITHUB_ENV
+          ./.gitea/scripts/helm-verify-lockfiles.sh --charts "${CHARTS}"
 
-          FAILED_LOCKS=""
-          for dir in ${CHANGED_CHARTS}; do
-            chart_path="charts/$dir"
-            if [ -f "$chart_path/Chart.yaml" ]; then
-              if [ ! -f "$chart_path/Chart.lock" ] && ! helm dependency list "$chart_path" 2> /dev/null | tail +2 | grep -q '[^[:space:]]'; then
-                echo ""
-                echo ">> No dependencies found for $dir, skipping lockfile verification ..."
-                continue
-
-              fi
-
-              (
-                cd "$chart_path"
-                echo ""
-                echo ">> Updating helm dependencies for $dir ..."
-                helm dependency update . --skip-refresh
-
-                if [ -n "$(git status --porcelain Chart.lock)" ]; then
-                  echo "::error file=$chart_path/Chart.lock::Chart.lock is out of date. Please run 'helm dependency update' locally and commit the changes."
-                  exit 1
-
-                fi
-              ) || {
-                FAILED_LOCKS="$FAILED_LOCKS $dir"
+      - name: Build Chart Dependencies
+        run: |
+          echo "FAILED_STAGE=Build Chart Dependencies" >> $GITHUB_ENV
+          for CHART in ${CHARTS}; do
+            if [ -f "charts/${CHART}/Chart.yaml" ]; then
+              echo ">> Building dependencies for ${CHART} ..."
+              (cd "charts/${CHART}" && helm dependency build . --skip-refresh) || {
+                echo "FAILED_CHART=${CHART}" >> $GITHUB_ENV
+                exit 1
               }
             fi
           done
 
-          if [ -n "$FAILED_LOCKS" ]; then
-            echo ">> Lockfile validation failed for charts: $FAILED_LOCKS"
-            exit 1
-
-          fi
-
-          echo "----"
-
-      - name: Lint Helm Chart
-        id: lint-helm-chart
-        if: steps.check-dir-changes.outputs.changes-detected == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
+      - name: Lint Helm Charts
         run: |
-          echo ">> Running linting on changed charts ..."
+          echo "FAILED_STAGE=Lint Helm Charts" >> $GITHUB_ENV
           FAILED_CHARTS=""
-
-          for dir in ${CHANGED_CHARTS}; do
-            chart_path=charts/$dir
-            chart_name=$(basename "$chart_path")
-
-            if [ -f "$chart_path/Chart.yaml" ]; then
-              (
-                cd $chart_path
-                echo ""
-                echo ">> Building helm dependency ..."
-                helm dependency build . --skip-refresh
-
-                echo ""
-                echo ">> Linting helm ..."
-                helm lint . --namespace "$chart_name"
-              ) || {
-                FAILED_CHARTS="$FAILED_CHARTS $chart_name"
-              }
-
-            else
-              echo ""
-              echo ">> Directory $chart_path does not contain a Chart.yaml. Skipping ..."
-              echo ""
-
+          for CHART in ${CHARTS}; do
+            if [ -f "charts/${CHART}/Chart.yaml" ]; then
+              echo ">> Linting ${CHART} ..."
+              (cd "charts/${CHART}" && helm lint . --namespace "${CHART}") || FAILED_CHARTS="${FAILED_CHARTS} ${CHART}"
             fi
           done
-
-          if [ -n "$FAILED_CHARTS" ]; then
-            echo ">> Linting failed for the following charts: $FAILED_CHARTS"
-
-            echo "----"
-
-            echo "FAILED_CHART=$FAILED_CHARTS" >> $GITEA_ENV
+          if [ -n "${FAILED_CHARTS}" ]; then
+            echo "FAILED_CHART=${FAILED_CHARTS}" >> $GITHUB_ENV
             exit 1
-
-          else
-            echo "----"
-
           fi
 
       - name: Cache Helm Plugins
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        if: steps.branch-exists.outputs.exists == 'true'
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
         id: cache-helm-plugins
         with:
           path: ~/.local/share/helm/plugins
           key: helm-plugins-${{ runner.os }}-unittest
 
       - name: Install Helm Unittest Plugin
-        if: steps.branch-exists.outputs.exists == 'true' && steps.cache-helm-plugins.outputs.cache-hit != 'true'
-        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
+        if: steps.cache-helm-plugins.outputs.cache-hit != 'true'
+        run: |
+          echo "FAILED_STAGE=Install Helm Unittest Plugin" >> $GITHUB_ENV
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
 
       - name: Run Helm Unittest
-        id: run-helm-unittest
-        if: steps.check-dir-changes.outputs.changes-detected == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
         run: |
-          echo ">> Running unittest on changed charts ..."
+          echo "FAILED_STAGE=Run Helm Unittest" >> $GITHUB_ENV
           FAILED_CHARTS=""
-
-          for dir in ${CHANGED_CHARTS}; do
-            chart_path=charts/$dir
-
-            if [ -d "$chart_path/tests" ]; then
-              (
-                cd $chart_path
-                echo ""
-                echo ">> Running helm unittest ..."
-                helm unittest .
-              ) || {
-                FAILED_CHARTS="$FAILED_CHARTS $dir"
-              }
-
-            else
-              echo ""
-              echo ">> No tests found in $chart_path/tests, skipping ..."
-              echo ""
-
+          for CHART in ${CHARTS}; do
+            if [ -d "charts/${CHART}/tests" ]; then
+              echo ">> Running helm unittest for ${CHART} ..."
+              (cd "charts/${CHART}" && helm unittest .) || FAILED_CHARTS="${FAILED_CHARTS} ${CHART}"
             fi
           done
-
-          if [ -n "$FAILED_CHARTS" ]; then
-            echo ">> Unit testing failed for the following charts: $FAILED_CHARTS"
-
-            echo "----"
-
-            echo "FAILED_CHART=$FAILED_CHARTS" >> $GITEA_ENV
+          if [ -n "${FAILED_CHARTS}" ]; then
+            echo "FAILED_CHART=${FAILED_CHARTS}" >> $GITHUB_ENV
             exit 1
-
-          else
-            echo "----"
-
           fi
 
-      - name: ntfy Lint Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.lint-helm-chart.outcome == 'failure'
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Lint Failure - Helm Charts"
+          title: "🚨 Lint/Test Failure - ${{ env.FAILED_CHART || 'Helm Charts' }}"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Linting failed for Chart: ${{ env.FAILED_CHART }}"
+          details: "Failed for chart(s): ${{ env.FAILED_CHART || env.CHARTS }} at stage: ${{ env.FAILED_STAGE }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
 
-      - name: ntfy Unittest Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.run-helm-unittest.outcome == 'failure'
-        with:
-          url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Unittest Failure - Helm Charts"
-          priority: 3
-          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,failed
-          details: "Unit testing failed for Chart: ${{ env.FAILED_CHART }}"
-          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
-          image: true
-
-      - name: ntfy Pipeline Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.lint-helm-chart.outcome != 'failure' && steps.run-helm-unittest.outcome != 'failure'
-        with:
-          url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Pipeline Failure - Helm Charts"
-          priority: 3
-          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,failed
-          details: "An unexpected error occurred during pipeline setup"
-          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
-          image: true
-
-  kubecconform:
+  kubeconform:
+    needs: detect-changes
     runs-on: ubuntu-latest
+    if: |
+      needs.detect-changes.result == 'success' &&
+      needs.detect-changes.outputs.changes-detected == 'true'
     env:
-      # renovate: datasource=github-releases depName=yannh/kubeconform
-      KUBECONFORM_VERSION: v0.6.4
+      CHARTS: ${{ needs.detect-changes.outputs.charts }}
+      FAILED_CHART: ""
+      FAILED_STAGE: "Initialization"
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
-      - name: Check Branch Exists
-        id: check-branch-exists
-        if: github.event_name == 'pull_request'
-        uses: GuillaumeFalourd/branch-exists@650358876c774d6ccbd581b5553eb636dab79a97 # v1.2
-        with:
-          branch: ${{ gitea.base_ref }}
-
-      - name: Report Branch Exists
-        id: branch-exists
-        if: github.event_name == 'push' || steps.check-branch-exists.outputs.exists == 'true' && github.event_name == 'pull_request'
-        run: |
-          if [ ${{ github.event_name == 'push' }} ]; then
-            echo ">> Action is from a push event, will continue with linting"
-
-          else
-            echo ">> Branch ${{ gitea.base_ref }} exists, will continue with linting"
-
-          fi
-
-          echo "----"
-
-          echo "exists=true" >> $GITEA_OUTPUT
-
       - name: Set up Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
-        if: steps.branch-exists.outputs.exists == 'true'
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
-          version: v4.2.4
-
-      - name: Check Directories for Changes
-        id: check-dir-changes
-        if: steps.branch-exists.outputs.exists == 'true'
-        run: |
-          echo ">> Target branch for diff is: ${BASE_BRANCH}"
-
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo ""
-            echo ">> Checking for changes in a pull request ..."
-            CHANGED_CHARTS=$(git diff --name-only "${BASE_BRANCH}" | grep -E "^charts/" | awk -F '/' '{print $2}' | sort -u | tr '\n' ' ')
-
-          else
-            echo ""
-            echo ">> Checking for changes from a push ..."
-            CHANGED_CHARTS=$(git diff --name-only ${{ gitea.event.before }}..HEAD | grep -E "^charts/" | awk -F '/' '{print $2}' | sort -u | tr '\n' ' ')
-
-          fi
-
-          CHANGED_CHARTS=$(echo "$CHANGED_CHARTS" | xargs)
-
-          if [ -n "${CHANGED_CHARTS}" ]; then
-            echo ""
-            echo ">> Charts to Lint:"
-            echo "${CHANGED_CHARTS}"
-
-            echo "----"
-
-            echo "changes-detected=true" >> $GITEA_OUTPUT
-            echo "chart-dir<<EOF" >> $GITEA_OUTPUT
-            echo "${CHANGED_CHARTS}" >> $GITEA_OUTPUT
-            echo "EOF" >> $GITEA_OUTPUT
-
-          else
-            echo ""
-            echo ">> No changes detected"
-
-            echo "----"
-
-            echo "changes-detected=false" >> $GITEA_OUTPUT
-
-          fi
-
-      - name: Add Repositories
-        if: steps.check-dir-changes.outputs.changes-detected == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
-        run: |
-          echo ">> Adding repositories for chart dependencies ..."
-          for dir in ${CHANGED_CHARTS}; do
-            helm dependency list --max-col-width 120 charts/$dir 2> /dev/null \
-              | tail +2 | head -n -1 \
-              | awk '{ print "helm repo add " $1 " " $3 }' \
-              | while read cmd; do
-                if [[ "$cmd" == "*oci://*" ]]; then
-                  echo ">> Ignoring OCI repo"
-
-                else
-                  echo "$cmd" | sh;
-
-                fi
-              done || true
-          done
-
-          if helm repo list | tail +2 | read -r; then
-            echo ""
-            echo ">> Update repository cache ..."
-            helm repo update
-
-          fi
-
-          echo "----"
+          version: ${{ env.HELM_VERSION }}
 
       - name: Set up Python
-        if: steps.branch-exists.outputs.exists == 'true' && steps.check-dir-changes.outputs.changes-detected == 'true'
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.14"
 
       - name: Cache Python Dependencies
-        id: cache-pip
-        if: steps.branch-exists.outputs.exists == 'true' && steps.check-dir-changes.outputs.changes-detected == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-pyyaml
 
       - name: Install PyYAML
-        if: steps.branch-exists.outputs.exists == 'true' && steps.check-dir-changes.outputs.changes-detected == 'true'
-        run: pip3 install pyyaml --break-system-packages || pip3 install pyyaml
+        run: |
+          echo "FAILED_STAGE=Install PyYAML" >> $GITHUB_ENV
+          pip3 install pyyaml --break-system-packages || pip3 install pyyaml
 
       - name: Cache Kubeconform
-        id: cache-kubeconform
-        if: steps.branch-exists.outputs.exists == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
         with:
           path: ~/.local/bin/kubeconform
           key: ${{ runner.os }}-kubeconform-${{ env.KUBECONFORM_VERSION }}
 
-      - name: Download Kubeconform
-        if: steps.branch-exists.outputs.exists == 'true' && steps.cache-kubeconform.outputs.cache-hit != 'true'
+      - name: Install Kubeconform
         run: |
-          mkdir -p ~/.local/bin
-          echo ">> Downloading Kubeconform ${{ env.KUBECONFORM_VERSION }} ..."
-          wget -q https://github.com/yannh/kubeconform/releases/download/${{ env.KUBECONFORM_VERSION }}/kubeconform-linux-amd64.tar.gz
-          tar xf kubeconform-linux-amd64.tar.gz
-          mv kubeconform ~/.local/bin/
-          chmod +x ~/.local/bin/kubeconform
+          echo "FAILED_STAGE=Install Kubeconform" >> $GITHUB_ENV
+          ./.gitea/scripts/install-kubeconform.sh
 
-          echo ""
-          echo "----"
-
-      - name: Verify Kubeconform Installation
-        if: steps.branch-exists.outputs.exists == 'true'
-        run: |
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          $HOME/.local/bin/kubeconform -v
-
-          echo ""
-          echo "----"
-
-      - name: Cache openapi2jsonschema
-        id: cache-openapi
-        if: steps.branch-exists.outputs.exists == 'true' && steps.check-dir-changes.outputs.changes-detected == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      - name: Cache CRD Schemas
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        id: cache-schemas
         with:
-          path: ~/.local/bin/openapi2jsonschema.py
-          key: ${{ runner.os }}-openapi2jsonschema
-
-      - name: Download openapi2jsonschema
-        if: steps.branch-exists.outputs.exists == 'true' && steps.check-dir-changes.outputs.changes-detected == 'true' && steps.cache-openapi.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/.local/bin
-          wget -qO ~/.local/bin/openapi2jsonschema.py https://raw.githubusercontent.com/yannh/kubeconform/master/scripts/openapi2jsonschema.py
-          chmod +x ~/.local/bin/openapi2jsonschema.py
+          path: ~/.schemas
+          key: ${{ runner.os }}-crd-schemas-v1
 
       - name: Generate Custom CRD Schemas
-        if: steps.branch-exists.outputs.exists == 'true' && steps.check-dir-changes.outputs.changes-detected == 'true'
+        if: steps.cache-schemas.outputs.cache-hit != 'true'
         run: |
-          echo ">> Setting up CRD schema generation ..."
-          mkdir -p $HOME/.schemas
-
-          # Download Garage Operator CRDs
-          echo ">> Downloading Garage Operator CRDs ..."
-          cd $HOME/.schemas
-          wget -q https://raw.githubusercontent.com/rajsinghtech/garage-operator/main/charts/garage-operator/crd-bases/garage.rajsingh.info_garagebuckets.yaml
-          wget -q https://raw.githubusercontent.com/rajsinghtech/garage-operator/main/charts/garage-operator/crd-bases/garage.rajsingh.info_garageclusters.yaml
-          wget -q https://raw.githubusercontent.com/rajsinghtech/garage-operator/main/charts/garage-operator/crd-bases/garage.rajsingh.info_garagekeys.yaml
-          wget -q https://raw.githubusercontent.com/rajsinghtech/garage-operator/main/charts/garage-operator/crd-bases/garage.rajsingh.info_garagereferencegrants.yaml
-
-          # Download CloudNative-PG CRDs
-          echo ">> Downloading CloudNative-PG CRDs ..."
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_backups.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_clusterimagecatalogs.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_clusters.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_databaseroles.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_databases.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_failoverquorums.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_imagecatalogs.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_poolers.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_publications.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml
-          wget -q https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_subscriptions.yaml
-
-          echo ">> Format schemas ..."
-          export FILENAME_FORMAT='{kind}_{version}'
-          python3 ~/.local/bin/openapi2jsonschema.py *.yaml
-
-          echo ">> Schemas generated successfully:"
-          ls -l *.json
-
-          echo "----"
+          echo "FAILED_STAGE=Generate Custom CRD Schemas" >> $GITHUB_ENV
+          ./.gitea/scripts/generate-crd-schemas.sh
 
       - name: Run Kubeconform
-        id: run-kubeconform
-        if: steps.check-dir-changes.outputs.changes-detected == 'true'
-        env:
-          CHANGED_CHARTS: ${{ steps.check-dir-changes.outputs.chart-dir }}
         run: |
-          echo ">> Running kubeconform on changed charts ..."
-          FAILED_CHARTS=""
+          echo "FAILED_STAGE=Run Kubeconform" >> $GITHUB_ENV
+          ./.gitea/scripts/kubeconform-validate.sh --charts "${CHARTS}"
 
-          for dir in ${CHANGED_CHARTS}; do
-            chart_path=charts/$dir
-            if [ -f "$chart_path/Chart.yaml" ]; then
-              (
-                cd $chart_path
-                echo ""
-                echo ">> Running kubeconform for $dir (default values) ..."
-                helm template . | kubeconform -strict -summary \
-                  -schema-location default \
-                  -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-                  -schema-location "$HOME/.schemas/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
-
-                if ls ci/*.yaml 1> /dev/null 2>&1; then
-                  for values_file in ci/*.yaml; do
-                    echo ">> Running kubeconform for $dir ($values_file) ..."
-                    helm template . -f "$values_file" | kubeconform -strict -summary \
-                      -schema-location default \
-                      -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-                      -schema-location "$HOME/.schemas/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
-                  done
-                fi
-              ) || {
-                FAILED_CHARTS="$FAILED_CHARTS $dir"
-              }
-            fi
-          done
-
-          if [ -n "$FAILED_CHARTS" ]; then
-            echo ">> Kubeconform failed for the following charts: $FAILED_CHARTS"
-            echo "----"
-            echo "FAILED_CHART=$FAILED_CHARTS" >> $GITEA_ENV
-            exit 1
-
-          else
-
-            echo "----"
-          fi
-
-      - name: ntfy Kubeconform Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.run-kubeconform.outcome == 'failure'
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Kubeconform Failure - Helm Charts"
+          title: "🚨 Kubeconform Failure - ${{ env.FAILED_CHART || 'Helm Charts' }}"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "Schema validation failed for Chart: ${{ env.FAILED_CHART }}"
+          details:
+            "Schema validation failed for chart(s): ${{ env.FAILED_CHART || env.CHARTS }} at stage: ${{ env.FAILED_STAGE
+            }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
-          image: true
-
-      - name: ntfy Pipeline Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.run-kubeconform.outcome != 'failure'
-        with:
-          url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
-          title: "Pipeline Failure - Helm Charts"
-          priority: 3
-          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
-          tags: action,failed
-          details: "An unexpected error occurred during pipeline setup"
-          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
-          actions: '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
