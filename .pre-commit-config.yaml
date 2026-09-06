@@ -6,11 +6,11 @@ repos:
       - id: trailing-whitespace
       - id: check-added-large-files
       - id: check-yaml
-        exclude: '^charts/.*/(templates|prometheus_rules)/.*$'
+        exclude: "^charts/.*/(templates|prometheus_rules)/.*$"
         args:
           - --multi
-      - id: check-added-large-files
       - id: check-merge-conflict
+      - id: check-json
   - repo: https://github.com/norwoodj/helm-docs
     rev: v1.14.2
     hooks:
@@ -23,3 +23,11 @@ repos:
     rev: v0.1.30
     hooks:
       - id: helmlint
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: prettier --write --ignore-unknown
+        language: node
+        additional_dependencies:
+          - prettier@3.4.2
