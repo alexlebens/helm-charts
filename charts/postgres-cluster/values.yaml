@@ -156,19 +156,16 @@ cluster:
       hot_standby_feedback: "on"
 
     # -- Quorum-based Synchronous Replication
-    synchronous:
-      {}
+    synchronous: {}
       # method: any
       # number: 1
 
     # -- Lists of shared preload libraries to add to the default ones
-    shared_preload_libraries:
-      []
+    shared_preload_libraries: []
       # - pgaudit
 
     # -- List of pg_hba.conf rules
-    pg_hba:
-      []
+    pg_hba: []
       # - host all all all md5
 
   # -- Bootstrap is the configuration of the bootstrap process when initdb is used.
