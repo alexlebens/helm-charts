@@ -14,7 +14,7 @@
     {
       "description": "Update Helm version in GitHub Actions env",
       "customType": "regex",
-      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "managerFilePatterns": ["/^\\.(gitea|github)/workflows/.*\\.ya?ml$/"],
       "matchStrings": ["HELM_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
       "depNameTemplate": "helm/helm",
       "datasourceTemplate": "github-releases",

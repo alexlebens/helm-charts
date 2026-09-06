@@ -1,0 +1,69 @@
+name: release-charts
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - "charts/**"
+
+env:
+  HELM_VERSION: "v4.2.4"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Add Repositories
+        run: |
+          echo ">> Adding repositories for chart dependencies ..."
+          for dir in charts/*/; do
+            if [ -f "${dir}/Chart.yaml" ]; then
+              helm dependency list --max-col-width 120 "${dir}" 2>/dev/null || true
+            fi
+          done | awk '$1 != "NAME" && $3 !~ /^oci:\/\// && NF >= 3 { print $1, $3 }' | sort -u | while read -r name url; do
+            echo "Adding repo: ${name} (${url})"
+            helm repo add "${name}" "${url}" --force-update
+          done
+          helm repo update
+
+      - name: Build Chart Dependencies
+        run: |
+          echo ">> Building chart dependencies ..."
+          for dir in charts/*/; do
+            if [ -f "${dir}/Chart.yaml" ]; then
+              echo "Building dependencies for ${dir} ..."
+              helm dependency build "${dir}" --skip-refresh 2>/dev/null || true
+            fi
+          done
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
+        with:
+          charts_dir: charts
+          skip_existing: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
