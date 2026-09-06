@@ -6,7 +6,7 @@ concurrency:
 
 on:
   workflow_run:
-    workflows: ["lint-test"]
+    workflows: ["test-charts"]
     types: [completed]
     branches:
       - main

@@ -1,4 +1,4 @@
-name: lint-test
+name: test-charts
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -48,7 +48,7 @@ jobs:
           EVENT_BEFORE: ${{ github.event.before }}
         run: ./.gitea/scripts/detect-helm-changes.sh
 
-  lint-unit-test:
+  lint:
     needs: detect-changes
     runs-on: ubuntu-latest
     if: |
