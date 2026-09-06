@@ -7,12 +7,65 @@
   ],
   "customManagers": [
     {
+      "description": "Renovate tag matcher for Helm chart appVersion",
       "customType": "regex",
       "managerFilePatterns": ["/(^|/)Chart\\.yaml$/"],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+appVersion:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
       ],
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Update Helm version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["HELM_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "helm/helm",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update yq version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["YQ_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "mikefarah/yq",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update Chart Testing version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["CT_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "helm/chart-testing",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update Kubeconform version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["KUBECONFORM_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "yannh/kubeconform",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update Yamale version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["YAMALE_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "yamale",
+      "datasourceTemplate": "pypi"
+    },
+    {
+      "description": "Update yamllint version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["YAMLLINT_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "yamllint",
+      "datasourceTemplate": "pypi"
     }
   ],
   "timezone": "US/Central",
