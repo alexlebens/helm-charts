@@ -50,12 +50,24 @@ helm dependency build . --skip-refresh --debug
 
 echo ">> Packaging chart: ${CHART} ..."
 PACKAGE_OUTPUT=$(helm package .)
-PACKAGE_PATH="${CHART_PATH}/$(echo "${PACKAGE_OUTPUT}" | awk '{print $NF}')"
+RAW_PACKAGE_PATH=$(echo "${PACKAGE_OUTPUT}" | awk '{print $NF}')
+if [[ "${RAW_PACKAGE_PATH}" = /* ]]; then
+  PACKAGE_PATH="${RAW_PACKAGE_PATH}"
+else
+  PACKAGE_PATH="$(pwd)/${RAW_PACKAGE_PATH}"
+fi
 
 CHART_VERSION=$(yq '.version' Chart.yaml)
 CHART_NAME=$(yq '.name' Chart.yaml)
 
 cd - > /dev/null
+
+if [ ! -f "${PACKAGE_PATH}" ]; then
+  echo "Error: Packaged file not found at ${PACKAGE_PATH}" >&2
+  exit 1
+fi
+
+echo ">> Successfully packaged ${CHART_NAME} v${CHART_VERSION} at ${PACKAGE_PATH}"
 
 # Push to Harbor OCI Registry
 if [ -n "${HARBOR_HOST}" ] && [ -n "${HARBOR_SECRET}" ]; then
