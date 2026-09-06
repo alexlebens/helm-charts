@@ -27,7 +27,8 @@ repos:
     hooks:
       - id: prettier
         name: prettier
-        entry: prettier --write --ignore-unknown
+        entry: prettier --write --ignore-unknown --ignore-path .prettierignore
+        exclude: "^charts/.*/(templates|prometheus_rules|README\\.md).*$"
         language: node
         additional_dependencies:
           - prettier@3.4.2
