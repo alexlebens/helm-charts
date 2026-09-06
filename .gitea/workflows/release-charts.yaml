@@ -102,7 +102,7 @@ jobs:
             ${{ env.PACKAGE_PATH }}
 
       - name: ntfy Success
-        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
         if: success() && steps.check.outputs.process == 'true'
         with:
           url: "${{ secrets.NTFY_URL }}"
@@ -118,7 +118,7 @@ jobs:
             }}/actions/runs/${{ github.run_id }}", "clear": true}]'
 
       - name: ntfy Failed
-        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
         if: failure() && steps.check.outputs.process == 'true'
         with:
           url: "${{ secrets.NTFY_URL }}"
