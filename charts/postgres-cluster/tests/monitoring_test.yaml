@@ -62,7 +62,9 @@ tests:
           enabled: true
           customQueries:
             - name: pg_cache_hit_ratio
-              query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+              query:
+                "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read))
+                as ratio FROM pg_statio_user_tables;"
               metrics:
                 - datname:
                     usage: "LABEL"

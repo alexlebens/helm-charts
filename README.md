@@ -6,17 +6,20 @@
 
 ---
 
-Welcome to the documentation for my personal Helm charts repository! This repository hosts custom-built Helm charts that I use to deploy various applications across my GitOps infrastructure.
+Welcome to the documentation for my personal Helm charts repository! This repository hosts custom-built Helm charts that
+I use to deploy various applications across my GitOps infrastructure.
 
 ## Features
 
 - **Custom Chart Configurations**: Tailor-made charts designed specifically for Homelab applications and configurations.
 - **Automated CI/CD**: Gitea Actions automatically lint, test, package, and release new versions of these charts.
-- **Dependency Management**: Fully integrated with Renovate to automatically update dependencies and base configurations.
+- **Dependency Management**: Fully integrated with Renovate to automatically update dependencies and base
+  configurations.
 
 ## Prerequisites
 
-[Helm](https://helm.sh) must be installed to use the charts provided in this repository. Refer to the official Helm [documentation](https://helm.sh/docs/) if you need help getting started.
+[Helm](https://helm.sh) must be installed to use the charts provided in this repository. Refer to the official Helm
+[documentation](https://helm.sh/docs/) if you need help getting started.
 
 ## Installation & Usage
 
@@ -45,4 +48,5 @@ You can now install any of the available charts directly into your cluster using
 
 ## License
 
-This project is open-source and licensed under the terms of the Apache 2.0 License. See the [LICENSE](LICENSE) file for more details.
+This project is open-source and licensed under the terms of the Apache 2.0 License. See the [LICENSE](LICENSE) file for
+more details.
