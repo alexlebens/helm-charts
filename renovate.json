@@ -1,10 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "mergeConfidence:all-badges",
-    ":rebaseStalePrs"
-  ],
+  "extends": ["config:recommended", "mergeConfidence:all-badges", ":rebaseStalePrs"],
   "customManagers": [
     {
       "description": "Renovate tag matcher for Helm chart appVersion",
@@ -66,6 +62,24 @@
       "matchStrings": ["YAMLLINT_VERSION: \"(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\""],
       "depNameTemplate": "yamllint",
       "datasourceTemplate": "pypi"
+    },
+    {
+      "description": "Update Prettier version in GitHub Actions env",
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.gitea/workflows/.*\\.ya?ml$/"],
+      "matchStrings": ["PRETTIER_VERSION: \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+      "depNameTemplate": "prettier",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update Prettier version in pre-commit additional_dependencies",
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/)\\.pre-commit-config\\.ya?ml$/"],
+      "matchStrings": ["-\\s+prettier@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "prettier",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "semver"
     }
   ],
   "timezone": "US/Central",
@@ -149,6 +163,11 @@
       "matchPackageNames": ["amazon/aws-cli"],
       "schedule": ["before 5am on the first day of the month"],
       "groupName": "aws-cli updates"
+    },
+    {
+      "description": "Group Prettier updates",
+      "matchPackageNames": ["prettier"],
+      "groupName": "prettier"
     }
   ]
 }
