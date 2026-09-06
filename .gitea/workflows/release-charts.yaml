@@ -1,0 +1,135 @@
+name: release-charts
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+on:
+  workflow_run:
+    workflows: ["lint-test"]
+    types: [completed]
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: "Specific chart to release (leave empty for all)"
+        required: false
+
+env:
+  HELM_VERSION: "v4.2.4"
+  YQ_VERSION: "v4.53.6"
+
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.detect-charts.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Get Changed Charts
+        id: detect-charts
+        env:
+          INPUT_CHART: ${{ inputs.chart }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_BEFORE: ${{ gitea.event.before }}
+        run: ./.gitea/scripts/detect-release-charts.sh
+
+  release:
+    needs: prepare
+    if: needs.prepare.outputs.matrix != '[]' && needs.prepare.outputs.matrix != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart:
+          - cloudflared
+          - common-helpers
+          - garage-bucket
+          - postgres-cluster
+          - rclone-bucket
+          - valkey
+          - volsync-target
+      fail-fast: false
+    steps:
+      - name: Check Chart to Process
+        id: check
+        run: |
+          CHARTS='${{ needs.prepare.outputs.matrix }}'
+          if echo "$CHARTS" | grep -q "\"${{ matrix.chart }}\""; then
+            echo "process=true" >> $GITHUB_OUTPUT
+          else
+            echo "process=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout
+        if: steps.check.outputs.process == 'true'
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        if: steps.check.outputs.process == 'true'
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5
+        with:
+          token: ${{ secrets.GITEA_TOKEN }}
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Package & Push Helm Chart
+        if: steps.check.outputs.process == 'true'
+        env:
+          HARBOR_HOST: ${{ vars.HARBOR_HOST }}
+          HARBOR_USER: ${{ vars.HARBOR_USER }}
+          HARBOR_SECRET: ${{ secrets.HARBOR_USER_SECRET }}
+          GITEA_SERVER_URL: ${{ gitea.server_url }}
+          GITEA_ACTOR: ${{ gitea.actor }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: ./.gitea/scripts/helm-package-and-push.sh --chart "${{ matrix.chart }}"
+
+      - name: Release Helm Chart
+        if: steps.check.outputs.process == 'true'
+        uses: akkuman/gitea-release-action@5a83c90484ef4355121df5eb60558c8ce66e81ac # v1
+        with:
+          name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
+          tag_name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
+          body_path: release_notes.md
+          files: |-
+            ${{ env.PACKAGE_PATH }}
+
+      - name: ntfy Success
+        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        if: success() && steps.check.outputs.process == 'true'
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "✅ Release Success - ${{ env.CHART_NAME }}"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,successfully,completed
+          details: "Helm Chart ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }} has been released!"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
+        if: failure() && steps.check.outputs.process == 'true'
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ secrets.NTFY_TOPIC }}"
+          title: "🚨 Release Failure - ${{ matrix.chart }}"
+          priority: 4
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "Helm Chart ${{ matrix.chart }} has failed to be released."
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
