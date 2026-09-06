@@ -17,11 +17,7 @@ spec:
       emptyDir: {}
   containers:
     - name: rclone-test
-      {{- $image := "rclone/rclone:latest" }}
-      {{- if and .Values.backups .Values.backups.primary .Values.backups.primary.image }}
-      {{- $image = printf "%s:%s" .Values.backups.primary.image.repository .Values.backups.primary.image.tag }}
-      {{- end }}
-      image: {{ $image | quote }}
+      image: "{{ .Values.backups.image.repository }}:{{ .Values.backups.image.tag }}"
       {{- with .Values.securityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}

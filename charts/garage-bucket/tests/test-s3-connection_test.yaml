@@ -15,17 +15,16 @@ tests:
           path: metadata.annotations["helm.sh/hook"]
           value: test
 
-  - it: should use correct image from primary backup config
+  - it: should use image from global backup config
     set:
       backups:
-        primary:
-          image:
-            repository: rclone/rclone
-            tag: "1.75.0"
+        image:
+          repository: custom/rclone
+          tag: "2.0.0"
     asserts:
       - equal:
           path: spec.containers[0].image
-          value: "rclone/rclone:1.75.0"
+          value: "custom/rclone:2.0.0"
 
   - it: should reference correct secret for env vars
     asserts:

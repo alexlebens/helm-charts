@@ -17,7 +17,7 @@ Garage Bucket "{{ include "garageBucket.name" . }}" has been deployed.
 
 {{- $backupList := list }}
 {{- range $name, $cfg := .Values.backups }}
-{{- if $cfg.enabled }}
+{{- if and (ne $name "image") $cfg.enabled }}
 {{- $backupList = append $backupList $name }}
 {{- end }}
 {{- end }}
@@ -25,7 +25,7 @@ Garage Bucket "{{ include "garageBucket.name" . }}" has been deployed.
 
 Backups:
 {{- range $name, $cfg := .Values.backups }}
-{{- if $cfg.enabled }}
+{{- if and (ne $name "image") $cfg.enabled }}
   - {{ $name }}: {{ $cfg.cronJob.schedule }} ({{ $cfg.cronJob.timeZone }}) -> {{ $cfg.destination.bucketName }}
     {{- if $cfg.prune.enabled }} [prune after {{ $cfg.prune.ageToPrune }}]{{ end }}
 {{- end }}

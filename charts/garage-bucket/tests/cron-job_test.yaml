@@ -207,3 +207,16 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
+  - it: should use global backup image when rendered
+    set:
+      backups:
+        image:
+          repository: custom/rclone
+          tag: "1.0.0"
+        primary:
+          enabled: true
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].image
+          value: "custom/rclone:1.0.0"
