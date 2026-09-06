@@ -25,7 +25,7 @@ env:
   CT_VERSION: "v3.14.0"
   YAMALE_VERSION: "6.1.0"
   YAMLLINT_VERSION: "1.38.0"
-  KUBECONFORM_VERSION: "v0.6.4"
+  KUBECONFORM_VERSION: "v0.8.0"
 
 jobs:
   detect-changes:
