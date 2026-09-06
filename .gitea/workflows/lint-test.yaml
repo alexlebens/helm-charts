@@ -86,7 +86,9 @@ jobs:
             echo "----"
 
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "changed-charts=$changed" >> $GITHUB_OUTPUT
+            echo "changed-charts<<EOF" >> $GITHUB_OUTPUT
+            echo "$changed" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
 
           else
             echo "----"
