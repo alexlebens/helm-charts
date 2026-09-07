@@ -19,6 +19,9 @@ Domain
 {{- define "custom.domain" -}}
 {{ ((.Values.global).domain) | default ".alexlebens.dev" }}
 {{- end -}}
+{{- define "custom.tailscaleDomain" -}}
+{{ ((.Values.global).tailscaleDomain) | default ".boreal-beaufort.ts.net" }}
+{{- end -}}
 
 {{/*
 Default Hostname
