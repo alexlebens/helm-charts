@@ -15,6 +15,12 @@ spec:
   prober:
     url: {{ .Values.probe.proberUrl }}
   module: {{ .Values.probe.module }}
+  {{- if .Values.probe.interval }}
+  interval: {{ .Values.probe.interval }}
+  {{- end }}
+  {{- if .Values.probe.scrapeTimeout }}
+  scrapeTimeout: {{ .Values.probe.scrapeTimeout }}
+  {{- end }}
   targets:
     staticConfig:
       static:
