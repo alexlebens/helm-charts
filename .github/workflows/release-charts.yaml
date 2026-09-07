@@ -42,11 +42,13 @@ jobs:
           echo ">> Adding repositories for chart dependencies ..."
           for dir in charts/*/; do
             if [ -f "${dir}/Chart.yaml" ]; then
-              helm dependency list --max-col-width 120 "${dir}" 2>/dev/null || true
+              yq -r '.dependencies[]? | select(.repository | test("^https?://")) | [.name, .repository] | join(" ")' "${dir}/Chart.yaml" 2>/dev/null || true
             fi
-          done | awk '$1 != "NAME" && $3 !~ /^oci:\/\// && NF >= 3 { print $1, $3 }' | sort -u | while read -r name url; do
-            echo "Adding repo: ${name} (${url})"
-            helm repo add "${name}" "${url}" --force-update
+          done | sort -u | while read -r name url; do
+            if [ -n "${name}" ] && [ -n "${url}" ]; then
+              echo "Adding repo: ${name} (${url})"
+              helm repo add "${name}" "${url}" --force-update
+            fi
           done
           helm repo update
 
