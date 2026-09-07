@@ -1,6 +1,6 @@
 # rclone-bucket
 
-![Version: 2.1.2](https://img.shields.io/badge/Version-2.1.2-informational?style=flat-square) ![AppVersion: v1.75.1](https://img.shields.io/badge/AppVersion-v1.75.1-informational?style=flat-square)
+![Version: 2.1.3](https://img.shields.io/badge/Version-2.1.3-informational?style=flat-square) ![AppVersion: v1.75.1](https://img.shields.io/badge/AppVersion-v1.75.1-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
 
