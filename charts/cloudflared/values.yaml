@@ -74,13 +74,19 @@ probe:
   labels: {}
 
   # -- URL of the prober
-  proberUrl: kube-prometheus-stack-prometheus-blackbox-exporter.kube-prometheus-stack.svc.cluster.local:9115
+  proberUrl: kube-prometheus-stack-prometheus-blackbox-exporter-cloudflare.kube-prometheus-stack.svc.cluster.local:9115
 
   # -- Target URL to probe
   targetUrl: ""
 
   # -- Blackbox exporter module to use
   module: http_2xx
+
+  # -- Scrape interval for the probe
+  interval: ""
+
+  # -- Scrape timeout for the probe
+  scrapeTimeout: ""
 
 # -- Secret configuration
 secret:
