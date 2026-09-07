@@ -1,6 +1,6 @@
 # rclone-bucket
 
-![Version: 2.1.1](https://img.shields.io/badge/Version-2.1.1-informational?style=flat-square) ![AppVersion: v1.75.0](https://img.shields.io/badge/AppVersion-v1.75.0-informational?style=flat-square)
+![Version: 2.1.2](https://img.shields.io/badge/Version-2.1.2-informational?style=flat-square) ![AppVersion: v1.75.1](https://img.shields.io/badge/AppVersion-v1.75.1-informational?style=flat-square)
 
 Rclone CronJob to replicate buckets
 
@@ -30,7 +30,7 @@ Rclone CronJob to replicate buckets
 |-----|------|---------|-------------|
 | additionalLabels | object | `{}` | Add additional labels |
 | cronJob | object | `{"backoffLimit":3,"parallelism":1,"schedule":"0 0 * * *","suspend":false,"timeZone":"America/Chicago"}` | CronJob configuration |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.75.0@sha256:b06aed988cf5967de7c25be5925240983981c757f4ed1ac9d2fa659d51d60548"}` | Default image |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"rclone/rclone","tag":"1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5"}` | Default image |
 | metrics | object | `{"enabled":true}` | Metrics |
 | nameOverride | string | `""` | Overrides the chart release name (defaults to .Release.Name) |
 | ntfy | object | `{"enabled":true,"existingSecret":{"key":"ntfy-url","name":"","tokenKey":"ntfy-token"},"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"},"url":""}` | Notification configuration |
