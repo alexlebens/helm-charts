@@ -42,7 +42,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.enabled | bool | `true` |  |
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
-| valkey.metrics.exporter.image.tag | string | `"v1.90.0@sha256:a129504e65b87c54f79bc92f1afc403475e8ff646a3d7512de469904ceddf986"` |  |
+| valkey.metrics.exporter.image.tag | string | `"v1.91.1@sha256:c67a432dba6b4ae30f471e3c77cf14a289133bbeeb89abb0bb03e6092efb2836"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
 | valkey.metrics.podMonitor.enabled | bool | `false` |  |
