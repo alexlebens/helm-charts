@@ -1,6 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "mergeConfidence:all-badges", ":rebaseStalePrs"],
+  "timezone": "America/Chicago",
+  "labels": [],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "pinDigests": true,
+  "baseBranchPatterns": ["main"],
+  "separateMinorPatch": true,
   "customManagers": [
     {
       "description": "Renovate tag matcher for Helm chart appVersion",
@@ -82,17 +89,16 @@
       "versioningTemplate": "semver"
     }
   ],
-  "timezone": "US/Central",
-  "labels": [],
-  "prHourlyLimit": 0,
-  "prConcurrentLimit": 0,
-  "pinDigests": true,
-  "baseBranchPatterns": ["main"],
   "packageRules": [
     {
       "description": "Disable digest pinning for action tool versions",
       "matchManagers": ["github-actions"],
       "matchDepNames": ["node", "python", "helm"],
+      "pinDigests": false
+    },
+    {
+      "description": "Do not pin digest for renovate image, track floating major tag",
+      "matchPackageNames": ["ghcr.io/renovatebot/renovate"],
       "pinDigests": false
     },
     {
