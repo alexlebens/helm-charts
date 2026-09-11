@@ -1,6 +1,6 @@
 # common-helpers
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square)
 
 Common Helpers
 
@@ -20,7 +20,8 @@ Common Helpers
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| global | object | `{"domain":".alexlebens.dev","iconUrl":"https://cdn.jsdelivr.net/gh/selfhst/icons/webp/","tailscaleDomain":".boreal-beaufort.ts.net"}` | Global configuration accessible across charts |
+| global | object | `{"blackboxUrl":"blackbox.blackbox.svc.cluster.local:9115","domain":".alexlebens.dev","iconUrl":"https://cdn.jsdelivr.net/gh/selfhst/icons/webp/","tailscaleDomain":".boreal-beaufort.ts.net"}` | Global configuration accessible across charts |
+| global.blackboxUrl | string | `"blackbox.blackbox.svc.cluster.local:9115"` | Default in-cluster blackbox prober URL |
 | global.domain | string | `".alexlebens.dev"` | Default base domain |
 | global.iconUrl | string | `"https://cdn.jsdelivr.net/gh/selfhst/icons/webp/"` | Base URL for dashboard and application icons |
 | global.tailscaleDomain | string | `".boreal-beaufort.ts.net"` | Default tailscale domain |

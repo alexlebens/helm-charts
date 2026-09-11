@@ -8,3 +8,6 @@ global:
 
   # -- Base URL for dashboard and application icons
   iconUrl: "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/"
+
+  # -- Default in-cluster blackbox prober URL
+  blackboxUrl: "blackbox.blackbox.svc.cluster.local:9115"

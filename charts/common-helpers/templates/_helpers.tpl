@@ -46,3 +46,10 @@ Icon url
 {{- define "custom.iconUrl" -}}
 {{ ((.Values.global).iconUrl) | default "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/" }}
 {{- end -}}
+
+{{/*
+Blackbox Prober URL
+*/}}
+{{- define "custom.blackboxUrl" -}}
+{{ ((.Values.global).blackboxUrl) | default "blackbox.blackbox.svc.cluster.local:9115" }}
+{{- end -}}
