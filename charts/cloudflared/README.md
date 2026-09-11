@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 4.5.0](https://img.shields.io/badge/Version-4.5.0-informational?style=flat-square) ![AppVersion: 2026.9.0](https://img.shields.io/badge/AppVersion-2026.9.0-informational?style=flat-square)
+![Version: 4.5.1](https://img.shields.io/badge/Version-4.5.1-informational?style=flat-square) ![AppVersion: 2026.9.0](https://img.shields.io/badge/AppVersion-2026.9.0-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -37,11 +37,11 @@ Cloudflared Tunnel
 | metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
 | name | string | `""` | Name override of release |
 | podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532}` | Pod-level security context |
-| probe | object | `{"enabled":false,"interval":"","labels":{},"module":"http_2xx","proberUrl":"kube-prometheus-stack-prometheus-blackbox-exporter-cloudflare.kube-prometheus-stack.svc.cluster.local:9115","scrapeTimeout":"","targetUrl":""}` | Probe CRD configuration (Blackbox Exporter) |
+| probe | object | `{"enabled":false,"interval":"","labels":{},"module":"http_2xx","proberUrl":"blackbox-cloudflare.blackbox.svc.cluster.local:9115","scrapeTimeout":"","targetUrl":""}` | Probe CRD configuration (Blackbox Exporter) |
 | probe.interval | string | `""` | Scrape interval for the probe |
 | probe.labels | object | `{}` | Probe additional labels |
 | probe.module | string | `"http_2xx"` | Blackbox exporter module to use |
-| probe.proberUrl | string | `"kube-prometheus-stack-prometheus-blackbox-exporter-cloudflare.kube-prometheus-stack.svc.cluster.local:9115"` | URL of the prober |
+| probe.proberUrl | string | `"blackbox-cloudflare.blackbox.svc.cluster.local:9115"` | URL of the prober |
 | probe.scrapeTimeout | string | `""` | Scrape timeout for the probe |
 | probe.targetUrl | string | `""` | Target URL to probe |
 | probes | object | `{"liveness":{"enabled":true},"readiness":{"enabled":true}}` | Probes configuration |

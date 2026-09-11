@@ -74,7 +74,7 @@ probe:
   labels: {}
 
   # -- URL of the prober
-  proberUrl: kube-prometheus-stack-prometheus-blackbox-exporter-cloudflare.kube-prometheus-stack.svc.cluster.local:9115
+  proberUrl: blackbox-cloudflare.blackbox.svc.cluster.local:9115
 
   # -- Target URL to probe
   targetUrl: ""
