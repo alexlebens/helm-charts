@@ -65,3 +65,31 @@ tests:
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: 'role="my-custom-role"'
+
+  - it: should authenticate with service account jwt
+    set:
+      seedJob:
+        enabled: true
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'jwt="\$\(cat /var/run/secrets/kubernetes.io/serviceaccount/token\)"'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'bao kv get -mount="secret"'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'bao kv put -mount="secret"'
+
+  - it: should configure custom vault mount
+    set:
+      seedJob:
+        enabled: true
+        vaultMount: custom-mount
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'bao kv get -mount="custom-mount"'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'bao kv put -mount="custom-mount"'

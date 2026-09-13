@@ -40,14 +40,16 @@ spec:
               export BAO_ADDR="{{ .Values.seedJob.vaultAddr }}"
 
               echo ">> Authenticating to OpenBao via Kubernetes auth..."
-              bao login -method=kubernetes \
+              bao login -method=kubernetes -no-print \
                 role="{{ .Values.seedJob.vaultRole }}" \
-                mount_path="{{ .Values.seedJob.authPath }}" > /dev/null 2>&1
+                mount_path="{{ .Values.seedJob.authPath }}" \
+                jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
 
               SECRET_PATH="{{ include "pocketIdClient.secretPath" . }}"
+              SECRET_PATH="${SECRET_PATH#/}"
               echo ">> Checking if secret exists at: ${SECRET_PATH}"
 
-              if bao kv get "${SECRET_PATH}" > /dev/null 2>&1; then
+              if bao kv get -mount="{{ .Values.seedJob.vaultMount }}" "${SECRET_PATH}" > /dev/null 2>&1; then
                 echo ">> Secret already exists at ${SECRET_PATH}, skipping seed."
                 exit 0
               fi
@@ -63,12 +65,12 @@ spec:
 
               echo ">> Writing secrets to ${SECRET_PATH}..."
               {{- if eq .Values.mode "oauth" }}
-              bao kv put "${SECRET_PATH}" \
+              bao kv put -mount="{{ .Values.seedJob.vaultMount }}" "${SECRET_PATH}" \
                 clientId="${CLIENT_ID}" \
                 clientSecret="${CLIENT_SECRET}" \
                 cookie="${COOKIE_SECRET}"
               {{- else }}
-              bao kv put "${SECRET_PATH}" \
+              bao kv put -mount="{{ .Values.seedJob.vaultMount }}" "${SECRET_PATH}" \
                 clientId="${CLIENT_ID}" \
                 clientSecret="${CLIENT_SECRET}"
               {{- end }}

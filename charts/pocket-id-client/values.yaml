@@ -110,6 +110,9 @@ seedJob:
   # -- OpenBao role for Kubernetes auth (must have write policy)
   vaultRole: pocket-id-seed
 
+  # -- OpenBao KV mount path for secrets
+  vaultMount: secret
+
   # -- Service account configuration
   serviceAccount:
     # -- Create a ServiceAccount for the seed Job

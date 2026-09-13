@@ -1,6 +1,6 @@
 # pocket-id-client
 
-![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.3](https://img.shields.io/badge/Version-0.2.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Pocket ID OIDC Client
 
@@ -54,7 +54,7 @@ Pocket ID OIDC Client
 | issuerConfigPath | string | `"/cl01tl/pocket-id/config"` | OpenBao path for the Pocket ID issuer URL config (used in oauth mode) |
 | mode | string | `"oauth"` | Mode: "oauth" for oauth2-proxy pattern, "oidc" for native OIDC pattern |
 | name | string | `""` | Override the resource name (defaults to .Release.Name) |
-| seedJob | object | `{"authPath":"kubernetes","enabled":false,"image":{"repository":"quay.io/openbao/openbao","tag":"2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641"},"resources":{"limits":{"memory":"64Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"serviceAccount":{"create":true,"name":""},"vaultAddr":"http://openbao-internal.openbao:8200","vaultRole":"pocket-id-seed"}` | OpenBao seed Job configuration |
+| seedJob | object | `{"authPath":"kubernetes","enabled":false,"image":{"repository":"quay.io/openbao/openbao","tag":"2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641"},"resources":{"limits":{"memory":"64Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"serviceAccount":{"create":true,"name":""},"vaultAddr":"http://openbao-internal.openbao:8200","vaultMount":"secret","vaultRole":"pocket-id-seed"}` | OpenBao seed Job configuration |
 | seedJob.authPath | string | `"kubernetes"` | Kubernetes auth mount path in OpenBao |
 | seedJob.enabled | bool | `false` | Enable the post-install Job that seeds secrets into OpenBao |
 | seedJob.image | object | `{"repository":"quay.io/openbao/openbao","tag":"2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641"}` | Image for the seed Job |
@@ -63,6 +63,7 @@ Pocket ID OIDC Client
 | seedJob.serviceAccount.create | bool | `true` | Create a ServiceAccount for the seed Job |
 | seedJob.serviceAccount.name | string | `""` | Name override (defaults to "pocket-id-seed") |
 | seedJob.vaultAddr | string | `"http://openbao-internal.openbao:8200"` | OpenBao server address |
+| seedJob.vaultMount | string | `"secret"` | OpenBao KV mount path for secrets |
 | seedJob.vaultRole | string | `"pocket-id-seed"` | OpenBao role for Kubernetes auth (must have write policy) |
 
 ----------------------------------------------
