@@ -1,0 +1,157 @@
+suite: test PocketIDOIDCClient CRD
+templates:
+  - pocket-id-oidc-client.yaml
+tests:
+  - it: should render with default values in oauth mode
+    release:
+      name: my-app
+      namespace: my-namespace
+    asserts:
+      - isKind:
+          of: PocketIDOIDCClient
+      - equal:
+          path: metadata.name
+          value: my-app
+      - equal:
+          path: metadata.namespace
+          value: my-namespace
+      - equal:
+          path: spec.name
+          value: My App
+      - equal:
+          path: spec.launchUrl
+          value: https://my-namespace.alexlebens.dev
+      - equal:
+          path: spec.callbackUrls[0]
+          value: https://my-namespace.alexlebens.dev/oauth2/callback
+      - equal:
+          path: spec.pkceEnabled
+          value: true
+      - equal:
+          path: spec.skipConsent
+          value: true
+      - equal:
+          path: spec.allowedUserGroups[0].name
+          value: user
+      - equal:
+          path: spec.clientSecretRef.name
+          value: my-app-oauth-proxy
+      - equal:
+          path: spec.clientSecretRef.key
+          value: OAUTH2_PROXY_CLIENT_SECRET
+      - equal:
+          path: spec.logo.logoUrl
+          value: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/my-namespace.webp
+      - notExists:
+          path: spec.logo.darkLogoUrl
+      - matchRegex:
+          path: spec.clientID
+          pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+
+  - it: should fallback to release name when namespace is default
+    release:
+      name: my-app
+      namespace: default
+    asserts:
+      - equal:
+          path: spec.launchUrl
+          value: https://my-app.alexlebens.dev
+      - equal:
+          path: spec.logo.logoUrl
+          value: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/my-app.webp
+
+  - it: should respect manual overrides for all fields
+    release:
+      name: my-app
+      namespace: my-namespace
+    set:
+      client:
+        displayName: Custom App Name
+        description: Custom app description
+        launchUrl: https://custom.domain.com
+        callbackUrls:
+          - https://custom.domain.com/custom/callback
+        clientID: 11111111-2222-3333-4444-555555555555
+        clientSecretRefName: custom-secret-name
+        clientSecretRefKey: CUSTOM_KEY
+        pkceEnabled: false
+        skipConsent: false
+        logo:
+          logoUrl: https://custom.domain.com/logo.png
+          darkLogoUrl: https://custom.domain.com/logo-dark.png
+    asserts:
+      - equal:
+          path: spec.name
+          value: Custom App Name
+      - equal:
+          path: spec.description
+          value: Custom app description
+      - equal:
+          path: spec.launchUrl
+          value: https://custom.domain.com
+      - equal:
+          path: spec.callbackUrls[0]
+          value: https://custom.domain.com/custom/callback
+      - equal:
+          path: spec.clientID
+          value: 11111111-2222-3333-4444-555555555555
+      - equal:
+          path: spec.clientSecretRef.name
+          value: custom-secret-name
+      - equal:
+          path: spec.clientSecretRef.key
+          value: CUSTOM_KEY
+      - equal:
+          path: spec.pkceEnabled
+          value: false
+      - equal:
+          path: spec.skipConsent
+          value: false
+      - equal:
+          path: spec.logo.logoUrl
+          value: https://custom.domain.com/logo.png
+      - equal:
+          path: spec.logo.darkLogoUrl
+          value: https://custom.domain.com/logo-dark.png
+
+  - it: should support selfhstLogoName and selfhstDarkLogo
+    release:
+      name: my-app
+      namespace: my-namespace
+    set:
+      client:
+        logo:
+          selfhstLogoName: tube-archivist
+          selfhstDarkLogo: true
+    asserts:
+      - equal:
+          path: spec.logo.logoUrl
+          value: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/tube-archivist.webp
+      - equal:
+          path: spec.logo.darkLogoUrl
+          value: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/tube-archivist-light.webp
+
+  - it: should omit logo when logo.enabled is false
+    set:
+      client:
+        logo:
+          enabled: false
+    asserts:
+      - notExists:
+          path: spec.logo
+
+  - it: should configure oidc mode secret ref by default
+    set:
+      mode: oidc
+      client:
+        callbackUrls:
+          - https://app.alexlebens.dev/oidc/callback
+    release:
+      name: my-app
+    asserts:
+      - equal:
+          path: spec.clientSecretRef.name
+          value: my-app-oidc-secret
+      - equal:
+          path: spec.clientSecretRef.key
+          value: clientSecret

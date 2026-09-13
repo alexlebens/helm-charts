@@ -1,0 +1,59 @@
+suite: test OpenBao Seed Job
+templates:
+  - seed-job.yaml
+tests:
+  - it: should not render Job when seedJob is disabled
+    set:
+      seedJob:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render Job with defaults
+    release:
+      name: my-app
+      namespace: my-namespace
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: metadata.name
+          value: my-app-pocket-id-seed
+      - equal:
+          path: metadata.namespace
+          value: my-namespace
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-install
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: before-hook-creation,hook-succeeded
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: "-5"
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: pocket-id-seed
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+
+  - it: should respect custom serviceAccount name
+    set:
+      seedJob:
+        serviceAccount:
+          name: custom-seed-sa
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: custom-seed-sa
+
+  - it: should configure custom vault role
+    set:
+      seedJob:
+        vaultRole: my-custom-role
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'role="my-custom-role"'
