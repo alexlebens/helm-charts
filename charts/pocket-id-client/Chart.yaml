@@ -1,0 +1,25 @@
+apiVersion: v2
+name: pocket-id-client
+version: 0.1.0
+description: Pocket ID OIDC Client
+keywords:
+  - pocket-id
+  - oidc
+  - oauth
+  - external-secrets
+  - openbao
+home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/pocket-id-client
+sources:
+  - https://gitea.alexlebens.dev/alexlebens/helm-charts
+type: application
+annotations:
+  artifacthub.io/links: |
+    - name: source
+      url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/pocket-id-client
+maintainers:
+  - name: alexlebens
+dependencies:
+  - name: common-helpers
+    repository: oci://harbor.alexlebens.dev/helm-charts
+    version: 0.6.0
+icon: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/pocket-id.webp

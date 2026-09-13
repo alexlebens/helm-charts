@@ -1,0 +1,17 @@
+mode: oidc
+client:
+  displayName: "Test OIDC App"
+  description: "A test application with native OIDC integration."
+  launchUrl: https://test-oidc.alexlebens.dev
+  callbackUrls:
+    - https://test-oidc.alexlebens.dev/auth/callback
+  allowedUserGroups:
+    - name: user
+      namespace: pocket-id-operator
+  logo:
+    logoUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/default.webp
+    darkLogoUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/default.webp
+externalSecret:
+  secretPathPrefix: /cl01tl/pocket-id/oidc
+seedJob:
+  enabled: false

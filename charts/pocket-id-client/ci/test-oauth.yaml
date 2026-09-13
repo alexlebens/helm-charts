@@ -1,0 +1,6 @@
+mode: oauth
+client:
+  displayName: "Test OAuth App"
+  description: "A test application using oauth2-proxy."
+seedJob:
+  enabled: false

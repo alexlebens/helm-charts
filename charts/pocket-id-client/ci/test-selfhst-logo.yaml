@@ -1,0 +1,9 @@
+mode: oauth
+client:
+  displayName: "Tube Archivist"
+  description: "Your self-hosted YouTube media server."
+  logo:
+    selfhstLogoName: tube-archivist
+    selfhstDarkLogo: true
+seedJob:
+  enabled: false

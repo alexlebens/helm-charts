@@ -1,0 +1,138 @@
+# -- Mode: "oauth" for oauth2-proxy pattern, "oidc" for native OIDC pattern
+mode: oauth
+
+# -- Override the resource name (defaults to .Release.Name)
+name: ""
+
+# -- PocketIDOIDCClient CRD configuration
+client:
+  # -- Display name shown in Pocket ID (defaults to release name in title case)
+  displayName: ""
+
+  # -- Description shown in Pocket ID
+  description: ""
+
+  # -- Launch URL for the application.
+  # If empty, auto-generated as https://<namespace>.<domain> (e.g. https://bentopdf.alexlebens.dev)
+  launchUrl: ""
+
+  # -- Callback URLs for the OIDC flow.
+  # If empty in oauth mode, auto-generated as [<launchUrl>/oauth2/callback].
+  # In oidc mode, must be specified.
+  callbackUrls: []
+
+  # -- Enable PKCE
+  pkceEnabled: true
+
+  # -- Skip consent screen
+  skipConsent: true
+
+  # -- Allowed user groups
+  allowedUserGroups:
+    - name: user
+      namespace: pocket-id-operator
+
+  # -- Client ID (UUID).
+  # If empty, a deterministic UUID is generated from release name + namespace.
+  # For grandfathered deployments, set this to the existing UUID.
+  clientID: ""
+
+  # -- Override the secret name referenced by clientSecretRef.
+  # Defaults to the mode-appropriate common-helpers name.
+  clientSecretRefName: ""
+
+  # -- Override the secret key referenced by clientSecretRef.
+  # Defaults: oauth="OAUTH2_PROXY_CLIENT_SECRET", oidc="clientSecret"
+  clientSecretRefKey: ""
+
+  # -- Logo configuration
+  logo:
+    # -- Enable rendering logo in CRD
+    enabled: true
+
+    # -- Explicit logo URL (light mode). Takes precedence over selfhstLogoName.
+    # If empty, defaults to selfhst icon matching selfhstLogoName or the namespace.
+    logoUrl: ""
+
+    # -- Explicit dark mode logo URL (optional, omitted from CRD if empty)
+    darkLogoUrl: ""
+
+    # -- Name of the icon on selfhst/icons (e.g. "tube-archivist", "sonarr").
+    # If empty and logoUrl is empty, defaults to the namespace name.
+    selfhstLogoName: ""
+
+    # -- If true and using selfhst icons, automatically appends "-light" for darkLogoUrl
+    selfhstDarkLogo: false
+
+# -- ExternalSecret configuration for pulling credentials from OpenBao
+externalSecret:
+  enabled: true
+
+  # -- ClusterSecretStore name
+  storeName: openbao
+
+  # -- Prefix for auto-generating the OpenBao path as <prefix>/<namespace>
+  secretPathPrefix: "/cl01tl/pocket-id/oidc"
+
+  # -- Full override for the OpenBao secret path (takes precedence over prefix)
+  secretPath: ""
+
+  # -- Override the Kubernetes secret name.
+  # Defaults to the mode-appropriate common-helpers name.
+  secretName: ""
+
+  # -- Override individual secret key names (oidc mode only)
+  clientIdKey: ""
+  clientSecretKey: ""
+
+  # -- Additional data entries to include on the ExternalSecret.
+  # Useful for apps that need extra fields (scopes, PKCE flags, etc.)
+  extraData: []
+  # - secretKey: OIDC_SCOPES
+  #   remoteRef:
+  #     key: /cl01tl/pocket-id/oidc/myapp
+  #     property: scopes
+
+# -- OpenBao path for the Pocket ID issuer URL config (used in oauth mode)
+issuerConfigPath: "/cl01tl/pocket-id/config"
+
+# -- OpenBao seed Job configuration
+seedJob:
+  # -- Enable the post-install Job that seeds secrets into OpenBao
+  enabled: true
+
+  # -- OpenBao server address
+  vaultAddr: "http://openbao-internal.openbao:8200"
+
+  # -- Kubernetes auth mount path in OpenBao
+  authPath: kubernetes
+
+  # -- OpenBao role for Kubernetes auth (must have write policy)
+  vaultRole: pocket-id-seed
+
+  # -- Service account configuration
+  serviceAccount:
+    # -- Create a ServiceAccount for the seed Job
+    create: true
+
+    # -- Name override (defaults to "pocket-id-seed")
+    name: ""
+
+  # -- Image for the seed Job
+  image:
+    repository: quay.io/openbao/openbao
+    # renovate: datasource=docker depName=quay.io/openbao/openbao
+    tag: 2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641
+
+  # -- Resources for the seed Job pod
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 64Mi
+
+# -- Global configuration (inherited from common-helpers)
+global:
+  domain: ".alexlebens.dev"
+  iconUrl: "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/"

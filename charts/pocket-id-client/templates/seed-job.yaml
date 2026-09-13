@@ -1,0 +1,97 @@
+{{- if .Values.seedJob.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pocketIdClient.name" . }}-pocket-id-seed
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "pocketIdClient.name" . }}-pocket-id-seed
+    {{- include "custom.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 3
+  template:
+    metadata:
+      name: {{ include "pocketIdClient.name" . }}-pocket-id-seed
+      labels:
+        app.kubernetes.io/name: {{ include "pocketIdClient.name" . }}-pocket-id-seed
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ include "pocketIdClient.seedServiceAccountName" . }}
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      containers:
+        - name: seed
+          image: "{{ .Values.seedJob.image.repository }}:{{ .Values.seedJob.image.tag }}"
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              export BAO_ADDR="{{ .Values.seedJob.vaultAddr }}"
+
+              echo ">> Authenticating to OpenBao via Kubernetes auth..."
+              bao login -method=kubernetes \
+                role="{{ .Values.seedJob.vaultRole }}" \
+                mount_path="{{ .Values.seedJob.authPath }}" > /dev/null 2>&1
+
+              SECRET_PATH="{{ include "pocketIdClient.secretPath" . }}"
+              echo ">> Checking if secret exists at: ${SECRET_PATH}"
+
+              if bao kv get "${SECRET_PATH}" > /dev/null 2>&1; then
+                echo ">> Secret already exists at ${SECRET_PATH}, skipping seed."
+                exit 0
+              fi
+
+              echo ">> Secret not found, generating new credentials..."
+
+              # Generate secrets using OpenBao's server-side random generation
+              CLIENT_ID="{{ include "pocketIdClient.clientID" . }}"
+              CLIENT_SECRET=$(bao write -f -field=random_bytes sys/tools/random/48 format=base64)
+              {{- if eq .Values.mode "oauth" }}
+              COOKIE_SECRET=$(bao write -f -field=random_bytes sys/tools/random/32 format=base64)
+              {{- end }}
+
+              echo ">> Writing secrets to ${SECRET_PATH}..."
+              bao kv put "${SECRET_PATH}" \
+                clientId="${CLIENT_ID}" \
+                clientSecret="${CLIENT_SECRET}" \
+                {{- if eq .Values.mode "oauth" }}
+                cookie="${COOKIE_SECRET}"
+                {{- else }}
+                # End of oidc mode secrets
+                {{- end }}
+
+              echo ">> Seed complete for {{ include "pocketIdClient.name" . }}"
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          {{- with .Values.seedJob.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: home
+              mountPath: /home/vault
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi
+        - name: home
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi
+{{- end }}

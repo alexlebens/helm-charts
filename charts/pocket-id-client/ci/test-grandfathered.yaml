@@ -1,0 +1,21 @@
+mode: oauth
+client:
+  displayName: "Sonarr"
+  description: "A PVR for Usenet and BitTorrent users."
+  launchUrl: https://sonarr.alexlebens.dev
+  callbackUrls:
+    - https://sonarr.alexlebens.dev/oauth2/callback
+  pkceEnabled: true
+  skipConsent: true
+  allowedUserGroups:
+    - name: admin
+      namespace: pocket-id-operator
+  clientID: E5F81D42-3B7A-41C9-96E2-81D4068A57C1
+  logo:
+    logoUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/sonarr.webp
+    darkLogoUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/sonarr-light.webp
+externalSecret:
+  secretPath: /cl01tl/pocket-id/oidc/sonarr
+issuerConfigPath: /cl01tl/pocket-id/config
+seedJob:
+  enabled: false
