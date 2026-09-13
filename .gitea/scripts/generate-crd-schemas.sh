@@ -37,6 +37,13 @@ wget -q "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/co
 wget -q "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml"
 wget -q "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/config/crd/bases/postgresql.cnpg.io_subscriptions.yaml"
 
+# Pocket ID Operator CRDs
+wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidapis.yaml"
+wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidinstances.yaml"
+wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidoidcclients.yaml"
+wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidusergroups.yaml"
+wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidusers.yaml"
+
 echo ">> Formatting CRD schemas into JSON ..."
 export FILENAME_FORMAT='{kind}_{version}'
 python3 "${BIN_DIR}/openapi2jsonschema.py" *.yaml
