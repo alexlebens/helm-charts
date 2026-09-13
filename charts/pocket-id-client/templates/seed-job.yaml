@@ -60,14 +60,16 @@ spec:
               {{- end }}
 
               echo ">> Writing secrets to ${SECRET_PATH}..."
+              {{- if eq .Values.mode "oauth" }}
               bao kv put "${SECRET_PATH}" \
                 clientId="${CLIENT_ID}" \
                 clientSecret="${CLIENT_SECRET}" \
-                {{- if eq .Values.mode "oauth" }}
                 cookie="${COOKIE_SECRET}"
-                {{- else }}
-                # End of oidc mode secrets
-                {{- end }}
+              {{- else }}
+              bao kv put "${SECRET_PATH}" \
+                clientId="${CLIENT_ID}" \
+                clientSecret="${CLIENT_SECRET}"
+              {{- end }}
 
               echo ">> Seed complete for {{ include "pocketIdClient.name" . }}"
           securityContext:
