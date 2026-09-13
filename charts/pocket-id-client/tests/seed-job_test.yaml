@@ -2,15 +2,15 @@ suite: test OpenBao Seed Job
 templates:
   - seed-job.yaml
 tests:
-  - it: should not render Job when seedJob is disabled
-    set:
-      seedJob:
-        enabled: false
+  - it: should not render Job by default
     asserts:
       - hasDocuments:
           count: 0
 
-  - it: should render Job with defaults
+  - it: should render Job when enabled
+    set:
+      seedJob:
+        enabled: true
     release:
       name: my-app
       namespace: my-namespace
@@ -42,6 +42,7 @@ tests:
   - it: should respect custom serviceAccount name
     set:
       seedJob:
+        enabled: true
         serviceAccount:
           name: custom-seed-sa
     asserts:
@@ -52,6 +53,7 @@ tests:
   - it: should configure custom vault role
     set:
       seedJob:
+        enabled: true
         vaultRole: my-custom-role
     asserts:
       - matchRegex:
