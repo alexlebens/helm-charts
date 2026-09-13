@@ -33,10 +33,14 @@ spec:
       containers:
         - name: seed
           image: "{{ .Values.seedJob.image.repository }}:{{ .Values.seedJob.image.tag }}"
+          env:
+            - name: HOME
+              value: /home/vault
           command:
             - /bin/sh
             - -ec
             - |
+              export HOME=/home/vault
               export BAO_ADDR="{{ .Values.seedJob.vaultAddr }}"
 
               echo ">> Authenticating to OpenBao via Kubernetes auth..."
