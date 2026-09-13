@@ -99,7 +99,7 @@ issuerConfigPath: "/cl01tl/pocket-id/config"
 # -- OpenBao seed Job configuration
 seedJob:
   # -- Enable the post-install Job that seeds secrets into OpenBao
-  enabled: true
+  enabled: false
 
   # -- OpenBao server address
   vaultAddr: "http://openbao-internal.openbao:8200"
