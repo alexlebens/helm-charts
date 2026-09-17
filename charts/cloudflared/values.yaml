@@ -63,7 +63,7 @@ metrics:
         labels:
           severity: critical
         annotations:
-          summary: "Cloudflared tunnel {{ $labels.tunnel_id }} is down"
+          summary: 'Cloudflared tunnel {{ "{{" }} $labels.tunnel_id }} is down'
           description: "Cloudflared tunnel has lost connection to the edge."
 
 # -- Probe CRD configuration (Blackbox Exporter)

@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 4.5.2](https://img.shields.io/badge/Version-4.5.2-informational?style=flat-square) ![AppVersion: 2026.9.1](https://img.shields.io/badge/AppVersion-2026.9.1-informational?style=flat-square)
+![Version: 4.5.3](https://img.shields.io/badge/Version-4.5.3-informational?style=flat-square) ![AppVersion: 2026.9.1](https://img.shields.io/badge/AppVersion-2026.9.1-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -32,9 +32,9 @@ Cloudflared Tunnel
 | affinity | object | `{}` | Affinity configuration (defaults to podAntiAffinity across hostname topology) |
 | extraArgs | list | `[]` | Additional arguments to pass to the cloudflared container |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"cloudflare/cloudflared","tag":"2026.9.1@sha256:b269e8abd07a5bf6f3f4be65d5050b2174eca89c56a0241a8ff32a16aec454e4"}` | Default image |
-| metrics | object | `{"enabled":true,"prometheusRule":{"enabled":true,"labels":{},"rules":[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]}}` | Metrics |
+| metrics | object | `{"enabled":true,"prometheusRule":{"enabled":true,"labels":{},"rules":[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ \"{{\" }} $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]}}` | Metrics |
 | metrics.prometheusRule.labels | object | `{}` | PrometheusRule additional labels |
-| metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
+| metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ \"{{\" }} $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
 | name | string | `""` | Name override of release |
 | podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532}` | Pod-level security context |
 | probe | object | `{"enabled":false,"interval":"","labels":{},"module":"http_2xx","proberUrl":"blackbox-cloudflare.blackbox.svc.cluster.local:9115","scrapeTimeout":"","targetUrl":""}` | Probe CRD configuration (Blackbox Exporter) |
