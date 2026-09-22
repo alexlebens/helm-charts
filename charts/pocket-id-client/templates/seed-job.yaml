@@ -62,7 +62,7 @@ spec:
 
               # Generate secrets using OpenBao's server-side random generation
               CLIENT_ID="{{ include "pocketIdClient.clientID" . }}"
-              CLIENT_SECRET=$(bao write -f -field=random_bytes sys/tools/random/48 format=base64)
+              CLIENT_SECRET=$(bao write -f -field=random_bytes sys/tools/random/48 format=hex)
               {{- if eq .Values.mode "oauth" }}
               COOKIE_SECRET=$(bao write -f -field=random_bytes sys/tools/random/32 format=base64)
               {{- end }}
