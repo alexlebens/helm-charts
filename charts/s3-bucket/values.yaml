@@ -1,0 +1,134 @@
+# -- The name of the bucket to create (defaults to .Release.Name)
+bucketName: ""
+
+# -- Primary target ("cluster-b" for lightweight app assets, "synology-a" for heavy bulk stores)
+target: "cluster-b"
+
+# -- Add additional labels
+additionalLabels: {}
+
+# -- ExternalSecret configuration to fetch bucket credentials from OpenBao
+externalSecret:
+  enabled: true
+  storeName: openbao
+  # Prefix for auto-generating secretPath as <prefix>/<bucketName>
+  secretPathPrefix: /garage/home-infra
+  # Shared path override (takes precedence over secretPathPrefix)
+  secretPath: ""
+  accessKeyIdPath: ""
+  accessKeyIdProperty: ACCESS_KEY_ID
+  secretAccessKeyPath: ""
+  secretAccessKeyProperty: ACCESS_SECRET_KEY
+  regionKeyPath: ""
+  regionProperty: ACCESS_REGION
+
+# -- Bucket Website (provisioned via OpenTofu)
+website:
+  enabled: false
+  indexDocument: index.html
+  errorDocument: error.html
+
+# -- CORS Configuration (provisioned via OpenTofu)
+cors:
+  enabled: false
+  allowedOrigins:
+    - "*"
+  allowedMethods:
+    - GET
+    - HEAD
+  allowedHeaders:
+    - "*"
+  exposeHeaders:
+    - ETag
+  maxAgeSeconds: 3600
+
+# -- Rclone Backup Configuration
+backups:
+  # Default image for all backup jobs
+  image:
+    repository: rclone/rclone
+    tag: 1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5
+
+  # Backup to secondary on-prem cluster
+  cluster_b:
+    enabled: false
+    cronJob:
+      suspend: false
+      timeZone: America/Chicago
+      schedule: "0 1 * * *"
+      backoffLimit: 3
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 3
+      activeDeadlineSeconds: 3600
+    destination:
+      providerType: Other
+      endpoint: http://garage-cluster-b.garage-operator:3900
+      bucketName: ""
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      secretPathPrefix: /garage/home-infra
+      accessKeyIdProperty: ACCESS_KEY_ID
+      secretAccessKeyProperty: ACCESS_SECRET_KEY
+      regionKeyProperty: ACCESS_REGION
+
+  # Backup to cloud DR (Backblaze B2)
+  backblaze:
+    enabled: false
+    cronJob:
+      suspend: false
+      timeZone: America/Chicago
+      schedule: "0 2 * * *"
+      backoffLimit: 3
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 3
+      activeDeadlineSeconds: 3600
+    destination:
+      providerType: Other
+      endpoint: s3.us-east-005.backblazeb2.com
+      bucketName: ""
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      secretPathPrefix: /backblaze/home-infra
+      accessKeyIdProperty: ACCESS_KEY_ID
+      secretAccessKeyProperty: ACCESS_SECRET_KEY
+      regionKeyProperty: ACCESS_REGION
+    prune:
+      enabled: false
+      ageToPrune: "90d"
+
+# -- Security context for CronJob pods
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+
+# -- Security context for CronJob containers
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -- Resource requests and limits for CronJob containers
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
+
+# -- Ntfy notifications for backup/prune results
+ntfy:
+  enabled: true
+  externalSecret:
+    enabled: true
+    storeName: openbao
+    urlPath: /cl01tl/ntfy/config
+    urlProperty: internal-endpoint
+    topicPath: /cl01tl/ntfy/topics
+    topicProperty: rclone
+    tokenPath: /cl01tl/ntfy/users/cl01tl
+    tokenProperty: token

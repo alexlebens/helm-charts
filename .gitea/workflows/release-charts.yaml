@@ -54,6 +54,7 @@ jobs:
           - pocket-id-client
           - postgres-cluster
           - rclone-bucket
+          - s3-bucket
           - valkey
           - volsync-target
       fail-fast: false

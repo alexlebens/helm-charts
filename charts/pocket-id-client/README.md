@@ -1,6 +1,6 @@
 # pocket-id-client
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Pocket ID OIDC Client
 
@@ -54,10 +54,10 @@ Pocket ID OIDC Client
 | issuerConfigPath | string | `"/cl01tl/pocket-id/config"` | OpenBao path for the Pocket ID issuer URL config (used in oauth mode) |
 | mode | string | `"oauth"` | Mode: "oauth" for oauth2-proxy pattern, "oidc" for native OIDC pattern |
 | name | string | `""` | Override the resource name (defaults to .Release.Name) |
-| seedJob | object | `{"authPath":"kubernetes","enabled":false,"image":{"repository":"quay.io/openbao/openbao","tag":"2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641"},"resources":{"limits":{"memory":"64Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"serviceAccount":{"create":true,"name":""},"vaultAddr":"http://openbao-internal.openbao:8200","vaultMount":"secret","vaultRole":"pocket-id-seed"}` | OpenBao seed Job configuration |
+| seedJob | object | `{"authPath":"kubernetes","enabled":false,"image":{"repository":"quay.io/openbao/openbao","tag":"2.7.0@sha256:71156a1c6623a5fa3f5e61b0c6a8ead0faf0df29a778339188443551995d1315"},"resources":{"limits":{"memory":"64Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"serviceAccount":{"create":true,"name":""},"vaultAddr":"http://openbao-internal.openbao:8200","vaultMount":"secret","vaultRole":"pocket-id-seed"}` | OpenBao seed Job configuration |
 | seedJob.authPath | string | `"kubernetes"` | Kubernetes auth mount path in OpenBao |
 | seedJob.enabled | bool | `false` | Enable the post-install Job that seeds secrets into OpenBao |
-| seedJob.image | object | `{"repository":"quay.io/openbao/openbao","tag":"2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641"}` | Image for the seed Job |
+| seedJob.image | object | `{"repository":"quay.io/openbao/openbao","tag":"2.7.0@sha256:71156a1c6623a5fa3f5e61b0c6a8ead0faf0df29a778339188443551995d1315"}` | Image for the seed Job |
 | seedJob.resources | object | `{"limits":{"memory":"64Mi"},"requests":{"cpu":"10m","memory":"32Mi"}}` | Resources for the seed Job pod |
 | seedJob.serviceAccount | object | `{"create":true,"name":""}` | Service account configuration |
 | seedJob.serviceAccount.create | bool | `true` | Create a ServiceAccount for the seed Job |

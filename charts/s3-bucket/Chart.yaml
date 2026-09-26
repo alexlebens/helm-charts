@@ -1,0 +1,24 @@
+apiVersion: v2
+name: s3-bucket
+version: 0.1.0
+description: Unified S3 Bucket subchart with ExternalSecret and Rclone backups
+keywords:
+  - s3
+  - storage
+  - bucket
+  - rclone
+home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/s3-bucket
+sources:
+  - https://gitea.alexlebens.dev/alexlebens/helm-charts
+  - https://github.com/rclone/rclone
+  - https://hub.docker.com/r/rclone/rclone
+annotations:
+  artifacthub.io/links: |
+    - name: source
+      url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/s3-bucket
+maintainers:
+  - name: alexlebens
+dependencies: []
+icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/rclone.png
+# renovate: datasource=github-releases depName=rclone/rclone
+appVersion: v1.75.1
