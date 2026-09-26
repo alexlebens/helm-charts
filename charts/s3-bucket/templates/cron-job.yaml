@@ -31,7 +31,7 @@ spec:
         spec:
           restartPolicy: Never
           automountServiceAccountToken: false
-          {{- with $.Values.podSecurityContext }}
+          {{- with $.Values.backupConfig.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -40,12 +40,12 @@ spec:
               emptyDir: {}
           containers:
             - name: backup
-              image: "{{ $.Values.backups.image.repository }}:{{ $.Values.backups.image.tag }}"
-              {{- with $.Values.securityContext }}
+              image: "{{ $.Values.backupConfig.image.repository }}:{{ $.Values.backupConfig.image.tag }}"
+              {{- with $.Values.backupConfig.securityContext }}
               securityContext:
                 {{- toYaml . | nindent 16 }}
               {{- end }}
-              {{- with $.Values.resources }}
+              {{- with $.Values.backupConfig.resources }}
               resources:
                 {{- toYaml . | nindent 16 }}
               {{- end }}
@@ -68,7 +68,7 @@ spec:
 
                   sync_res=$?
 
-                  {{- if $.Values.ntfy.enabled }}
+                  {{- if $.Values.backupConfig.ntfy.enabled }}
                   STATS=$(grep "Transferred:" /tmp/rclone-sync.log | tail -n 2)
                   DATA_TRANS=$(echo "$STATS" | head -n 1 | sed 's/.*Transferred:[ \t]*//')
                   if [ -z "$DATA_TRANS" ]; then DATA_TRANS="Unknown"; fi
@@ -101,7 +101,7 @@ spec:
 
                   prune_res=$?
 
-                  {{- if $.Values.ntfy.enabled }}
+                  {{- if $.Values.backupConfig.ntfy.enabled }}
                   STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
                   FILES_PRUNED=$(echo "$STATS" | sed 's/.*Deleted:[ \t]*//')
                   if [ -z "$FILES_PRUNED" ]; then FILES_PRUNED="0 files"; fi
@@ -169,13 +169,13 @@ spec:
                     secretKeyRef:
                       name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
                       key: AWS_REGION
-                {{- if $.Values.ntfy.enabled }}
+                {{- if $.Values.backupConfig.ntfy.enabled }}
                 - name: NTFY_URL
                   valueFrom:
                     secretKeyRef:
                       name: {{ include "s3Bucket.backupSecretName" $ }}-ntfy
                       key: ntfy-url
-                {{- if $.Values.ntfy.externalSecret.tokenPath }}
+                {{- if $.Values.backupConfig.ntfy.externalSecret.tokenPath }}
                 - name: NTFY_TOKEN
                   valueFrom:
                     secretKeyRef:

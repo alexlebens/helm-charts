@@ -47,14 +47,50 @@ cors:
   maxAgeSeconds: 3600
 
 # -- Rclone Backup Configuration
-# Targets can be single-letter shorthands ("a", "b", "c", "d") or full keys ("a_ps02sn", "b_cl01tl", etc.)
-backups:
-  # Default image for all backup jobs
+backupConfig:
+  # -- Default image for all backup jobs
   image:
     repository: rclone/rclone
     tag: 1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5
 
-  # Tier A: On-prem Synology NAS replication (ps02sn)
+  # -- Security context for CronJob pods
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+
+  # -- Security context for CronJob containers
+  securityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+  # -- Resource requests and limits for CronJob containers
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
+  # -- Ntfy notifications for backup/prune results
+  ntfy:
+    enabled: true
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      urlPath: /cl01tl/ntfy/config
+      urlProperty: internal-endpoint
+      topicPath: /cl01tl/ntfy/topics
+      topicProperty: rclone
+      tokenPath: /cl01tl/ntfy/users/cl01tl
+      tokenProperty: token
+
+# -- Targets can be single-letter shorthands ("a", "b", "c", "d") or full keys ("a_ps02sn", "b_cl01tl", etc.)
+backups:
+  # -- Tier A: On-prem Synology NAS replication (ps02sn)
   a:
     enabled: false
     cronJob:
@@ -77,7 +113,7 @@ backups:
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
 
-  # Tier B: On-prem cluster replication (cl01tl)
+  # -- Tier B: On-prem cluster replication (cl01tl)
   b:
     enabled: false
     cronJob:
@@ -100,7 +136,7 @@ backups:
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
 
-  # Tier C: On-prem Raspberry Pi replication (ps10rp)
+  # -- Tier C: On-prem Raspberry Pi replication (ps10rp)
   c:
     enabled: false
     cronJob:
@@ -123,7 +159,7 @@ backups:
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
 
-  # Tier D: Cloud DR replication (Backblaze B2 cs01bb)
+  # -- Tier D: Cloud DR replication (Backblaze B2 cs01bb)
   d:
     enabled: false
     cronJob:
@@ -148,38 +184,3 @@ backups:
     prune:
       enabled: false
       ageToPrune: "90d"
-
-# -- Security context for CronJob pods
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
-
-# -- Security context for CronJob containers
-securityContext:
-  readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-
-# -- Resource requests and limits for CronJob containers
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    memory: 512Mi
-
-# -- Ntfy notifications for backup/prune results
-ntfy:
-  enabled: true
-  externalSecret:
-    enabled: true
-    storeName: openbao
-    urlPath: /cl01tl/ntfy/config
-    urlProperty: internal-endpoint
-    topicPath: /cl01tl/ntfy/topics
-    topicProperty: rclone
-    tokenPath: /cl01tl/ntfy/users/cl01tl
-    tokenProperty: token
