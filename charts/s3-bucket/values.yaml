@@ -108,7 +108,7 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
-      secretPathPrefix: /garage/home-infra
+      secretPathPrefix: /ps02sn/garage/keys/
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
@@ -131,7 +131,7 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
-      secretPathPrefix: /garage/home-infra
+      secretPathPrefix: /cl01tl/garage/keys/
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
@@ -154,7 +154,7 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
-      secretPathPrefix: /garage/home-infra
+      secretPathPrefix: /ps10rp/garage/keys/
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
@@ -177,7 +177,7 @@ backups:
     externalSecret:
       enabled: true
       storeName: openbao
-      secretPathPrefix: /backblaze/home-infra
+      secretPathPrefix: /cs01bb/s3/keys/
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
