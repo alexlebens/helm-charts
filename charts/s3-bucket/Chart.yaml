@@ -1,6 +1,6 @@
 apiVersion: v2
 name: s3-bucket
-version: 0.1.0
+version: 0.2.0
 description: Unified S3 Bucket subchart with ExternalSecret and Rclone backups
 keywords:
   - s3

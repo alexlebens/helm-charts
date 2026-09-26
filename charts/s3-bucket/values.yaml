@@ -1,8 +1,12 @@
 # -- The name of the bucket to create (defaults to .Release.Name)
 bucketName: ""
 
-# -- Primary target ("cluster-b" for lightweight app assets, "synology-a" for heavy bulk stores)
-target: "cluster-b"
+# -- Primary target tier. Single letter shorthands preferred:
+# - "a" or "a_ps02sn": Heavy data stores & bulk backups on Synology NAS (ps02sn)
+# - "b" or "b_cl01tl": Low-latency lightweight app assets on Talos K8s cluster (cl01tl)
+# - "c" or "c_ps10rp": Secondary on-prem storage on Raspberry Pi (ps10rp)
+# - "d" or "d_cs01bb": Offsite cloud DR replication on Backblaze B2 (cs01bb)
+target: "b"
 
 # -- Add additional labels
 additionalLabels: {}
@@ -43,14 +47,38 @@ cors:
   maxAgeSeconds: 3600
 
 # -- Rclone Backup Configuration
+# Targets can be single-letter shorthands ("a", "b", "c", "d") or full keys ("a_ps02sn", "b_cl01tl", etc.)
 backups:
   # Default image for all backup jobs
   image:
     repository: rclone/rclone
     tag: 1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5
 
-  # Backup to secondary on-prem cluster
-  cluster_b:
+  # Tier A: On-prem Synology NAS replication (ps02sn)
+  a:
+    enabled: false
+    cronJob:
+      suspend: false
+      timeZone: America/Chicago
+      schedule: "0 3 * * *"
+      backoffLimit: 3
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 3
+      activeDeadlineSeconds: 3600
+    destination:
+      providerType: Other
+      endpoint: http://synology.alexlebens.dev:3900
+      bucketName: ""
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      secretPathPrefix: /garage/home-infra
+      accessKeyIdProperty: ACCESS_KEY_ID
+      secretAccessKeyProperty: ACCESS_SECRET_KEY
+      regionKeyProperty: ACCESS_REGION
+
+  # Tier B: On-prem cluster replication (cl01tl)
+  b:
     enabled: false
     cronJob:
       suspend: false
@@ -72,8 +100,31 @@ backups:
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
 
-  # Backup to cloud DR (Backblaze B2)
-  backblaze:
+  # Tier C: On-prem Raspberry Pi replication (ps10rp)
+  c:
+    enabled: false
+    cronJob:
+      suspend: false
+      timeZone: America/Chicago
+      schedule: "0 4 * * *"
+      backoffLimit: 3
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 3
+      activeDeadlineSeconds: 3600
+    destination:
+      providerType: Other
+      endpoint: http://ps10rp.alexlebens.dev:3900
+      bucketName: ""
+    externalSecret:
+      enabled: true
+      storeName: openbao
+      secretPathPrefix: /garage/home-infra
+      accessKeyIdProperty: ACCESS_KEY_ID
+      secretAccessKeyProperty: ACCESS_SECRET_KEY
+      regionKeyProperty: ACCESS_REGION
+
+  # Tier D: Cloud DR replication (Backblaze B2 cs01bb)
+  d:
     enabled: false
     cronJob:
       suspend: false
@@ -85,7 +136,7 @@ backups:
       activeDeadlineSeconds: 3600
     destination:
       providerType: Other
-      endpoint: s3.us-east-005.backblazeb2.com
+      endpoint: https://s3.us-east-005.backblazeb2.com
       bucketName: ""
     externalSecret:
       enabled: true

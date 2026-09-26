@@ -4,10 +4,10 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "s3Bucket.cronJobName" $ }}-{{ $backupName }}
+  name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ $backupName }}
+    app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
     {{- include "s3Bucket.labels" $ | nindent 4 }}
 spec:
   schedule: {{ $backupConfig.cronJob.schedule | default $backupConfig.schedule | quote }}
@@ -27,7 +27,7 @@ spec:
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ $backupName }}
+            app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
         spec:
           restartPolicy: Never
           automountServiceAccountToken: false
@@ -153,21 +153,21 @@ spec:
                 - name: RCLONE_CONFIG_DEST_PROVIDER
                   value: {{ $backupConfig.destination.providerType | default "Other" | quote }}
                 - name: RCLONE_CONFIG_DEST_ENDPOINT
-                  value: {{ $backupConfig.destination.endpoint | quote }}
+                  value: {{ include "s3Bucket.backupEndpoint" (list $backupName $backupConfig) | quote }}
                 - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ $backupName }}
+                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
                       key: AWS_ACCESS_KEY_ID
                 - name: RCLONE_CONFIG_DEST_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ $backupName }}
+                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
                       key: AWS_SECRET_ACCESS_KEY
                 - name: RCLONE_CONFIG_DEST_REGION
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ $backupName }}
+                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
                       key: AWS_REGION
                 {{- if $.Values.ntfy.enabled }}
                 - name: NTFY_URL
