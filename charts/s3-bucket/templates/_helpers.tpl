@@ -97,7 +97,7 @@ Determine backup external secret path prefix
   {{- $backupKey := index . 0 -}}
   {{- $backupConfig := index . 1 -}}
   {{- if and $backupConfig.externalSecret $backupConfig.externalSecret.secretPathPrefix -}}
-    {{- $backupConfig.externalSecret.secretPathPrefix -}}
+    {{- $backupConfig.externalSecret.secretPathPrefix | trimSuffix "/" -}}
   {{- else -}}
     {{- $t := include "s3Bucket.normalizeTarget" $backupKey -}}
     {{- if eq $t "d_cs01bb" -}}
