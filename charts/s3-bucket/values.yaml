@@ -116,6 +116,9 @@ backups:
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
+    prune:
+      enabled: false
+      ageToPrune: "90d"
 
   # -- Tier B: On-prem cluster replication (cl01tl)
   b:
@@ -140,6 +143,9 @@ backups:
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
+    prune:
+      enabled: false
+      ageToPrune: "90d"
 
   # -- Tier C: On-prem Raspberry Pi replication (ps10rp)
   c:
@@ -164,6 +170,9 @@ backups:
       accessKeyIdProperty: ACCESS_KEY_ID
       secretAccessKeyProperty: ACCESS_SECRET_KEY
       regionKeyProperty: ACCESS_REGION
+    prune:
+      enabled: false
+      ageToPrune: "90d"
 
   # -- Tier D: Cloud DR replication (Backblaze B2 cs01bb)
   d:

@@ -1,5 +1,7 @@
 {{- range $backupName, $backupConfig := .Values.backups }}
 {{- if and (ne $backupName "image") $backupConfig.enabled }}
+{{- $cronJob := $backupConfig.cronJob | default dict }}
+{{- $destination := $backupConfig.destination | default dict }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -10,19 +12,19 @@ metadata:
     app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
     {{- include "s3Bucket.labels" $ | nindent 4 }}
 spec:
-  schedule: {{ $backupConfig.cronJob.schedule | default $backupConfig.schedule | quote }}
-  {{- if $backupConfig.cronJob.timeZone }}
-  timeZone: {{ $backupConfig.cronJob.timeZone | quote }}
+  schedule: {{ $cronJob.schedule | default $backupConfig.schedule | quote }}
+  {{- if $cronJob.timeZone }}
+  timeZone: {{ $cronJob.timeZone | quote }}
   {{- end }}
-  {{- if hasKey $backupConfig.cronJob "suspend" }}
-  suspend: {{ $backupConfig.cronJob.suspend }}
+  {{- if hasKey $cronJob "suspend" }}
+  suspend: {{ $cronJob.suspend }}
   {{- end }}
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: {{ $backupConfig.cronJob.successfulJobsHistoryLimit | default 3 }}
-  failedJobsHistoryLimit: {{ $backupConfig.cronJob.failedJobsHistoryLimit | default 3 }}
+  successfulJobsHistoryLimit: {{ $cronJob.successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ $cronJob.failedJobsHistoryLimit | default 3 }}
   jobTemplate:
     spec:
-      backoffLimit: {{ $backupConfig.cronJob.backoffLimit | default 3 }}
+      backoffLimit: {{ $cronJob.backoffLimit | default 3 }}
       podReplacementPolicy: Failed
       template:
         metadata:
@@ -62,7 +64,7 @@ spec:
                   # --- Sync Phase ---
                   rclone sync \
                     "src:{{ include "s3Bucket.name" $ }}" \
-                    "dest:{{ $backupConfig.destination.bucketName | default (include "s3Bucket.name" $) }}" \
+                    "dest:{{ $destination.bucketName | default (include "s3Bucket.name" $) }}" \
                     --s3-no-check-bucket \
                     --verbose 2>&1 | tee /tmp/rclone-sync.log
 
@@ -91,12 +93,12 @@ spec:
                   if [ $sync_res -ne 0 ]; then exit $sync_res; fi
                   {{- end }}
 
-                  {{- if $backupConfig.prune.enabled }}
+                  {{- if and $backupConfig.prune $backupConfig.prune.enabled }}
 
                   # --- Prune Phase ---
                   rclone delete \
-                    "dest:{{ $backupConfig.destination.bucketName | default (include "s3Bucket.name" $) }}" \
-                    --min-age {{ $backupConfig.prune.ageToPrune | quote }} \
+                    "dest:{{ $destination.bucketName | default (include "s3Bucket.name" $) }}" \
+                    --min-age {{ $backupConfig.prune.ageToPrune | default "30d" | quote }} \
                     --verbose 2>&1 | tee /tmp/rclone-prune.log
 
                   prune_res=$?
@@ -151,7 +153,7 @@ spec:
                 - name: RCLONE_CONFIG_DEST_TYPE
                   value: "s3"
                 - name: RCLONE_CONFIG_DEST_PROVIDER
-                  value: {{ $backupConfig.destination.providerType | default "Other" | quote }}
+                  value: {{ $destination.providerType | default "Other" | quote }}
                 - name: RCLONE_CONFIG_DEST_ENDPOINT
                   value: {{ include "s3Bucket.backupEndpoint" (list $backupName $backupConfig) | quote }}
                 - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
