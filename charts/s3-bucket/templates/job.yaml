@@ -1,0 +1,178 @@
+{{- range $backupName, $backupConfig := .Values.backups }}
+{{- if and (ne $backupName "image") $backupConfig.enabled (or $backupConfig.immediate (and $backupConfig.cronJob $backupConfig.cronJob.immediate) $.Values.backupConfig.immediate) }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}-immediate
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}-immediate
+    {{- include "s3Bucket.labels" $ | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: {{ $backupConfig.cronJob.backoffLimit | default 3 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}-immediate
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      {{- with $.Values.backupConfig.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      containers:
+        - name: backup
+          image: "{{ $.Values.backupConfig.image.repository }}:{{ $.Values.backupConfig.image.tag }}"
+          {{- with $.Values.backupConfig.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.backupConfig.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -o pipefail
+
+              # --- Sync Phase ---
+              rclone sync \
+                "src:{{ include "s3Bucket.name" $ }}" \
+                "dest:{{ $backupConfig.destination.bucketName | default (include "s3Bucket.name" $) }}" \
+                --s3-no-check-bucket \
+                --verbose 2>&1 | tee /tmp/rclone-sync.log
+
+              sync_res=$?
+
+              {{- if $.Values.backupConfig.ntfy.enabled }}
+              STATS=$(grep "Transferred:" /tmp/rclone-sync.log | tail -n 2)
+              DATA_TRANS=$(echo "$STATS" | head -n 1 | sed 's/.*Transferred:[ \t]*//')
+              if [ -z "$DATA_TRANS" ]; then DATA_TRANS="Unknown"; fi
+
+              if [ $sync_res -eq 0 ]; then
+                if [ -n "${NTFY_TOKEN:-}" ]; then
+                  wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: ✅ Immediate Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} transferred: $DATA_TRANS" "$NTFY_URL"
+                else
+                  wget -qO- --header "Title: ✅ Immediate Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} transferred: $DATA_TRANS" "$NTFY_URL"
+                fi
+              else
+                if [ -n "${NTFY_TOKEN:-}" ]; then
+                  wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: 🚨 Immediate Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, transferred: $DATA_TRANS" "$NTFY_URL"
+                else
+                  wget -qO- --header "Title: 🚨 Immediate Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, transferred: $DATA_TRANS" "$NTFY_URL"
+                fi
+                exit $sync_res
+              fi
+              {{- else }}
+              if [ $sync_res -ne 0 ]; then exit $sync_res; fi
+              {{- end }}
+
+              {{- if $backupConfig.prune.enabled }}
+
+              # --- Prune Phase ---
+              rclone delete \
+                "dest:{{ $backupConfig.destination.bucketName | default (include "s3Bucket.name" $) }}" \
+                --min-age {{ $backupConfig.prune.ageToPrune | quote }} \
+                --verbose 2>&1 | tee /tmp/rclone-prune.log
+
+              prune_res=$?
+
+              {{- if $.Values.backupConfig.ntfy.enabled }}
+              STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
+              FILES_PRUNED=$(echo "$STATS" | sed 's/.*Deleted:[ \t]*//')
+              if [ -z "$FILES_PRUNED" ]; then FILES_PRUNED="0 files"; fi
+
+              if [ $prune_res -eq 0 ]; then
+                if [ -n "${NTFY_TOKEN:-}" ]; then
+                  wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: ✅ Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} pruned: $FILES_PRUNED" "$NTFY_URL"
+                else
+                  wget -qO- --header "Title: ✅ Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} pruned: $FILES_PRUNED" "$NTFY_URL"
+                fi
+              else
+                if [ -n "${NTFY_TOKEN:-}" ]; then
+                  wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: 🚨 Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, pruned: $FILES_PRUNED" "$NTFY_URL"
+                else
+                  wget -qO- --header "Title: 🚨 Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, pruned: $FILES_PRUNED" "$NTFY_URL"
+                fi
+              fi
+              {{- end }}
+
+              exit $prune_res
+              {{- end }}
+          env:
+            - name: RCLONE_CONFIG_SRC_TYPE
+              value: "s3"
+            - name: RCLONE_CONFIG_SRC_PROVIDER
+              value: "Other"
+            - name: RCLONE_CONFIG_SRC_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.secretName" $ }}
+                  key: endpoint
+            - name: RCLONE_CONFIG_SRC_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.secretName" $ }}
+                  key: region
+            - name: RCLONE_CONFIG_SRC_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.secretName" $ }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.secretName" $ }}
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: RCLONE_CONFIG_DEST_TYPE
+              value: "s3"
+            - name: RCLONE_CONFIG_DEST_PROVIDER
+              value: {{ $backupConfig.destination.providerType | default "Other" | quote }}
+            - name: RCLONE_CONFIG_DEST_ENDPOINT
+              value: {{ include "s3Bucket.backupEndpoint" (list $backupName $backupConfig) | quote }}
+            - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: RCLONE_CONFIG_DEST_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: RCLONE_CONFIG_DEST_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
+                  key: AWS_REGION
+            {{- if $.Values.backupConfig.ntfy.enabled }}
+            - name: NTFY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.backupSecretName" $ }}-ntfy
+                  key: ntfy-url
+            {{- if $.Values.backupConfig.ntfy.externalSecret.tokenPath }}
+            - name: NTFY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "s3Bucket.backupSecretName" $ }}-ntfy
+                  key: ntfy-token
+            {{- end }}
+            {{- end }}
+{{- end }}
+{{- end }}

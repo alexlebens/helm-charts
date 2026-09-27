@@ -48,6 +48,9 @@ cors:
 
 # -- Rclone Backup Configuration
 backupConfig:
+  # -- Run an immediate backup Job on install/upgrade for enabled backup targets
+  immediate: false
+
   # -- Default image for all backup jobs
   image:
     repository: rclone/rclone
@@ -93,6 +96,7 @@ backups:
   # -- Tier A: On-prem Synology NAS replication (ps02sn)
   a:
     enabled: false
+    immediate: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -116,6 +120,7 @@ backups:
   # -- Tier B: On-prem cluster replication (cl01tl)
   b:
     enabled: false
+    immediate: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -139,6 +144,7 @@ backups:
   # -- Tier C: On-prem Raspberry Pi replication (ps10rp)
   c:
     enabled: false
+    immediate: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -162,6 +168,7 @@ backups:
   # -- Tier D: Cloud DR replication (Backblaze B2 cs01bb)
   d:
     enabled: false
+    immediate: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
