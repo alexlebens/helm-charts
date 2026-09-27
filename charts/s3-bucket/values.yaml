@@ -16,15 +16,17 @@ externalSecret:
   enabled: true
   storeName: openbao
   # Prefix for auto-generating secretPath as <prefix>/<bucketName>
-  secretPathPrefix: /garage/home-infra
+  secretPathPrefix: /cl01tl/garage/keys
   # Shared path override (takes precedence over secretPathPrefix)
   secretPath: ""
   accessKeyIdPath: ""
-  accessKeyIdProperty: ACCESS_KEY_ID
+  accessKeyIdProperty: AWS_ACCESS_KEY_ID
   secretAccessKeyPath: ""
-  secretAccessKeyProperty: ACCESS_SECRET_KEY
+  secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
   regionKeyPath: ""
-  regionProperty: ACCESS_REGION
+  regionProperty: AWS_REGION
+  endpointKeyPath: "/cl01tl/garage/config"
+  endpointProperty: ENDPOINT
 
 # -- Bucket Website (provisioned via OpenTofu)
 website:
@@ -107,15 +109,16 @@ backups:
       activeDeadlineSeconds: 3600
     destination:
       providerType: Other
-      endpoint: http://synology.alexlebens.dev:3900
       bucketName: ""
     externalSecret:
       enabled: true
       storeName: openbao
       secretPathPrefix: /ps02sn/garage/keys
-      accessKeyIdProperty: ACCESS_KEY_ID
-      secretAccessKeyProperty: ACCESS_SECRET_KEY
-      regionKeyProperty: ACCESS_REGION
+      accessKeyIdProperty: AWS_ACCESS_KEY_ID
+      secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+      regionKeyProperty: AWS_REGION
+      endpointKeyPath: /ps02sn/garage/config
+      endpointProperty: ENDPOINT
     prune:
       enabled: false
       ageToPrune: "90d"
@@ -134,15 +137,16 @@ backups:
       activeDeadlineSeconds: 3600
     destination:
       providerType: Other
-      endpoint: http://garage-cluster-b.garage-operator:3900
       bucketName: ""
     externalSecret:
       enabled: true
       storeName: openbao
       secretPathPrefix: /cl01tl/garage/keys
-      accessKeyIdProperty: ACCESS_KEY_ID
-      secretAccessKeyProperty: ACCESS_SECRET_KEY
-      regionKeyProperty: ACCESS_REGION
+      accessKeyIdProperty: AWS_ACCESS_KEY_ID
+      secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+      regionKeyProperty: AWS_REGION
+      endpointKeyPath: /cl01tl/garage/config
+      endpointProperty: ENDPOINT
     prune:
       enabled: false
       ageToPrune: "90d"
@@ -161,15 +165,16 @@ backups:
       activeDeadlineSeconds: 3600
     destination:
       providerType: Other
-      endpoint: http://ps10rp.alexlebens.dev:3900
       bucketName: ""
     externalSecret:
       enabled: true
       storeName: openbao
       secretPathPrefix: /ps10rp/garage/keys
-      accessKeyIdProperty: ACCESS_KEY_ID
-      secretAccessKeyProperty: ACCESS_SECRET_KEY
-      regionKeyProperty: ACCESS_REGION
+      accessKeyIdProperty: AWS_ACCESS_KEY_ID
+      secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+      regionKeyProperty: AWS_REGION
+      endpointKeyPath: /ps10rp/garage/config
+      endpointProperty: ENDPOINT
     prune:
       enabled: false
       ageToPrune: "90d"
@@ -188,15 +193,16 @@ backups:
       activeDeadlineSeconds: 3600
     destination:
       providerType: Other
-      endpoint: https://s3.us-east-005.backblazeb2.com
       bucketName: ""
     externalSecret:
       enabled: true
       storeName: openbao
       secretPathPrefix: /cs01bb/s3/keys
-      accessKeyIdProperty: ACCESS_KEY_ID
-      secretAccessKeyProperty: ACCESS_SECRET_KEY
-      regionKeyProperty: ACCESS_REGION
+      accessKeyIdProperty: AWS_ACCESS_KEY_ID
+      secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+      regionKeyProperty: AWS_REGION
+      endpointKeyPath: /cs01bb/s3/config
+      endpointProperty: ENDPOINT
     prune:
       enabled: false
       ageToPrune: "90d"

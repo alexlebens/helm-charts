@@ -49,48 +49,6 @@ Normalize target identifier
 {{- end }}
 
 {{/*
-Determine S3 endpoint based on primary target tier
-*/}}
-{{- define "s3Bucket.endpoint" -}}
-  {{- $t := include "s3Bucket.normalizeTarget" .Values.target -}}
-  {{- if eq $t "a_ps02sn" -}}
-    {{- "http://synology.alexlebens.dev:3900" -}}
-  {{- else if eq $t "b_cl01tl" -}}
-    {{- "http://garage-cluster-b.garage-operator:3900" -}}
-  {{- else if eq $t "c_ps10rp" -}}
-    {{- "http://ps10rp.alexlebens.dev:3900" -}}
-  {{- else if eq $t "d_cs01bb" -}}
-    {{- "https://s3.us-east-005.backblazeb2.com" -}}
-  {{- else -}}
-    {{- "http://garage-cluster-b.garage-operator:3900" -}}
-  {{- end -}}
-{{- end }}
-
-{{/*
-Determine backup destination endpoint
-*/}}
-{{- define "s3Bucket.backupEndpoint" -}}
-  {{- $backupKey := index . 0 -}}
-  {{- $backupConfig := index . 1 -}}
-  {{- if and $backupConfig.destination $backupConfig.destination.endpoint -}}
-    {{- $backupConfig.destination.endpoint -}}
-  {{- else -}}
-    {{- $t := include "s3Bucket.normalizeTarget" $backupKey -}}
-    {{- if eq $t "a_ps02sn" -}}
-      {{- "http://synology.alexlebens.dev:3900" -}}
-    {{- else if eq $t "b_cl01tl" -}}
-      {{- "http://garage-cluster-b.garage-operator:3900" -}}
-    {{- else if eq $t "c_ps10rp" -}}
-      {{- "http://ps10rp.alexlebens.dev:3900" -}}
-    {{- else if eq $t "d_cs01bb" -}}
-      {{- "https://s3.us-east-005.backblazeb2.com" -}}
-    {{- else -}}
-      {{- "http://garage-cluster-b.garage-operator:3900" -}}
-    {{- end -}}
-  {{- end -}}
-{{- end }}
-
-{{/*
 Determine backup external secret path prefix
 */}}
 {{- define "s3Bucket.backupSecretPathPrefix" -}}
@@ -101,9 +59,15 @@ Determine backup external secret path prefix
   {{- else -}}
     {{- $t := include "s3Bucket.normalizeTarget" $backupKey -}}
     {{- if eq $t "d_cs01bb" -}}
-      {{- "/backblaze/home-infra" -}}
+      {{- "/cs01bb/s3/keys" -}}
+    {{- else if eq $t "a_ps02sn" -}}
+      {{- "/ps02sn/garage/keys" -}}
+    {{- else if eq $t "b_cl01tl" -}}
+      {{- "/cl01tl/garage/keys" -}}
+    {{- else if eq $t "c_ps10rp" -}}
+      {{- "/ps10rp/garage/keys" -}}
     {{- else -}}
-      {{- "/garage/home-infra" -}}
+      {{- "/cl01tl/garage/keys" -}}
     {{- end -}}
   {{- end -}}
 {{- end }}

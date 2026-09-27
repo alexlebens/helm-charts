@@ -155,7 +155,10 @@ spec:
                 - name: RCLONE_CONFIG_DEST_PROVIDER
                   value: {{ $destination.providerType | default "Other" | quote }}
                 - name: RCLONE_CONFIG_DEST_ENDPOINT
-                  value: {{ include "s3Bucket.backupEndpoint" (list $backupName $backupConfig) | quote }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "s3Bucket.backupSecretName" $ }}-{{ include "s3Bucket.sanitize" $backupName }}
+                      key: ENDPOINT
                 - name: RCLONE_CONFIG_DEST_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
