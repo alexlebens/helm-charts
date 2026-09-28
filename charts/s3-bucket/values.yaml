@@ -23,9 +23,9 @@ externalSecret:
   accessKeyIdProperty: AWS_ACCESS_KEY_ID
   secretAccessKeyPath: ""
   secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
-  regionKeyPath: ""
+  regionPath: ""
   regionProperty: AWS_REGION
-  endpointKeyPath: "/cl01tl/garage/config"
+  endpointPath: "/cl01tl/garage/config"
   endpointProperty: ENDPOINT
 
 # -- Bucket Website (provisioned via OpenTofu)
@@ -116,8 +116,8 @@ backups:
       secretPathPrefix: /ps02sn/garage/keys
       accessKeyIdProperty: AWS_ACCESS_KEY_ID
       secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
-      regionKeyProperty: AWS_REGION
-      endpointKeyPath: /ps02sn/garage/config
+      regionProperty: AWS_REGION
+      endpointPath: /ps02sn/garage/config
       endpointProperty: ENDPOINT
     prune:
       enabled: false
@@ -144,8 +144,8 @@ backups:
       secretPathPrefix: /cl01tl/garage/keys
       accessKeyIdProperty: AWS_ACCESS_KEY_ID
       secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
-      regionKeyProperty: AWS_REGION
-      endpointKeyPath: /cl01tl/garage/config
+      regionProperty: AWS_REGION
+      endpointPath: /cl01tl/garage/config
       endpointProperty: ENDPOINT
     prune:
       enabled: false
@@ -172,8 +172,8 @@ backups:
       secretPathPrefix: /ps10rp/garage/keys
       accessKeyIdProperty: AWS_ACCESS_KEY_ID
       secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
-      regionKeyProperty: AWS_REGION
-      endpointKeyPath: /ps10rp/garage/config
+      regionProperty: AWS_REGION
+      endpointPath: /ps10rp/garage/config
       endpointProperty: ENDPOINT
     prune:
       enabled: false
@@ -200,8 +200,8 @@ backups:
       secretPathPrefix: /cs01bb/s3/keys
       accessKeyIdProperty: AWS_ACCESS_KEY_ID
       secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
-      regionKeyProperty: AWS_REGION
-      endpointKeyPath: /cs01bb/s3/config
+      regionProperty: AWS_REGION
+      endpointPath: /cs01bb/s3/config
       endpointProperty: ENDPOINT
     prune:
       enabled: false
