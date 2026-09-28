@@ -29,12 +29,6 @@ externalSecret:
   endpointPath: ""
   endpointProperty: ENDPOINT
 
-# -- Bucket Website (provisioned via OpenTofu)
-website:
-  enabled: false
-  indexDocument: index.html
-  errorDocument: error.html
-
 # -- CORS Configuration (provisioned via OpenTofu)
 cors:
   enabled: false
