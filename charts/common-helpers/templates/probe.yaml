@@ -1,11 +1,11 @@
-{{- if $.Values.global.probe.internal }}
+{{- if $.Values.probe.internal }}
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
-  name: blackbox-{{ $.Values.global.probe.clusterProbe }}-{{ $.Release.Namespace }}-http-2xx
+  name: blackbox-{{ $.Values.probe.clusterProbe }}-{{ $.Release.Namespace }}-http-2xx
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/name: blackbox-{{ $.Values.global.probe.clusterProbe }}-{{ $.Release.Namespace }}-http-2xx
+    app.kubernetes.io/name: blackbox-{{ $.Values.probe.clusterProbe }}-{{ $.Release.Namespace }}-http-2xx
     {{- include "custom.labels" $ | nindent 4 }}
 spec:
   prober:
@@ -14,11 +14,11 @@ spec:
   targets:
     staticConfig:
       static:
-        - {{ $.Values.global.probe.internal }}
+        - {{ $.Values.probe.internal }}
 {{- end }}
 
-{{- if $.Values.global.probe.external }}
-{{- range $prober := $.Values.global.probe.externalProbes }}
+{{- if $.Values.probe.external }}
+{{- range $prober := $.Values.probe.externalProbes }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
@@ -35,6 +35,6 @@ spec:
   targets:
     staticConfig:
       static:
-        - {{ $.Values.global.probe.external }}
+        - {{ $.Values.probe.external }}
 {{- end }}
 {{- end }}
