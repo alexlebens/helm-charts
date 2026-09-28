@@ -15,8 +15,8 @@ additionalLabels: {}
 externalSecret:
   enabled: true
   storeName: openbao
-  # Prefix for auto-generating secretPath as <prefix>/<bucketName>
-  secretPathPrefix: /cl01tl/garage/keys
+  # Prefix for auto-generating secretPath as <prefix>/<bucketName> (defaults based on target)
+  secretPathPrefix: ""
   # Shared path override (takes precedence over secretPathPrefix)
   secretPath: ""
   accessKeyIdPath: ""
@@ -25,7 +25,8 @@ externalSecret:
   secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
   regionPath: ""
   regionProperty: AWS_REGION
-  endpointPath: "/cl01tl/garage/config"
+  # Endpoint path override (defaults based on target)
+  endpointPath: ""
   endpointProperty: ENDPOINT
 
 # -- Bucket Website (provisioned via OpenTofu)

@@ -49,6 +49,50 @@ Normalize target identifier
 {{- end }}
 
 {{/*
+Determine primary external secret path prefix
+*/}}
+{{- define "s3Bucket.secretPathPrefix" -}}
+  {{- if and .Values.externalSecret .Values.externalSecret.secretPathPrefix -}}
+    {{- .Values.externalSecret.secretPathPrefix | trimSuffix "/" -}}
+  {{- else -}}
+    {{- $t := include "s3Bucket.normalizeTarget" .Values.target -}}
+    {{- if eq $t "d_cs01bb" -}}
+      {{- "/cs01bb/s3/keys" -}}
+    {{- else if eq $t "a_ps02sn" -}}
+      {{- "/ps02sn/garage/keys" -}}
+    {{- else if eq $t "b_cl01tl" -}}
+      {{- "/cl01tl/garage/keys" -}}
+    {{- else if eq $t "c_ps10rp" -}}
+      {{- "/ps10rp/garage/keys" -}}
+    {{- else -}}
+      {{- "/cl01tl/garage/keys" -}}
+    {{- end -}}
+  {{- end -}}
+{{- end }}
+
+{{/*
+Determine primary endpoint path
+*/}}
+{{- define "s3Bucket.endpointPath" -}}
+  {{- if and .Values.externalSecret .Values.externalSecret.endpointPath -}}
+    {{- .Values.externalSecret.endpointPath -}}
+  {{- else -}}
+    {{- $t := include "s3Bucket.normalizeTarget" .Values.target -}}
+    {{- if eq $t "d_cs01bb" -}}
+      {{- "/cs01bb/s3/config" -}}
+    {{- else if eq $t "a_ps02sn" -}}
+      {{- "/ps02sn/garage/config" -}}
+    {{- else if eq $t "b_cl01tl" -}}
+      {{- "/cl01tl/garage/config" -}}
+    {{- else if eq $t "c_ps10rp" -}}
+      {{- "/ps10rp/garage/config" -}}
+    {{- else -}}
+      {{- "/cl01tl/garage/config" -}}
+    {{- end -}}
+  {{- end -}}
+{{- end }}
+
+{{/*
 Determine backup external secret path prefix
 */}}
 {{- define "s3Bucket.backupSecretPathPrefix" -}}
