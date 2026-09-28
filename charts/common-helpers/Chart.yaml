@@ -1,6 +1,6 @@
 apiVersion: v2
 name: common-helpers
-version: 0.6.0
+version: 1.0.0
 description: Common Helpers
 keywords:
   - common
@@ -17,4 +17,4 @@ annotations:
 maintainers:
   - name: alexlebens
 dependencies: []
-icon: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/kubernetes.webp
+icon: https://web-assets.alexlebens.dev/logo/logo.png

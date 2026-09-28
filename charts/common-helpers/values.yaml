@@ -11,3 +11,14 @@ global:
 
   # -- Default in-cluster blackbox prober URL
   blackboxUrl: "blackbox.blackbox.svc.cluster.local:9115"
+
+  # -- Configure default probes for internal and external endpoints
+  probe:
+    clusterProbe: "cl01tl"
+    externalProbes:
+      - "ps08rp"
+      - "ps09rp"
+
+    # -- Internal and external endpoints
+    internal: ""
+    external: ""

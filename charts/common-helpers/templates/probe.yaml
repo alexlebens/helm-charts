@@ -1,0 +1,40 @@
+{{- if $.Values.global.probe.internal }}
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: blackbox-{{ $.Values.global.probe.clusterProbe }}-{{ $.Release.Namespace }}-http-2xx
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: blackbox-{{ $.Values.global.probe.clusterProbe }}-{{ $.Release.Namespace }}-http-2xx
+    {{- include "custom.labels" $ | nindent 4 }}
+spec:
+  prober:
+    url: {{ include "custom.blackboxUrl" . }}
+  module: http_2xx
+  targets:
+    staticConfig:
+      static:
+        - {{ $.Values.global.probe.internal }}
+{{- end }}
+
+{{- if $.Values.global.probe.external }}
+{{- range $prober := $.Values.global.probe.externalProbes }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: blackbox-{{ $prober }}-{{ $.Release.Namespace }}-http-2xx
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: blackbox-{{ $prober }}-{{ $.Release.Namespace }}-http-2xx
+    {{- include "custom.labels" $ | nindent 4 }}
+spec:
+  prober:
+    url: {{ $prober }}{{ include "custom.domain" $ }}:9115
+  module: http_2xx
+  targets:
+    staticConfig:
+      static:
+        - {{ $.Values.global.probe.external }}
+{{- end }}
+{{- end }}
