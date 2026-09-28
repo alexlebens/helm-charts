@@ -1,6 +1,6 @@
 apiVersion: v2
 name: common-helpers
-version: 1.1.0
+version: 1.2.0
 description: Common Helpers
 keywords:
   - common
@@ -9,7 +9,6 @@ keywords:
 home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/common-helpers
 sources:
   - https://gitea.alexlebens.dev/alexlebens/helm-charts
-type: library
 annotations:
   artifacthub.io/links: |
     - name: source
