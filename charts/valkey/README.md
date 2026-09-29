@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 1.7.0](https://img.shields.io/badge/Version-1.7.0-informational?style=flat-square) ![AppVersion: 9.1.2](https://img.shields.io/badge/AppVersion-9.1.2-informational?style=flat-square)
+![Version: 1.8.0](https://img.shields.io/badge/Version-1.8.0-informational?style=flat-square) ![AppVersion: 9.1.2](https://img.shields.io/badge/AppVersion-9.1.2-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -50,6 +50,10 @@ Valkey chart with preconfigured settings
 | valkey.metrics.exporter.securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | valkey.metrics.exporter.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | valkey.metrics.exporter.securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| valkey.metrics.exporter.securityContext.runAsGroup | int | `65534` |  |
+| valkey.metrics.exporter.securityContext.runAsNonRoot | bool | `true` |  |
+| valkey.metrics.exporter.securityContext.runAsUser | int | `65534` |  |
+| valkey.metrics.exporter.securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | valkey.metrics.prometheusRule.enabled | bool | `true` |  |
 | valkey.metrics.prometheusRule.rules[0].alert | string | `"ValkeyDown"` |  |
 | valkey.metrics.prometheusRule.rules[0].annotations.description | string | `"Valkey instance {{ \"{{ $labels.instance }}\" }} is down."` |  |

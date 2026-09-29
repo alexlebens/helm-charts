@@ -39,11 +39,16 @@ valkey:
           cpu: 1m
           memory: 10M
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
           drop:
             - ALL
+        seccompProfile:
+          type: RuntimeDefault
     serviceMonitor:
       enabled: true
     prometheusRule:
