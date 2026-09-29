@@ -4,9 +4,11 @@ valkey:
     registry: docker.io
     repository: valkey/valkey
     tag: 9.1.2@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
-  serviceAccount:
-    create: true
   resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+  initResources:
     requests:
       cpu: 10m
       memory: 20Mi
@@ -36,10 +38,14 @@ valkey:
         requests:
           cpu: 1m
           memory: 10M
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
     serviceMonitor:
       enabled: true
-    podMonitor:
-      enabled: false
     prometheusRule:
       enabled: true
       rules:
