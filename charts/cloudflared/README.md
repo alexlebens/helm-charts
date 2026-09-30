@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 4.5.5](https://img.shields.io/badge/Version-4.5.5-informational?style=flat-square) ![AppVersion: 2026.9.3](https://img.shields.io/badge/AppVersion-2026.9.3-informational?style=flat-square)
+![Version: 4.5.6](https://img.shields.io/badge/Version-4.5.6-informational?style=flat-square) ![AppVersion: 2026.9.3](https://img.shields.io/badge/AppVersion-2026.9.3-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -36,7 +36,7 @@ Cloudflared Tunnel
 | metrics.prometheusRule.labels | object | `{}` | PrometheusRule additional labels |
 | metrics.prometheusRule.rules | list | `[{"alert":"CloudflaredDown","annotations":{"description":"Cloudflared tunnel has lost connection to the edge.","summary":"Cloudflared tunnel {{ \"{{\" }} $labels.tunnel_id }} is down"},"expr":"cloudflared_tunnel_active == 0","for":"1m","labels":{"severity":"critical"}}]` | Prometheus rules |
 | name | string | `""` | Name override of release |
-| podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532}` | Pod-level security context |
+| podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532,"seccompProfile":{"type":"RuntimeDefault"}}` | Pod-level security context |
 | probe | object | `{"enabled":false,"interval":"","labels":{},"module":"http_2xx","proberUrl":"blackbox-cloudflare.blackbox.svc.cluster.local:9115","scrapeTimeout":"","targetUrl":""}` | Probe CRD configuration (Blackbox Exporter) |
 | probe.interval | string | `""` | Scrape interval for the probe |
 | probe.labels | object | `{}` | Probe additional labels |
