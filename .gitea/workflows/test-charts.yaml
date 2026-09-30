@@ -141,7 +141,7 @@ jobs:
         if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
+          topic: "${{ vars.NTFY_TOPIC }}"
           title: "🚨 Lint/Test Failure - ${{ env.FAILED_CHART || 'Helm Charts' }}"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
@@ -210,7 +210,7 @@ jobs:
         if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
+          topic: "${{ vars.NTFY_TOPIC }}"
           title: "🚨 Chart Testing Failure - Helm Charts"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
@@ -315,7 +315,7 @@ jobs:
         if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
-          topic: "${{ secrets.NTFY_TOPIC }}"
+          topic: "${{ vars.NTFY_TOPIC }}"
           title: "🚨 Kubeconform Failure - ${{ env.FAILED_CHART || 'Helm Charts' }}"
           priority: 3
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
