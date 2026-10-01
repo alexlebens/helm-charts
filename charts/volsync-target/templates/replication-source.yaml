@@ -17,6 +17,12 @@ spec:
   sourcePVC: {{ $.Values.pvcTarget | required "PVC target is required" }}
   trigger:
     schedule: {{ $tierConfig.schedule }}
+    {{- with (coalesce $tierConfig.manual $.Values.manual) }}
+    manual: {{ . | quote }}
+    {{- end }}
+  {{- if or $tierConfig.paused $.Values.paused }}
+  paused: true
+  {{- end }}
   restic:
     pruneIntervalDays: {{ $tierConfig.restic.pruneIntervalDays }}
     repository: {{ include "volsync.repoName" (dict "root" $ "tier" $tier) }}
@@ -24,9 +30,12 @@ spec:
     {{- with $tierConfig.restic.retain }}
       {{- toYaml . | nindent 6 }}
     {{- end }}
-    {{- if $.Values.moverSecurityContext }}
+    {{- with (coalesce $tierConfig.restic.unlock $tierConfig.unlock $.Values.unlock) }}
+    unlock: {{ . | quote }}
+    {{- end }}
+    {{- if or $tierConfig.moverSecurityContext $.Values.moverSecurityContext }}
     moverSecurityContext:
-    {{- with $.Values.moverSecurityContext }}
+    {{- with (coalesce $tierConfig.moverSecurityContext $.Values.moverSecurityContext) }}
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- end }}
@@ -34,5 +43,12 @@ spec:
     storageClassName: {{ $tierConfig.restic.storageClassName }}
     volumeSnapshotClassName: {{ $tierConfig.restic.volumeSnapshotClassName }}
     cacheCapacity: {{ $tierConfig.restic.cacheCapacity }}
+    {{- with $tierConfig.restic.cacheStorageClassName }}
+    cacheStorageClassName: {{ . }}
+    {{- end }}
+    {{- with $tierConfig.restic.cacheAccessModes }}
+    cacheAccessModes:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
 {{- end }}
 {{- end }}

@@ -13,12 +13,26 @@ additionalLabels: {}
 # -- Name of the PVC target
 pvcTarget: "data"
 
-# -- Glocal security context for restic mover
+# -- Global security context for restic mover
 moverSecurityContext: {}
+
+# -- Pause all backups globally across all tiers
+paused: false
+
+# -- Trigger manual backup execution across all tiers by setting an arbitrary token (e.g. "run-1")
+manual: ""
+
+# -- Global unlock token to clear stale restic repository locks across all tiers
+unlock: ""
 
 # -- Prometheus Rule
 prometheusRule:
   enabled: true
+  # -- Alert on delayed/stale backups based on cron schedule
+  backupDelayed:
+    enabled: true
+    # -- Override max sync lag threshold in seconds (auto-computed from cron schedule if unset)
+    maxSyncLag: ""
 
 # -- Use external secrets
 externalSecrets:
@@ -28,11 +42,25 @@ externalSecrets:
 a:
   enabled: false
 
+  # -- Pause backups for this tier
+  paused: false
+
+  # -- Manual backup trigger token for this tier
+  manual: ""
+
+  # -- Optional override for max sync lag threshold in seconds (auto-computed from schedule if unset)
+  maxSyncLag: ""
+
+  # -- Tier-specific mover security context
+  moverSecurityContext: {}
+
   # -- 5 character cron schedule
   schedule: 0 8 * * *
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
+    # -- Unlock token to clear stale restic repository locks for this tier
+    unlock: ""
     pruneIntervalDays: 7
     repository: ""
     retain:
@@ -45,6 +73,8 @@ a:
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
     cacheCapacity: 1Gi
+    cacheStorageClassName: ""
+    cacheAccessModes: []
 
   # -- External Secret configuration
   externalSecret:
@@ -65,11 +95,25 @@ a:
 b:
   enabled: false
 
+  # -- Pause backups for this tier
+  paused: false
+
+  # -- Manual backup trigger token for this tier
+  manual: ""
+
+  # -- Optional override for max sync lag threshold in seconds (auto-computed from schedule if unset)
+  maxSyncLag: ""
+
+  # -- Tier-specific mover security context
+  moverSecurityContext: {}
+
   # -- 5 character cron schedule
   schedule: 0 7 * * *
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
+    # -- Unlock token to clear stale restic repository locks for this tier
+    unlock: ""
     pruneIntervalDays: 7
     repository: ""
     retain:
@@ -82,6 +126,8 @@ b:
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
     cacheCapacity: 1Gi
+    cacheStorageClassName: ""
+    cacheAccessModes: []
 
   # -- External Secret configuration
   externalSecret:
@@ -102,11 +148,25 @@ b:
 c:
   enabled: false
 
+  # -- Pause backups for this tier
+  paused: false
+
+  # -- Manual backup trigger token for this tier
+  manual: ""
+
+  # -- Optional override for max sync lag threshold in seconds (auto-computed from schedule if unset)
+  maxSyncLag: ""
+
+  # -- Tier-specific mover security context
+  moverSecurityContext: {}
+
   # -- 5 character cron schedule
   schedule: 0 10 * * 0
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
+    # -- Unlock token to clear stale restic repository locks for this tier
+    unlock: ""
     pruneIntervalDays: 7
     repository: ""
     retain:
@@ -119,6 +179,8 @@ c:
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
     cacheCapacity: 1Gi
+    cacheStorageClassName: ""
+    cacheAccessModes: []
 
   # -- External Secret configuration
   externalSecret:
@@ -139,11 +201,25 @@ c:
 d:
   enabled: true
 
+  # -- Pause backups for this tier
+  paused: false
+
+  # -- Manual backup trigger token for this tier
+  manual: ""
+
+  # -- Optional override for max sync lag threshold in seconds (auto-computed from schedule if unset)
+  maxSyncLag: ""
+
+  # -- Tier-specific mover security context
+  moverSecurityContext: {}
+
   # -- 5 character cron schedule
   schedule: 0 9 * * 0
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
+    # -- Unlock token to clear stale restic repository locks for this tier
+    unlock: ""
     pruneIntervalDays: 35
     repository: ""
     retain:
@@ -156,6 +232,8 @@ d:
     storageClassName: ceph-block
     volumeSnapshotClassName: ceph-blockpool-snapshot
     cacheCapacity: 1Gi
+    cacheStorageClassName: ""
+    cacheAccessModes: []
 
   # -- External Secret configuration
   externalSecret:
