@@ -32,4 +32,31 @@ spec:
               {{ `{{ $value }}` }} VolSync backup pod(s) failed for PVC '{{ .Values.pvcTarget }}'.
               Target: {{ include "volsync.name" . }}
               Namespace: {{ `{{ $labels.namespace }}` }}
+        {{- if and .Values.prometheusRule.backupDelayed (default true .Values.prometheusRule.backupDelayed.enabled) }}
+        {{- range $tier := tuple "a" "b" "c" "d" }}
+        {{- $tierConfig := index $.Values $tier }}
+        {{- if and $tierConfig $tierConfig.enabled }}
+        {{- $thresholdSecs := include "volsync.syncLagThresholdSeconds" (dict "schedule" $tierConfig.schedule "override" (or $tierConfig.maxSyncLag $.Values.prometheusRule.backupDelayed.maxSyncLag)) | trim }}
+        {{- $thresholdHuman := include "volsync.syncLagThresholdHuman" (dict "schedule" $tierConfig.schedule "override" (or $tierConfig.maxSyncLag $.Values.prometheusRule.backupDelayed.maxSyncLag)) | trim }}
+        - alert: VolSyncBackupDelayed-{{ $tier }}
+          expr: |
+            (
+              (time() - volsync_replicationsource_last_sync_time{obj_name="{{ include "volsync.name" $ }}-source-{{ $tier }}", obj_namespace="{{ include "volsync.namespace" $ }}"}) > {{ $thresholdSecs }}
+            ) or (
+              (time() - max by (namespace) (kube_job_status_completion_time{namespace="{{ include "volsync.namespace" $ }}", job_name=~"volsync-.*{{ include "volsync.name" $ }}-source-{{ $tier }}-.*"})) > {{ $thresholdSecs }}
+            )
+          for: 15m
+          labels:
+            severity: warning
+            tier: {{ $tier }}
+            pvc: {{ $.Values.pvcTarget }}
+          annotations:
+            summary: "VolSync backup delayed for tier {{ $tier }} in {{ `{{ $labels.namespace }}` }}"
+            description: |
+              VolSync backup on tier '{{ $tier }}' for PVC '{{ $.Values.pvcTarget }}' has not completed successfully in {{ $thresholdHuman }} (schedule: '{{ $tierConfig.schedule }}').
+              Target: {{ include "volsync.name" $ }}-source-{{ $tier }}
+              Namespace: {{ `{{ $labels.namespace }}` }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
 {{- end }}
