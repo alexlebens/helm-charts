@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "pocketIdClient.name" . }}-pocket-id-seed
-    {{- include "custom.labels" . | nindent 4 }}
+    {{- include "pocketIdClient.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded

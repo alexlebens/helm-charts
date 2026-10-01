@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "pocketIdClient.name" . }}
-    {{- include "custom.labels" . | nindent 4 }}
+    {{- include "pocketIdClient.labels" . | nindent 4 }}
 spec:
   name: {{ include "pocketIdClient.displayName" . | quote }}
   launchUrl: {{ include "pocketIdClient.launchUrl" . }}

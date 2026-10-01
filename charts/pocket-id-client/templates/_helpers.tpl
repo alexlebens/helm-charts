@@ -56,16 +56,44 @@ Resolve the client ID: explicit value or generated UUID
 {{- end -}}
 
 {{/*
+Default OIDC secret name
+*/}}
+{{- define "pocketIdClient.defaultOidcSecret" -}}
+{{ .Release.Name }}-oidc-secret
+{{- end -}}
+
+{{/*
+Default OAuth proxy secret name
+*/}}
+{{- define "pocketIdClient.defaultOauthProxySecret" -}}
+{{ .Release.Name }}-oauth-proxy
+{{- end -}}
+
+{{/*
+Domain
+*/}}
+{{- define "pocketIdClient.domain" -}}
+{{ ((.Values.global).domain) | default ".alexlebens.dev" }}
+{{- end -}}
+
+{{/*
+Icon URL
+*/}}
+{{- define "pocketIdClient.iconUrl" -}}
+{{ ((.Values.global).iconUrl) | default "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/" }}
+{{- end -}}
+
+{{/*
 Resolve the Kubernetes secret name based on mode.
-Priority: explicit secretName > mode default from common-helpers
+Priority: explicit secretName > mode default
 */}}
 {{- define "pocketIdClient.secretName" -}}
   {{- if .Values.externalSecret.secretName -}}
     {{- .Values.externalSecret.secretName -}}
   {{- else if eq .Values.mode "oauth" -}}
-    {{- include "custom.defaultOauthProxySecret" . -}}
+    {{- include "pocketIdClient.defaultOauthProxySecret" . -}}
   {{- else -}}
-    {{- include "custom.defaultOidcSecret" . -}}
+    {{- include "pocketIdClient.defaultOidcSecret" . -}}
   {{- end -}}
 {{- end -}}
 
@@ -123,13 +151,13 @@ Priority: explicit client.displayName > release name in title case
 
 {{/*
 Resolve the launch URL.
-Priority: explicit client.launchUrl > https://<appIdentifier><custom.domain>
+Priority: explicit client.launchUrl > https://<appIdentifier><domain>
 */}}
 {{- define "pocketIdClient.launchUrl" -}}
   {{- if .Values.client.launchUrl -}}
     {{- .Values.client.launchUrl -}}
   {{- else -}}
-    {{- printf "https://%s%s" (include "pocketIdClient.appIdentifier" .) (include "custom.domain" .) -}}
+    {{- printf "https://%s%s" (include "pocketIdClient.appIdentifier" .) (include "pocketIdClient.domain" .) -}}
   {{- end -}}
 {{- end -}}
 
@@ -143,8 +171,6 @@ In oidc mode: returns .Values.client.callbackUrls (fails if empty).
     {{- toYaml .Values.client.callbackUrls -}}
   {{- else if eq .Values.mode "oauth" -}}
     {{- printf "- %s/oauth2/callback" (include "pocketIdClient.launchUrl" .) -}}
-  {{- else -}}
-    {{- fail "client.callbackUrls must be specified when mode is oidc" -}}
   {{- end -}}
 {{- end -}}
 
@@ -156,9 +182,9 @@ Priority: explicit logo.logoUrl > selfhstLogoName webp > fallback <appIdentifier
   {{- if .Values.client.logo.logoUrl -}}
     {{- .Values.client.logo.logoUrl -}}
   {{- else if .Values.client.logo.selfhstLogoName -}}
-    {{- printf "%s%s.webp" (include "custom.iconUrl" .) .Values.client.logo.selfhstLogoName -}}
+    {{- printf "%s%s.webp" (include "pocketIdClient.iconUrl" .) .Values.client.logo.selfhstLogoName -}}
   {{- else -}}
-    {{- printf "%s%s.webp" (include "custom.iconUrl" .) (include "pocketIdClient.appIdentifier" .) -}}
+    {{- printf "%s%s.webp" (include "pocketIdClient.iconUrl" .) (include "pocketIdClient.appIdentifier" .) -}}
   {{- end -}}
 {{- end -}}
 
@@ -171,7 +197,7 @@ Priority: explicit logo.darkLogoUrl > (if selfhstDarkLogo: true) <iconName>-ligh
     {{- .Values.client.logo.darkLogoUrl -}}
   {{- else if .Values.client.logo.selfhstDarkLogo -}}
     {{- $iconName := .Values.client.logo.selfhstLogoName | default (include "pocketIdClient.appIdentifier" .) -}}
-    {{- printf "%s%s-light.webp" (include "custom.iconUrl" .) $iconName -}}
+    {{- printf "%s%s-light.webp" (include "pocketIdClient.iconUrl" .) $iconName -}}
   {{- end -}}
 {{- end -}}
 

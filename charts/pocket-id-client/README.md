@@ -1,6 +1,6 @@
 # pocket-id-client
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Pocket ID OIDC Client
 
@@ -15,12 +15,6 @@ Pocket ID OIDC Client
 ## Source Code
 
 * <https://gitea.alexlebens.dev/alexlebens/helm-charts>
-
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| oci://harbor.alexlebens.dev/helm-charts | common-helpers | 0.6.0 |
 
 ## Values
 
