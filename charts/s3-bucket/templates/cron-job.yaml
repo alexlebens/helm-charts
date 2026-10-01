@@ -1,6 +1,10 @@
 {{- range $backupName, $backupConfig := .Values.backups }}
-{{- if and (ne $backupName "image") $backupConfig.enabled }}
 {{- $cronJob := $backupConfig.cronJob | default dict }}
+{{- $cronJobEnabled := true }}
+{{- if hasKey $cronJob "enabled" }}
+  {{- $cronJobEnabled = $cronJob.enabled }}
+{{- end }}
+{{- if and (ne $backupName "image") $backupConfig.enabled $cronJobEnabled }}
 {{- $destination := $backupConfig.destination | default dict }}
 ---
 apiVersion: batch/v1
