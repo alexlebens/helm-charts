@@ -9,28 +9,17 @@ Expand the names
   {{- end }}
 {{- end }}
 
-{{- define "volsync.localRepoName" -}}
-  {{- if .Values.local.restic.repository }}
-    {{- .Values.local.restic.repository | trunc 63 | trimSuffix "-" }}
-  {{- else }}
-    {{- printf "%s-secret-local" (include "volsync.name" .) -}}
-  {{- end }}
-{{- end }}
-
-{{- define "volsync.remoteRepoName" -}}
-  {{- if .Values.remote.restic.repository }}
-    {{- .Values.remote.restic.repository | trunc 63 | trimSuffix "-" }}
-  {{- else }}
-    {{- printf "%s-secret-remote" (include "volsync.name" .) -}}
-  {{- end }}
-{{- end }}
-
-{{- define "volsync.externalRepoName" -}}
-  {{- if .Values.external.restic.repository }}
-    {{- .Values.external.restic.repository | trunc 63 | trimSuffix "-" }}
-  {{- else }}
-    {{- printf "%s-secret-external" (include "volsync.name" .) -}}
-  {{- end }}
+{{/*
+Repository secret name for a given tier (e.g. a, b, c, d)
+Usage: include "volsync.repoName" (dict "root" $ "tier" "a")
+*/}}
+{{- define "volsync.repoName" -}}
+  {{- $tierConfig := index .root.Values .tier | default dict -}}
+  {{- if and $tierConfig.restic $tierConfig.restic.repository -}}
+    {{- $tierConfig.restic.repository | trunc 63 | trimSuffix "-" -}}
+  {{- else -}}
+    {{- printf "%s-secret-%s" (include "volsync.name" .root) .tier -}}
+  {{- end -}}
 {{- end }}
 
 {{/*
@@ -58,7 +47,7 @@ Common labels
 helm.sh/chart: {{ include "volsync.chart" $ }}
 {{ include "volsync.selectorLabels" $ }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.Version | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.additionalLabels }}

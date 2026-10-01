@@ -6,7 +6,6 @@ keywords:
   - volsync-target
   - volsync
   - storage
-  - kubernetes
 home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/volsync-target
 sources:
   - https://gitea.alexlebens.dev/alexlebens/helm-charts

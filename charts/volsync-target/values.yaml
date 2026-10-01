@@ -24,8 +24,8 @@ prometheusRule:
 externalSecrets:
   enabled: true
 
-# -- Local backup configuration
-local:
+# -- Tier A: On-prem Synology NAS backup configuration (ps02sn)
+a:
   enabled: false
 
   # -- 5 character cron schedule
@@ -48,13 +48,58 @@ local:
 
   # -- External Secret configuration
   externalSecret:
-    # This path must contain the BUCKET_ENDPOINT
-    bucketPath: /garage/config
-    # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
-    credentialPath: /garage/home-infra/volsync-backups
+    enabled: true
+    storeName: openbao
+    # Path containing the S3 endpoint
+    bucketPath: /ps02sn/garage/config
+    endpointProperty: ENDPOINT
+    # Path containing the AWS/S3 credentials and RESTIC_PASSWORD
+    credentialPath: /ps02sn/garage/keys/volsync-backups
+    bucketProperty: BUCKET_NAME
+    resticPasswordProperty: RESTIC_PASSWORD
+    regionProperty: AWS_REGION
+    accessKeyIdProperty: AWS_ACCESS_KEY_ID
+    secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
 
-# -- Remote backup configuration
-remote:
+# -- Tier B: In-cluster backup configuration (cl01tl)
+b:
+  enabled: false
+
+  # -- 5 character cron schedule
+  schedule: 0 7 * * *
+
+  # -- Backup configuration, inserted directly into the yaml
+  restic:
+    pruneIntervalDays: 7
+    repository: ""
+    retain:
+      hourly: 0
+      daily: 7
+      weekly: 4
+      monthly: 0
+      yearly: 0
+    copyMethod: Snapshot
+    storageClassName: ceph-block
+    volumeSnapshotClassName: ceph-blockpool-snapshot
+    cacheCapacity: 1Gi
+
+  # -- External Secret configuration
+  externalSecret:
+    enabled: true
+    storeName: openbao
+    # Path containing the S3 endpoint
+    bucketPath: /cl01tl/garage/config
+    endpointProperty: ENDPOINT
+    # Path containing the AWS/S3 credentials and RESTIC_PASSWORD
+    credentialPath: /cl01tl/garage/keys/volsync-backups
+    bucketProperty: BUCKET_NAME
+    resticPasswordProperty: RESTIC_PASSWORD
+    regionProperty: AWS_REGION
+    accessKeyIdProperty: AWS_ACCESS_KEY_ID
+    secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
+
+# -- Tier C: Remote Raspberry Pi backup configuration (ps10rp)
+c:
   enabled: false
 
   # -- 5 character cron schedule
@@ -77,13 +122,21 @@ remote:
 
   # -- External Secret configuration
   externalSecret:
-    # This path must contain the BUCKET_ENDPOINT
-    bucketPath: /garage/config
-    # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
-    credentialPath: /garage/home-infra/volsync-backups
+    enabled: true
+    storeName: openbao
+    # Path containing the S3 endpoint
+    bucketPath: /ps10rp/garage/config
+    endpointProperty: ENDPOINT
+    # Path containing the AWS/S3 credentials and RESTIC_PASSWORD
+    credentialPath: /ps10rp/garage/keys/volsync-backups
+    bucketProperty: BUCKET_NAME
+    resticPasswordProperty: RESTIC_PASSWORD
+    regionProperty: AWS_REGION
+    accessKeyIdProperty: AWS_ACCESS_KEY_ID
+    secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
 
-# -- External backup configuration
-external:
+# -- Tier D: Cloud DR replication on Backblaze B2 (cs01bb)
+d:
   enabled: true
 
   # -- 5 character cron schedule
@@ -106,7 +159,15 @@ external:
 
   # -- External Secret configuration
   externalSecret:
-    # This path must contain the ENDPOINT
-    bucketPath: /backblaze/config
-    # This path must contain the AWS/S3 credentials and RESTIC_PASSWORD
-    credentialPath: /backblaze/home-infra/volsync-backups
+    enabled: true
+    storeName: openbao
+    # Path containing the S3 endpoint
+    bucketPath: /cs01bb/s3/config
+    endpointProperty: ENDPOINT
+    # Path containing the AWS/S3 credentials and RESTIC_PASSWORD
+    credentialPath: /cs01bb/s3/keys/volsync-backups
+    bucketProperty: BUCKET_NAME
+    resticPasswordProperty: RESTIC_PASSWORD
+    regionProperty: AWS_REGION
+    accessKeyIdProperty: AWS_ACCESS_KEY_ID
+    secretAccessKeyProperty: AWS_SECRET_ACCESS_KEY
