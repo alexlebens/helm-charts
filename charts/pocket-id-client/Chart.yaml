@@ -18,4 +18,5 @@ annotations:
       url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/pocket-id-client
 maintainers:
   - name: alexlebens
+dependencies: []
 icon: https://cdn.jsdelivr.net/gh/selfhst/icons/webp/pocket-id.webp
