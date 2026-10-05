@@ -57,6 +57,9 @@ spec:
                 "src:{{ include "s3Bucket.name" $ }}" \
                 "dest:{{ $destination.bucketName | default (include "s3Bucket.name" $) }}" \
                 --s3-no-check-bucket \
+                {{- range ($backupConfig.exclude | default list) }}
+                --exclude {{ . | quote }} \
+                {{- end }}
                 --verbose 2>&1 | tee /tmp/rclone-sync.log
 
               sync_res=$?

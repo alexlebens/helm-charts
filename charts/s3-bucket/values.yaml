@@ -100,6 +100,8 @@ backups:
   a:
     enabled: false
     immediate: false
+    # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
+    exclude: []
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -128,6 +130,8 @@ backups:
   b:
     enabled: false
     immediate: false
+    # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
+    exclude: []
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -156,6 +160,8 @@ backups:
   c:
     enabled: false
     immediate: false
+    # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
+    exclude: []
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -184,6 +190,8 @@ backups:
   d:
     enabled: false
     immediate: false
+    # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
+    exclude: []
     cronJob:
       suspend: false
       timeZone: America/Chicago
