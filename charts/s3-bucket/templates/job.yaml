@@ -52,8 +52,8 @@ spec:
             - |
               set -o pipefail
 
-              # --- Sync Phase ---
-              rclone sync \
+              # --- {{ ($backupConfig.mode | default "sync") | title }} Phase ---
+              rclone {{ $backupConfig.mode | default "sync" }} \
                 "src:{{ include "s3Bucket.name" $ }}" \
                 "dest:{{ $destination.bucketName | default (include "s3Bucket.name" $) }}" \
                 --s3-no-check-bucket \

@@ -100,6 +100,8 @@ backups:
   a:
     enabled: false
     immediate: false
+    # -- Rclone operation mode: "sync" (mirror source, delete from dest) or "copy" (additive only, never deletes)
+    mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
     cronJob:
@@ -130,6 +132,8 @@ backups:
   b:
     enabled: false
     immediate: false
+    # -- Rclone operation mode: "sync" (mirror source, delete from dest) or "copy" (additive only, never deletes)
+    mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
     cronJob:
@@ -160,6 +164,8 @@ backups:
   c:
     enabled: false
     immediate: false
+    # -- Rclone operation mode: "sync" (mirror source, delete from dest) or "copy" (additive only, never deletes)
+    mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
     cronJob:
@@ -190,6 +196,8 @@ backups:
   d:
     enabled: false
     immediate: false
+    # -- Rclone operation mode: "sync" (mirror source, delete from dest) or "copy" (additive only, never deletes)
+    mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
     cronJob:
