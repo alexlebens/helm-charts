@@ -52,7 +52,6 @@ jobs:
           - common-helpers
           - pocket-id-client
           - postgres-cluster
-          - rclone-bucket
           - s3-bucket
           - valkey
           - volsync-target
