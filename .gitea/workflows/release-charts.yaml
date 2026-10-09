@@ -50,7 +50,6 @@ jobs:
         chart:
           - cloudflared
           - common-helpers
-          - garage-bucket
           - pocket-id-client
           - postgres-cluster
           - rclone-bucket
