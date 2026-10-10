@@ -1,6 +1,6 @@
 # s3-bucket
 
-![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![AppVersion: v1.75.1](https://img.shields.io/badge/AppVersion-v1.75.1-informational?style=flat-square)
+![Version: 0.8.1](https://img.shields.io/badge/Version-0.8.1-informational?style=flat-square) ![AppVersion: v1.75.2](https://img.shields.io/badge/AppVersion-v1.75.2-informational?style=flat-square)
 
 Unified S3 Bucket subchart with ExternalSecret and Rclone backups
 
@@ -23,8 +23,8 @@ Unified S3 Bucket subchart with ExternalSecret and Rclone backups
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalLabels | object | `{}` | Add additional labels |
-| backupConfig | object | `{"image":{"repository":"rclone/rclone","tag":"1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5"},"immediate":false,"ntfy":{"enabled":true,"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"}},"podSecurityContext":{"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"resources":{"limits":{"memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Rclone Backup Configuration |
-| backupConfig.image | object | `{"repository":"rclone/rclone","tag":"1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5"}` | Default image for all backup jobs |
+| backupConfig | object | `{"image":{"repository":"rclone/rclone","tag":"1.75.2@sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5"},"immediate":false,"ntfy":{"enabled":true,"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"}},"podSecurityContext":{"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"resources":{"limits":{"memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Rclone Backup Configuration |
+| backupConfig.image | object | `{"repository":"rclone/rclone","tag":"1.75.2@sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5"}` | Default image for all backup jobs |
 | backupConfig.immediate | bool | `false` | Run an immediate backup Job on install/upgrade for enabled backup targets |
 | backupConfig.ntfy | object | `{"enabled":true,"externalSecret":{"enabled":true,"storeName":"openbao","tokenPath":"/cl01tl/ntfy/users/cl01tl","tokenProperty":"token","topicPath":"/cl01tl/ntfy/topics","topicProperty":"rclone","urlPath":"/cl01tl/ntfy/config","urlProperty":"internal-endpoint"}}` | Ntfy notifications for backup/prune results |
 | backupConfig.podSecurityContext | object | `{"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000}` | Security context for CronJob pods |
