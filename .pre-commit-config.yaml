@@ -19,6 +19,22 @@ repos:
           - --chart-search-root=charts
           - --template-files=./_templates.gotmpl
           - --template-files=README.md.gotmpl
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1-1
+    hooks:
+      - id: shellcheck
+        language_version: /opt/homebrew/opt/python@3.13/bin/python3.13
+        files: ^\.gitea/scripts/.*\.sh$
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+        files: ^\.gitea/workflows/.*\.ya?ml$
+        args:
+          - -ignore
+          - 'specifying action "builtin:checkout" in invalid format'
+          - -ignore
+          - 'undefined variable "gitea"'
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: v0.1.30
     hooks:
