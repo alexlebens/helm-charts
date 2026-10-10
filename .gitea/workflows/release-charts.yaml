@@ -42,7 +42,7 @@ jobs:
         run: ./.gitea/scripts/detect-release-charts.sh
 
   release:
-    needs: prepare
+    needs: [detect-charts]
     if: |
       needs.prepare.result == 'success' &&
       needs.prepare.outputs.matrix != '[]' &&
