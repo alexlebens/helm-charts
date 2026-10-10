@@ -13,13 +13,12 @@ on:
 
 jobs:
   lint-bash:
-    name: Lint Bash Scripts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: builtin:checkout
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: ShellCheck Bash Scripts (reviewdog)
         uses: reviewdog/action-shellcheck@v1

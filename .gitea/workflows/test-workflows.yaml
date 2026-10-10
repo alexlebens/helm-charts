@@ -12,13 +12,12 @@ on:
 
 jobs:
   lint-workflows:
-    name: Lint Workflows (actionlint)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: builtin:checkout
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Lint Workflows (reviewdog)
         uses: reviewdog/action-actionlint@v1
