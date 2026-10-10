@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: ShellCheck Bash Scripts (reviewdog)
+      - name: ShellCheck Bash Scripts
         uses: reviewdog/action-shellcheck@v1
         with:
           github_token: ${{ secrets.BOT_TOKEN }}

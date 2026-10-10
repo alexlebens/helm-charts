@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint Workflows (reviewdog)
+      - name: Lint Workflows
         uses: reviewdog/action-actionlint@v1
         with:
           github_token: ${{ secrets.BOT_TOKEN }}
