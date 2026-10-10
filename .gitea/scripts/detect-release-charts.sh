@@ -43,7 +43,7 @@ if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
     exit 0
   else
     echo ">> Manual dispatch for all charts"
-    CHARTS=($(find charts -mindepth 1 -maxdepth 1 -type d -exec basename {} \;))
+    mapfile -t CHARTS < <(find charts -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
   fi
 else
   if [ -n "${EVENT_BEFORE}" ] && [ "${EVENT_BEFORE}" != "0000000000000000000000000000000000000000" ]; then
@@ -66,7 +66,7 @@ else
 fi
 
 if [ ${#CHARTS[@]} -gt 0 ]; then
-  UNIQUE_CHARTS=($(printf "%s\n" "${CHARTS[@]}" | sort -u))
+  mapfile -t UNIQUE_CHARTS < <(printf "%s\n" "${CHARTS[@]}" | sort -u)
   CHARTS_JSON=$(printf '%s\n' "${UNIQUE_CHARTS[@]}" | jq -R -s -c 'split("\n") | map(select(length > 0))')
 
   echo ">> Charts to release: ${UNIQUE_CHARTS[*]}"

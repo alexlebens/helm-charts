@@ -44,14 +44,14 @@ jobs:
   release:
     needs: [detect-charts]
     if: |
-      needs.prepare.result == 'success' &&
-      needs.prepare.outputs.matrix != '[]' &&
-      needs.prepare.outputs.matrix != ''
+      needs.detect-charts.result == 'success' &&
+      needs.detect-charts.outputs.matrix != '[]' &&
+      needs.detect-charts.outputs.matrix != ''
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        chart: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+        chart: ${{ fromJSON(needs.detect-charts.outputs.matrix) }}
     steps:
       - name: Checkout
         uses: builtin:checkout

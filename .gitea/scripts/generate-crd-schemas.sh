@@ -46,10 +46,10 @@ wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/co
 
 echo ">> Formatting CRD schemas into JSON ..."
 export FILENAME_FORMAT='{kind}_{version}'
-python3 "${BIN_DIR}/openapi2jsonschema.py" *.yaml
+python3 "${BIN_DIR}/openapi2jsonschema.py" ./*.yaml
 
-mv *.json "${SCHEMA_DIR}/"
+mv ./*.json "${SCHEMA_DIR}/"
 
 echo ">> Schemas generated successfully in ${SCHEMA_DIR}:"
-ls -1 "${SCHEMA_DIR}"/*.json | wc -l | awk '{print ">> Generated " $1 " JSON schemas"}'
+find "${SCHEMA_DIR}" -maxdepth 1 -name "*.json" | wc -l | awk '{print ">> Generated " $1 " JSON schemas"}'
 echo "----"
