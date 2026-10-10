@@ -6,6 +6,10 @@ CHARTS="${CHARTS:-}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --chart)
+      CHARTS="${CHARTS} $2"
+      shift 2
+      ;;
     --charts)
       CHARTS="$2"
       shift 2

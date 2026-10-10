@@ -22,7 +22,7 @@ env:
   YQ_VERSION: "v4.54.1"
 
 jobs:
-  prepare:
+  detect-charts:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
@@ -43,45 +43,28 @@ jobs:
 
   release:
     needs: prepare
-    if: needs.prepare.outputs.matrix != '[]' && needs.prepare.outputs.matrix != ''
+    if: |
+      needs.prepare.result == 'success' &&
+      needs.prepare.outputs.matrix != '[]' &&
+      needs.prepare.outputs.matrix != ''
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        chart:
-          - cloudflared
-          - common-helpers
-          - pocket-id-client
-          - postgres-cluster
-          - s3-bucket
-          - valkey
-          - volsync-target
       fail-fast: false
+      matrix:
+        chart: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
-      - name: Check Chart to Process
-        id: check
-        run: |
-          CHARTS='${{ needs.prepare.outputs.matrix }}'
-          if echo "$CHARTS" | grep -q "\"${{ matrix.chart }}\""; then
-            echo "process=true" >> $GITHUB_OUTPUT
-          else
-            echo "process=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Checkout
-        if: steps.check.outputs.process == 'true'
         uses: builtin:checkout
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - name: Set up Helm
-        if: steps.check.outputs.process == 'true'
+      - name: Set Up Helm
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
         with:
           token: ${{ secrets.GITEA_TOKEN }}
           version: ${{ env.HELM_VERSION }}
 
       - name: Package & Push Helm Chart
-        if: steps.check.outputs.process == 'true'
         env:
           HARBOR_HOST: ${{ vars.HARBOR_HOST }}
           HARBOR_USER: ${{ vars.HARBOR_USER }}
@@ -92,7 +75,6 @@ jobs:
         run: ./.gitea/scripts/helm-package-and-push.sh --chart "${{ matrix.chart }}"
 
       - name: Release Helm Chart
-        if: steps.check.outputs.process == 'true'
         uses: akkuman/gitea-release-action@5a83c90484ef4355121df5eb60558c8ce66e81ac # v1
         with:
           name: ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}
@@ -103,7 +85,7 @@ jobs:
 
       - name: ntfy Success
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: success() && steps.check.outputs.process == 'true'
+        if: success()
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ vars.NTFY_TOPIC }}"
@@ -119,7 +101,7 @@ jobs:
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
-        if: failure() && steps.check.outputs.process == 'true'
+        if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ vars.NTFY_TOPIC }}"
