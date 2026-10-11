@@ -138,6 +138,35 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/calibre-server-0.0.1/calibre-server-0.0.1.tgz
     version: 0.0.1
   cloudflared:
+  - annotations:
+      artifacthub.io/links: |
+        - name: source
+          url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/cloudflared
+    apiVersion: v2
+    appVersion: 2026.10.0
+    created: "2026-10-11T01:59:59.643307179Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s-labs.github.io/helm-charts/
+      version: 5.3.0
+    description: Cloudflared Tunnel
+    digest: 1a4b0fb9fd42f012c1cd5dbb1c82cb2ec881c1d77b203360cb7dc38c5378d226
+    home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/cloudflared
+    icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/cloudflare.png
+    keywords:
+    - cloudflare
+    - tunnel
+    maintainers:
+    - name: alexlebens
+    name: cloudflared
+    sources:
+    - https://gitea.alexlebens.dev/alexlebens/helm-charts
+    - https://github.com/cloudflare/cloudflared
+    - https://hub.docker.com/r/cloudflare/cloudflared
+    - https://github.com/bjw-s-labs/helm-charts/tree/main/charts/library/common
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/cloudflared-4.7.0/cloudflared-4.7.0.tgz
+    version: 4.7.0
   - apiVersion: v2
     appVersion: 2025.2.1
     created: "2025-03-06T00:10:46.10133266Z"
@@ -3227,6 +3256,30 @@ entries:
     - https://github.com/alexlebens/helm-charts/releases/download/penpot-0.1.0/penpot-0.1.0.tgz
     version: 0.1.0
   postgres-cluster:
+  - annotations:
+      artifacthub.io/links: |
+        - name: source
+          url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster
+    apiVersion: v2
+    appVersion: v1.30.1
+    created: "2026-10-11T01:59:59.822856839Z"
+    description: Cloudnative-pg Cluster
+    digest: a856b7d576953057d4e7f56fc87e0b05892153e1f49fb7520ccdfb5155143abe
+    home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/postgres-cluster
+    icon: https://avatars.githubusercontent.com/u/100373852?s=48&v=4
+    keywords:
+    - database
+    - postgres
+    maintainers:
+    - name: alexlebens
+    name: postgres-cluster
+    sources:
+    - https://gitea.alexlebens.dev/alexlebens/helm-charts
+    - https://github.com/cloudnative-pg/cloudnative-pg
+    - https://github.com/cloudnative-pg/charts/tree/main/charts/cluster
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/postgres-cluster-8.6.0/postgres-cluster-8.6.0.tgz
+    version: 8.6.0
   - apiVersion: v2
     appVersion: v1.25.0
     created: "2025-03-03T17:17:27.813464823Z"
@@ -6014,4 +6067,36 @@ entries:
     urls:
     - https://github.com/alexlebens/helm-charts/releases/download/unpackerr-0.0.1/unpackerr-0.0.1.tgz
     version: 0.0.1
-generated: "2025-03-06T00:10:46.215287792Z"
+  valkey:
+  - annotations:
+      artifacthub.io/links: |
+        - name: source
+          url: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/valkey
+    apiVersion: v2
+    appVersion: 9.1.2
+    created: "2026-10-11T01:59:59.990586371Z"
+    dependencies:
+    - name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: 0.12.0
+    description: Valkey chart with preconfigured settings
+    digest: 98a55b5aa565d6de857f29536d4392197229c32ec619f28cff2c26b4a3da7afb
+    home: https://gitea.alexlebens.dev/alexlebens/helm-charts/src/branch/main/charts/valkey
+    icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/valkey.png
+    keywords:
+    - valkey
+    - redis-compatible
+    maintainers:
+    - name: alexlebens
+    name: valkey
+    sources:
+    - https://gitea.alexlebens.dev/alexlebens/helm-charts
+    - https://github.com/valkey-io/valkey
+    - https://github.com/oliver006/redis_exporter
+    - https://hub.docker.com/r/valkey/valkey
+    - https://github.com/oliver006/redis_exporter/pkgs/container/redis_exporter
+    - https://github.com/valkey-io/valkey-helm
+    urls:
+    - https://github.com/alexlebens/helm-charts/releases/download/valkey-1.9.1/valkey-1.9.1.tgz
+    version: 1.9.1
+generated: "2026-10-11T01:59:59.991213191Z"
