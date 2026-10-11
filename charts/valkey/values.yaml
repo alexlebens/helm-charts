@@ -7,7 +7,7 @@ valkey:
   resources:
     requests:
       cpu: 10m
-      memory: 20Mi
+      memory: 30Mi
   initResources:
     requests:
       cpu: 10m
