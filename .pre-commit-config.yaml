@@ -47,4 +47,4 @@ repos:
         exclude: "^charts/.*/(templates|prometheus_rules|README\\.md).*$"
         language: node
         additional_dependencies:
-          - prettier@3.9.9
+          - prettier@3.9.10
