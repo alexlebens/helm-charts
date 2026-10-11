@@ -59,10 +59,8 @@ cluster:
   # See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/
   resources:
     requests:
-      memory: 512Mi
-      cpu: 50m
-    limits:
-      hugepages-2Mi: 256Mi
+      cpu: 25m
+      memory: 256Mi
 
   priorityClassName: ""
 
@@ -151,7 +149,7 @@ cluster:
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters:
-      shared_buffers: 512MB
+      shared_buffers: 128MB
       max_slot_wal_keep_size: 2000MB
       hot_standby_feedback: "on"
 
