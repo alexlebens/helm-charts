@@ -1,6 +1,6 @@
 # postgres-cluster
 
-![Version: 8.7.0](https://img.shields.io/badge/Version-8.7.0-informational?style=flat-square) ![AppVersion: v1.30.1](https://img.shields.io/badge/AppVersion-v1.30.1-informational?style=flat-square)
+![Version: 8.7.1](https://img.shields.io/badge/Version-8.7.1-informational?style=flat-square) ![AppVersion: v1.30.1](https://img.shields.io/badge/AppVersion-v1.30.1-informational?style=flat-square)
 
 Cloudnative-pg Cluster
 
