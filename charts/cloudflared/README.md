@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 4.7.0](https://img.shields.io/badge/Version-4.7.0-informational?style=flat-square) ![AppVersion: 2026.10.0](https://img.shields.io/badge/AppVersion-2026.10.0-informational?style=flat-square)
+![Version: 4.8.0](https://img.shields.io/badge/Version-4.8.0-informational?style=flat-square) ![AppVersion: 2026.10.0](https://img.shields.io/badge/AppVersion-2026.10.0-informational?style=flat-square)
 
 Cloudflared Tunnel
 
@@ -47,7 +47,7 @@ Cloudflared Tunnel
 | probes | object | `{"liveness":{"enabled":true},"readiness":{"enabled":true}}` | Probes configuration |
 | protocol | string | `"auto"` | Protocol - Available values are auto, http2, and quic. |
 | replicas | int | `2` | Number of replicas for high availability (Cloudflare recommends at least 2) |
-| resources | object | `{"requests":{"cpu":"1m","memory":"20Mi"}}` | Default resources |
+| resources | object | `{"requests":{"cpu":"5m","memory":"30Mi"}}` | Default resources |
 | secret | object | `{"existingSecret":{"key":"cf-tunnel-token","name":"cloudflared-secret"},"externalSecret":{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"openbao","path":"/cloudflare/tunnels","property":"token"}}}` | Secret configuration |
 | secret.existingSecret | object | `{"key":"cf-tunnel-token","name":"cloudflared-secret"}` | Name of existing secret that contains Cloudflare token |
 | secret.externalSecret | object | `{"additionalLabels":{},"enabled":true,"nameOverride":"","store":{"name":"openbao","path":"/cloudflare/tunnels","property":"token"}}` | External Secret configuration |
