@@ -45,4 +45,4 @@ tests:
           value: 10m
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
-          value: 20Mi
+          value: 30Mi
