@@ -14,7 +14,7 @@ on:
       - "charts/**"
 
 env:
-  HELM_VERSION: "v4.3.0"
+  HELM_VERSION: "v4.3.1"
 
 jobs:
   release:
