@@ -18,7 +18,7 @@ on:
         required: false
 
 env:
-  HELM_VERSION: "v4.3.0"
+  HELM_VERSION: "v4.3.1"
   YQ_VERSION: "v4.54.1"
 
 jobs:
