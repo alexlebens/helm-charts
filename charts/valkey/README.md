@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 1.9.1](https://img.shields.io/badge/Version-1.9.1-informational?style=flat-square) ![AppVersion: 9.1.2](https://img.shields.io/badge/AppVersion-9.1.2-informational?style=flat-square)
+![Version: 1.11.0](https://img.shields.io/badge/Version-1.11.0-informational?style=flat-square) ![AppVersion: 9.1.2](https://img.shields.io/badge/AppVersion-9.1.2-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -44,7 +44,7 @@ Valkey chart with preconfigured settings
 | valkey.metrics.enabled | bool | `true` |  |
 | valkey.metrics.exporter.image.registry | string | `"ghcr.io"` |  |
 | valkey.metrics.exporter.image.repository | string | `"oliver006/redis_exporter"` |  |
-| valkey.metrics.exporter.image.tag | string | `"v1.93.0@sha256:6ca518a72f30f7f576ef92963de1b91d3c3f5fd3aeac949f878bfda183587820"` |  |
+| valkey.metrics.exporter.image.tag | string | `"v1.95.0@sha256:afb21407aba3df1b4010899f155fc6b1ba2026c97b725d72aca4019d772e7b6b"` |  |
 | valkey.metrics.exporter.resources.requests.cpu | string | `"1m"` |  |
 | valkey.metrics.exporter.resources.requests.memory | string | `"10M"` |  |
 | valkey.metrics.exporter.securityContext.allowPrivilegeEscalation | bool | `false` |  |
