@@ -160,7 +160,7 @@
     {
       "description": "Automerge minor, specific packages, without release age",
       "matchUpdateTypes": ["patch", "minor"],
-      "matchPackageNames": ["/(^|/|-)(renovate)/"],
+      "matchPackageNames": ["/(^|/|-)(cloudflare)/", "/(^|/|-)(renovate)/"],
       "addLabels": ["{{{datasource}}}", "automerge"],
       "automerge": true
     },
