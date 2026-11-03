@@ -1,0 +1,10 @@
+self-hosted-runner:
+  labels:
+    - ubuntu-latest-slim
+    - ubuntu-runner
+
+paths:
+  .gitea/workflows/*.ya?ml:
+    ignore:
+      - 'specifying action "builtin:checkout" in invalid format'
+      - 'undefined variable "gitea"'

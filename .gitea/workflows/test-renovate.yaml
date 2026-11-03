@@ -12,25 +12,19 @@ on:
       - ".pre-commit-config.yaml"
 
 env:
-  NODE_VERSION: "24"
   RENOVATE_VERSION: "44"
 
 jobs:
   validate-renovate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-slim
     steps:
       - name: Checkout
         uses: builtin:checkout
         with:
           fetch-depth: 1
 
-      - name: Set Up Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
       - name: Cache npm & Renovate
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-renovate-${{ env.RENOVATE_VERSION }}
@@ -41,7 +35,7 @@ jobs:
           npx -y --package "renovate@${{ env.RENOVATE_VERSION }}" renovate-config-validator --strict renovate.json
 
       - name: ntfy Failed
-        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        uses: niniyas/ntfy-action@96acac57fdc91d4c4f50b78486c1ed6f03f9f61c # master
         if: failure()
         with:
           url: "${{ secrets.NTFY_URL }}"

@@ -17,14 +17,10 @@ on:
         description: "Specific chart to release (leave empty for all)"
         required: false
 
-env:
-  HELM_VERSION: "v4.3.1"
-  YQ_VERSION: "v4.54.1"
-
 jobs:
   detect-charts:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-runner
     outputs:
       matrix: ${{ steps.detect-charts.outputs.matrix }}
     steps:
@@ -47,7 +43,7 @@ jobs:
       needs.detect-charts.result == 'success' &&
       needs.detect-charts.outputs.matrix != '[]' &&
       needs.detect-charts.outputs.matrix != ''
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-runner
     strategy:
       fail-fast: false
       matrix:
@@ -57,12 +53,6 @@ jobs:
         uses: builtin:checkout
         with:
           fetch-depth: 1
-
-      - name: Set Up Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
-        with:
-          token: ${{ secrets.GITEA_TOKEN }}
-          version: ${{ env.HELM_VERSION }}
 
       - name: Package & Push Helm Chart
         env:
