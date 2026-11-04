@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BIN_DIR="${HOME}/.local/bin"
 SCHEMA_DIR="${HOME}/.schemas"
 
-mkdir -p "${BIN_DIR}" "${SCHEMA_DIR}"
+mkdir -p "${SCHEMA_DIR}"
 
-if [ ! -f "${BIN_DIR}/openapi2jsonschema.py" ]; then
-  echo ">> Downloading openapi2jsonschema.py ..."
-  wget -qO "${BIN_DIR}/openapi2jsonschema.py" "https://raw.githubusercontent.com/yannh/kubeconform/master/scripts/openapi2jsonschema.py"
-  chmod +x "${BIN_DIR}/openapi2jsonschema.py"
+if ! command -v openapi2jsonschema.py >/dev/null 2>&1; then
+  echo "Error: openapi2jsonschema.py is required on PATH." >&2
+  exit 1
 fi
 
 echo ">> Downloading CRD definitions ..."
@@ -46,7 +44,7 @@ wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/co
 
 echo ">> Formatting CRD schemas into JSON ..."
 export FILENAME_FORMAT='{kind}_{version}'
-python3 "${BIN_DIR}/openapi2jsonschema.py" ./*.yaml
+openapi2jsonschema.py ./*.yaml
 
 mv ./*.json "${SCHEMA_DIR}/"
 
