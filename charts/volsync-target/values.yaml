@@ -172,7 +172,7 @@ c:
     retain:
       hourly: 0
       daily: 0
-      weekly: 12
+      weekly: 6
       monthly: 0
       yearly: 0
     copyMethod: Snapshot
@@ -225,7 +225,7 @@ d:
     retain:
       hourly: 0
       daily: 0
-      weekly: 12
+      weekly: 6
       monthly: 0
       yearly: 0
     copyMethod: Snapshot
