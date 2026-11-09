@@ -11,12 +11,9 @@ on:
       - "charts/**/prometheus_rules/**"
       - "charts/**/README.md"
 
-env:
-  PRETTIER_VERSION: "3.9.10"
-
 jobs:
   prettier:
-    runs-on: ubuntu-latest-slim
+    runs-on: ubuntu-runner
     steps:
       - name: Checkout
         uses: builtin:checkout
@@ -24,4 +21,4 @@ jobs:
           fetch-depth: 1
 
       - name: Check Prettier
-        run: npx -y prettier@${{ env.PRETTIER_VERSION }} --check .
+        run: mise exec -- prettier --check .

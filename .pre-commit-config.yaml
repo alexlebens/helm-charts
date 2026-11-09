@@ -11,40 +11,34 @@ repos:
           - --multi
       - id: check-merge-conflict
       - id: check-json
-  - repo: https://github.com/norwoodj/helm-docs
-    rev: v1.14.2
+  - repo: local
     hooks:
       - id: helm-docs
+        name: helm-docs
+        entry: mise exec -- helm-docs
         args:
           - --chart-search-root=charts
           - --template-files=./_templates.gotmpl
           - --template-files=README.md.gotmpl
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.11.0.1-1
-    hooks:
+        language: system
+        pass_filenames: false
       - id: shellcheck
-        language_version: /opt/homebrew/opt/python@3.13/bin/python3.13
-        files: ^\.gitea/scripts/.*\.sh$
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.12
-    hooks:
+        name: shellcheck
+        entry: mise exec -- shellcheck
+        language: system
+        files: ^(\.gitea/scripts/.*\.sh|charts/.*/scripts/.*\.sh|\.mise/(lib/.*\.sh|tasks/.*))$
       - id: actionlint
+        name: actionlint
+        entry: mise exec -- actionlint
+        language: system
         files: ^\.gitea/workflows/.*\.ya?ml$
         args:
           - -ignore
           - 'specifying action "builtin:checkout" in invalid format'
           - -ignore
           - 'undefined variable "gitea"'
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.30
-    hooks:
-      - id: helmlint
-  - repo: local
-    hooks:
       - id: prettier
         name: prettier
-        entry: prettier --write --ignore-unknown --ignore-path .prettierignore
+        entry: mise exec -- prettier --write --ignore-unknown --ignore-path .prettierignore
         exclude: "^charts/.*/(templates|prometheus_rules|README\\.md).*$"
-        language: node
-        additional_dependencies:
-          - prettier@3.9.10
+        language: system
