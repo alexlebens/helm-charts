@@ -1,5 +1,3 @@
-# NOTE: `exclude` is intentionally omitted; non-empty values currently render invalid YAML
-# (nested quotes in templates/cron-job.yaml and templates/job.yaml).
 # Exercises every backup tier, immediate jobs, website and CORS configuration.
 bucketName: ci-bucket
 website:
@@ -21,6 +19,8 @@ backups:
   c:
     enabled: true
     mode: copy
+    exclude:
+      - "*.tmp"
     destination:
       bucketName: ci-dest-c
   d:

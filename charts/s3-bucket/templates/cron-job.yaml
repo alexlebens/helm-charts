@@ -6,6 +6,10 @@
 {{- end }}
 {{- if and (ne $backupName "image") $backupConfig.enabled $cronJobEnabled }}
 {{- $destination := $backupConfig.destination | default dict }}
+{{- $excludeFlags := "" }}
+{{- range ($backupConfig.exclude | default list) }}
+{{- $excludeFlags = printf "%s--exclude=%s " $excludeFlags . }}
+{{- end }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -81,7 +85,7 @@ spec:
                 - name: JOB_TYPE_TITLE
                   value: ""
                 - name: RCLONE_EXCLUDE_FLAGS
-                  value: "{{ range ($backupConfig.exclude | default list) }}--exclude {{ . | quote }} {{ end }}"
+                  value: {{ $excludeFlags | trim | quote }}
                 - name: NTFY_ENABLED
                   value: {{ $.Values.backupConfig.ntfy.enabled | quote }}
                 - name: PRUNE_ENABLED

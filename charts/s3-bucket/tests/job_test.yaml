@@ -22,3 +22,18 @@ tests:
       - equal:
           path: metadata.namespace
           value: ns
+
+  - it: should render exclude flags as rclone arguments
+    set:
+      backups:
+        a:
+          enabled: true
+          immediate: true
+          exclude:
+            - "*.tmp"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RCLONE_EXCLUDE_FLAGS
+            value: "--exclude=*.tmp"

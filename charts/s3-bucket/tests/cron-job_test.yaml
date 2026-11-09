@@ -91,17 +91,17 @@ tests:
           path: spec.jobTemplate.spec.template.spec.containers[0].image
           value: example/rclone:9.9.9
 
-  # Known chart bug: `{{ . | quote }}` inside a double-quoted YAML value produces invalid YAML.
-  # Remove `skip` once RCLONE_EXCLUDE_FLAGS is rendered safely.
-  - it: should render exclude flags
-    skip:
-      reason: non-empty backups.<tier>.exclude renders invalid YAML
+  - it: should render exclude flags as rclone arguments
     set:
       backups:
         a:
           enabled: true
           exclude:
             - "*.tmp"
+            - cache/**
     asserts:
-      - hasDocuments:
-          count: 1
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: RCLONE_EXCLUDE_FLAGS
+            value: "--exclude=*.tmp --exclude=cache/**"
