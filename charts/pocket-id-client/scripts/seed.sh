@@ -1,5 +1,5 @@
 #!/bin/sh
-set -ec
+set -e
 
 export HOME=/home/vault
 export BAO_ADDR="${VAULT_ADDR}"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -eo pipefail
 
 send_ntfy() {
@@ -54,6 +54,7 @@ if [ "${PRUNE_ENABLED}" = "true" ]; then
 
   if [ "${NTFY_ENABLED}" = "true" ]; then
     STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
+    # shellcheck disable=SC2001
     FILES_PRUNED=$(echo "${STATS}" | sed 's/.*Deleted:[ \t]*//')
     if [ -z "${FILES_PRUNED}" ]; then FILES_PRUNED="0 files"; fi
 
