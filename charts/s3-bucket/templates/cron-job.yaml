@@ -42,6 +42,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumes:
+            - name: scripts
+              configMap:
+                name: {{ include "s3Bucket.cronJobName" $ }}-scripts
+                defaultMode: 0755
             - name: tmp
               emptyDir: {}
           containers:
@@ -56,83 +60,34 @@ spec:
                 {{- toYaml . | nindent 16 }}
               {{- end }}
               volumeMounts:
+                - name: scripts
+                  mountPath: /scripts/backup.sh
+                  subPath: backup.sh
+                  readOnly: true
                 - name: tmp
                   mountPath: /tmp
               command:
                 - /bin/sh
-                - -c
-              args:
-                - |
-                  set -o pipefail
-
-                  # --- {{ ($backupConfig.mode | default "sync") | title }} Phase ---
-                  rclone {{ $backupConfig.mode | default "sync" }} \
-                    "src:{{ include "s3Bucket.name" $ }}" \
-                    "dest:{{ $destination.bucketName | default (include "s3Bucket.name" $) }}" \
-                    --s3-no-check-bucket \
-                    {{- range ($backupConfig.exclude | default list) }}
-                    --exclude {{ . | quote }} \
-                    {{- end }}
-                    --verbose 2>&1 | tee /tmp/rclone-sync.log
-
-                  sync_res=$?
-
-                  {{- if $.Values.backupConfig.ntfy.enabled }}
-                  STATS=$(grep "Transferred:" /tmp/rclone-sync.log | tail -n 2)
-                  DATA_TRANS=$(echo "$STATS" | head -n 1 | sed 's/.*Transferred:[ \t]*//')
-                  if [ -z "$DATA_TRANS" ]; then DATA_TRANS="Unknown"; fi
-
-                  if [ $sync_res -eq 0 ]; then
-                    if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: ✅ Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} transferred: $DATA_TRANS" "$NTFY_URL"
-                    else
-                      wget -qO- --header "Title: ✅ Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} transferred: $DATA_TRANS" "$NTFY_URL"
-                    fi
-                  else
-                    if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: 🚨 Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, transferred: $DATA_TRANS" "$NTFY_URL"
-                    else
-                      wget -qO- --header "Title: 🚨 Backup - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, transferred: $DATA_TRANS" "$NTFY_URL"
-                    fi
-                    exit $sync_res
-                  fi
-                  {{- else }}
-                  if [ $sync_res -ne 0 ]; then exit $sync_res; fi
-                  {{- end }}
-
-                  {{- if and $backupConfig.prune $backupConfig.prune.enabled }}
-
-                  # --- Prune Phase ---
-                  rclone delete \
-                    "dest:{{ $destination.bucketName | default (include "s3Bucket.name" $) }}" \
-                    --min-age {{ $backupConfig.prune.ageToPrune | default "30d" | quote }} \
-                    --verbose 2>&1 | tee /tmp/rclone-prune.log
-
-                  prune_res=$?
-
-                  {{- if $.Values.backupConfig.ntfy.enabled }}
-                  STATS=$(grep "Deleted:" /tmp/rclone-prune.log | tail -n 1)
-                  FILES_PRUNED=$(echo "$STATS" | sed 's/.*Deleted:[ \t]*//')
-                  if [ -z "$FILES_PRUNED" ]; then FILES_PRUNED="0 files"; fi
-
-                  if [ $prune_res -eq 0 ]; then
-                    if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: ✅ Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} pruned: $FILES_PRUNED" "$NTFY_URL"
-                    else
-                      wget -qO- --header "Title: ✅ Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 3" --post-data "Job for {{ $backupName }} pruned: $FILES_PRUNED" "$NTFY_URL"
-                    fi
-                  else
-                    if [ -n "${NTFY_TOKEN:-}" ]; then
-                      wget -qO- --header "Authorization: Bearer $NTFY_TOKEN" --header "Title: 🚨 Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, pruned: $FILES_PRUNED" "$NTFY_URL"
-                    else
-                      wget -qO- --header "Title: 🚨 Prune - {{ include "s3Bucket.name" $ }} - {{ $backupName }}" --header "Priority: 4" --post-data "Job for {{ $backupName }} failed, pruned: $FILES_PRUNED" "$NTFY_URL"
-                    fi
-                  fi
-                  {{- end }}
-
-                  exit $prune_res
-                  {{- end }}
+                - /scripts/backup.sh
               env:
+                - name: MODE
+                  value: {{ $backupConfig.mode | default "sync" | quote }}
+                - name: SRC_BUCKET
+                  value: {{ include "s3Bucket.name" $ | quote }}
+                - name: DEST_BUCKET
+                  value: {{ $destination.bucketName | default (include "s3Bucket.name" $) | quote }}
+                - name: BACKUP_NAME
+                  value: {{ $backupName | quote }}
+                - name: JOB_TYPE_TITLE
+                  value: ""
+                - name: RCLONE_EXCLUDE_FLAGS
+                  value: "{{ range ($backupConfig.exclude | default list) }}--exclude {{ . | quote }} {{ end }}"
+                - name: NTFY_ENABLED
+                  value: {{ $.Values.backupConfig.ntfy.enabled | quote }}
+                - name: PRUNE_ENABLED
+                  value: {{ and $backupConfig.prune $backupConfig.prune.enabled | default false | quote }}
+                - name: PRUNE_AGE
+                  value: {{ and $backupConfig.prune $backupConfig.prune.ageToPrune | default "30d" | quote }}
                 - name: RCLONE_CONFIG_SRC_TYPE
                   value: "s3"
                 - name: RCLONE_CONFIG_SRC_PROVIDER

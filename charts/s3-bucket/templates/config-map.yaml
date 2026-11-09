@@ -1,0 +1,20 @@
+{{- $anyBackupEnabled := false }}
+{{- range $backupName, $backupConfig := .Values.backups }}
+{{- if and (ne $backupName "image") $backupConfig.enabled }}
+{{- $anyBackupEnabled = true }}
+{{- end }}
+{{- end }}
+{{- if $anyBackupEnabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "s3Bucket.cronJobName" . }}-scripts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "s3Bucket.cronJobName" . }}-scripts
+    {{- include "s3Bucket.labels" . | nindent 4 }}
+data:
+  backup.sh: |-
+{{ .Files.Get "scripts/backup.sh" | indent 4 }}
+{{- end }}

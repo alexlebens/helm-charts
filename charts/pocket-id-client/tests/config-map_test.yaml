@@ -1,0 +1,43 @@
+suite: test Seed Job ConfigMap
+templates:
+  - config-map.yaml
+tests:
+  - it: should not render ConfigMap by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render ConfigMap when seedJob is enabled
+    set:
+      seedJob:
+        enabled: true
+    release:
+      name: my-app
+      namespace: my-namespace
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - equal:
+          path: metadata.name
+          value: my-app-seed-scripts
+      - equal:
+          path: metadata.namespace
+          value: my-namespace
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: pre-install,pre-upgrade
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: before-hook-creation,hook-succeeded
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: "-10"
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/hook"]
+          value: PreSync
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/hook-delete-policy"]
+          value: BeforeHookCreation,HookSucceeded
+      - matchRegex:
+          path: data["seed.sh"]
+          pattern: "bao login -method=kubernetes"

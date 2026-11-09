@@ -146,6 +146,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "s3Bucket.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "s3Bucket.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- end }}

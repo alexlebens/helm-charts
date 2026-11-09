@@ -38,50 +38,25 @@ spec:
           env:
             - name: HOME
               value: /home/vault
+            - name: VAULT_ADDR
+              value: "{{ .Values.seedJob.vaultAddr }}"
+            - name: VAULT_ROLE
+              value: "{{ .Values.seedJob.vaultRole }}"
+            - name: AUTH_PATH
+              value: "{{ .Values.seedJob.authPath }}"
+            - name: VAULT_MOUNT
+              value: "{{ .Values.seedJob.vaultMount }}"
+            - name: SECRET_PATH
+              value: "{{ include "pocketIdClient.secretPath" . }}"
+            - name: CLIENT_ID
+              value: "{{ include "pocketIdClient.clientID" . }}"
+            - name: MODE
+              value: "{{ .Values.mode }}"
+            - name: APP_NAME
+              value: "{{ include "pocketIdClient.name" . }}"
           command:
             - /bin/sh
-            - -ec
-            - |
-              export HOME=/home/vault
-              export BAO_ADDR="{{ .Values.seedJob.vaultAddr }}"
-
-              echo ">> Authenticating to OpenBao via Kubernetes auth..."
-              bao login -method=kubernetes -no-print \
-                role="{{ .Values.seedJob.vaultRole }}" \
-                mount_path="{{ .Values.seedJob.authPath }}" \
-                jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
-
-              SECRET_PATH="{{ include "pocketIdClient.secretPath" . }}"
-              SECRET_PATH="${SECRET_PATH#/}"
-              echo ">> Checking if secret exists at: ${SECRET_PATH}"
-
-              if bao kv get -mount="{{ .Values.seedJob.vaultMount }}" "${SECRET_PATH}" > /dev/null 2>&1; then
-                echo ">> Secret already exists at ${SECRET_PATH}, skipping seed."
-                exit 0
-              fi
-
-              echo ">> Secret not found, generating new credentials..."
-
-              # Generate secrets using OpenBao's server-side random generation
-              CLIENT_ID="{{ include "pocketIdClient.clientID" . }}"
-              CLIENT_SECRET=$(bao write -f -field=random_bytes sys/tools/random/48 format=hex)
-              {{- if eq .Values.mode "oauth" }}
-              COOKIE_SECRET=$(bao write -f -field=random_bytes sys/tools/random/16 format=hex)
-              {{- end }}
-
-              echo ">> Writing secrets to ${SECRET_PATH}..."
-              {{- if eq .Values.mode "oauth" }}
-              bao kv put -mount="{{ .Values.seedJob.vaultMount }}" "${SECRET_PATH}" \
-                clientId="${CLIENT_ID}" \
-                clientSecret="${CLIENT_SECRET}" \
-                cookie="${COOKIE_SECRET}"
-              {{- else }}
-              bao kv put -mount="{{ .Values.seedJob.vaultMount }}" "${SECRET_PATH}" \
-                clientId="${CLIENT_ID}" \
-                clientSecret="${CLIENT_SECRET}"
-              {{- end }}
-
-              echo ">> Seed complete for {{ include "pocketIdClient.name" . }}"
+            - /scripts/seed.sh
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
@@ -93,11 +68,19 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
+            - name: scripts
+              mountPath: /scripts/seed.sh
+              subPath: seed.sh
+              readOnly: true
             - name: tmp
               mountPath: /tmp
             - name: home
               mountPath: /home/vault
       volumes:
+        - name: scripts
+          configMap:
+            name: {{ include "pocketIdClient.name" . }}-seed-scripts
+            defaultMode: 0755
         - name: tmp
           emptyDir:
             medium: Memory

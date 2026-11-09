@@ -1,0 +1,20 @@
+{{- if .Values.seedJob.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pocketIdClient.name" . }}-seed-scripts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "pocketIdClient.name" . }}-seed-scripts
+    {{- include "pocketIdClient.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-10"
+    "argocd.argoproj.io/hook": PreSync
+    "argocd.argoproj.io/hook-delete-policy": BeforeHookCreation,HookSucceeded
+data:
+  seed.sh: |-
+{{ .Files.Get "scripts/seed.sh" | indent 4 }}
+{{- end }}
