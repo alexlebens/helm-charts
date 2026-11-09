@@ -96,13 +96,26 @@ repair:
   backoffLimit: 0
 
   # -- Job resources
-  resources: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
 
   # -- Job pod security context
-  podSecurityContext: {}
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    seccompProfile:
+      type: RuntimeDefault
 
   # -- Job container security context
-  securityContext: {}
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
 
 # -- Prometheus Rule
 prometheusRule:

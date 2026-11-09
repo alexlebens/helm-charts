@@ -1,6 +1,6 @@
 # volsync-target
 
-![Version: 4.1.1](https://img.shields.io/badge/Version-4.1.1-informational?style=flat-square) ![AppVersion: 0.17.0](https://img.shields.io/badge/AppVersion-0.17.0-informational?style=flat-square)
+![Version: 4.1.2](https://img.shields.io/badge/Version-4.1.2-informational?style=flat-square) ![AppVersion: 0.17.0](https://img.shields.io/badge/AppVersion-0.17.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
 
@@ -94,16 +94,16 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | prometheusRule.backupDelayed | object | `{"enabled":true,"maxSyncLag":""}` | Alert on delayed/stale backups based on cron schedule |
 | prometheusRule.backupDelayed.maxSyncLag | string | `""` | Override max sync lag threshold in seconds (auto-computed from cron schedule if unset) |
 | pvcTarget | string | `"data"` | Name of the PVC target |
-| repair | object | `{"backoffLimit":0,"check":true,"extraArgs":[],"image":{"pullPolicy":"IfNotPresent","repository":"docker.io/restic/restic","tag":"0.19.1"},"podSecurityContext":{},"readDataSubset":"","repairIndex":true,"repairSnapshots":false,"resources":{},"securityContext":{},"ttlSecondsAfterFinished":86400,"unlock":true}` | On demand restic repair Job (defaults shared by all tiers; enable per tier under `<tier>.repair`) |
+| repair | object | `{"backoffLimit":0,"check":true,"extraArgs":[],"image":{"pullPolicy":"IfNotPresent","repository":"docker.io/restic/restic","tag":"0.19.1"},"podSecurityContext":{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532,"seccompProfile":{"type":"RuntimeDefault"}},"readDataSubset":"","repairIndex":true,"repairSnapshots":false,"resources":{"requests":{"cpu":"50m","memory":"128Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true},"ttlSecondsAfterFinished":86400,"unlock":true}` | On demand restic repair Job (defaults shared by all tiers; enable per tier under `<tier>.repair`) |
 | repair.backoffLimit | int | `0` | Job backoff limit |
 | repair.check | bool | `true` | Run `restic check` after repair |
 | repair.extraArgs | list | `[]` | Extra arguments appended to every restic command (e.g. ["--verbose"]) |
 | repair.image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.io/restic/restic","tag":"0.19.1"}` | Image used to run restic |
-| repair.podSecurityContext | object | `{}` | Job pod security context |
+| repair.podSecurityContext | object | `{"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532,"seccompProfile":{"type":"RuntimeDefault"}}` | Job pod security context |
 | repair.readDataSubset | string | `""` | Optional `--read-data-subset` for restic check (e.g. "10%"); empty checks structure only |
 | repair.repairIndex | bool | `true` | Run `restic repair index` (rebuilds index from pack files) |
-| repair.resources | object | `{}` | Job resources |
-| repair.securityContext | object | `{}` | Job container security context |
+| repair.resources | object | `{"requests":{"cpu":"50m","memory":"128Mi"}}` | Job resources |
+| repair.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | Job container security context |
 | repair.ttlSecondsAfterFinished | int | `86400` | Seconds before the finished Job is garbage collected |
 | repair.unlock | bool | `true` | Run `restic unlock` before repairing |
 | restore | object | `{"accessModes":[],"cacheAccessModes":[],"cacheCapacity":"1Gi","cacheStorageClassName":"","capacity":"","copyMethod":"Direct","destinationPVC":"","moverSecurityContext":{},"previous":"","restoreAsOf":"","storageClassName":"ceph-block","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Restore from backup via ReplicationDestination (defaults shared by all tiers; override per tier under `<tier>.restore`) |

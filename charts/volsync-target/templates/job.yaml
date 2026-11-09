@@ -32,6 +32,8 @@ spec:
           configMap:
             name: {{ include "volsync.name" $ }}-scripts
             defaultMode: 0755
+        - name: tmp
+          emptyDir: {}
       containers:
         - name: restic-repair
           image: {{ $r.image.repository }}:{{ $r.image.tag }}
@@ -52,6 +54,10 @@ spec:
               value: {{ $r.readDataSubset | quote }}
             - name: EXTRA_ARGS
               value: {{ $args | quote }}
+            - name: TMPDIR
+              value: /tmp
+            - name: RESTIC_CACHE_DIR
+              value: /tmp/restic-cache
           command:
             - /bin/sh
             - /scripts/repair.sh
@@ -60,6 +66,8 @@ spec:
               mountPath: /scripts/repair.sh
               subPath: repair.sh
               readOnly: true
+            - name: tmp
+              mountPath: /tmp
           {{- with $r.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}

@@ -9,7 +9,7 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-a
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.1
+        helm.sh/chart: volsync-target-4.1.2
       name: data-backup-source-a
       namespace: ns
     spec:
@@ -39,7 +39,7 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-b
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.1
+        helm.sh/chart: volsync-target-4.1.2
       name: data-backup-source-b
       namespace: ns
     spec:
@@ -69,7 +69,7 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-c
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.1
+        helm.sh/chart: volsync-target-4.1.2
       name: data-backup-source-c
       namespace: ns
     spec:
@@ -99,7 +99,7 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-d
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.1
+        helm.sh/chart: volsync-target-4.1.2
       name: data-backup-source-d
       namespace: ns
     spec:
