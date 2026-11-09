@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#MISE description="Lint a Helm chart (add repos, build dependencies, helm lint, helm unittest)"
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
+
+CHART="${1:-}"
+
+if [ -z "${CHART}" ] || [ "${CHART}" = "-h" ] || [ "${CHART}" = "--help" ]; then
+  echo "Usage: mise run lint:chart <chart-name>"
+  echo "Adds repos, builds dependencies, runs helm lint and unittests."
+  exit 0
+fi
+
+CHART_DIR="${REPO_ROOT}/charts/${CHART}"
+if [ ! -d "${CHART_DIR}" ]; then
+  log_fatal "Chart directory '${CHART_DIR}' not found."
+fi
+
+# Add repositories
+"${REPO_ROOT}/.mise/lib/helm-add-repos.sh" --main-dir "${REPO_ROOT}" --chart "${CHART}"
+
+# Build chart dependencies
+log_step "Building dependencies for ${CHART}"
+helm dependency build "${CHART_DIR}" --skip-refresh
+
+# Lint chart
+log_step "Linting ${CHART}"
+helm lint "${CHART_DIR}" --namespace "${CHART}"
+
+# Run helm unittest if present
+if [ -d "${CHART_DIR}/tests" ]; then
+  log_step "Running helm unittest for ${CHART}"
+  (cd "${CHART_DIR}" && helm unittest .)
+fi
+
+log_success "Lint and unittests passed for ${CHART}!"

@@ -1,4 +1,4 @@
-name: test-bash-scripts
+name: test-mise
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,12 +7,12 @@ concurrency:
 on:
   pull_request:
     paths:
-      - ".gitea/scripts/*.sh"
-      - ".gitea/workflows/test-bash-scripts.yaml"
-      - ".pre-commit-config.yaml"
+      - ".mise/**"
+      - "mise.toml"
+      - ".gitea/workflows/test-mise.yaml"
 
 jobs:
-  lint-bash:
+  test-mise:
     runs-on: ubuntu-runner
     steps:
       - name: Checkout
@@ -20,8 +20,19 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: ShellCheck Bash Scripts
-        run: .gitea/scripts/lint-bash-scripts.sh
+      - name: Setup BATS
+        uses: bats-core/bats-action@3566550e0f594451ac0f58fcbfdeca93aa29a45e # 4.1.0
+        with:
+          support-path: ${{ github.workspace }}/.mise/tests/bash/test_helper/bats-support
+          assert-path: ${{ github.workspace }}/.mise/tests/bash/test_helper/bats-assert
+          detik-install: false
+          file-install: false
+
+      - name: Setup Tools (mise)
+        run: mise install
+
+      - name: Run Mise BATS Tests
+        run: mise run test
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -29,11 +40,11 @@ jobs:
         with:
           url: "${{ secrets.NTFY_URL }}"
           topic: "${{ vars.NTFY_TOPIC }}"
-          title: "🚨 Bash Script Linting Failure"
+          title: "🚨 Helm Charts - Mise Script Test Failure"
           priority: 4
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
-          details: "ShellCheck failed for bash scripts in .gitea/scripts/."
+          details: "BATS tests failed for .mise tasks and libraries in ${{ github.repository }}."
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions:
             '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository

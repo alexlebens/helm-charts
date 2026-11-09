@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
+#MISE description="Package and push a Helm chart to Harbor OCI and Gitea ChartMuseum"
 set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
 
 CHART=""
 HARBOR_HOST="${HARBOR_HOST:-}"
@@ -16,39 +22,39 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     -h|--help)
-      echo "Usage: $0 --chart <chart-name>"
+      echo "Usage: mise run gitea:release-chart --chart <chart-name>"
       exit 0
       ;;
     *)
-      echo "Unknown argument: $1" >&2
-      exit 1
+      if [ -z "${CHART}" ]; then
+        CHART="$1"
+        shift
+      else
+        log_fatal "Unknown argument: $1"
+      fi
       ;;
   esac
 done
 
 if [ -z "${CHART}" ]; then
-  echo "Error: --chart is required." >&2
-  exit 1
+  log_fatal "--chart <name> is required."
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-CHART_PATH="charts/${CHART}"
+CHART_PATH="${REPO_ROOT}/charts/${CHART}"
 if [ ! -f "${CHART_PATH}/Chart.yaml" ]; then
-  echo "Error: ${CHART_PATH}/Chart.yaml does not exist." >&2
-  exit 1
+  log_fatal "${CHART_PATH}/Chart.yaml does not exist."
 fi
 
 # Add dependency repositories
-"${SCRIPT_DIR}/helm-add-repos.sh" --chart "${CHART}"
+"${REPO_ROOT}/.mise/lib/helm-add-repos.sh" --main-dir "${REPO_ROOT}" --chart "${CHART}"
 
-echo ">> Processing release for chart: ${CHART}"
+log_step "Processing release for chart: ${CHART}"
 cd "${CHART_PATH}"
 
-echo ">> Building helm dependencies for ${CHART} ..."
+log_info "Building helm dependencies for ${CHART} ..."
 helm dependency build . --skip-refresh --debug
 
-echo ">> Packaging chart: ${CHART} ..."
+log_info "Packaging chart: ${CHART} ..."
 PACKAGE_OUTPUT=$(helm package .)
 RAW_PACKAGE_PATH=$(echo "${PACKAGE_OUTPUT}" | awk '{print $NF}')
 if [[ "${RAW_PACKAGE_PATH}" = /* ]]; then
@@ -60,40 +66,34 @@ fi
 CHART_VERSION=$(yq '.version' Chart.yaml)
 CHART_NAME=$(yq '.name' Chart.yaml)
 
-cd - > /dev/null
+cd "${REPO_ROOT}"
 
 if [ ! -f "${PACKAGE_PATH}" ]; then
-  echo "Error: Packaged file not found at ${PACKAGE_PATH}" >&2
-  exit 1
+  log_fatal "Packaged file not found at ${PACKAGE_PATH}"
 fi
 
-echo ">> Successfully packaged ${CHART_NAME} v${CHART_VERSION} at ${PACKAGE_PATH}"
+log_success "Packaged ${CHART_NAME} v${CHART_VERSION} at ${PACKAGE_PATH}"
 
 # Push to Harbor OCI Registry
 if [ -n "${HARBOR_HOST}" ] && [ -n "${HARBOR_SECRET}" ]; then
-  echo ">> Logging into Harbor (${HARBOR_HOST}) ..."
+  log_step "Logging into Harbor (${HARBOR_HOST})"
   echo "${HARBOR_SECRET}" | helm registry login "${HARBOR_HOST}" --username "${HARBOR_USER}" --password-stdin --debug
 
-  echo ">> Pushing chart to Harbor OCI ..."
+  log_step "Pushing chart to Harbor OCI"
   helm push "${PACKAGE_PATH}" "oci://${HARBOR_HOST}/helm-charts" --debug
 fi
 
 # Push to Gitea ChartMuseum Registry
 if [ -n "${GITEA_SERVER_URL}" ] && [ -n "${GIT_TOKEN}" ]; then
-  echo ">> Installing ChartMuseum plugin if not installed ..."
-  if ! helm plugin list | grep -q "cm-push"; then
-    helm plugin install https://github.com/chartmuseum/helm-push --verify=false --debug
-  fi
-
-  echo ">> Adding Gitea repository ..."
+  log_step "Adding Gitea repository ..."
   helm repo add --username "${GITEA_ACTOR}" --password "${GIT_TOKEN}" helm-charts "${GITEA_SERVER_URL}/api/packages/alexlebens/helm" --debug || true
 
-  echo ">> Pushing chart to Gitea ..."
+  log_step "Pushing chart to Gitea"
   helm cm-push "${PACKAGE_PATH}" helm-charts --debug
 fi
 
 # Generate release notes
-echo ">> Generating release notes ..."
+log_step "Generating release notes"
 RELEASE_NOTES_FILE="release_notes.md"
 echo "## What's Changed in \`${CHART_NAME}\` v${CHART_VERSION}" > "${RELEASE_NOTES_FILE}"
 echo "" >> "${RELEASE_NOTES_FILE}"
@@ -110,9 +110,7 @@ else
   git log "${LAST_TAG}..HEAD" --format="* %s (\`%h\`) - *%an*" -- "charts/${CHART_NAME}" >> "${RELEASE_NOTES_FILE}"
 fi
 
-echo ">> Generated ${RELEASE_NOTES_FILE}:"
 cat "${RELEASE_NOTES_FILE}"
-echo "----"
 
 # Export environment variables for subsequent workflow steps
 if [ -n "${GITHUB_ENV:-}" ]; then

@@ -20,8 +20,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Setup Tools (mise)
+        run: mise install
+
       - name: Lint Workflows (actionlint)
-        run: .gitea/scripts/lint-workflows.sh
+        run: mise run check:workflows
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master

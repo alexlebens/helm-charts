@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
+#MISE description="Validate rendered chart manifests with kubeconform against schemas"
 set -euo pipefail
 
-# Parse optional command-line flags
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
+
 CHARTS="${CHARTS:-}"
+SCHEMA_DIR="${SCHEMA_DIR:-${HOME}/.schemas}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -14,25 +20,29 @@ while [[ $# -gt 0 ]]; do
       CHARTS="$2"
       shift 2
       ;;
+    --schema-dir)
+      SCHEMA_DIR="$2"
+      shift 2
+      ;;
     -h|--help)
-      echo "Usage: $0 [--charts <charts>]"
+      echo "Usage: mise run validate:kubeconform [--chart <name>] [--charts <names>] [--schema-dir <dir>]"
       exit 0
       ;;
     *)
-      echo "Unknown argument: $1" >&2
-      exit 1
+      CHARTS="${CHARTS} $1"
+      shift
       ;;
   esac
 done
 
+CHARTS=$(echo "${CHARTS}" | xargs)
 if [ -z "${CHARTS}" ]; then
-  echo ">> No charts specified for Kubeconform validation. Skipping."
+  log_info "No charts specified for Kubeconform validation. Skipping."
   exit 0
 fi
 
-SCHEMA_DIR="${HOME}/.schemas"
-
-echo ">> Running kubeconform on changed charts ..."
+cd "${REPO_ROOT}"
+log_step "Running kubeconform on charts: ${CHARTS}"
 FAILED_CHARTS=""
 
 for CHART in ${CHARTS}; do
@@ -40,8 +50,7 @@ for CHART in ${CHARTS}; do
   if [ -f "${CHART_PATH}/Chart.yaml" ]; then
     (
       cd "${CHART_PATH}"
-      echo ""
-      echo ">> Running kubeconform for ${CHART} (default values) ..."
+      log_info "Validating ${CHART} (default values) ..."
       helm template . | kubeconform -strict -summary \
         -schema-location default \
         -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
@@ -49,7 +58,7 @@ for CHART in ${CHARTS}; do
 
       if ls ci/*.yaml 1> /dev/null 2>&1; then
         for values_file in ci/*.yaml; do
-          echo ">> Running kubeconform for ${CHART} (${values_file}) ..."
+          log_info "Validating ${CHART} (${values_file}) ..."
           helm template . -f "${values_file}" | kubeconform -strict -summary \
             -schema-location default \
             -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
@@ -63,14 +72,7 @@ for CHART in ${CHARTS}; do
 done
 
 if [ -n "${FAILED_CHARTS}" ]; then
-  echo ""
-  echo ">> Kubeconform failed for the following charts: ${FAILED_CHARTS}" >&2
-  if [ -n "${GITHUB_ENV:-}" ]; then
-    echo "FAILED_CHART=${FAILED_CHARTS}" >> "${GITHUB_ENV}"
-  fi
-  exit 1
+  log_fatal "Kubeconform failed for: ${FAILED_CHARTS}"
 fi
 
-echo ""
-echo ">> All charts passed Kubeconform validation."
-echo "----"
+log_success "All charts passed Kubeconform validation!"

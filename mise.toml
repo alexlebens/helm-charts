@@ -1,0 +1,53 @@
+[tools]
+actionlint = "1.7.12"
+"aqua:helm/chart-testing" = "3.15.0"
+bats = "1.14.0"
+crane = "0.22.1"
+helm = "4.3.1"
+jq = "1.8.2"
+kubeconform = "0.8.0"
+kubectl = "1.37.2"
+shellcheck = "0.11.0"
+yq = "4.54.2"
+
+# -- Helm Chart Testing & Validation
+[tasks."helm:plugins"]
+description = "Install required Helm plugins (cm-push, unittest)"
+run = ".mise/tasks/helm-plugins"
+
+[tasks."lint:chart"]
+description = "Lint a Helm chart (add repos, build dependencies, helm lint, helm unittest)"
+depends = ["helm:plugins"]
+run = ".mise/tasks/lint-chart"
+
+[tasks."test:chart"]
+description = "Run chart-testing ct lint against charts"
+run = ".mise/tasks/test-chart"
+
+[tasks."validate:kubeconform"]
+description = "Validate rendered chart manifests with kubeconform against schemas"
+run = ".mise/tasks/validate-kubeconform"
+
+[tasks."schemas:generate"]
+description = "Generate JSON schemas from upstream CRDs using openapi2jsonschema"
+run = ".mise/tasks/generate-schemas"
+
+# -- Workflow & Code Checks
+[tasks."check:workflows"]
+description = "Validate Gitea Actions workflow YAML files with actionlint"
+run = ".mise/tasks/check/workflows"
+
+# -- Gitea CI/CD Workflow Tasks
+[tasks."gitea:detect-charts"]
+description = "Detect changed or targeted Helm charts for CI testing and CD releasing (CI only)"
+run = ".mise/tasks/gitea/detect-charts"
+
+[tasks."gitea:release-chart"]
+description = "Package and push a Helm chart to Harbor OCI and Gitea ChartMuseum (CI only)"
+depends = ["helm:plugins"]
+run = ".mise/tasks/gitea/release-chart"
+
+# -- Testing
+[tasks.test]
+description = "Run Bats test suite for .mise tasks and libraries"
+run = "bats .mise/tests/bash/"

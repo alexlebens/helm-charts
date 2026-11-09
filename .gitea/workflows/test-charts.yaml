@@ -21,9 +21,6 @@ on:
 
 env:
   BASE_BRANCH: "origin/${{ github.base_ref || 'main' }}"
-  CT_VERSION: "v3.15.0"
-  YAMALE_VERSION: "6.1.0"
-  YAMLLINT_VERSION: "1.38.0"
 
 jobs:
   detect-changes:
@@ -38,13 +35,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Tools (mise)
+        run: mise install
+
       - name: Check Directories for Changes
         id: check-dir-changes
         env:
           BASE_BRANCH: ${{ env.BASE_BRANCH }}
           EVENT_NAME: ${{ github.event_name }}
           EVENT_BEFORE: ${{ github.event.before }}
-        run: ./.gitea/scripts/detect-helm-changes.sh
+        run: mise run gitea:detect-charts --mode test
 
   lint:
     needs: detect-changes
@@ -66,43 +66,13 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Add Repositories
-        run: |
-          echo "FAILED_STAGE=Add Repositories" >> "$GITHUB_ENV"
-          ./.gitea/scripts/helm-add-repos.sh --chart "${CHART}"
+      - name: Setup Tools (mise)
+        run: mise install
 
-      - name: Build Chart Dependencies
+      - name: Lint and Test Chart
         run: |
-          echo "FAILED_STAGE=Build Chart Dependencies" >> "$GITHUB_ENV"
-          echo ">> Building dependencies for ${CHART} ..."
-          helm dependency build "charts/${CHART}" --skip-refresh
-
-      - name: Lint Helm Charts
-        run: |
-          echo "FAILED_STAGE=Lint Helm Charts" >> "$GITHUB_ENV"
-          echo ">> Linting ${CHART} ..."
-          helm lint "charts/${CHART}" --namespace "${CHART}"
-
-      - name: Cache Helm Plugins
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        id: cache-helm-plugins
-        with:
-          path: ~/.local/share/helm/plugins
-          key: helm-plugins-${{ runner.os }}-unittest
-
-      - name: Install Helm Unittest Plugin
-        if: steps.cache-helm-plugins.outputs.cache-hit != 'true'
-        run: |
-          echo "FAILED_STAGE=Install Helm Unittest Plugin" >> "$GITHUB_ENV"
-          helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
-
-      - name: Run Helm Unittest
-        run: |
-          echo "FAILED_STAGE=Run Helm Unittest" >> "$GITHUB_ENV"
-          if [ -d "charts/${CHART}/tests" ]; then
-            echo ">> Running helm unittest for ${CHART} ..."
-            (cd "charts/${CHART}" && helm unittest .)
-          fi
+          echo "FAILED_STAGE=Lint and Test Chart" >> "$GITHUB_ENV"
+          mise run lint:chart "${CHART}"
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -137,17 +107,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Add Repositories
-        run: |
-          echo "FAILED_STAGE=Add Repositories" >> "$GITHUB_ENV"
-          ./.gitea/scripts/helm-add-repos.sh --charts "${CHARTS}"
+      - name: Setup Tools (mise)
+        run: mise install
 
       - name: Run Chart Testing
         id: ct-lint
         run: |
           echo "FAILED_STAGE=Chart Testing (ct lint)" >> "$GITHUB_ENV"
-          ./.gitea/scripts/install-ct.sh
-          ct lint --validate-maintainers=false --target-branch ${{ gitea.event.repository.default_branch }}
+          mise run test:chart --charts "${CHARTS}" --target-branch "${{ gitea.event.repository.default_branch }}"
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -186,10 +153,13 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Setup Tools (mise)
+        run: mise install
+
       - name: Add Repositories
         run: |
           echo "FAILED_STAGE=Add Repositories" >> "$GITHUB_ENV"
-          ./.gitea/scripts/helm-add-repos.sh --chart "${CHART}"
+          mise exec -- .mise/lib/helm-add-repos.sh --chart "${CHART}"
 
       - name: Build Chart Dependencies
         run: |
@@ -208,12 +178,12 @@ jobs:
         if: steps.cache-schemas.outputs.cache-hit != 'true'
         run: |
           echo "FAILED_STAGE=Generate Custom CRD Schemas" >> "$GITHUB_ENV"
-          ./.gitea/scripts/generate-crd-schemas.sh
+          mise run schemas:generate
 
       - name: Run Kubeconform
         run: |
           echo "FAILED_STAGE=Run Kubeconform" >> "$GITHUB_ENV"
-          ./.gitea/scripts/kubeconform-validate.sh --chart "${CHART}"
+          mise run validate:kubeconform --chart "${CHART}"
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master

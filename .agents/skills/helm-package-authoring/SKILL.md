@@ -51,6 +51,9 @@ Every chart in `charts/<chart-name>/` must adhere to standard Helm v2 API requir
 Always run the full validation pipeline before submitting changes:
 
 ```bash
+# 0. Ensure required Helm plugins are installed (cm-push, unittest)
+mise run helm:plugins
+
 # 1. Lint the chart, update repos, build dependencies, and run unit tests
 mise run lint:chart <chart-name>
 

@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+#MISE description="Detect changed or targeted Helm charts for CI testing and CD releasing"
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
+
+# Default configuration
+MODE="${MODE:-test}" # 'test' or 'release'
+CHART_INPUT="${INPUT_CHART:-${CHART:-}}"
+BASE_BRANCH="${BASE_BRANCH:-origin/main}"
+EVENT_NAME="${EVENT_NAME:-${GITHUB_EVENT_NAME:-${gitea_event_name:-pull_request}}}"
+EVENT_BEFORE="${EVENT_BEFORE:-${gitea_event_before:-}}"
+OUTPUT_FILE="${GITHUB_OUTPUT:-${GITEA_OUTPUT:-}}"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mode)
+      MODE="$2"
+      shift 2
+      ;;
+    --chart|--input-chart)
+      CHART_INPUT="$2"
+      shift 2
+      ;;
+    --base-branch)
+      BASE_BRANCH="$2"
+      shift 2
+      ;;
+    --event-name)
+      EVENT_NAME="$2"
+      shift 2
+      ;;
+    --event-before)
+      EVENT_BEFORE="$2"
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: mise run gitea:detect-charts [--mode <test|release>] [--chart <name>] [--base-branch <branch>] [--event-name <name>] [--event-before <sha>]"
+      exit 0
+      ;;
+    *)
+      log_fatal "Unknown argument: $1"
+      ;;
+  esac
+done
+
+cd "${REPO_ROOT}"
+log_step "Detecting charts (mode: ${MODE}, event: ${EVENT_NAME})"
+
+CHARTS=()
+
+if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+  if [ -n "${CHART_INPUT}" ]; then
+    log_info "Manual dispatch for single chart: ${CHART_INPUT}"
+    CHARTS+=("${CHART_INPUT}")
+  else
+    log_info "Manual dispatch for all charts"
+    mapfile -t CHARTS < <(find charts -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+  fi
+elif [ "${MODE}" = "release" ] || [ "${EVENT_NAME}" = "workflow_run" ]; then
+  if [ -n "${EVENT_BEFORE}" ] && [ "${EVENT_BEFORE}" != "0000000000000000000000000000000000000000" ]; then
+    log_info "Diffing event.before (${EVENT_BEFORE}..HEAD) ..."
+    GIT_DIFF=$(git diff --name-only "${EVENT_BEFORE}..HEAD" | grep -E "^charts/" || true)
+  else
+    log_info "Diffing HEAD^1..HEAD ..."
+    GIT_DIFF=$(git diff --name-only HEAD^1 HEAD | grep -E "^charts/" || true)
+  fi
+
+  if [ -n "${GIT_DIFF}" ]; then
+    for path in ${GIT_DIFF}; do
+      c=$(echo "${path}" | awk -F '/' '{print $2}')
+      if [ -n "$c" ] && [ -f "charts/${c}/Chart.yaml" ]; then
+        CHARTS+=("$c")
+      fi
+    done
+  fi
+else
+  # Mode: test (PR / Push diff against base branch)
+  log_info "Resolving diff target against ${BASE_BRANCH} ..."
+  # shellcheck source=../lib/resolve-diff-target.sh
+  source "${REPO_ROOT}/.mise/lib/resolve-diff-target.sh"
+  resolve_diff_target
+
+  RAW_CHARTS=$( (git diff --name-only "${DIFF_TARGET}" | grep -E "^charts/" || true) | awk -F '/' '{print $2}' | sort -u)
+  for c in $RAW_CHARTS; do
+    if [ -n "$c" ] && [ -f "charts/${c}/Chart.yaml" ]; then
+      CHARTS+=("$c")
+    fi
+  done
+fi
+
+VALID_CHARTS=""
+if [ ${#CHARTS[@]} -gt 0 ]; then
+  mapfile -t UNIQUE_CHARTS < <(printf "%s\n" "${CHARTS[@]}" | sort -u)
+  VALID_CHARTS="${UNIQUE_CHARTS[*]}"
+fi
+
+VALID_CHARTS=$(echo "${VALID_CHARTS}" | xargs)
+
+if [ -n "${VALID_CHARTS}" ]; then
+  CHARTS_JSON=$(printf '%s\n' "${VALID_CHARTS}" | jq -R -c 'split(" ") | map(select(length > 0))')
+
+  log_success "Targeted charts: ${VALID_CHARTS}"
+  if [ -n "${OUTPUT_FILE}" ]; then
+    echo "changes-detected=true" >> "${OUTPUT_FILE}"
+    echo "matrix=${CHARTS_JSON}" >> "${OUTPUT_FILE}"
+    echo "charts=${VALID_CHARTS}" >> "${OUTPUT_FILE}"
+  fi
+else
+  log_info "No chart changes detected."
+  if [ -n "${OUTPUT_FILE}" ]; then
+    echo "changes-detected=false" >> "${OUTPUT_FILE}"
+    echo "matrix=[]" >> "${OUTPUT_FILE}"
+    echo "charts=" >> "${OUTPUT_FILE}"
+  fi
+fi

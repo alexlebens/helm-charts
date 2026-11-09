@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
+#MISE description="Generate JSON schemas from upstream CRDs using openapi2jsonschema"
 set -euo pipefail
 
-SCHEMA_DIR="${HOME}/.schemas"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
 
+SCHEMA_DIR="${SCHEMA_DIR:-${HOME}/.schemas}"
 mkdir -p "${SCHEMA_DIR}"
 
 if ! command -v openapi2jsonschema.py >/dev/null 2>&1; then
-  echo "Error: openapi2jsonschema.py is required on PATH." >&2
-  exit 1
+  log_fatal "openapi2jsonschema.py is required on PATH."
 fi
 
-echo ">> Downloading CRD definitions ..."
+log_step "Downloading CRD definitions"
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
@@ -42,12 +46,11 @@ wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/co
 wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidusergroups.yaml"
 wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/config/crd/bases/pocketid.internal_pocketidusers.yaml"
 
-echo ">> Formatting CRD schemas into JSON ..."
+log_step "Formatting CRD schemas into JSON"
 export FILENAME_FORMAT='{kind}_{version}'
 openapi2jsonschema.py ./*.yaml
 
 mv ./*.json "${SCHEMA_DIR}/"
 
-echo ">> Schemas generated successfully in ${SCHEMA_DIR}:"
-find "${SCHEMA_DIR}" -maxdepth 1 -name "*.json" | wc -l | awk '{print ">> Generated " $1 " JSON schemas"}'
-echo "----"
+COUNT=$(find "${SCHEMA_DIR}" -maxdepth 1 -name "*.json" | wc -l | tr -d ' ')
+log_success "Generated ${COUNT} JSON schemas in ${SCHEMA_DIR}!"

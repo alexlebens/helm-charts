@@ -29,13 +29,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Tools (mise)
+        run: mise install
+
       - name: Get Changed Charts
         id: detect-charts
         env:
           INPUT_CHART: ${{ inputs.chart }}
           EVENT_NAME: ${{ github.event_name }}
           EVENT_BEFORE: ${{ gitea.event.before }}
-        run: ./.gitea/scripts/detect-release-charts.sh
+        run: mise run gitea:detect-charts --mode release
 
   release:
     needs: [detect-charts]
@@ -54,6 +57,9 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Setup Tools (mise)
+        run: mise install
+
       - name: Package & Push Helm Chart
         env:
           HARBOR_HOST: ${{ vars.HARBOR_HOST }}
@@ -62,7 +68,7 @@ jobs:
           GITEA_SERVER_URL: ${{ gitea.server_url }}
           GITEA_ACTOR: ${{ gitea.actor }}
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-        run: ./.gitea/scripts/helm-package-and-push.sh --chart "${{ matrix.chart }}"
+        run: mise run gitea:release-chart --chart "${{ matrix.chart }}"
 
       - name: Release Helm Chart
         uses: akkuman/gitea-release-action@5a83c90484ef4355121df5eb60558c8ce66e81ac # v1
