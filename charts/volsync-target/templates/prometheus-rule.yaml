@@ -32,7 +32,7 @@ spec:
               {{ `{{ $value }}` }} VolSync backup pod(s) failed for PVC '{{ .Values.pvcTarget }}'.
               Target: {{ include "volsync.name" . }}
               Namespace: {{ `{{ $labels.namespace }}` }}
-        {{- if and .Values.prometheusRule.backupDelayed (default true .Values.prometheusRule.backupDelayed.enabled) }}
+        {{- if and .Values.prometheusRule.backupDelayed (ternary .Values.prometheusRule.backupDelayed.enabled true (hasKey .Values.prometheusRule.backupDelayed "enabled")) }}
         {{- range $tier := tuple "a" "b" "c" "d" }}
         {{- $tierConfig := index $.Values $tier }}
         {{- if and $tierConfig $tierConfig.enabled }}

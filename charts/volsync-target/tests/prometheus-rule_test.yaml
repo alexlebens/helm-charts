@@ -48,11 +48,7 @@ tests:
           path: spec.groups[0].rules[1].annotations.description
           pattern: in 2h
 
-  # Known chart bug: `default true <false>` evaluates to true, so enabled=false is ignored.
-  # Remove `skip` once templates/prometheus-rule.yaml handles an explicit false.
   - it: should omit delayed alerts when disabled
-    skip:
-      reason: backupDelayed.enabled=false is currently ignored by the template
     set:
       prometheusRule:
         backupDelayed:
