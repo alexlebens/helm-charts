@@ -1,0 +1,55 @@
+should match the snapshot with internal and external probes:
+  1: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: Probe
+    metadata:
+      labels:
+        app.kubernetes.io/instance: app
+        app.kubernetes.io/name: blackbox-cl01tl-ns-http-2xx
+        app.kubernetes.io/part-of: app
+      name: blackbox-cl01tl-ns-http-2xx
+      namespace: ns
+    spec:
+      module: http_2xx
+      prober:
+        url: blackbox.blackbox.svc.cluster.local:9115
+      targets:
+        staticConfig:
+          static:
+            - https://app.internal
+  2: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: Probe
+    metadata:
+      labels:
+        app.kubernetes.io/instance: app
+        app.kubernetes.io/name: blackbox-ps08rp-ns-http-2xx
+        app.kubernetes.io/part-of: app
+      name: blackbox-ps08rp-ns-http-2xx
+      namespace: ns
+    spec:
+      module: http_2xx
+      prober:
+        url: ps08rp.alexlebens.dev:9115
+      targets:
+        staticConfig:
+          static:
+            - https://app.example.com
+  3: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: Probe
+    metadata:
+      labels:
+        app.kubernetes.io/instance: app
+        app.kubernetes.io/name: blackbox-ps09rp-ns-http-2xx
+        app.kubernetes.io/part-of: app
+      name: blackbox-ps09rp-ns-http-2xx
+      namespace: ns
+    spec:
+      module: http_2xx
+      prober:
+        url: ps09rp.alexlebens.dev:9115
+      targets:
+        staticConfig:
+          static:
+            - https://app.example.com

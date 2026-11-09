@@ -1,0 +1,4 @@
+# Exercises both internal and external probes.
+probe:
+  internal: https://app.internal.example.com
+  external: https://app.example.com

@@ -1,0 +1,81 @@
+suite: test common-helpers Probe
+templates:
+  - probe.yaml
+release:
+  name: app
+  namespace: ns
+tests:
+  - it: should not render by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render an internal Probe using the default blackbox URL
+    set:
+      probe:
+        internal: https://app.internal
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Probe
+      - equal:
+          path: metadata.name
+          value: blackbox-cl01tl-ns-http-2xx
+      - equal:
+          path: spec.prober.url
+          value: blackbox.blackbox.svc.cluster.local:9115
+      - equal:
+          path: spec.targets.staticConfig.static[0]
+          value: https://app.internal
+
+  - it: should render one external Probe per prober
+    set:
+      probe:
+        external: https://app.example.com
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: blackbox-ps08rp-ns-http-2xx
+        documentIndex: 0
+      - equal:
+          path: spec.prober.url
+          value: ps08rp.alexlebens.dev:9115
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: blackbox-ps09rp-ns-http-2xx
+        documentIndex: 1
+
+  - it: should render internal and external probes together
+    set:
+      probe:
+        internal: https://app.internal
+        external: https://app.example.com
+        externalProbes:
+          - only
+    asserts:
+      - hasDocuments:
+          count: 2
+
+  - it: should respect global domain overrides
+    set:
+      global:
+        domain: .example.org
+      probe:
+        external: https://x
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: spec.prober.url
+          value: ps08rp.example.org:9115
+
+  - it: should match the snapshot with internal and external probes
+    set:
+      probe:
+        internal: https://app.internal
+        external: https://app.example.com
+    asserts:
+      - matchSnapshot: {}
