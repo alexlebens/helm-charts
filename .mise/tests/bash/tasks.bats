@@ -74,3 +74,13 @@ setup() {
   assert_success
   assert_output --partial "Usage: mise run check:workflows"
 }
+
+# -----------------------------------------------------------------------------
+# docs:generate
+# -----------------------------------------------------------------------------
+
+@test "docs:generate: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/generate-docs" --help
+  assert_success
+  assert_output --partial "Usage: mise run docs:generate"
+}

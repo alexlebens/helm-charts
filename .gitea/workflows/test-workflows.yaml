@@ -7,8 +7,8 @@ concurrency:
 on:
   pull_request:
     paths:
-      - ".gitea/scripts/lint-workflows.sh"
       - ".gitea/workflows/**"
+      - ".mise/tasks/check/workflows"
       - ".pre-commit-config.yaml"
 
 jobs:

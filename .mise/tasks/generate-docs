@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#MISE description="Generate markdown documentation for Helm charts using helm-docs"
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "Usage: mise run docs:generate"
+      exit 0
+      ;;
+    *)
+      log_fatal "Unknown argument: $1"
+      ;;
+  esac
+done
+
+cd "${REPO_ROOT}"
+
+if ! command -v helm-docs >/dev/null 2>&1; then
+  log_fatal "helm-docs is not installed. Run 'mise install' to install it."
+fi
+
+log_step "Generating Helm chart documentation with helm-docs"
+helm-docs --chart-search-root=charts
+log_success "Helm chart documentation generated successfully"

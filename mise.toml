@@ -4,6 +4,7 @@ actionlint = "1.7.12"
 bats = "1.14.0"
 crane = "0.22.1"
 helm = "4.3.1"
+helm-docs = "1.14.2"
 jq = "1.8.2"
 kubeconform = "0.8.0"
 kubectl = "1.37.2"
@@ -11,6 +12,10 @@ shellcheck = "0.11.0"
 yq = "4.54.2"
 
 # -- Helm Chart Testing & Validation
+[tasks."docs:generate"]
+description = "Generate markdown documentation for Helm charts using helm-docs"
+run = ".mise/tasks/generate-docs"
+
 [tasks."helm:plugins"]
 description = "Install required Helm plugins (cm-push, unittest)"
 run = ".mise/tasks/helm-plugins"
