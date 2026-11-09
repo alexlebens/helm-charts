@@ -7,11 +7,33 @@ REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel
 # shellcheck source=../lib/log.sh
 source "${REPO_ROOT}/.mise/lib/log.sh"
 
-CHART="${1:-}"
+CHART=""
+SKIP_BUILD=false
 
-if [ -z "${CHART}" ] || [ "${CHART}" = "-h" ] || [ "${CHART}" = "--help" ]; then
-  echo "Usage: mise run lint:chart <chart-name>"
-  echo "Adds repos, builds dependencies, runs helm lint and unittests."
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --skip-build)
+      SKIP_BUILD=true
+      shift
+      ;;
+    -h|--help)
+      echo "Usage: mise run lint:chart <chart-name> [--skip-build]"
+      echo "Adds repos, builds dependencies, runs helm lint and unittests."
+      exit 0
+      ;;
+    *)
+      if [ -z "${CHART}" ]; then
+        CHART="$1"
+        shift
+      else
+        log_fatal "Unknown argument: $1"
+      fi
+      ;;
+  esac
+done
+
+if [ -z "${CHART}" ]; then
+  echo "Usage: mise run lint:chart <chart-name> [--skip-build]"
   exit 0
 fi
 
@@ -21,11 +43,13 @@ if [ ! -d "${CHART_DIR}" ]; then
 fi
 
 # Add repositories
-"${REPO_ROOT}/.mise/lib/helm-add-repos.sh" --main-dir "${REPO_ROOT}" --chart "${CHART}"
+if [ "${SKIP_BUILD}" != "true" ]; then
+  "${REPO_ROOT}/.mise/lib/helm-add-repos.sh" --main-dir "${REPO_ROOT}" --chart "${CHART}"
 
-# Build chart dependencies
-log_step "Building dependencies for ${CHART}"
-helm dependency build "${CHART_DIR}" --skip-refresh
+  # Build chart dependencies
+  log_step "Building dependencies for ${CHART}"
+  helm dependency build "${CHART_DIR}" --skip-refresh
+fi
 
 # Lint chart
 log_step "Linting ${CHART}"

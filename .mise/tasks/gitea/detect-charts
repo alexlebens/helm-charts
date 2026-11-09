@@ -93,21 +93,49 @@ else
 fi
 
 VALID_CHARTS=""
+SCRIPT_CHARTS=""
+
 if [ ${#CHARTS[@]} -gt 0 ]; then
   mapfile -t UNIQUE_CHARTS < <(printf "%s\n" "${CHARTS[@]}" | sort -u)
   VALID_CHARTS="${UNIQUE_CHARTS[*]}"
+  for c in "${UNIQUE_CHARTS[@]}"; do
+    has_scripts=false
+    if [ -d "charts/${c}/scripts" ] && ls "charts/${c}/scripts"/* >/dev/null 2>&1; then
+      has_scripts=true
+    elif [ -d "charts/${c}/tests" ] && ls "charts/${c}/tests"/*.bats >/dev/null 2>&1; then
+      has_scripts=true
+    fi
+    if [ "${has_scripts}" = "true" ]; then
+      SCRIPT_CHARTS="${SCRIPT_CHARTS} ${c}"
+    fi
+  done
 fi
 
 VALID_CHARTS=$(echo "${VALID_CHARTS}" | xargs)
+SCRIPT_CHARTS=$(echo "${SCRIPT_CHARTS}" | xargs)
 
 if [ -n "${VALID_CHARTS}" ]; then
   CHARTS_JSON=$(printf '%s\n' "${VALID_CHARTS}" | jq -R -c 'split(" ") | map(select(length > 0))')
 
   log_success "Targeted charts: ${VALID_CHARTS}"
+  if [ -n "${SCRIPT_CHARTS}" ]; then
+    SCRIPT_CHARTS_JSON=$(echo "${SCRIPT_CHARTS}" | jq -R -c 'split(" ") | map(select(length > 0))')
+    log_info "Targeted charts with scripts: ${SCRIPT_CHARTS}"
+  else
+    SCRIPT_CHARTS_JSON="[]"
+  fi
+
   if [ -n "${OUTPUT_FILE}" ]; then
     echo "changes-detected=true" >> "${OUTPUT_FILE}"
     echo "matrix=${CHARTS_JSON}" >> "${OUTPUT_FILE}"
     echo "charts=${VALID_CHARTS}" >> "${OUTPUT_FILE}"
+    if [ -n "${SCRIPT_CHARTS}" ]; then
+      echo "scripts-detected=true" >> "${OUTPUT_FILE}"
+      echo "script-matrix=${SCRIPT_CHARTS_JSON}" >> "${OUTPUT_FILE}"
+    else
+      echo "scripts-detected=false" >> "${OUTPUT_FILE}"
+      echo "script-matrix=[]" >> "${OUTPUT_FILE}"
+    fi
   fi
 else
   log_info "No chart changes detected."
@@ -115,5 +143,7 @@ else
     echo "changes-detected=false" >> "${OUTPUT_FILE}"
     echo "matrix=[]" >> "${OUTPUT_FILE}"
     echo "charts=" >> "${OUTPUT_FILE}"
+    echo "scripts-detected=false" >> "${OUTPUT_FILE}"
+    echo "script-matrix=[]" >> "${OUTPUT_FILE}"
   fi
 fi

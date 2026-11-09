@@ -29,6 +29,8 @@ jobs:
       matrix: ${{ steps.check-dir-changes.outputs.matrix }}
       charts: ${{ steps.check-dir-changes.outputs.charts }}
       changes-detected: ${{ steps.check-dir-changes.outputs.changes-detected }}
+      script-matrix: ${{ steps.check-dir-changes.outputs.script-matrix }}
+      scripts-detected: ${{ steps.check-dir-changes.outputs.scripts-detected }}
     steps:
       - name: Checkout
         uses: builtin:checkout
@@ -69,10 +71,21 @@ jobs:
       - name: Setup Tools (mise)
         run: mise install
 
+      - name: Add Repositories
+        run: |
+          echo "FAILED_STAGE=Add Repositories" >> "$GITHUB_ENV"
+          mise exec -- .mise/lib/helm-add-repos.sh --chart "${CHART}"
+
+      - name: Build Chart Dependencies
+        run: |
+          echo "FAILED_STAGE=Build Chart Dependencies" >> "$GITHUB_ENV"
+          echo ">> Building dependencies for ${CHART} ..."
+          helm dependency build "charts/${CHART}" --skip-refresh
+
       - name: Lint and Test Chart
         run: |
           echo "FAILED_STAGE=Lint and Test Chart" >> "$GITHUB_ENV"
-          mise run lint:chart "${CHART}"
+          mise run lint:chart "${CHART}" --skip-build
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -85,6 +98,75 @@ jobs:
           headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
           tags: action,failed
           details: "Failed for chart: ${{ matrix.chart }} at stage: ${{ env.FAILED_STAGE }}"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
+
+  test-chart-scripts:
+    needs: detect-changes
+    runs-on: ubuntu-runner
+    if: |
+      needs.detect-changes.result == 'success' &&
+      needs.detect-changes.outputs.scripts-detected == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        chart: ${{ fromJSON(needs.detect-changes.outputs.script-matrix) }}
+    env:
+      CHART: ${{ matrix.chart }}
+      FAILED_STAGE: "Initialization"
+    steps:
+      - name: Checkout
+        uses: builtin:checkout
+        with:
+          fetch-depth: 1
+
+      - name: Setup Tools (mise)
+        run: mise install
+
+      - name: Lint Chart Scripts (shellcheck)
+        run: |
+          if [ -d "charts/${CHART}/scripts" ]; then
+            echo "FAILED_STAGE=Lint Chart Scripts (shellcheck)" >> "$GITHUB_ENV"
+            shopt -s nullglob
+            scripts=("charts/${CHART}/scripts/"*.sh)
+            shopt -u nullglob
+            if [ ${#scripts[@]} -gt 0 ]; then
+              echo ">> Linting scripts in charts/${CHART}/scripts/ ..."
+              shellcheck "${scripts[@]}"
+            fi
+          fi
+
+      - name: Check for Chart BATS Tests
+        id: check-bats-tests
+        run: |
+          if [ -d "charts/${CHART}/tests" ] && ls "charts/${CHART}/tests"/*.bats >/dev/null 2>&1; then
+            echo "has_tests=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_tests=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Chart BATS Tests
+        if: steps.check-bats-tests.outputs.has_tests == 'true'
+        run: |
+          echo "FAILED_STAGE=Run Chart BATS Tests" >> "$GITHUB_ENV"
+          echo ">> Running BATS tests for chart ${CHART} ..."
+          bats --recursive "charts/${CHART}/tests/"
+
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        if: failure()
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ vars.NTFY_TOPIC }}"
+          title: "🚨 Chart Script Failure - ${{ matrix.chart }}"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "Script testing failed for chart: ${{ matrix.chart }} at stage: ${{ env.FAILED_STAGE }}"
           icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
           actions:
             '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
