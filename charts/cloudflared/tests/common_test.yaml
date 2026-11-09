@@ -1,0 +1,91 @@
+suite: test cloudflared workload
+templates:
+  - common.yaml
+release:
+  name: x
+  namespace: ns
+tests:
+  - it: should render Deployment, Service, ServiceAccount and ServiceMonitor
+    asserts:
+      - hasDocuments:
+          count: 4
+      - isKind:
+          of: ServiceAccount
+        documentIndex: 0
+      - isKind:
+          of: Deployment
+        documentIndex: 1
+      - isKind:
+          of: Service
+        documentIndex: 2
+      - isKind:
+          of: ServiceMonitor
+        documentIndex: 3
+
+  - it: should run replicas with the tunnel token from the secret
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: x-cloudflared-secret
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: cf-tunnel-token
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: $(CF_MANAGED_TUNNEL_TOKEN)
+
+  - it: should pass the protocol and extra args
+    set:
+      protocol: quic
+      extraArgs:
+        - --loglevel
+        - debug
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: quic
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: debug
+
+  - it: should apply a hardened security context
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+
+  - it: should honor replicas override
+    set:
+      replicas: 3
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+
+  - it: should match the snapshot of the Deployment
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - matchSnapshot: {}

@@ -1,0 +1,45 @@
+suite: test cloudflared PrometheusRule
+templates:
+  - prometheus-rule.yaml
+release:
+  name: x
+  namespace: ns
+tests:
+  - it: should render the default CloudflaredDown rule
+    asserts:
+      - isKind:
+          of: PrometheusRule
+      - equal:
+          path: spec.groups[0].rules[0].alert
+          value: CloudflaredDown
+      - equal:
+          path: spec.groups[0].rules[0].labels.severity
+          value: critical
+
+  - it: should not render when metrics are disabled
+    set:
+      metrics:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not render when prometheusRule is disabled
+    set:
+      metrics:
+        prometheusRule:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should add custom labels
+    set:
+      metrics:
+        prometheusRule:
+          labels:
+            release: prom
+    asserts:
+      - equal:
+          path: metadata.labels.release
+          value: prom

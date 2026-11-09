@@ -1,0 +1,56 @@
+suite: test cloudflared Probe
+templates:
+  - probe.yaml
+release:
+  name: x
+  namespace: ns
+tests:
+  - it: should not render by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render a Probe with defaults when enabled
+    set:
+      probe:
+        enabled: true
+        targetUrl: https://app.example.com
+    asserts:
+      - isKind:
+          of: Probe
+      - equal:
+          path: spec.prober.url
+          value: blackbox-cloudflare.blackbox.svc.cluster.local:9115
+      - equal:
+          path: spec.module
+          value: http_2xx
+      - equal:
+          path: spec.targets.staticConfig.static[0]
+          value: https://app.example.com
+      - notExists:
+          path: spec.interval
+      - notExists:
+          path: spec.scrapeTimeout
+
+  - it: should set interval and scrapeTimeout when provided
+    set:
+      probe:
+        enabled: true
+        targetUrl: https://app.example.com
+        interval: 30s
+        scrapeTimeout: 10s
+    asserts:
+      - equal:
+          path: spec.interval
+          value: 30s
+      - equal:
+          path: spec.scrapeTimeout
+          value: 10s
+
+  - it: should fail without targetUrl
+    set:
+      probe:
+        enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: probe.targetUrl is required when probe is enabled

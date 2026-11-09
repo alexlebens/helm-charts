@@ -1,0 +1,7 @@
+# Exercises the blackbox Probe and a custom replica count.
+replicas: 3
+probe:
+  enabled: true
+  targetUrl: https://app.example.com
+  interval: 30s
+  scrapeTimeout: 10s
