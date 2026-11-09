@@ -14,7 +14,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
       echo "Usage: mise run helm:lint [chart...] [--charts <charts...>] [--namespace <namespace>]"
-      echo "Lints Helm charts, requires unit tests for charts with templates, and runs them."
+      echo "Lints Helm charts, requires unit tests for charts with templates and a values schema for every chart, and runs them."
       exit 0
       ;;
     --namespace)
@@ -55,6 +55,12 @@ for C in "${CHARTS[@]}"; do
   shopt -u nullglob
   if [ ${#RENDERED_TEMPLATES[@]} -gt 0 ] && ! ls "${C_PATH}"/tests/*_test.yaml >/dev/null 2>&1; then
     log_error "Chart '${C}' has templates but no unit tests (expected charts/${C}/tests/*_test.yaml)."
+    FAILED_CHARTS+=("${C}")
+    continue
+  fi
+
+  if [ ! -f "${C_PATH}/values.schema.json" ]; then
+    log_error "Chart '${C}' has no values schema (expected charts/${C}/values.schema.json)."
     FAILED_CHARTS+=("${C}")
     continue
   fi

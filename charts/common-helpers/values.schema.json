@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "global": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "tailscaleDomain": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "blackboxUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "properties": {
+        "clusterProbe": {
+          "type": "string"
+        },
+        "externalProbes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "internal": {
+          "type": "string"
+        },
+        "external": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

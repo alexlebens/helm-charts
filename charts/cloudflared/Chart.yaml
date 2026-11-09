@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cloudflared
-version: 4.8.7
+version: 4.8.8
 description: Cloudflared Tunnel
 keywords:
   - cloudflare

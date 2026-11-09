@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["oauth", "oidc"]
+    },
+    "name": {
+      "type": "string"
+    },
+    "client": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "launchUrl": {
+          "type": "string"
+        },
+        "callbackUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pkceEnabled": {
+          "type": "boolean"
+        },
+        "skipConsent": {
+          "type": "boolean"
+        },
+        "allowedUserGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "logo": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "logoUrl": {
+              "type": "string"
+            },
+            "darkLogoUrl": {
+              "type": "string"
+            },
+            "selfhstLogoName": {
+              "type": "string"
+            },
+            "selfhstDarkLogo": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "externalSecret": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "storeName": {
+          "type": "string"
+        },
+        "secretPathPrefix": {
+          "type": "string"
+        },
+        "secretPath": {
+          "type": "string"
+        },
+        "extraData": {
+          "type": "array"
+        }
+      }
+    },
+    "issuerConfigPath": {
+      "type": "string"
+    },
+    "seedJob": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "vaultAddr": {
+          "type": "string"
+        },
+        "authPath": {
+          "type": "string"
+        },
+        "vaultRole": {
+          "type": "string"
+        },
+        "vaultMount": {
+          "type": "string"
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "global": {
+      "type": "object"
+    }
+  }
+}

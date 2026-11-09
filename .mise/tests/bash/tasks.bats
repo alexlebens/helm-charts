@@ -145,6 +145,7 @@ _setup_lint_sandbox() {
   cp -R "${PROJECT_ROOT}/.mise/lib" "${LINT_ROOT}/.mise/lib"
   printf 'apiVersion: v2\nname: %s\nversion: 0.1.0\n' "${1}" > "${LINT_ROOT}/charts/${1}/Chart.yaml"
   printf 'kind: ConfigMap\n' > "${LINT_ROOT}/charts/${1}/templates/config-map.yaml"
+  printf '{}\n' > "${LINT_ROOT}/charts/${1}/values.schema.json"
   _stub helm 'exit 0'
   export MISE_PROJECT_ROOT="${LINT_ROOT}"
 }
@@ -169,4 +170,14 @@ _setup_lint_sandbox() {
   rm "${LINT_ROOT}/charts/demo/templates/config-map.yaml"
   run "${PROJECT_ROOT}/.mise/tasks/helm/lint" demo
   assert_success
+}
+
+@test "helm:lint: fails for a chart without values.schema.json" {
+  _setup_lint_sandbox demo
+  mkdir -p "${LINT_ROOT}/charts/demo/tests"
+  printf 'suite: demo\ntests: []\n' > "${LINT_ROOT}/charts/demo/tests/config-map_test.yaml"
+  rm "${LINT_ROOT}/charts/demo/values.schema.json"
+  run "${PROJECT_ROOT}/.mise/tasks/helm/lint" demo
+  assert_failure
+  assert_output --partial "has no values schema"
 }

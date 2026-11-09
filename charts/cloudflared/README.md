@@ -1,6 +1,6 @@
 # cloudflared
 
-![Version: 4.8.7](https://img.shields.io/badge/Version-4.8.7-informational?style=flat-square) ![AppVersion: 2026.10.7](https://img.shields.io/badge/AppVersion-2026.10.7-informational?style=flat-square)
+![Version: 4.8.8](https://img.shields.io/badge/Version-4.8.8-informational?style=flat-square) ![AppVersion: 2026.10.7](https://img.shields.io/badge/AppVersion-2026.10.7-informational?style=flat-square)
 
 Cloudflared Tunnel
 
