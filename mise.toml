@@ -9,6 +9,7 @@ jq = "1.8.2"
 kubeconform = "0.8.0"
 kubectl = "1.37.2"
 shellcheck = "0.11.0"
+trivy = "0.76.2"
 yq = "4.54.2"
 
 # -- Chart Management
@@ -70,6 +71,10 @@ run = ".mise/tasks/check/workflows"
 [tasks."check:kubeconform"]
 description = "Validate rendered chart manifests with kubeconform against schemas"
 run = ".mise/tasks/check/kubeconform"
+
+[tasks."check:trivy"]
+description = "Scan rendered Helm chart manifests with Trivy for security misconfigurations"
+run = ".mise/tasks/check/trivy"
 
 # -- Gitea CI/CD Workflow Tasks
 [tasks."gitea:detect-charts"]

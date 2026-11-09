@@ -68,7 +68,10 @@ mise run check:chart --charts "<chart-name>"
 # 3. Validate rendered manifests against Kubernetes & CRD schemas with kubeconform
 mise run check:kubeconform --chart "<chart-name>"
 
-# 4. Run Bats tests for .mise tasks and automation scripts
+# 4. Scan rendered manifests with Trivy for security misconfigurations
+mise run check:trivy --chart "<chart-name>"
+
+# 5. Run Bats tests for .mise tasks and automation scripts
 mise run test
 ```
 

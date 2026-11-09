@@ -1,0 +1,4 @@
+# Upstream valkey-helm subchart templates omit metadata.namespace on StatefulSet and Service resources, relying on the release target namespace at install time.
+# https://avd.aquasec.com/misconfig/ksv-0110 (Workloads in the default namespace)
+KSV-0110
+AVD-KSV-0110

@@ -1,0 +1,309 @@
+#!/usr/bin/env bash
+#MISE description="Scan rendered Helm chart manifests with Trivy for security misconfigurations"
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
+
+CHARTS="${CHARTS:-${CHART:-}}"
+MANIFEST_PATH="${MANIFEST_PATH:-}"
+FAIL_ON="${FAIL_ON:-ANY}"
+GITEA_TOKEN="${GITEA_TOKEN:-${GIT_TOKEN:-}}"
+PR_NUMBER="${PR_NUMBER:-}"
+MAIN_DIR="${MAIN_DIR:-${REPO_ROOT}}"
+IGNORE_FILE="${IGNORE_FILE:-}"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --chart)
+      CHARTS="${CHARTS} $2"
+      shift 2
+      ;;
+    --charts)
+      CHARTS="$2"
+      shift 2
+      ;;
+    --main-dir)
+      MAIN_DIR="$2"
+      shift 2
+      ;;
+    --manifest|--manifest-path|--manifest-dir)
+      MANIFEST_PATH="$2"
+      shift 2
+      ;;
+    --ignorefile)
+      IGNORE_FILE="$2"
+      shift 2
+      ;;
+    --fail-on)
+      FAIL_ON="$2"
+      shift 2
+      ;;
+    --gitea-token)
+      GITEA_TOKEN="$2"
+      shift 2
+      ;;
+    --pr-number)
+      PR_NUMBER="$2"
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: mise run check:trivy [--chart <chart>] [--charts <charts>] [--main-dir <dir>] [--manifest <file|dir>] [--ignorefile <file>] [--fail-on <ANY|CRITICAL|HIGH>] [--gitea-token <token>] [--pr-number <num>]"
+      echo "Runs Trivy misconfiguration scan on rendered Helm chart manifests, publishes advisory summary and PR comments, and enforces severity gate."
+      exit 0
+      ;;
+    *)
+      if [[ "$1" != -* ]]; then
+        CHARTS="${CHARTS} $1"
+        shift
+      else
+        log_fatal "Unknown argument: $1"
+      fi
+      ;;
+  esac
+done
+
+CHARTS=$(echo "${CHARTS}" | xargs)
+
+if [ -z "${CHARTS}" ] && [ -z "${MANIFEST_PATH}" ]; then
+  log_fatal "Error: --chart (or CHART env var) or --manifest is required."
+fi
+
+resolve_ignore_file() {
+  local chart_name="$1"
+  local explicit_ignore="$2"
+
+  if [ -n "${explicit_ignore}" ]; then
+    echo "${explicit_ignore}"
+    return 0
+  fi
+
+  local chart_ignore="${MAIN_DIR}/charts/${chart_name}/.trivyignore"
+  local global_ignore="${MAIN_DIR}/.trivyignore"
+
+  if [ -f "${global_ignore}" ] && [ -n "${chart_name}" ] && [ -f "${chart_ignore}" ]; then
+    local combined
+    combined="$(mktemp)"
+    cat "${global_ignore}" "${chart_ignore}" > "${combined}"
+    echo "${combined}"
+  elif [ -n "${chart_name}" ] && [ -f "${chart_ignore}" ]; then
+    echo "${chart_ignore}"
+  elif [ -f "${global_ignore}" ]; then
+    echo "${global_ignore}"
+  else
+    echo ""
+  fi
+}
+
+scan_target() {
+  local target_label="$1"
+  local target_path="$2"
+  local chart_name="$3"
+
+  if [ ! -e "${target_path}" ]; then
+    log_fatal "Error: Manifest path '${target_path}' not found."
+  fi
+
+  local report_json
+  report_json="$(mktemp)"
+  local active_ignore
+  active_ignore="$(resolve_ignore_file "${chart_name}" "${IGNORE_FILE}")"
+
+  log_step "Running Trivy scan for: ${target_label}"
+
+  if [ -n "${active_ignore}" ] && [ -f "${active_ignore}" ]; then
+    log_info "Using ignore file: ${active_ignore}"
+    trivy config --ignorefile "${active_ignore}" "${target_path}" --format json > "${report_json}" 2>/dev/null || true
+  else
+    trivy config "${target_path}" --format json > "${report_json}" 2>/dev/null || true
+  fi
+
+  if [ -z "${IGNORE_FILE}" ] && [ -n "${active_ignore}" ] && [[ "${active_ignore}" != "${MAIN_DIR}"* ]]; then
+    rm -f "${active_ignore}"
+  fi
+
+  local critical_count high_count medium_count low_count
+  read -r critical_count high_count medium_count low_count < <(jq -r '
+    [.Results[]?.Misconfigurations[]?] as $m |
+    [
+      ($m | map(select(.Severity == "CRITICAL")) | length),
+      ($m | map(select(.Severity == "HIGH")) | length),
+      ($m | map(select(.Severity == "MEDIUM")) | length),
+      ($m | map(select(.Severity == "LOW")) | length)
+    ] | @tsv' "${report_json}" 2>/dev/null || echo "0 0 0 0")
+  local total_findings=$(( critical_count + high_count + medium_count + low_count ))
+
+  log_info "Summary for ${target_label}: ${critical_count} Critical, ${high_count} High, ${medium_count} Medium, ${low_count} Low (${total_findings} total)"
+
+  if [ "${total_findings}" -gt 0 ]; then
+    log_warn "Misconfigurations detected:"
+    jq -r '.Results[]?.Misconfigurations[]? | "  - [\(.Severity)] \(.ID): \(.Title // .Message)"' "${report_json}" 2>/dev/null || true
+  fi
+
+  # Build Markdown Report
+  local tag_id="${chart_name:-$(basename "${target_path}")}"
+  local tag="<!-- trivy-scan-${tag_id} -->"
+  local markdown_report="${tag}
+### Trivy Security Scan: \`${target_label}\`"
+
+  local status_text
+  if [ "${total_findings}" -eq 0 ]; then
+    status_text="**Passed** — No security misconfigurations detected."
+    markdown_report="${markdown_report}
+${status_text}"
+  else
+    if [ "${FAIL_ON}" = "ANY" ] || [ "${FAIL_ON}" = "ALL" ]; then
+      status_text="**Failed Gate** — Found ${total_findings} misconfiguration(s) requiring resolution."
+    elif [ "${critical_count}" -gt 0 ]; then
+      status_text="**Failed Gate** — Found ${critical_count} Critical misconfiguration(s) requiring resolution."
+    elif [ "${FAIL_ON}" = "HIGH" ] && [ $(( critical_count + high_count )) -gt 0 ]; then
+      status_text="**Failed Gate** — Found $(( critical_count + high_count )) High/Critical misconfiguration(s) requiring resolution."
+    else
+      status_text="**Passed Gate with Advisories** (0 Critical, ${high_count} High, ${medium_count} Medium, ${low_count} Low)"
+    fi
+
+    local table_rows
+    table_rows=$(jq -r '
+      [
+        .Results[]? as $r |
+        ($r.Misconfigurations // [])[]? |
+        {
+          target: ($r.Target // .Title // "manifest"),
+          misconfig: .
+        }
+      ]
+      | sort_by(
+          (if .misconfig.Severity == "CRITICAL" then 0
+           elif .misconfig.Severity == "HIGH" then 1
+           elif .misconfig.Severity == "MEDIUM" then 2
+           elif .misconfig.Severity == "LOW" then 3
+           else 4 end),
+          .target,
+          .misconfig.ID
+        )
+      | map(
+          .misconfig as $m |
+          "| " +
+          (if $m.Severity == "CRITICAL" then "🔴 **CRITICAL**"
+           elif $m.Severity == "HIGH" then "🟠 **HIGH**"
+           elif $m.Severity == "MEDIUM" then "🟡 **MEDIUM**"
+           else "⚪ " + $m.Severity end) +
+          " | [`" + $m.ID + "`](" + ($m.PrimaryURL // ("https://avd.aquasec.com/appshield/" + ($m.ID | ascii_downcase))) + ") | `" +
+          .target + "` | " +
+          (($m.Title // $m.Message // "") | gsub("\r?\n"; " ") | gsub("\\|"; "/")) + " |"
+        )
+      | join("\n")
+    ' "${report_json}" 2>/dev/null || true)
+
+    markdown_report="${markdown_report}
+${status_text}
+
+| Severity | Rule ID | Resource | Message |
+| :--- | :--- | :--- | :--- |
+${table_rows}"
+  fi
+
+  rm -f "${report_json}"
+
+  # Publish to Action UI Summary
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    echo "" >> "${GITHUB_STEP_SUMMARY}"
+    echo "${markdown_report}" >> "${GITHUB_STEP_SUMMARY}"
+  fi
+
+  # Publish to Gitea PR Comment
+  local server_url="${PUBLIC_URL:-${GITHUB_SERVER_URL:-${GITEA_SERVER_URL:-}}}"
+  local repo="${GITHUB_REPOSITORY:-${GITEA_REPOSITORY:-}}"
+
+  if [ -n "${GITEA_TOKEN}" ] && [ -n "${PR_NUMBER}" ] && [ -n "${server_url}" ] && [ -n "${repo}" ]; then
+    log_info "Publishing Trivy advisory to PR #${PR_NUMBER} ..."
+    if [ -f "${REPO_ROOT}/.mise/lib/pr-comment-upsert.sh" ]; then
+      export GITEA_TOKEN PR_NUMBER SERVER_URL="${server_url}" REPO="${repo}"
+      # shellcheck source=../../lib/pr-comment-upsert.sh
+      source "${REPO_ROOT}/.mise/lib/pr-comment-upsert.sh"
+      upsert_pr_comment "${tag}" "${markdown_report}"
+    fi
+  fi
+
+  # Severity Gate Check
+  if [ "${FAIL_ON}" = "ANY" ] || [ "${FAIL_ON}" = "ALL" ]; then
+    if [ "${total_findings}" -gt 0 ]; then
+      log_error "Security check failed: ${total_findings} misconfiguration(s) detected in ${target_label} (${critical_count} Critical, ${high_count} High, ${medium_count} Medium, ${low_count} Low)."
+      return 1
+    fi
+  elif [ "${FAIL_ON}" = "CRITICAL" ] && [ "${critical_count}" -gt 0 ]; then
+    log_error "Security check failed: ${critical_count} CRITICAL misconfiguration(s) detected in ${target_label}."
+    return 1
+  elif [ "${FAIL_ON}" = "HIGH" ] && [ $(( critical_count + high_count )) -gt 0 ]; then
+    log_error "Security check failed: $(( critical_count + high_count )) HIGH/CRITICAL misconfiguration(s) detected in ${target_label}."
+    return 1
+  fi
+
+  log_success "Trivy scan passed gate for ${target_label}."
+  return 0
+}
+
+if [ -n "${MANIFEST_PATH}" ]; then
+  CHART_NAME=""
+  if [ -n "${CHARTS}" ]; then
+    CHART_NAME="$(basename "${CHARTS%% *}")"
+  fi
+  LABEL="${CHART_NAME:-$(basename "${MANIFEST_PATH}")}"
+  if ! scan_target "${LABEL}" "${MANIFEST_PATH}" "${CHART_NAME}"; then
+    exit 1
+  fi
+  exit 0
+fi
+
+FAILED_CHARTS=""
+
+for RAW_CHART in ${CHARTS}; do
+  CHART="$(basename "${RAW_CHART}")"
+  CHART_PATH="${MAIN_DIR}/charts/${CHART}"
+
+  if [ ! -f "${CHART_PATH}/Chart.yaml" ]; then
+    log_fatal "Error: Chart path '${CHART_PATH}/Chart.yaml' not found."
+  fi
+
+  CHART_TYPE=$(yq '.type // "application"' "${CHART_PATH}/Chart.yaml" 2>/dev/null || echo "application")
+  if [ "${CHART_TYPE}" = "library" ]; then
+    log_info "Skipping library chart '${CHART}' (no renderable templates)."
+    continue
+  fi
+
+  RENDER_TMP="$(mktemp -d)"
+  CHART_FAILED=false
+
+  # Render default values
+  mkdir -p "${RENDER_TMP}/default"
+  if ! helm template "${CHART}" "${CHART_PATH}" --namespace "${CHART}" --output-dir "${RENDER_TMP}/default" >/dev/null 2>&1; then
+    log_error "Failed to render default values for chart '${CHART}'"
+    rm -rf "${RENDER_TMP}"
+    FAILED_CHARTS="${FAILED_CHARTS} ${CHART}"
+    continue
+  fi
+
+  # Also render any ci/*.yaml values files into separate subdirectories so Trivy scans all variants in one pass
+  if ls "${CHART_PATH}"/ci/*.yaml 1>/dev/null 2>&1; then
+    for values_file in "${CHART_PATH}"/ci/*.yaml; do
+      ci_name="$(basename "${values_file}" .yaml)"
+      mkdir -p "${RENDER_TMP}/ci-${ci_name}"
+      if ! helm template "${CHART}" "${CHART_PATH}" --namespace "${CHART}" -f "${values_file}" --output-dir "${RENDER_TMP}/ci-${ci_name}" >/dev/null 2>&1; then
+        log_error "Failed to render ${values_file} for chart '${CHART}'"
+        CHART_FAILED=true
+      fi
+    done
+  fi
+
+  if [ "${CHART_FAILED}" = true ] || ! scan_target "${CHART}" "${RENDER_TMP}" "${CHART}"; then
+    FAILED_CHARTS="${FAILED_CHARTS} ${CHART}"
+  fi
+
+  rm -rf "${RENDER_TMP}"
+done
+
+if [ -n "${FAILED_CHARTS}" ]; then
+  log_fatal "Trivy security check failed for:${FAILED_CHARTS}"
+fi

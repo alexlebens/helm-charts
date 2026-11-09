@@ -17,7 +17,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     -h|--help)
-      echo "Usage: mise run check-chart <chart-name> [--step <repos|build|lint|ct|kubeconform|all>]"
+      echo "Usage: mise run check-chart <chart-name> [--step <repos|build|lint|ct|trivy|kubeconform|all>]"
       exit 0
       ;;
     *)
@@ -32,7 +32,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ -z "${CHART}" ]; then
-  log_fatal "Usage: mise run check-chart <chart-name> [--step <repos|build|lint|ct|kubeconform|all>]"
+  log_fatal "Usage: mise run check-chart <chart-name> [--step <repos|build|lint|ct|trivy|kubeconform|all>]"
 fi
 
 CHART_NAME=$(basename "${CHART}")
@@ -57,6 +57,11 @@ step_lint() {
 step_ct() {
   log_step "Running chart-testing ct lint for ${CHART_NAME} ..."
   "${REPO_ROOT}/.mise/tasks/check/chart" --chart "${CHART_NAME}"
+}
+
+step_trivy() {
+  log_step "Scanning Helm manifests with Trivy for ${CHART_NAME} ..."
+  "${REPO_ROOT}/.mise/tasks/check/trivy" --chart "${CHART_NAME}"
 }
 
 step_kubeconform() {
@@ -86,6 +91,9 @@ case "${STEP}" in
   ct|test)
     step_ct
     ;;
+  trivy)
+    step_trivy
+    ;;
   kubeconform)
     step_kubeconform
     ;;
@@ -94,10 +102,11 @@ case "${STEP}" in
     step_build
     step_lint
     step_ct
+    step_trivy
     step_kubeconform
     log_success "Chart '${CHART_NAME}' passed all check-chart checks!"
     ;;
   *)
-    log_fatal "Unknown step '${STEP}'. Valid steps: repos, build, lint, ct, kubeconform, all."
+    log_fatal "Unknown step '${STEP}'. Valid steps: repos, build, lint, ct, trivy, kubeconform, all."
     ;;
 esac

@@ -32,6 +32,16 @@ _helm_charts_mise_task_args() {
         '(-h --help)'{-h,--help}'[Show help]'
       return 0
       ;;
+    "check:trivy")
+      _arguments \
+        '--chart[Specific chart to scan]:chart:_helm_charts_chart_tag' \
+        '--charts[Space-separated charts to scan]:charts:_helm_charts_chart_tag' \
+        '--manifest[Manifest file or directory to scan]:file:_files' \
+        '--ignorefile[Trivy ignore file]:file:_files' \
+        '--fail-on[Severity threshold to fail on]:severity:(ANY CRITICAL HIGH)' \
+        '(-h --help)'{-h,--help}'[Show help]'
+      return 0
+      ;;
     "gitea:release-chart")
       _arguments \
         '--chart[Specific chart to release]:chart:_helm_charts_chart_tag' \

@@ -279,3 +279,61 @@ jobs:
             '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
             }}/actions/runs/${{ github.run_id }}", "clear": true}]'
           image: true
+
+  trivy:
+    needs: [detect-changes, lint]
+    runs-on: ubuntu-runner
+    if: |
+      needs.detect-changes.result == 'success' &&
+      needs.detect-changes.outputs.changes-detected == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        chart: ${{ fromJSON(needs.detect-changes.outputs.matrix) }}
+    env:
+      CHART: ${{ matrix.chart }}
+      FAILED_STAGE: "Initialization"
+    steps:
+      - name: Checkout
+        uses: builtin:checkout
+        with:
+          fetch-depth: 1
+
+      - name: Setup Tools (mise)
+        run: mise install
+
+      - name: Add Repositories
+        run: |
+          mise run check-chart "${CHART}" --step repos
+
+      - name: Build Chart Dependencies
+        run: |
+          echo "FAILED_STAGE=Build Chart Dependencies" >> "$GITHUB_ENV"
+          mise run check-chart "${CHART}" --step build
+
+      - name: Run Trivy Security Scan
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN || secrets.GIT_TOKEN }}
+          PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "FAILED_STAGE=Run Trivy Security Scan" >> "$GITHUB_ENV"
+          mise run check:trivy --chart "${CHART}"
+
+      - name: ntfy Failed
+        uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
+        if: failure()
+        with:
+          url: "${{ secrets.NTFY_URL }}"
+          topic: "${{ vars.NTFY_TOPIC }}"
+          title: "🚨 Trivy Security Scan Failure - ${{ matrix.chart }}"
+          priority: 3
+          headers: '{"Authorization": "Bearer ${{ secrets.NTFY_CRED }}"}'
+          tags: action,failed
+          details: "Security scan failed for chart: ${{ matrix.chart }} at stage: ${{ env.FAILED_STAGE }}"
+          icon: "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+          actions:
+            '[{"action": "view", "label": "View Run", "url": "${{ vars.PUBLIC_URL }}/${{ github.repository
+            }}/actions/runs/${{ github.run_id }}", "clear": true}]'
+          image: true
