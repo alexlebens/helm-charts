@@ -75,6 +75,16 @@ mise run check:trivy --chart "<chart-name>"
 mise run test
 ```
 
+### Test Conventions
+
+- **Unit tests required**: every chart with `templates/*.yaml` must have `tests/*_test.yaml` helm-unittest suites (one
+  per template, named `<template>_test.yaml`). `mise run helm:lint` fails otherwise.
+- **CI scenarios**: add non-default values under `charts/<name>/ci/*-values.yaml`; `ct lint` and kubeconform render
+  each.
+- **Snapshots**: use `matchSnapshot` for large rendered resources; commit `tests/__snapshot__/`.
+- **Schemas**: provide a permissive `values.schema.json` typing key values (avoid `additionalProperties: false`).
+- **Known bugs**: mark with `skip: { reason: ... }` plus a comment rather than deleting the test.
+
 ---
 
 ## 4. Documentation & Downstream Sync
