@@ -64,6 +64,8 @@ backupConfig:
     runAsNonRoot: true
     runAsUser: 1000
     runAsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
 
   # -- Security context for CronJob containers
   securityContext:

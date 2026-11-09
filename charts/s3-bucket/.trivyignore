@@ -1,0 +1,5 @@
+# The backup-scripts ConfigMap only references secret environment variable names (NTFY_TOKEN, etc.);
+# values are injected from ExternalSecret-managed Secrets, never stored in the ConfigMap.
+# https://avd.aquasec.com/misconfig/ksv-0109 (ConfigMap with secrets)
+KSV-0109
+AVD-KSV-0109
