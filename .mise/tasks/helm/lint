@@ -14,7 +14,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
       echo "Usage: mise run helm:lint [chart...] [--charts <charts...>] [--namespace <namespace>]"
-      echo "Lints Helm charts and runs unit tests if present."
+      echo "Lints Helm charts, requires unit tests for charts with templates, and runs them."
       exit 0
       ;;
     --namespace)
@@ -45,6 +45,16 @@ for C in "${CHARTS[@]}"; do
 
   if [ ! -d "${C_PATH}" ]; then
     log_error "Chart directory '${C_PATH}' not found."
+    FAILED_CHARTS+=("${C}")
+    continue
+  fi
+
+  # Coverage gate: any chart that ships rendered templates must ship unit tests.
+  shopt -s nullglob
+  RENDERED_TEMPLATES=("${C_PATH}"/templates/*.yaml "${C_PATH}"/templates/*.yml)
+  shopt -u nullglob
+  if [ ${#RENDERED_TEMPLATES[@]} -gt 0 ] && ! ls "${C_PATH}"/tests/*_test.yaml >/dev/null 2>&1; then
+    log_error "Chart '${C}' has templates but no unit tests (expected charts/${C}/tests/*_test.yaml)."
     FAILED_CHARTS+=("${C}")
     continue
   fi

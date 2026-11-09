@@ -134,3 +134,39 @@ setup() {
   assert_success
   assert_output --partial "Usage: mise run generate:docs"
 }
+
+# -----------------------------------------------------------------------------
+# helm:lint unit test coverage gate
+# -----------------------------------------------------------------------------
+
+_setup_lint_sandbox() {
+  LINT_ROOT="${BATS_TEST_TMPDIR}/repo"
+  mkdir -p "${LINT_ROOT}/.mise" "${LINT_ROOT}/charts/${1}/templates"
+  cp -R "${PROJECT_ROOT}/.mise/lib" "${LINT_ROOT}/.mise/lib"
+  printf 'apiVersion: v2\nname: %s\nversion: 0.1.0\n' "${1}" > "${LINT_ROOT}/charts/${1}/Chart.yaml"
+  printf 'kind: ConfigMap\n' > "${LINT_ROOT}/charts/${1}/templates/config-map.yaml"
+  _stub helm 'exit 0'
+  export MISE_PROJECT_ROOT="${LINT_ROOT}"
+}
+
+@test "helm:lint: fails for a chart with templates but no unit tests" {
+  _setup_lint_sandbox demo
+  run "${PROJECT_ROOT}/.mise/tasks/helm/lint" demo
+  assert_failure
+  assert_output --partial "has templates but no unit tests"
+}
+
+@test "helm:lint: passes the coverage gate when unit tests exist" {
+  _setup_lint_sandbox demo
+  mkdir -p "${LINT_ROOT}/charts/demo/tests"
+  printf 'suite: demo\ntests: []\n' > "${LINT_ROOT}/charts/demo/tests/config-map_test.yaml"
+  run "${PROJECT_ROOT}/.mise/tasks/helm/lint" demo
+  assert_success
+}
+
+@test "helm:lint: does not require unit tests for charts without templates" {
+  _setup_lint_sandbox demo
+  rm "${LINT_ROOT}/charts/demo/templates/config-map.yaml"
+  run "${PROJECT_ROOT}/.mise/tasks/helm/lint" demo
+  assert_success
+}
