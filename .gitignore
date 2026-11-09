@@ -7,3 +7,7 @@ charts/**/charts/
 # ide
 .vscode/
 helm-charts.code-workspace
+
+# BATS test helper libraries (cloned at test time)
+.mise/tests/bash/test_helper/bats-support
+.mise/tests/bash/test_helper/bats-assert
