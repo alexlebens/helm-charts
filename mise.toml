@@ -11,36 +11,65 @@ kubectl = "1.37.2"
 shellcheck = "0.11.0"
 yq = "4.54.2"
 
-# -- Helm Chart Testing & Validation
-[tasks."docs:generate"]
-description = "Generate markdown documentation for Helm charts using helm-docs"
-run = ".mise/tasks/generate-docs"
+# -- Chart Management
+[tasks.check-chart]
+description = "Validate a Helm chart following test-charts workflow conventions"
+depends = ["helm:plugins"]
+run = ".mise/tasks/check-chart"
 
+# -- Helm
 [tasks."helm:plugins"]
 description = "Install required Helm plugins (cm-push, unittest)"
-run = ".mise/tasks/helm-plugins"
+run = ".mise/tasks/helm/plugins"
+
+[tasks."helm:repo"]
+description = "Discover and register Helm repositories required by chart dependencies"
+run = ".mise/tasks/helm/repo"
+
+[tasks."helm:dep"]
+description = "Build or update Helm chart dependencies"
+run = ".mise/tasks/helm/dep"
+
+[tasks."helm:lint"]
+description = "Lint Helm charts and run unit tests"
+depends = ["helm:plugins"]
+run = ".mise/tasks/helm/lint"
+
+[tasks."helm:build"]
+description = "Update repositories, build dependencies, and lint Helm charts"
+depends = ["helm:plugins"]
+run = ".mise/tasks/helm/build"
 
 [tasks."lint:chart"]
-description = "Lint a Helm chart (add repos, build dependencies, helm lint, helm unittest)"
+description = "Legacy alias: lint a Helm chart"
 depends = ["helm:plugins"]
-run = ".mise/tasks/lint-chart"
+run = ".mise/tasks/check-chart --step lint"
 
 [tasks."test:chart"]
-description = "Run chart-testing ct lint against charts"
-run = ".mise/tasks/test-chart"
+description = "Legacy alias: run chart-testing ct lint against charts"
+run = ".mise/tasks/check/chart"
 
-[tasks."validate:kubeconform"]
-description = "Validate rendered chart manifests with kubeconform against schemas"
-run = ".mise/tasks/validate-kubeconform"
+# -- Generation
+[tasks."generate:docs"]
+description = "Generate markdown documentation for Helm charts using helm-docs"
+run = ".mise/tasks/generate/docs"
 
 [tasks."schemas:generate"]
 description = "Generate JSON schemas from upstream CRDs using openapi2jsonschema"
-run = ".mise/tasks/generate-schemas"
+run = ".mise/tasks/generate/schemas"
 
-# -- Workflow & Code Checks
+# -- Check
+[tasks."check:chart"]
+description = "Run chart-testing ct lint against charts"
+run = ".mise/tasks/check/chart"
+
 [tasks."check:workflows"]
 description = "Validate Gitea Actions workflow YAML files with actionlint"
 run = ".mise/tasks/check/workflows"
+
+[tasks."check:kubeconform"]
+description = "Validate rendered chart manifests with kubeconform against schemas"
+run = ".mise/tasks/check/kubeconform"
 
 # -- Gitea CI/CD Workflow Tasks
 [tasks."gitea:detect-charts"]

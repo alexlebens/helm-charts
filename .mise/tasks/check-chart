@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+#MISE description="Validate a Helm chart following test-charts workflow conventions"
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../lib/log.sh
+source "${REPO_ROOT}/.mise/lib/log.sh"
+
+CHART=""
+STEP="all"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --step)
+      STEP="$2"
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: mise run check-chart <chart-name> [--step <repos|build|lint|ct|kubeconform|all>]"
+      exit 0
+      ;;
+    *)
+      if [ -z "${CHART}" ]; then
+        CHART="$1"
+        shift
+      else
+        log_fatal "Unknown argument: $1"
+      fi
+      ;;
+  esac
+done
+
+if [ -z "${CHART}" ]; then
+  log_fatal "Usage: mise run check-chart <chart-name> [--step <repos|build|lint|ct|kubeconform|all>]"
+fi
+
+CHART_NAME=$(basename "${CHART}")
+CHART_PATH="${REPO_ROOT}/charts/${CHART_NAME}"
+
+if [ ! -d "${CHART_PATH}" ]; then
+  log_fatal "Chart directory '${CHART_PATH}' does not exist."
+fi
+
+step_repos() {
+  "${REPO_ROOT}/.mise/tasks/helm/repo" --main-dir "${REPO_ROOT}" --chart "${CHART_NAME}"
+}
+
+step_build() {
+  "${REPO_ROOT}/.mise/tasks/helm/dep" --main-dir "${REPO_ROOT}" --chart "${CHART_NAME}"
+}
+
+step_lint() {
+  "${REPO_ROOT}/.mise/tasks/helm/lint" --main-dir "${REPO_ROOT}" --chart "${CHART_NAME}"
+}
+
+step_ct() {
+  log_step "Running chart-testing ct lint for ${CHART_NAME} ..."
+  "${REPO_ROOT}/.mise/tasks/check/chart" --chart "${CHART_NAME}"
+}
+
+step_kubeconform() {
+  local SCHEMA_DIR="${SCHEMA_DIR:-${HOME}/.schemas}"
+  if [ ! -d "${SCHEMA_DIR}" ] || [ -z "$(ls -A "${SCHEMA_DIR}" 2>/dev/null)" ]; then
+    log_step "Custom schemas directory empty or missing; generating schemas ..."
+    if command -v openapi2jsonschema.py >/dev/null 2>&1; then
+      "${REPO_ROOT}/.mise/tasks/generate/schemas"
+    else
+      log_warn "openapi2jsonschema.py not found on PATH; skipping schema generation."
+    fi
+  fi
+  log_step "Validating Helm manifests with kubeconform for ${CHART_NAME} ..."
+  "${REPO_ROOT}/.mise/tasks/check/kubeconform" --chart "${CHART_NAME}" --schema-dir "${SCHEMA_DIR}"
+}
+
+case "${STEP}" in
+  repos|add-repos)
+    step_repos
+    ;;
+  build|build-deps)
+    step_build
+    ;;
+  lint)
+    step_lint
+    ;;
+  ct|test)
+    step_ct
+    ;;
+  kubeconform)
+    step_kubeconform
+    ;;
+  all)
+    step_repos
+    step_build
+    step_lint
+    step_ct
+    step_kubeconform
+    log_success "Chart '${CHART_NAME}' passed all check-chart checks!"
+    ;;
+  *)
+    log_fatal "Unknown step '${STEP}'. Valid steps: repos, build, lint, ct, kubeconform, all."
+    ;;
+esac

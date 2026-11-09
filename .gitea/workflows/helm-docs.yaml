@@ -32,7 +32,7 @@ jobs:
         run: mise install
 
       - name: Generate Helm Docs
-        run: mise run docs:generate
+        run: mise run generate:docs
 
       - name: Check for Documentation Changes
         id: git-diff
@@ -64,6 +64,6 @@ jobs:
       - name: Verify Documentation (Non-Renovate PRs)
         if: steps.git-diff.outputs.changed == 'true' && !startsWith(github.head_ref, 'renovate/')
         run: |
-          echo "::error::Helm docs are out of date. Please run 'mise run docs:generate' and commit the changes."
+          echo "::error::Helm docs are out of date. Please run 'mise run generate:docs' and commit the changes."
           git diff charts/**/README.md
           exit 1

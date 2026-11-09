@@ -20,11 +20,11 @@ _helm_charts_mise_task_args() {
   shift
 
   case "$task" in
-    "lint:chart")
+    "check-chart"|"lint:chart"|"check:chart"|"test:chart"|"helm:*")
       _helm_charts_chart_tag
       return 0
       ;;
-    "validate:kubeconform")
+    "check:kubeconform"|"validate:kubeconform")
       _arguments \
         '--chart[Specific chart to validate]:chart:_helm_charts_chart_tag' \
         '--charts[Space-separated charts to validate]:charts:_helm_charts_chart_tag' \

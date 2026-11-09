@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#MISE description="Lint Helm charts and run unit tests"
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)"
+REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd -- "$SCRIPT_DIR/../../.." &>/dev/null && pwd -P))}"
+# shellcheck source=../../lib/helm.sh
+source "${REPO_ROOT}/.mise/lib/helm.sh"
+
+NAMESPACE=""
+REMAINING_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      echo "Usage: mise run helm:lint [chart...] [--charts <charts...>] [--namespace <namespace>]"
+      echo "Lints Helm charts and runs unit tests if present."
+      exit 0
+      ;;
+    --namespace)
+      NAMESPACE="$2"
+      shift 2
+      ;;
+    *)
+      REMAINING_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+helm_init "${REMAINING_ARGS[@]}"
+
+# shellcheck disable=SC2153
+if [ ${#CHARTS[@]} -eq 0 ]; then
+  log_info "No charts found to lint."
+  exit 0
+fi
+
+log_step "Linting chart(s): ${CHARTS[*]}"
+FAILED_CHARTS=()
+
+for C in "${CHARTS[@]}"; do
+  C_PATH="${HELM_DIR}/${C}"
+  CHART_NS="${NAMESPACE:-${C}}"
+
+  if [ ! -d "${C_PATH}" ]; then
+    log_error "Chart directory '${C_PATH}' not found."
+    FAILED_CHARTS+=("${C}")
+    continue
+  fi
+
+  log_step "Linting chart [${C}]"
+  if ! helm lint "${C_PATH}" --namespace "${CHART_NS}"; then
+    log_error "Lint failed for ${C}"
+    FAILED_CHARTS+=("${C}")
+    continue
+  fi
+
+  if [ -d "${C_PATH}/tests" ]; then
+    log_step "Running helm unittest for [${C}]"
+    if ! (cd "${C_PATH}" && helm unittest .); then
+      log_error "Unit tests failed for ${C}"
+      FAILED_CHARTS+=("${C}")
+      continue
+    fi
+  fi
+done
+
+log_divider
+if [ ${#FAILED_CHARTS[@]} -gt 0 ]; then
+  log_error "Lint/test failed for chart(s): ${FAILED_CHARTS[*]}"
+  exit 1
+fi
+
+log_success "All charts passed lint and unit tests successfully."

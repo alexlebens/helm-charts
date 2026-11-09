@@ -16,43 +16,83 @@ setup() {
 }
 
 # -----------------------------------------------------------------------------
+# check-chart
+# -----------------------------------------------------------------------------
+
+@test "check-chart: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/check-chart" --help
+  assert_success
+  assert_output --partial "Usage: mise run check-chart"
+}
+
+# -----------------------------------------------------------------------------
 # helm:plugins
 # -----------------------------------------------------------------------------
 
 @test "helm:plugins: --help prints usage" {
-  run "${PROJECT_ROOT}/.mise/tasks/helm-plugins" --help
+  run "${PROJECT_ROOT}/.mise/tasks/helm/plugins" --help
   assert_success
   assert_output --partial "Usage: mise run helm:plugins"
 }
 
 # -----------------------------------------------------------------------------
-# lint:chart
+# helm:repo
 # -----------------------------------------------------------------------------
 
-@test "lint:chart: --help prints usage" {
-  run "${PROJECT_ROOT}/.mise/tasks/lint-chart" --help
+@test "helm:repo: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/helm/repo" --help
   assert_success
-  assert_output --partial "Usage: mise run lint:chart"
+  assert_output --partial "Usage: mise run helm:repo"
 }
 
 # -----------------------------------------------------------------------------
-# test:chart
+# helm:dep
 # -----------------------------------------------------------------------------
 
-@test "test:chart: --help prints usage" {
-  run "${PROJECT_ROOT}/.mise/tasks/test-chart" --help
+@test "helm:dep: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/helm/dep" --help
   assert_success
-  assert_output --partial "Usage: mise run test:chart"
+  assert_output --partial "Usage: mise run helm:dep"
 }
 
 # -----------------------------------------------------------------------------
-# validate:kubeconform
+# helm:lint
 # -----------------------------------------------------------------------------
 
-@test "validate:kubeconform: --help prints usage" {
-  run "${PROJECT_ROOT}/.mise/tasks/validate-kubeconform" --help
+@test "helm:lint: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/helm/lint" --help
   assert_success
-  assert_output --partial "Usage: mise run validate:kubeconform"
+  assert_output --partial "Usage: mise run helm:lint"
+}
+
+# -----------------------------------------------------------------------------
+# helm:build
+# -----------------------------------------------------------------------------
+
+@test "helm:build: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/helm/build" --help
+  assert_success
+  assert_output --partial "Usage: mise run helm:build"
+}
+
+# -----------------------------------------------------------------------------
+# check:chart
+# -----------------------------------------------------------------------------
+
+@test "check:chart: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/check/chart" --help
+  assert_success
+  assert_output --partial "Usage: mise run check:chart"
+}
+
+# -----------------------------------------------------------------------------
+# check:kubeconform
+# -----------------------------------------------------------------------------
+
+@test "check:kubeconform: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/check/kubeconform" --help
+  assert_success
+  assert_output --partial "Usage: mise run check:kubeconform"
 }
 
 # -----------------------------------------------------------------------------
@@ -76,11 +116,11 @@ setup() {
 }
 
 # -----------------------------------------------------------------------------
-# docs:generate
+# generate:docs
 # -----------------------------------------------------------------------------
 
-@test "docs:generate: --help prints usage" {
-  run "${PROJECT_ROOT}/.mise/tasks/generate-docs" --help
+@test "generate:docs: --help prints usage" {
+  run "${PROJECT_ROOT}/.mise/tasks/generate/docs" --help
   assert_success
-  assert_output --partial "Usage: mise run docs:generate"
+  assert_output --partial "Usage: mise run generate:docs"
 }

@@ -54,14 +54,19 @@ Always run the full validation pipeline before submitting changes:
 # 0. Ensure required Helm plugins are installed (cm-push, unittest)
 mise run helm:plugins
 
-# 1. Lint the chart, update repos, build dependencies, and run unit tests
-mise run lint:chart <chart-name>
+# 1. Validate the chart, update repos, build dependencies, and run unit tests
+mise run check-chart <chart-name>
+# Or test individual steps:
+# mise run helm:repo <chart-name>
+# mise run helm:dep <chart-name>
+# mise run helm:lint <chart-name>
+# mise run helm:build <chart-name>
 
 # 2. Run chart-testing (ct lint)
-mise run test:chart --charts "<chart-name>"
+mise run check:chart --charts "<chart-name>"
 
 # 3. Validate rendered manifests against Kubernetes & CRD schemas with kubeconform
-mise run validate:kubeconform --chart "<chart-name>"
+mise run check:kubeconform --chart "<chart-name>"
 
 # 4. Run Bats tests for .mise tasks and automation scripts
 mise run test

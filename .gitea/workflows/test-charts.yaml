@@ -73,19 +73,17 @@ jobs:
 
       - name: Add Repositories
         run: |
-          echo "FAILED_STAGE=Add Repositories" >> "$GITHUB_ENV"
-          mise exec -- .mise/lib/helm-add-repos.sh --chart "${CHART}"
+          mise run check-chart "${CHART}" --step repos
 
       - name: Build Chart Dependencies
         run: |
           echo "FAILED_STAGE=Build Chart Dependencies" >> "$GITHUB_ENV"
-          echo ">> Building dependencies for ${CHART} ..."
-          helm dependency build "charts/${CHART}" --skip-refresh
+          mise run check-chart "${CHART}" --step build
 
       - name: Lint and Test Chart
         run: |
           echo "FAILED_STAGE=Lint and Test Chart" >> "$GITHUB_ENV"
-          mise run lint:chart "${CHART}" --skip-build
+          mise run check-chart "${CHART}" --step lint
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -196,7 +194,7 @@ jobs:
         id: ct-lint
         run: |
           echo "FAILED_STAGE=Chart Testing (ct lint)" >> "$GITHUB_ENV"
-          mise run test:chart --charts "${CHARTS}" --target-branch "${{ gitea.event.repository.default_branch }}"
+          mise run check:chart --charts "${CHARTS}" --target-branch "${{ gitea.event.repository.default_branch }}"
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
@@ -240,14 +238,12 @@ jobs:
 
       - name: Add Repositories
         run: |
-          echo "FAILED_STAGE=Add Repositories" >> "$GITHUB_ENV"
-          mise exec -- .mise/lib/helm-add-repos.sh --chart "${CHART}"
+          mise run check-chart "${CHART}" --step repos
 
       - name: Build Chart Dependencies
         run: |
           echo "FAILED_STAGE=Build Chart Dependencies" >> "$GITHUB_ENV"
-          echo ">> Building dependencies for ${CHART} ..."
-          helm dependency build "charts/${CHART}" --skip-refresh
+          mise run check-chart "${CHART}" --step build
 
       - name: Cache CRD Schemas
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
@@ -265,7 +261,7 @@ jobs:
       - name: Run Kubeconform
         run: |
           echo "FAILED_STAGE=Run Kubeconform" >> "$GITHUB_ENV"
-          mise run validate:kubeconform --chart "${CHART}"
+          mise run check:kubeconform --chart "${CHART}"
 
       - name: ntfy Failed
         uses: niniyas/ntfy-action@28b287a465c540fb48ff37c0b542fa0efd0ec31e # master
