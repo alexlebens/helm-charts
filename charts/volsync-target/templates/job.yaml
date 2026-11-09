@@ -1,0 +1,63 @@
+{{- range $tier := tuple "a" "b" "c" "d" }}
+{{- $tierConfig := index $.Values $tier }}
+{{- if and $tierConfig $tierConfig.enabled $tierConfig.repair $tierConfig.repair.enabled }}
+{{- $r := mergeOverwrite (deepCopy $.Values.repair) (deepCopy $tierConfig.repair) }}
+{{- $token := $r.token | required (printf "Repair for tier %s requires a token" $tier) }}
+{{- $args := join " " $r.extraArgs }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-repair-%s-%s" (include "volsync.name" $) $tier $token | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "volsync.namespace" $ }}
+  labels:
+    {{- include "volsync.labels" $ | nindent 4 }}
+    app.kubernetes.io/name: {{ include "volsync.name" $ }}-repair-{{ $tier }}
+spec:
+  backoffLimit: {{ $r.backoffLimit }}
+  ttlSecondsAfterFinished: {{ $r.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "volsync.selectorLabels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ include "volsync.name" $ }}-repair-{{ $tier }}
+    spec:
+      restartPolicy: Never
+      {{- with $r.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: restic-repair
+          image: {{ $r.image.repository }}:{{ $r.image.tag }}
+          imagePullPolicy: {{ $r.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ include "volsync.repoName" (dict "root" $ "tier" $tier) }}
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              restic version
+              {{- if $r.unlock }}
+              restic unlock {{ $args }}
+              {{- end }}
+              {{- if $r.repairIndex }}
+              restic repair index {{ $args }}
+              {{- end }}
+              {{- if $r.repairSnapshots }}
+              restic repair snapshots --forget {{ $args }}
+              {{- end }}
+              {{- if $r.check }}
+              restic check {{ with $r.readDataSubset }}--read-data-subset={{ . }} {{ end }}{{ $args }}
+              {{- end }}
+          {{- with $r.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $r.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
+{{- end }}

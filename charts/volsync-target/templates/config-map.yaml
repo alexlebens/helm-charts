@@ -1,0 +1,21 @@
+{{- $anyRepair := false }}
+{{- range $tier := tuple "a" "b" "c" "d" }}
+{{- $tierConfig := index $.Values $tier }}
+{{- if and $tierConfig $tierConfig.enabled $tierConfig.repair $tierConfig.repair.enabled }}
+{{- $anyRepair = true }}
+{{- end }}
+{{- end }}
+{{- if $anyRepair }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "volsync.name" . }}-scripts
+  namespace: {{ include "volsync.namespace" . }}
+  labels:
+    {{- include "volsync.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "volsync.name" . }}-scripts
+data:
+  repair.sh: |-
+{{ .Files.Get "scripts/repair.sh" | indent 4 }}
+{{- end }}

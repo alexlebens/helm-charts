@@ -25,6 +25,85 @@ manual: ""
 # -- Global unlock token to clear stale restic repository locks across all tiers
 unlock: ""
 
+# -- Restore from backup via ReplicationDestination (defaults shared by all tiers; override per tier under `<tier>.restore`)
+restore:
+  # -- Restore destination PVC. Defaults to `pvcTarget`
+  destinationPVC: ""
+
+  # -- Copy method for the restore (Direct writes into destinationPVC, Snapshot creates a VolumeSnapshot)
+  copyMethod: Direct
+
+  # -- Capacity of the destination volume, only needed if the chart/volsync must provision it
+  capacity: ""
+
+  # -- Access modes for the destination volume
+  accessModes: []
+
+  # -- Storage class for the destination volume
+  storageClassName: ceph-block
+
+  # -- Volume snapshot class (used with copyMethod Snapshot)
+  volumeSnapshotClassName: ceph-blockpool-snapshot
+
+  # -- Restore the latest snapshot taken at or before this RFC-3339 timestamp (e.g. "2026-11-01T00:00:00Z")
+  restoreAsOf: ""
+
+  # -- Skip this many snapshots back from the selected one (0 = latest)
+  previous: ""
+
+  # -- Restic cache capacity for the mover
+  cacheCapacity: 1Gi
+
+  # -- Restic cache storage class
+  cacheStorageClassName: ""
+
+  # -- Restic cache access modes
+  cacheAccessModes: []
+
+  # -- Mover security context for restore
+  moverSecurityContext: {}
+
+# -- On demand restic repair Job (defaults shared by all tiers; enable per tier under `<tier>.repair`)
+repair:
+  # -- Image used to run restic
+  image:
+    repository: docker.io/restic/restic
+    tag: 0.18.1
+    pullPolicy: IfNotPresent
+
+  # -- Run `restic unlock` before repairing
+  unlock: true
+
+  # -- Run `restic repair index` (rebuilds index from pack files)
+  repairIndex: true
+
+  # -- Run `restic repair snapshots --forget` (rewrites snapshots that reference missing data; DESTRUCTIVE to damaged snapshots)
+  repairSnapshots: false
+
+  # -- Run `restic check` after repair
+  check: true
+
+  # -- Optional `--read-data-subset` for restic check (e.g. "10%"); empty checks structure only
+  readDataSubset: ""
+
+  # -- Extra arguments appended to every restic command (e.g. ["--verbose"])
+  extraArgs: []
+
+  # -- Seconds before the finished Job is garbage collected
+  ttlSecondsAfterFinished: 86400
+
+  # -- Job backoff limit
+  backoffLimit: 0
+
+  # -- Job resources
+  resources: {}
+
+  # -- Job pod security context
+  podSecurityContext: {}
+
+  # -- Job container security context
+  securityContext: {}
+
 # -- Prometheus Rule
 prometheusRule:
   enabled: true
@@ -56,6 +135,20 @@ a:
 
   # -- 5 character cron schedule
   schedule: 0 8 * * *
+
+  # -- Restore overrides for this tier. Set `enabled` and a unique `manual` token to run a restore from GitOps
+  restore:
+    # -- Create a ReplicationDestination for this tier
+    enabled: false
+    # -- Trigger token; change it to run another restore
+    manual: ""
+
+  # -- Repair Job for this tier. Set `enabled` and change `token` to run restic repair on demand
+  repair:
+    # -- Create the repair Job for this tier
+    enabled: false
+    # -- Unique token appended to the Job name; change it to re-run the repair
+    token: ""
 
   # -- Backup configuration, inserted directly into the yaml
   restic:
@@ -110,6 +203,20 @@ b:
   # -- 5 character cron schedule
   schedule: 0 7 * * *
 
+  # -- Restore overrides for this tier. Set `enabled` and a unique `manual` token to run a restore from GitOps
+  restore:
+    # -- Create a ReplicationDestination for this tier
+    enabled: false
+    # -- Trigger token; change it to run another restore
+    manual: ""
+
+  # -- Repair Job for this tier. Set `enabled` and change `token` to run restic repair on demand
+  repair:
+    # -- Create the repair Job for this tier
+    enabled: false
+    # -- Unique token appended to the Job name; change it to re-run the repair
+    token: ""
+
   # -- Backup configuration, inserted directly into the yaml
   restic:
     # -- Unlock token to clear stale restic repository locks for this tier
@@ -163,6 +270,20 @@ c:
   # -- 5 character cron schedule
   schedule: 0 10 * * 0
 
+  # -- Restore overrides for this tier. Set `enabled` and a unique `manual` token to run a restore from GitOps
+  restore:
+    # -- Create a ReplicationDestination for this tier
+    enabled: false
+    # -- Trigger token; change it to run another restore
+    manual: ""
+
+  # -- Repair Job for this tier. Set `enabled` and change `token` to run restic repair on demand
+  repair:
+    # -- Create the repair Job for this tier
+    enabled: false
+    # -- Unique token appended to the Job name; change it to re-run the repair
+    token: ""
+
   # -- Backup configuration, inserted directly into the yaml
   restic:
     # -- Unlock token to clear stale restic repository locks for this tier
@@ -215,6 +336,20 @@ d:
 
   # -- 5 character cron schedule
   schedule: 0 9 * * 0
+
+  # -- Restore overrides for this tier. Set `enabled` and a unique `manual` token to run a restore from GitOps
+  restore:
+    # -- Create a ReplicationDestination for this tier
+    enabled: false
+    # -- Trigger token; change it to run another restore
+    manual: ""
+
+  # -- Repair Job for this tier. Set `enabled` and change `token` to run restic repair on demand
+  repair:
+    # -- Create the repair Job for this tier
+    enabled: false
+    # -- Unique token appended to the Job name; change it to re-run the repair
+    token: ""
 
   # -- Backup configuration, inserted directly into the yaml
   restic:

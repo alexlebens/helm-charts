@@ -1,0 +1,53 @@
+{{- range $tier := tuple "a" "b" "c" "d" }}
+{{- $tierConfig := index $.Values $tier }}
+{{- if and $tierConfig $tierConfig.enabled $tierConfig.restore $tierConfig.restore.enabled }}
+{{- $r := mergeOverwrite (deepCopy $.Values.restore) (deepCopy $tierConfig.restore) }}
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: {{ include "volsync.name" $ }}-destination-{{ $tier }}
+  namespace: {{ include "volsync.namespace" $ }}
+  labels:
+    {{- include "volsync.labels" $ | nindent 4 }}
+    app.kubernetes.io/name: {{ include "volsync.name" $ }}-destination-{{ $tier }}
+spec:
+  trigger:
+    manual: {{ $r.manual | required (printf "Restore for tier %s requires a manual trigger token" $tier) | quote }}
+  restic:
+    repository: {{ include "volsync.repoName" (dict "root" $ "tier" $tier) }}
+    destinationPVC: {{ $r.destinationPVC | default $.Values.pvcTarget }}
+    copyMethod: {{ $r.copyMethod }}
+    {{- with $r.capacity }}
+    capacity: {{ . }}
+    {{- end }}
+    {{- with $r.accessModes }}
+    accessModes:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with $r.storageClassName }}
+    storageClassName: {{ . }}
+    {{- end }}
+    {{- if eq $r.copyMethod "Snapshot" }}
+    volumeSnapshotClassName: {{ $r.volumeSnapshotClassName }}
+    {{- end }}
+    {{- with $r.restoreAsOf }}
+    restoreAsOf: {{ . | quote }}
+    {{- end }}
+    {{- with $r.previous }}
+    previous: {{ . }}
+    {{- end }}
+    cacheCapacity: {{ $r.cacheCapacity }}
+    {{- with $r.cacheStorageClassName }}
+    cacheStorageClassName: {{ . }}
+    {{- end }}
+    {{- with $r.cacheAccessModes }}
+    cacheAccessModes:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with (coalesce $r.moverSecurityContext $.Values.moverSecurityContext) }}
+    moverSecurityContext:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}
