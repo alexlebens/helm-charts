@@ -1,0 +1,377 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "nameOverride": {
+      "type": "string"
+    },
+    "namespaceOverride": {
+      "type": "string"
+    },
+    "kubernetesClusterName": {
+      "type": "string"
+    },
+    "pvcTarget": {
+      "type": "string"
+    },
+    "paused": {
+      "type": "boolean"
+    },
+    "manual": {
+      "type": ["string", "integer"]
+    },
+    "restore": {
+      "type": "object",
+      "properties": {
+        "copyMethod": {
+          "type": "string",
+          "enum": ["Snapshot", "Clone", "Direct"]
+        }
+      }
+    },
+    "repair": {
+      "type": "object",
+      "properties": {
+        "unlock": {
+          "type": "boolean"
+        },
+        "repairIndex": {
+          "type": "boolean"
+        },
+        "repairSnapshots": {
+          "type": "boolean"
+        },
+        "check": {
+          "type": "boolean"
+        },
+        "backoffLimit": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ttlSecondsAfterFinished": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "prometheusRule": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "backupDelayed": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxSyncLag": {
+              "type": ["string", "integer"]
+            }
+          }
+        }
+      }
+    },
+    "externalSecrets": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "a": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "manual": {
+          "type": "string"
+        },
+        "maxSyncLag": {
+          "type": ["string", "integer"]
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "restore": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "manual": {
+              "type": "string"
+            }
+          }
+        },
+        "repair": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "token": {
+              "type": ["string", "integer"]
+            }
+          }
+        },
+        "restic": {
+          "type": "object",
+          "properties": {
+            "pruneIntervalDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "copyMethod": {
+              "type": "string",
+              "enum": ["Snapshot", "Clone", "Direct"]
+            },
+            "retain": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "externalSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "storeName": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "b": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "manual": {
+          "type": "string"
+        },
+        "maxSyncLag": {
+          "type": ["string", "integer"]
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "restore": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "manual": {
+              "type": "string"
+            }
+          }
+        },
+        "repair": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "token": {
+              "type": ["string", "integer"]
+            }
+          }
+        },
+        "restic": {
+          "type": "object",
+          "properties": {
+            "pruneIntervalDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "copyMethod": {
+              "type": "string",
+              "enum": ["Snapshot", "Clone", "Direct"]
+            },
+            "retain": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "externalSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "storeName": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "c": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "manual": {
+          "type": "string"
+        },
+        "maxSyncLag": {
+          "type": ["string", "integer"]
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "restore": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "manual": {
+              "type": "string"
+            }
+          }
+        },
+        "repair": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "token": {
+              "type": ["string", "integer"]
+            }
+          }
+        },
+        "restic": {
+          "type": "object",
+          "properties": {
+            "pruneIntervalDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "copyMethod": {
+              "type": "string",
+              "enum": ["Snapshot", "Clone", "Direct"]
+            },
+            "retain": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "externalSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "storeName": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "d": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "manual": {
+          "type": "string"
+        },
+        "maxSyncLag": {
+          "type": ["string", "integer"]
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "restore": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "manual": {
+              "type": "string"
+            }
+          }
+        },
+        "repair": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "token": {
+              "type": ["string", "integer"]
+            }
+          }
+        },
+        "restic": {
+          "type": "object",
+          "properties": {
+            "pruneIntervalDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "copyMethod": {
+              "type": "string",
+              "enum": ["Snapshot", "Clone", "Direct"]
+            },
+            "retain": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "externalSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "storeName": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

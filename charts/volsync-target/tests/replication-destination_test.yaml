@@ -1,0 +1,57 @@
+suite: test volsync-target ReplicationDestination
+templates:
+  - replication-destination.yaml
+release:
+  name: vs
+  namespace: ns
+tests:
+  - it: should not render by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not render for an enabled tier without restore
+    set:
+      a:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render a restore destination with a manual trigger
+    set:
+      a:
+        enabled: true
+        restore:
+          enabled: true
+          manual: restore-1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ReplicationDestination
+      - equal:
+          path: metadata.name
+          value: data-backup-destination-a
+      - equal:
+          path: spec.trigger.manual
+          value: restore-1
+      - equal:
+          path: spec.restic.repository
+          value: data-backup-secret-a
+      - equal:
+          path: spec.restic.destinationPVC
+          value: data
+      - equal:
+          path: spec.restic.copyMethod
+          value: Direct
+
+  - it: should fail when restore is enabled without a manual trigger token
+    set:
+      a:
+        enabled: true
+        restore:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: Restore for tier a requires a manual trigger token

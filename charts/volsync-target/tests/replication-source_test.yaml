@@ -1,0 +1,101 @@
+suite: test volsync-target ReplicationSource
+templates:
+  - replication-source.yaml
+release:
+  name: vs
+  namespace: ns
+tests:
+  - it: should not render when no tier is enabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render a ReplicationSource per enabled tier
+    set:
+      a:
+        enabled: true
+      b:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 2
+      - isKind:
+          of: ReplicationSource
+      - equal:
+          path: metadata.name
+          value: data-backup-source-a
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: data-backup-source-b
+        documentIndex: 1
+
+  - it: should use schedule, retention and PVC target
+    set:
+      pvcTarget: media
+      a:
+        enabled: true
+        schedule: "15 2 * * *"
+        restic:
+          retain:
+            daily: 3
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: metadata.name
+          value: media-backup-source-a
+      - equal:
+          path: spec.sourcePVC
+          value: media
+      - equal:
+          path: spec.trigger.schedule
+          value: "15 2 * * *"
+      - equal:
+          path: spec.restic.retain.daily
+          value: 3
+      - equal:
+          path: spec.restic.repository
+          value: media-backup-secret-a
+      - equal:
+          path: spec.restic.copyMethod
+          value: Snapshot
+
+  - it: should use per-tier defaults for schedule
+    set:
+      a:
+        enabled: true
+      c:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.trigger.schedule
+          value: "0 8 * * *"
+        documentIndex: 0
+      - equal:
+          path: spec.trigger.schedule
+          value: "0 10 * * 0"
+        documentIndex: 1
+
+  - it: should not render a tier that is not enabled
+    set:
+      b:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: data-backup-source-b
+
+  - it: should match the snapshot with all tiers enabled
+    set:
+      a:
+        enabled: true
+      b:
+        enabled: true
+      c:
+        enabled: true
+      d:
+        enabled: true
+    asserts:
+      - matchSnapshot: {}

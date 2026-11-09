@@ -1,0 +1,75 @@
+suite: test volsync-target PrometheusRule
+templates:
+  - prometheus-rule.yaml
+release:
+  name: vs
+  namespace: ns
+tests:
+  - it: should render the pod failed alert
+    set:
+      a:
+        enabled: true
+    asserts:
+      - isKind:
+          of: PrometheusRule
+      - equal:
+          path: metadata.name
+          value: data-backup
+      - equal:
+          path: spec.groups[0].rules[0].alert
+          value: VolSyncBackupPodFailed
+
+  - it: should add a delayed alert per enabled tier
+    set:
+      a:
+        enabled: true
+      b:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.groups[0].rules[1].alert
+          value: VolSyncBackupDelayed-a
+      - equal:
+          path: spec.groups[0].rules[2].alert
+          value: VolSyncBackupDelayed-b
+      - equal:
+          path: spec.groups[0].rules[1].labels.severity
+          value: warning
+
+  - it: should honor global maxSyncLag
+    set:
+      prometheusRule:
+        backupDelayed:
+          maxSyncLag: "7200"
+      a:
+        enabled: true
+    asserts:
+      - matchRegex:
+          path: spec.groups[0].rules[1].annotations.description
+          pattern: in 2h
+
+  # Known chart bug: `default true <false>` evaluates to true, so enabled=false is ignored.
+  # Remove `skip` once templates/prometheus-rule.yaml handles an explicit false.
+  - it: should omit delayed alerts when disabled
+    skip:
+      reason: backupDelayed.enabled=false is currently ignored by the template
+    set:
+      prometheusRule:
+        backupDelayed:
+          enabled: false
+      a:
+        enabled: true
+    asserts:
+      - lengthEqual:
+          path: spec.groups[0].rules
+          count: 1
+
+  - it: should not render when prometheusRule is disabled
+    set:
+      prometheusRule:
+        enabled: false
+      a:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0

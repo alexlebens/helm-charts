@@ -1,0 +1,121 @@
+should match the snapshot with all tiers enabled:
+  1: |
+    apiVersion: volsync.backube/v1alpha1
+    kind: ReplicationSource
+    metadata:
+      labels:
+        app.kubernetes.io/instance: vs
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: data-backup-source-a
+        app.kubernetes.io/part-of: vs
+        app.kubernetes.io/version: 0.17.0
+        helm.sh/chart: volsync-target-4.1.0
+      name: data-backup-source-a
+      namespace: ns
+    spec:
+      restic:
+        cacheCapacity: 1Gi
+        copyMethod: Snapshot
+        pruneIntervalDays: 7
+        repository: data-backup-secret-a
+        retain:
+          daily: 7
+          hourly: 0
+          monthly: 0
+          weekly: 4
+          yearly: 0
+        storageClassName: ceph-block
+        volumeSnapshotClassName: ceph-blockpool-snapshot
+      sourcePVC: data
+      trigger:
+        schedule: 0 8 * * *
+  2: |
+    apiVersion: volsync.backube/v1alpha1
+    kind: ReplicationSource
+    metadata:
+      labels:
+        app.kubernetes.io/instance: vs
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: data-backup-source-b
+        app.kubernetes.io/part-of: vs
+        app.kubernetes.io/version: 0.17.0
+        helm.sh/chart: volsync-target-4.1.0
+      name: data-backup-source-b
+      namespace: ns
+    spec:
+      restic:
+        cacheCapacity: 1Gi
+        copyMethod: Snapshot
+        pruneIntervalDays: 7
+        repository: data-backup-secret-b
+        retain:
+          daily: 7
+          hourly: 0
+          monthly: 0
+          weekly: 4
+          yearly: 0
+        storageClassName: ceph-block
+        volumeSnapshotClassName: ceph-blockpool-snapshot
+      sourcePVC: data
+      trigger:
+        schedule: 0 7 * * *
+  3: |
+    apiVersion: volsync.backube/v1alpha1
+    kind: ReplicationSource
+    metadata:
+      labels:
+        app.kubernetes.io/instance: vs
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: data-backup-source-c
+        app.kubernetes.io/part-of: vs
+        app.kubernetes.io/version: 0.17.0
+        helm.sh/chart: volsync-target-4.1.0
+      name: data-backup-source-c
+      namespace: ns
+    spec:
+      restic:
+        cacheCapacity: 1Gi
+        copyMethod: Snapshot
+        pruneIntervalDays: 7
+        repository: data-backup-secret-c
+        retain:
+          daily: 0
+          hourly: 0
+          monthly: 0
+          weekly: 6
+          yearly: 0
+        storageClassName: ceph-block
+        volumeSnapshotClassName: ceph-blockpool-snapshot
+      sourcePVC: data
+      trigger:
+        schedule: 0 10 * * 0
+  4: |
+    apiVersion: volsync.backube/v1alpha1
+    kind: ReplicationSource
+    metadata:
+      labels:
+        app.kubernetes.io/instance: vs
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: data-backup-source-d
+        app.kubernetes.io/part-of: vs
+        app.kubernetes.io/version: 0.17.0
+        helm.sh/chart: volsync-target-4.1.0
+      name: data-backup-source-d
+      namespace: ns
+    spec:
+      restic:
+        cacheCapacity: 1Gi
+        copyMethod: Snapshot
+        pruneIntervalDays: 35
+        repository: data-backup-secret-d
+        retain:
+          daily: 0
+          hourly: 0
+          monthly: 0
+          weekly: 6
+          yearly: 0
+        storageClassName: ceph-block
+        volumeSnapshotClassName: ceph-blockpool-snapshot
+      sourcePVC: data
+      trigger:
+        schedule: 0 9 * * 0
