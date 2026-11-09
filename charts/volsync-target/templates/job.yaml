@@ -27,6 +27,11 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ include "volsync.name" $ }}-scripts
+            defaultMode: 0755
       containers:
         - name: restic-repair
           image: {{ $r.image.repository }}:{{ $r.image.tag }}
@@ -34,23 +39,27 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "volsync.repoName" (dict "root" $ "tier" $tier) }}
+          env:
+            - name: UNLOCK
+              value: {{ $r.unlock | quote }}
+            - name: REPAIR_INDEX
+              value: {{ $r.repairIndex | quote }}
+            - name: REPAIR_SNAPSHOTS
+              value: {{ $r.repairSnapshots | quote }}
+            - name: CHECK
+              value: {{ $r.check | quote }}
+            - name: READ_DATA_SUBSET
+              value: {{ $r.readDataSubset | quote }}
+            - name: EXTRA_ARGS
+              value: {{ $args | quote }}
           command:
             - /bin/sh
-            - -ec
-            - |
-              restic version
-              {{- if $r.unlock }}
-              restic unlock {{ $args }}
-              {{- end }}
-              {{- if $r.repairIndex }}
-              restic repair index {{ $args }}
-              {{- end }}
-              {{- if $r.repairSnapshots }}
-              restic repair snapshots --forget {{ $args }}
-              {{- end }}
-              {{- if $r.check }}
-              restic check {{ with $r.readDataSubset }}--read-data-subset={{ . }} {{ end }}{{ $args }}
-              {{- end }}
+            - /scripts/repair.sh
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts/repair.sh
+              subPath: repair.sh
+              readOnly: true
           {{- with $r.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
