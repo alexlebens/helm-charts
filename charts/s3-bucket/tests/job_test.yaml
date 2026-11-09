@@ -1,0 +1,24 @@
+suite: test s3-bucket immediate backup Job
+templates:
+  - job.yaml
+release:
+  name: my-bkt
+  namespace: ns
+tests:
+  - it: should not render by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render a Job when backup immediate is set
+    set:
+      backups:
+        a:
+          enabled: true
+          immediate: true
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: metadata.namespace
+          value: ns

@@ -1,0 +1,28 @@
+suite: test s3-bucket backup scripts ConfigMap
+templates:
+  - config-map.yaml
+release:
+  name: my-bkt
+  namespace: ns
+tests:
+  - it: should not render without enabled backups
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render the backup script when a backup is enabled
+    set:
+      backups:
+        a:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ConfigMap
+      - equal:
+          path: metadata.name
+          value: my-bkt-backup-scripts
+      - matchRegex:
+          path: data["backup.sh"]
+          pattern: rclone \$\{MODE\}

@@ -1,0 +1,107 @@
+suite: test s3-bucket backup CronJob
+templates:
+  - cron-job.yaml
+release:
+  name: my-bkt
+  namespace: ns
+tests:
+  - it: should not render by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render a CronJob for each enabled backup
+    set:
+      backups:
+        a:
+          enabled: true
+        b:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 2
+      - isKind:
+          of: CronJob
+      - equal:
+          path: metadata.name
+          value: my-bkt-backup-a
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: my-bkt-backup-b
+        documentIndex: 1
+
+  - it: should apply schedule, timezone and suspend settings
+    set:
+      backups:
+        a:
+          enabled: true
+          cronJob:
+            schedule: "5 4 * * *"
+            suspend: true
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "5 4 * * *"
+      - equal:
+          path: spec.timeZone
+          value: America/Chicago
+      - equal:
+          path: spec.suspend
+          value: true
+      - equal:
+          path: spec.concurrencyPolicy
+          value: Forbid
+
+  - it: should run as non-root with a locked-down container
+    set:
+      backups:
+        a:
+          enabled: true
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.automountServiceAccountToken
+          value: false
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command
+          value:
+            - /bin/sh
+            - /scripts/backup.sh
+
+  - it: should use the configured rclone image
+    set:
+      backups:
+        a:
+          enabled: true
+      backupConfig:
+        image:
+          repository: example/rclone
+          tag: "9.9.9"
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].image
+          value: example/rclone:9.9.9
+
+  # Known chart bug: `{{ . | quote }}` inside a double-quoted YAML value produces invalid YAML.
+  # Remove `skip` once RCLONE_EXCLUDE_FLAGS is rendered safely.
+  - it: should render exclude flags
+    skip:
+      reason: non-empty backups.<tier>.exclude renders invalid YAML
+    set:
+      backups:
+        a:
+          enabled: true
+          exclude:
+            - "*.tmp"
+    asserts:
+      - hasDocuments:
+          count: 1

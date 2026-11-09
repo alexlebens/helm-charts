@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "bucketName": { "type": "string" },
+    "target": { "type": "string" },
+    "additionalLabels": { "type": "object" },
+    "externalSecret": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "storeName": { "type": "string" },
+        "secretPathPrefix": { "type": "string" },
+        "secretPath": { "type": "string" }
+      }
+    },
+    "website": {
+      "type": "object",
+      "properties": { "enabled": { "type": "boolean" } }
+    },
+    "cors": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "maxAgeSeconds": { "type": "integer" }
+      }
+    },
+    "backupConfig": {
+      "type": "object",
+      "properties": {
+        "immediate": { "type": "boolean" },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": { "type": "string" },
+            "tag": { "type": ["string", "number"] }
+          }
+        },
+        "ntfy": {
+          "type": "object",
+          "properties": { "enabled": { "type": "boolean" } }
+        }
+      }
+    },
+    "backups": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "immediate": { "type": "boolean" },
+          "mode": { "type": "string", "enum": ["sync", "copy"] },
+          "exclude": { "type": "array", "items": { "type": "string" } },
+          "cronJob": {
+            "type": "object",
+            "properties": {
+              "suspend": { "type": "boolean" },
+              "schedule": { "type": "string" },
+              "backoffLimit": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "destination": {
+            "type": "object",
+            "properties": {
+              "providerType": { "type": "string" },
+              "bucketName": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
