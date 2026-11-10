@@ -11,7 +11,7 @@ kubectl = "1.37.2"
 prettier = "3.9.10"
 shellcheck = "0.11.0"
 trivy = "0.76.2"
-yq = "4.54.2"
+yq = "4.54.3"
 
 # -- Chart Management
 [tasks.check-chart]
