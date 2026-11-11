@@ -68,11 +68,7 @@ step_kubeconform() {
   local SCHEMA_DIR="${SCHEMA_DIR:-${HOME}/.schemas}"
   if [ ! -d "${SCHEMA_DIR}" ] || [ -z "$(ls -A "${SCHEMA_DIR}" 2>/dev/null)" ]; then
     log_step "Custom schemas directory empty or missing; generating schemas ..."
-    if command -v openapi2jsonschema.py >/dev/null 2>&1; then
-      "${REPO_ROOT}/.mise/tasks/generate/schemas"
-    else
-      log_warn "openapi2jsonschema.py not found on PATH; skipping schema generation."
-    fi
+    "${REPO_ROOT}/.mise/tasks/generate/schemas"
   fi
   log_step "Validating Helm manifests with kubeconform for ${CHART_NAME} ..."
   "${REPO_ROOT}/.mise/tasks/check/kubeconform" --chart "${CHART_NAME}" --schema-dir "${SCHEMA_DIR}"

@@ -11,3 +11,8 @@ helm-charts.code-workspace
 # BATS test helper libraries (cloned at test time)
 .mise/tests/bash/test_helper/bats-support
 .mise/tests/bash/test_helper/bats-assert
+
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]

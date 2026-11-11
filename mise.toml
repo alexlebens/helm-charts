@@ -9,8 +9,10 @@ jq = "1.8.2"
 kubeconform = "0.8.0"
 kubectl = "1.37.2"
 prettier = "3.9.10"
+python = "3.15.2"
 shellcheck = "0.11.0"
 trivy = "0.76.2"
+uv = "0.13.7"
 yq = "4.54.3"
 
 # -- Chart Management

@@ -8,10 +8,27 @@ REPO_ROOT="${MISE_PROJECT_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel
 source "${REPO_ROOT}/.mise/lib/log.sh"
 
 SCHEMA_DIR="${SCHEMA_DIR:-${HOME}/.schemas}"
+KUBECONFORM_VERSION="${KUBECONFORM_VERSION:-0.8.0}"
+OPENAPI2JSONSCHEMA_CACHE="${XDG_CACHE_HOME:-${HOME}/.cache}/kubeconform/v${KUBECONFORM_VERSION#v}/openapi2jsonschema.py"
+OPENAPI2JSONSCHEMA_URL="https://raw.githubusercontent.com/yannh/kubeconform/v${KUBECONFORM_VERSION#v}/scripts/openapi2jsonschema.py"
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  echo "Usage: mise run schemas:generate"
+  echo "Downloads upstream CRD definitions and converts them to JSON schemas for kubeconform."
+  exit 0
+fi
+
 mkdir -p "${SCHEMA_DIR}"
 
-if ! command -v openapi2jsonschema.py >/dev/null 2>&1; then
-  log_fatal "openapi2jsonschema.py is required on PATH."
+SCHEMA_SCRIPT="$(command -v openapi2jsonschema.py 2>/dev/null || true)"
+if [ -z "${SCHEMA_SCRIPT}" ]; then
+  if [ ! -f "${OPENAPI2JSONSCHEMA_CACHE}" ]; then
+    log_step "Fetching openapi2jsonschema.py (v${KUBECONFORM_VERSION#v})"
+    mkdir -p "$(dirname "${OPENAPI2JSONSCHEMA_CACHE}")"
+    curl -sSfL "${OPENAPI2JSONSCHEMA_URL}" -o "${OPENAPI2JSONSCHEMA_CACHE}"
+    chmod +x "${OPENAPI2JSONSCHEMA_CACHE}"
+  fi
+  SCHEMA_SCRIPT="${OPENAPI2JSONSCHEMA_CACHE}"
 fi
 
 log_step "Downloading CRD definitions"
@@ -48,7 +65,11 @@ wget -q "https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/co
 
 log_step "Formatting CRD schemas into JSON"
 export FILENAME_FORMAT='{kind}_{version}'
-openapi2jsonschema.py ./*.yaml
+if head -n 1 "${SCHEMA_SCRIPT}" | grep -q python; then
+  uv run --project "${REPO_ROOT}" --locked python "${SCHEMA_SCRIPT}" ./*.yaml
+else
+  "${SCHEMA_SCRIPT}" ./*.yaml
+fi
 
 mv ./*.json "${SCHEMA_DIR}/"
 

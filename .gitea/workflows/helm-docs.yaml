@@ -9,10 +9,10 @@ on:
     branches:
       - "main"
     paths:
-      - "charts/**/Chart.yaml"
-      - "charts/**/values.yaml"
-      - "charts/**/README.md.gotmpl"
       - "_templates.gotmpl"
+      - "charts/**/Chart.yaml"
+      - "charts/**/README.md.gotmpl"
+      - "charts/**/values.yaml"
 
 env:
   GIT_AUTHOR_NAME: "Gitea Actions"

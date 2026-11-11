@@ -7,9 +7,9 @@ concurrency:
 on:
   pull_request:
     paths-ignore:
-      - "charts/**/templates/**"
       - "charts/**/prometheus_rules/**"
       - "charts/**/README.md"
+      - "charts/**/templates/**"
 
 jobs:
   prettier:

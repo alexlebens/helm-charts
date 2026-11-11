@@ -42,6 +42,16 @@ if [ -n "${CHARTS}" ]; then
   "${REPO_ROOT}/.mise/lib/helm-add-repos.sh" --main-dir "${REPO_ROOT}" --charts "${CHARTS}"
 fi
 
+# Resolve bundled chart-testing schema & lint configs from mise's aqua install
+CT_DIR="$(mise where aqua:helm/chart-testing 2>/dev/null || dirname "$(command -v ct)")"
+CT_ARGS=(--validate-maintainers=false --target-branch "${TARGET_BRANCH}")
+if [ -f "${CT_DIR}/etc/chart_schema.yaml" ]; then
+  CT_ARGS+=(--chart-yaml-schema "${CT_DIR}/etc/chart_schema.yaml")
+fi
+if [ -f "${CT_DIR}/etc/lintconf.yaml" ]; then
+  CT_ARGS+=(--lint-conf "${CT_DIR}/etc/lintconf.yaml")
+fi
+
 log_step "Running chart-testing ct lint (target branch: ${TARGET_BRANCH})"
-ct lint --validate-maintainers=false --target-branch "${TARGET_BRANCH}"
+uv run --project "${REPO_ROOT}" --locked ct lint "${CT_ARGS[@]}"
 log_success "Chart testing passed!"

@@ -7,9 +7,11 @@ concurrency:
 on:
   pull_request:
     paths:
+      - ".gitea/workflows/test-mise.yaml"
       - ".mise/**"
       - "mise.toml"
-      - ".gitea/workflows/test-mise.yaml"
+      - "pyproject.toml"
+      - "uv.lock"
 
 jobs:
   test-mise:

@@ -7,9 +7,9 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "renovate.json"
       - ".gitea/workflows/test-renovate.yaml"
       - ".pre-commit-config.yaml"
+      - "renovate.json"
 
 env:
   RENOVATE_VERSION: "44"
