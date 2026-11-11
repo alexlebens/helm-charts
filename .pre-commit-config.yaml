@@ -27,16 +27,20 @@ repos:
         entry: mise exec -- shellcheck
         language: system
         files: ^(\.gitea/scripts/.*\.sh|charts/.*/scripts/.*\.sh|\.mise/(lib/.*\.sh|tasks/.*))$
-      - id: actionlint
-        name: actionlint
-        entry: mise exec -- actionlint
+      - id: jactionlint
+        name: jactionlint
+        entry: mise exec -- jactionlint --profile correctness
         language: system
         files: ^\.gitea/workflows/.*\.ya?ml$
         args:
-          - -ignore
+          - --config-file
+          - .github/actionlint.yaml
+          - --ignore
           - 'specifying action "builtin:checkout" in invalid format'
-          - -ignore
+          - --ignore
           - 'undefined variable "gitea"'
+          - --ignore
+          - 'workflow .* specified at "workflows" of "workflow_run" event is not found'
       - id: prettier
         name: prettier
         entry: mise exec -- prettier --write --ignore-unknown --ignore-path .prettierignore

@@ -68,7 +68,7 @@ description = "Run chart-testing ct lint against charts"
 run = ".mise/tasks/check/chart"
 
 [tasks."check:workflows"]
-description = "Validate Gitea Actions workflow YAML files with actionlint"
+description = "Validate Gitea Actions workflow YAML files with jactionlint"
 run = ".mise/tasks/check/workflows"
 
 [tasks."check:kubeconform"]
