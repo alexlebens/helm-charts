@@ -33,7 +33,6 @@ fi
 
 jactionlint_args=(
   --profile correctness
-  --ignore 'specifying action "builtin:checkout" in invalid format'
   --ignore 'undefined variable "gitea"'
   --ignore 'workflow .* specified at "workflows" of "workflow_run" event is not found'
 )
