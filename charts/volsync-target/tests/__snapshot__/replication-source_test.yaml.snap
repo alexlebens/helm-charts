@@ -9,7 +9,7 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-a
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.2
+        helm.sh/chart: volsync-target-4.1.3
       name: data-backup-source-a
       namespace: ns
     spec:
@@ -39,7 +39,7 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-b
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.2
+        helm.sh/chart: volsync-target-4.1.3
       name: data-backup-source-b
       namespace: ns
     spec:
@@ -69,14 +69,14 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-c
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.2
+        helm.sh/chart: volsync-target-4.1.3
       name: data-backup-source-c
       namespace: ns
     spec:
       restic:
         cacheCapacity: 1Gi
         copyMethod: Snapshot
-        pruneIntervalDays: 7
+        pruneIntervalDays: 6
         repository: data-backup-secret-c
         retain:
           daily: 0
@@ -99,14 +99,14 @@ should match the snapshot with all tiers enabled:
         app.kubernetes.io/name: data-backup-source-d
         app.kubernetes.io/part-of: vs
         app.kubernetes.io/version: 0.17.0
-        helm.sh/chart: volsync-target-4.1.2
+        helm.sh/chart: volsync-target-4.1.3
       name: data-backup-source-d
       namespace: ns
     spec:
       restic:
         cacheCapacity: 1Gi
         copyMethod: Snapshot
-        pruneIntervalDays: 35
+        pruneIntervalDays: 34
         repository: data-backup-secret-d
         retain:
           daily: 0

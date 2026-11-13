@@ -301,7 +301,7 @@ c:
   restic:
     # -- Unlock token to clear stale restic repository locks for this tier
     unlock: ""
-    pruneIntervalDays: 7
+    pruneIntervalDays: 6
     repository: ""
     retain:
       hourly: 0
@@ -368,7 +368,7 @@ d:
   restic:
     # -- Unlock token to clear stale restic repository locks for this tier
     unlock: ""
-    pruneIntervalDays: 35
+    pruneIntervalDays: 34
     repository: ""
     retain:
       hourly: 0
