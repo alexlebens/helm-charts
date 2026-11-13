@@ -59,7 +59,9 @@ jobs:
           git config user.email "${GIT_AUTHOR_EMAIL}"
           git add charts/**/README.md
           git commit -m "chore: update helm-docs [skip ci]"
-          git push "https://${GIT_TOKEN}@${SERVER_URL#https://}/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
+          SCHEME="${SERVER_URL%%://*}"
+          HOST="${SERVER_URL#*://}"
+          git push "${SCHEME}://${GIT_TOKEN}@${HOST%/}/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
 
       - name: Verify Documentation (Non-Renovate PRs)
         if: steps.git-diff.outputs.changed == 'true' && !startsWith(github.head_ref, 'renovate/')
