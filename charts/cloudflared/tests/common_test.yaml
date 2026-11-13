@@ -84,6 +84,12 @@ tests:
           value: 3
 
   - it: should match the snapshot of the Deployment
+    chart:
+      version: 0.0.0
+      appVersion: 0.0.0
+    set:
+      image:
+        tag: latest
     documentSelector:
       path: kind
       value: Deployment

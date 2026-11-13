@@ -8,8 +8,8 @@ should match the snapshot of the Deployment:
         app.kubernetes.io/instance: x
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: cloudflared
-        app.kubernetes.io/version: 2026.10.7
-        helm.sh/chart: cloudflared-4.8.8
+        app.kubernetes.io/version: 0.0.0
+        helm.sh/chart: cloudflared-0.0.0
       name: x-cloudflared
       namespace: ns
     spec:
@@ -59,7 +59,7 @@ should match the snapshot of the Deployment:
                     secretKeyRef:
                       key: cf-tunnel-token
                       name: x-cloudflared-secret
-              image: cloudflare/cloudflared:2026.10.7@sha256:4955524aeaa379e154023d5a027c250f7b35041a2e7e950cf13f144bc9b9c5ba
+              image: cloudflare/cloudflared:latest
               imagePullPolicy: IfNotPresent
               livenessProbe:
                 failureThreshold: 3
