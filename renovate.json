@@ -80,22 +80,6 @@
       ]
     },
     {
-      "description": "Automerge generic-device-plugin image on digest",
-      "matchDatasources": ["docker"],
-      "matchDepNames": ["ghcr.io/squat/generic-device-plugin"],
-      "matchUpdateTypes": ["digest"],
-      "addLabels": ["image", "automerge"],
-      "automerge": true,
-      "minimumReleaseAge": "1 days",
-      "bumpVersions": [
-        {
-          "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
-          "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
-          "bumpType": "patch"
-        }
-      ]
-    },
-    {
       "description": "Automerge minor, specific packages, without release age",
       "matchUpdateTypes": ["patch", "minor"],
       "matchPackageNames": ["/(^|/|-)(cloudflare)/", "/(^|/|-)(renovate)/"],
