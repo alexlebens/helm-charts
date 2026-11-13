@@ -80,7 +80,7 @@ Valkey chart with preconfigured settings
 | valkey.persistence.enabled | bool | `true` |  |
 | valkey.persistence.keepOnUninstall | bool | `false` |  |
 | valkey.persistence.size | string | `"1Gi"` |  |
-| valkey.persistence.storageClass | string | `"ceph-block"` |  |
+| valkey.persistence.storageClass | string | `"local-path"` |  |
 | valkey.replica.enabled | bool | `true` |  |
 | valkey.replica.replicas | int | `2` |  |
 | valkey.resources.requests.cpu | string | `"10m"` |  |

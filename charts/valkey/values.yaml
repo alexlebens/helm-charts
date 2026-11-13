@@ -15,7 +15,7 @@ valkey:
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: ceph-block
+    storageClass: local-path
     accessModes:
       - ReadWriteOnce
     keepOnUninstall: false
