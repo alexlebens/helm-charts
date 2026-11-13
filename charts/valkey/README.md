@@ -31,11 +31,6 @@ Valkey chart with preconfigured settings
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| valkey.dataStorage.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| valkey.dataStorage.className | string | `"ceph-block"` |  |
-| valkey.dataStorage.enabled | bool | `false` |  |
-| valkey.dataStorage.keepPvc | bool | `false` |  |
-| valkey.dataStorage.requestedSize | string | `"1Gi"` |  |
 | valkey.image.registry | string | `"docker.io"` |  |
 | valkey.image.repository | string | `"valkey/valkey"` |  |
 | valkey.image.tag | string | `"9.1.3@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7"` |  |
@@ -81,6 +76,11 @@ Valkey chart with preconfigured settings
 | valkey.metrics.prometheusRule.rules[3].labels.severity | string | `"critical"` |  |
 | valkey.metrics.serviceMonitor.enabled | bool | `true` |  |
 | valkey.nameOverride | string | `""` |  |
+| valkey.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| valkey.persistence.enabled | bool | `false` |  |
+| valkey.persistence.keepOnUninstall | bool | `false` |  |
+| valkey.persistence.size | string | `"1Gi"` |  |
+| valkey.persistence.storageClass | string | `"ceph-block"` |  |
 | valkey.replica.enabled | bool | `true` |  |
 | valkey.replica.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | valkey.replica.persistence.size | string | `"1Gi"` |  |
