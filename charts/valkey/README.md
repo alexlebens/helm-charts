@@ -25,7 +25,7 @@ Valkey chart with preconfigured settings
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://valkey.io/valkey-helm/ | valkey | 0.12.1 |
+| https://valkey.io/valkey-helm/ | valkey | 1.0.0 |
 
 ## Values
 
@@ -77,14 +77,11 @@ Valkey chart with preconfigured settings
 | valkey.metrics.serviceMonitor.enabled | bool | `true` |  |
 | valkey.nameOverride | string | `""` |  |
 | valkey.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| valkey.persistence.enabled | bool | `false` |  |
+| valkey.persistence.enabled | bool | `true` |  |
 | valkey.persistence.keepOnUninstall | bool | `false` |  |
 | valkey.persistence.size | string | `"1Gi"` |  |
 | valkey.persistence.storageClass | string | `"ceph-block"` |  |
 | valkey.replica.enabled | bool | `true` |  |
-| valkey.replica.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| valkey.replica.persistence.size | string | `"1Gi"` |  |
-| valkey.replica.persistence.storageClass | string | `"ceph-block"` |  |
 | valkey.replica.replicas | int | `2` |  |
 | valkey.resources.requests.cpu | string | `"10m"` |  |
 | valkey.resources.requests.memory | string | `"30Mi"` |  |

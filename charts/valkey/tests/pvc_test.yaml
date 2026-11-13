@@ -7,15 +7,15 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should generate a PVC in standalone mode with dataStorage enabled
+  - it: should generate a PVC in standalone mode with persistence enabled
     set:
       valkey:
         replica:
           enabled: false
-        dataStorage:
+        persistence:
           enabled: true
-          requestedSize: 1Gi
-          className: ceph-block
+          size: 1Gi
+          storageClass: ceph-block
     asserts:
       - isKind:
           of: PersistentVolumeClaim
@@ -27,10 +27,10 @@ tests:
       valkey:
         replica:
           enabled: false
-        dataStorage:
+        persistence:
           enabled: true
-          requestedSize: 5Gi
-          className: fast-ssd
+          size: 5Gi
+          storageClass: fast-ssd
           accessModes:
             - ReadWriteMany
     asserts:
@@ -44,12 +44,12 @@ tests:
           path: spec.accessModes
           content: ReadWriteMany
 
-  - it: should not generate a PVC when dataStorage is disabled
+  - it: should not generate a PVC when persistence is disabled
     set:
       valkey:
         replica:
           enabled: false
-        dataStorage:
+        persistence:
           enabled: false
     asserts:
       - hasDocuments:

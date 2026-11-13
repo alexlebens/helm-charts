@@ -13,7 +13,7 @@ valkey:
       cpu: 10m
       memory: 20Mi
   persistence:
-    enabled: false
+    enabled: true
     size: 1Gi
     storageClass: ceph-block
     accessModes:
@@ -22,11 +22,6 @@ valkey:
   replica:
     enabled: true
     replicas: 2
-    persistence:
-      size: 1Gi
-      storageClass: ceph-block
-      accessModes:
-        - ReadWriteOnce
   metrics:
     enabled: true
     exporter:

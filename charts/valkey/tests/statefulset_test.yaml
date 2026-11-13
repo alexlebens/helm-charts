@@ -3,6 +3,7 @@ templates:
   - charts/valkey/templates/statefulset.yaml
   - charts/valkey/templates/init_config.yaml
   - charts/valkey/templates/configmap.yaml
+  - charts/valkey/templates/secret.yaml
 tests:
   - it: should generate a StatefulSet when replica mode is enabled (default)
     template: charts/valkey/templates/statefulset.yaml
@@ -12,12 +13,12 @@ tests:
       - hasDocuments:
           count: 1
 
-  - it: should set replicas to replica count plus one (for the primary)
+  - it: should set replicas to replica count
     template: charts/valkey/templates/statefulset.yaml
     asserts:
       - equal:
           path: spec.replicas
-          value: 3
+          value: 2
 
   - it: should configure custom replica count
     set:
@@ -28,7 +29,7 @@ tests:
     asserts:
       - equal:
           path: spec.replicas
-          value: 5
+          value: 4
 
   - it: should configure replica persistence storage class and size (default)
     template: charts/valkey/templates/statefulset.yaml
@@ -43,12 +44,12 @@ tests:
   - it: should configure custom replica persistence
     set:
       valkey:
-        replica:
-          persistence:
-            size: 5Gi
-            storageClass: fast-ssd
-            accessModes:
-              - ReadWriteMany
+        persistence:
+          enabled: true
+          size: 5Gi
+          storageClass: fast-ssd
+          accessModes:
+            - ReadWriteMany
     template: charts/valkey/templates/statefulset.yaml
     asserts:
       - equal:

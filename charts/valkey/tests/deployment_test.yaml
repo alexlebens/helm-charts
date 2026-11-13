@@ -3,6 +3,7 @@ templates:
   - charts/valkey/templates/deploy_valkey.yaml
   - charts/valkey/templates/init_config.yaml
   - charts/valkey/templates/configmap.yaml
+  - charts/valkey/templates/secret.yaml
 tests:
   - it: should not generate a Deployment when replica mode is enabled (default)
     template: charts/valkey/templates/deploy_valkey.yaml
