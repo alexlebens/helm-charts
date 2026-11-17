@@ -152,6 +152,10 @@ cluster:
       shared_buffers: 128MB
       max_slot_wal_keep_size: 2000MB
       hot_standby_feedback: "on"
+      archive_timeout: "30min"
+      checkpoint_timeout: "15min"
+      max_wal_size: "2GB"
+      wal_compression: "zstd"
 
     # -- Quorum-based Synchronous Replication
     synchronous: {}
@@ -408,7 +412,7 @@ backup:
       encryption: ""
 
       # -- Number of WAL files to be archived or restored in parallel.
-      maxParallel: 4
+      maxParallel: 1
 
     data:
       # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
@@ -418,7 +422,7 @@ backup:
       encryption: ""
 
       # -- Number of data files to be archived or restored in parallel.
-      jobs: 4
+      jobs: 1
 
   # -- Scheduled backup configuration
   scheduledBackup:
