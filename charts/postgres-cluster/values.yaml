@@ -154,7 +154,6 @@ cluster:
       hot_standby_feedback: "on"
       archive_timeout: "30min"
       checkpoint_timeout: "15min"
-      max_wal_size: "2GB"
       wal_compression: "zstd"
 
     # -- Quorum-based Synchronous Replication
