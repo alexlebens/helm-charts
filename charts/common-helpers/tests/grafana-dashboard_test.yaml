@@ -1,0 +1,287 @@
+suite: test common-helpers GrafanaDashboard
+templates:
+  - grafana-dashboard.yaml
+release:
+  name: app
+  namespace: ns
+tests:
+  - it: should not render by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not render keyed entries that have no inline or remote source
+    set:
+      grafanaDashboard:
+        airgradient:
+          enabled: true
+          folder: iot
+        eaton-ups:
+          folder: hardware
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render an inline json dashboard with defaults
+    set:
+      grafanaDashboard:
+        my-dash:
+          json: '{"title":"My Dash"}'
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: GrafanaDashboard
+      - equal:
+          path: metadata.name
+          value: my-dash
+      - equal:
+          path: metadata.namespace
+          value: grafana-operator
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: my-dash
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: app
+      - equal:
+          path: metadata.labels["app.kubernetes.io/part-of"]
+          value: app
+      - equal:
+          path: spec.instanceSelector.matchLabels.app
+          value: grafana-main
+      - equal:
+          path: spec.folderUID
+          value: grafana-folder-applications
+      - equal:
+          path: spec.resyncPeriod
+          value: 6h
+      - equal:
+          path: spec.json
+          value: '{"title":"My Dash"}'
+
+  - it: should respect chart-level folder default and per-dashboard folder override
+    set:
+      grafanaDashboard:
+        folder: hardware
+        airgradient:
+          folder: iot
+          json: '{"title":"AirGradient"}'
+        eaton-ups:
+          json: '{"title":"Eaton UPS"}'
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: airgradient
+        documentIndex: 0
+      - equal:
+          path: spec.folderUID
+          value: grafana-folder-iot
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: eaton-ups
+        documentIndex: 1
+      - equal:
+          path: spec.folderUID
+          value: grafana-folder-hardware
+        documentIndex: 1
+
+  - it: should respect enabled false at chart level and per-dashboard enabled overrides
+    set:
+      grafanaDashboard:
+        enabled: false
+        suppressed-default:
+          json: '{"title":"Suppressed Default"}'
+        suppressed-explicit:
+          enabled: false
+          json: '{"title":"Suppressed Explicit"}'
+        re-enabled:
+          enabled: true
+          folder: platform
+          json: '{"title":"Re-enabled"}'
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: re-enabled
+      - equal:
+          path: spec.folderUID
+          value: grafana-folder-platform
+
+  - it: should suppress per-dashboard enabled false when chart default is true
+    set:
+      grafanaDashboard:
+        active-dash:
+          json: '{"title":"Active"}'
+        inactive-dash:
+          enabled: false
+          json: '{"title":"Inactive"}'
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: active-dash
+
+  - it: should support folderUID, folderRef, metadata, CRD options, grafanaCom, and url
+    set:
+      grafanaDashboard:
+        namespace: custom-grafana
+        resyncPeriod: 1h
+        allowCrossNamespaceImport: true
+        suspend: false
+        labels:
+          team: infra
+        annotations:
+          shared: "yes"
+        a-uid-dash:
+          folderUID: explicit-folder-uid
+          uid: custom-dash-uid
+          allowCrossNamespaceImport: false
+          suspend: true
+          datasources:
+            - inputName: DS_PROMETHEUS
+              datasourceName: kube-prometheus-stack
+          plugins:
+            - name: grafana-piechart-panel
+              version: 1.6.4
+          variables:
+            - name: cluster
+              value: cl01tl
+          labels:
+            env: prod
+          annotations:
+            perDash: "true"
+          grafanaCom:
+            id: 1860
+            revision: 37
+        b-ref-dash:
+          folderRef: custom-folder-cr
+          namespace: other-ns
+          resyncPeriod: 30m
+          url: https://example.com/dashboard.json
+    asserts:
+      - hasDocuments:
+          count: 2
+      - equal:
+          path: metadata.name
+          value: a-uid-dash
+        documentIndex: 0
+      - equal:
+          path: metadata.namespace
+          value: custom-grafana
+        documentIndex: 0
+      - equal:
+          path: metadata.labels.team
+          value: infra
+        documentIndex: 0
+      - equal:
+          path: metadata.labels.env
+          value: prod
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations.shared
+          value: "yes"
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations.perDash
+          value: "true"
+        documentIndex: 0
+      - equal:
+          path: spec.folderUID
+          value: explicit-folder-uid
+        documentIndex: 0
+      - equal:
+          path: spec.resyncPeriod
+          value: 1h
+        documentIndex: 0
+      - equal:
+          path: spec.allowCrossNamespaceImport
+          value: false
+        documentIndex: 0
+      - equal:
+          path: spec.suspend
+          value: true
+        documentIndex: 0
+      - equal:
+          path: spec.uid
+          value: custom-dash-uid
+        documentIndex: 0
+      - equal:
+          path: spec.datasources[0].datasourceName
+          value: kube-prometheus-stack
+        documentIndex: 0
+      - equal:
+          path: spec.plugins[0].name
+          value: grafana-piechart-panel
+        documentIndex: 0
+      - equal:
+          path: spec.variables[0].name
+          value: cluster
+        documentIndex: 0
+      - equal:
+          path: spec.grafanaCom.id
+          value: 1860
+        documentIndex: 0
+      - equal:
+          path: spec.grafanaCom.revision
+          value: 37
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: b-ref-dash
+        documentIndex: 1
+      - equal:
+          path: metadata.namespace
+          value: other-ns
+        documentIndex: 1
+      - equal:
+          path: spec.folderRef
+          value: custom-folder-cr
+        documentIndex: 1
+      - equal:
+          path: spec.resyncPeriod
+          value: 30m
+        documentIndex: 1
+      - equal:
+          path: spec.allowCrossNamespaceImport
+          value: true
+        documentIndex: 1
+      - equal:
+          path: spec.suspend
+          value: false
+        documentIndex: 1
+      - equal:
+          path: spec.url
+          value: https://example.com/dashboard.json
+        documentIndex: 1
+
+  - it: should reject an invalid folder name
+    set:
+      grafanaDashboard:
+        bad-dash:
+          folder: nonexistent
+          json: '{"title":"Bad"}'
+    asserts:
+      - failedTemplate: {}
+
+  - it: should match the snapshot with multiple dashboards
+    set:
+      grafanaDashboard:
+        folder: platform
+        airgradient:
+          folder: iot
+          datasources:
+            - inputName: DS_PROMETHEUS
+              datasourceName: kube-prometheus-stack
+          json: '{"title":"AirGradient","uid":"airgradient"}'
+        node-exporter:
+          grafanaCom:
+            id: 1860
+            revision: 37
+    asserts:
+      - matchSnapshot: {}

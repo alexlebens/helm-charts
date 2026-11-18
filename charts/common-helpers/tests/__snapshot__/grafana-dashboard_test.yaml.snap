@@ -1,0 +1,40 @@
+should match the snapshot with multiple dashboards:
+  1: |
+    apiVersion: grafana.integreatly.org/v1beta1
+    kind: GrafanaDashboard
+    metadata:
+      labels:
+        app.kubernetes.io/instance: app
+        app.kubernetes.io/name: airgradient
+        app.kubernetes.io/part-of: app
+      name: airgradient
+      namespace: grafana-operator
+    spec:
+      datasources:
+        - datasourceName: kube-prometheus-stack
+          inputName: DS_PROMETHEUS
+      folderUID: grafana-folder-iot
+      instanceSelector:
+        matchLabels:
+          app: grafana-main
+      json: '{"title":"AirGradient","uid":"airgradient"}'
+      resyncPeriod: 6h
+  2: |
+    apiVersion: grafana.integreatly.org/v1beta1
+    kind: GrafanaDashboard
+    metadata:
+      labels:
+        app.kubernetes.io/instance: app
+        app.kubernetes.io/name: node-exporter
+        app.kubernetes.io/part-of: app
+      name: node-exporter
+      namespace: grafana-operator
+    spec:
+      folderUID: grafana-folder-platform
+      grafanaCom:
+        id: 1860
+        revision: 37
+      instanceSelector:
+        matchLabels:
+          app: grafana-main
+      resyncPeriod: 6h

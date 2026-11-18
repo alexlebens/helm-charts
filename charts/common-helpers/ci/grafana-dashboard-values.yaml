@@ -1,0 +1,26 @@
+# Exercises inline JSON, grafanaCom, per-dashboard overrides, and disabled suppression.
+grafanaDashboard:
+  folder: platform
+  resyncPeriod: 6h
+  airgradient:
+    enabled: true
+    folder: iot
+    datasources:
+      - inputName: DS_PROMETHEUS
+        datasourceName: kube-prometheus-stack
+    json: |-
+      {
+        "title": "AirGradient",
+        "uid": "airgradient"
+      }
+  node-exporter:
+    grafanaCom:
+      id: 1860
+      revision: 37
+  disabled-dashboard:
+    enabled: false
+    folder: storage
+    json: |-
+      {
+        "title": "Disabled Dashboard"
+      }

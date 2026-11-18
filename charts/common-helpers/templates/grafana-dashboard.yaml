@@ -1,0 +1,10 @@
+{{- $defaults := $.Values.grafanaDashboard | default dict }}
+{{- $reserved := splitList "," (include "custom.grafanaDashboard.reservedKeys" $) }}
+{{- range $name := keys $defaults | sortAlpha }}
+  {{- if not (has $name $reserved) }}
+    {{- $item := index $defaults $name }}
+    {{- if and $item (kindIs "map" $item) (include "custom.grafanaDashboard.hasExternalSource" $item) }}
+      {{- include "custom.grafanaDashboard.render" (dict "root" $ "name" $name "defaults" $defaults "item" $item) }}
+    {{- end }}
+  {{- end }}
+{{- end }}

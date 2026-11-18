@@ -38,6 +38,165 @@
           "type": "string"
         }
       }
+    },
+    "grafanaDashboard": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "folder": {
+          "type": "string",
+          "enum": ["overview", "hardware", "kubernetes", "networking", "storage", "platform", "applications", "iot"]
+        },
+        "folderUID": {
+          "type": "string"
+        },
+        "folderRef": {
+          "type": "string"
+        },
+        "resyncPeriod": {
+          "type": "string"
+        },
+        "instanceSelector": {
+          "type": "object"
+        },
+        "allowCrossNamespaceImport": {
+          "type": "boolean"
+        },
+        "suspend": {
+          "type": "boolean"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "folder": {
+            "type": "string",
+            "enum": ["overview", "hardware", "kubernetes", "networking", "storage", "platform", "applications", "iot"]
+          },
+          "folderUID": {
+            "type": "string"
+          },
+          "folderRef": {
+            "type": "string"
+          },
+          "resyncPeriod": {
+            "type": "string"
+          },
+          "instanceSelector": {
+            "type": "object"
+          },
+          "allowCrossNamespaceImport": {
+            "type": "boolean"
+          },
+          "suspend": {
+            "type": "boolean"
+          },
+          "uid": {
+            "type": "string"
+          },
+          "contentCacheDuration": {
+            "type": "string"
+          },
+          "datasources": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "plugins": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "envs": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "envFrom": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "patch": {
+            "type": "object"
+          },
+          "publicSharing": {
+            "type": "object"
+          },
+          "url": {
+            "type": "string"
+          },
+          "urlAuthorization": {
+            "type": "object"
+          },
+          "grafanaCom": {
+            "type": "object"
+          },
+          "configMapRef": {
+            "type": "object"
+          },
+          "oci": {
+            "type": "object"
+          },
+          "json": {
+            "type": "string"
+          },
+          "gzipJson": {
+            "type": "string"
+          },
+          "jsonnet": {
+            "type": "string"
+          },
+          "jsonnetLib": {
+            "type": "object"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "annotations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   }
 }

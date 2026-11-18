@@ -1,6 +1,6 @@
 # common-helpers
 
-![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat-square)
+![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-informational?style=flat-square)
 
 Common Helpers
 
@@ -25,6 +25,12 @@ Common Helpers
 | global.domain | string | `".alexlebens.dev"` | Default base domain |
 | global.iconUrl | string | `"https://cdn.jsdelivr.net/gh/selfhst/icons/webp/"` | Base URL for dashboard and application icons |
 | global.tailscaleDomain | string | `".boreal-beaufort.ts.net"` | Default tailscale domain |
+| grafanaDashboard | object | `{"enabled":true,"folder":"applications","instanceSelector":{"matchLabels":{"app":"grafana-main"}},"namespace":"grafana-operator","resyncPeriod":"6h"}` | Configure GrafanaDashboard resources for local dashboards/*.json files or remote/inline sources (keyed by dashboard filename without .json for per-dashboard overrides) |
+| grafanaDashboard.enabled | bool | `true` | Default enabled state for dashboards |
+| grafanaDashboard.folder | string | `"applications"` | Default Grafana folder (overview, hardware, kubernetes, networking, storage, platform, applications, iot) |
+| grafanaDashboard.instanceSelector | object | `{"matchLabels":{"app":"grafana-main"}}` | Label selector matching the target Grafana instance |
+| grafanaDashboard.namespace | string | `"grafana-operator"` | Target namespace for GrafanaDashboard resources |
+| grafanaDashboard.resyncPeriod | string | `"6h"` | How often Grafana Operator reconciles dashboards |
 | probe | object | `{"clusterProbe":"cl01tl","external":"","externalProbes":["ps08rp","ps09rp"],"internal":""}` | Configure default probes for internal and external endpoints |
 | probe.internal | string | `""` | Internal and external endpoints |
 

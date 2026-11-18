@@ -22,3 +22,22 @@ probe:
   # -- Internal and external endpoints
   internal: ""
   external: ""
+
+# -- Configure GrafanaDashboard resources for local dashboards/*.json files or remote/inline sources (keyed by dashboard filename without .json for per-dashboard overrides)
+grafanaDashboard:
+  # -- Default enabled state for dashboards
+  enabled: true
+
+  # -- Target namespace for GrafanaDashboard resources
+  namespace: grafana-operator
+
+  # -- Default Grafana folder (overview, hardware, kubernetes, networking, storage, platform, applications, iot)
+  folder: applications
+
+  # -- How often Grafana Operator reconciles dashboards
+  resyncPeriod: 6h
+
+  # -- Label selector matching the target Grafana instance
+  instanceSelector:
+    matchLabels:
+      app: grafana-main
