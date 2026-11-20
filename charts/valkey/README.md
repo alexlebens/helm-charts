@@ -1,6 +1,6 @@
 # valkey
 
-![Version: 1.15.2](https://img.shields.io/badge/Version-1.15.2-informational?style=flat-square) ![AppVersion: 9.1.4](https://img.shields.io/badge/AppVersion-9.1.4-informational?style=flat-square)
+![Version: 1.16.0](https://img.shields.io/badge/Version-1.16.0-informational?style=flat-square) ![AppVersion: 9.2.0](https://img.shields.io/badge/AppVersion-9.2.0-informational?style=flat-square)
 
 Valkey chart with preconfigured settings
 
@@ -33,7 +33,7 @@ Valkey chart with preconfigured settings
 |-----|------|---------|-------------|
 | valkey.image.registry | string | `"docker.io"` |  |
 | valkey.image.repository | string | `"valkey/valkey"` |  |
-| valkey.image.tag | string | `"9.1.4@sha256:3ab0eca823ebbf0fe352476ebac330ac9e5f14b592b9a954eab296d341e81b0e"` |  |
+| valkey.image.tag | string | `"9.2.0@sha256:1c2b25b09f354c66fe994733acdf12fcfd4bdf6f3bd92b88a93a70378d884056"` |  |
 | valkey.initResources.requests.cpu | string | `"10m"` |  |
 | valkey.initResources.requests.memory | string | `"20Mi"` |  |
 | valkey.metrics.enabled | bool | `true` |  |
