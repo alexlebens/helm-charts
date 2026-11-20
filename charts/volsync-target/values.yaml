@@ -68,7 +68,7 @@ repair:
   # -- Image used to run restic
   image:
     repository: docker.io/restic/restic
-    tag: 0.19.1
+    tag: 0.20.0
     pullPolicy: IfNotPresent
 
   # -- Run `restic unlock` before repairing
