@@ -15,12 +15,21 @@ spec:
   type: {{ default "rw" .type }}
   pgbouncer:
     poolMode: {{ default "session" .poolMode }}
+    {{- if and .image .imageCatalogRef }}
+    {{- fail "poolers[].image and poolers[].imageCatalogRef are mutually exclusive!" }}
+    {{- end }}
+    {{- with .image }}
+    image: {{ . | quote }}
+    {{- end }}
     {{- with .imageCatalogRef }}
     imageCatalogRef:
       apiGroup: {{ .apiGroup | default "postgresql.cnpg.io" }}
       kind: {{ .kind | default "ClusterImageCatalog" }}
       name: {{ .name | required "poolers[].imageCatalogRef.name is required when imageCatalogRef is set" }}
       key: {{ .key | default "pgbouncer" }}
+    {{- end }}
+    {{- if hasKey . "paused" }}
+    paused: {{ .paused }}
     {{- end }}
     {{- with .authQuerySecret }}
     authQuerySecret:
@@ -50,6 +59,17 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   {{- end }}
+  {{- end }}
+  {{- with .deploymentStrategy }}
+  deploymentStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .serviceAccountName }}
+  serviceAccountName: {{ . | quote }}
+  {{- end }}
+  {{- with .serviceTemplate }}
+  serviceTemplate:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- with .template }}
   template:

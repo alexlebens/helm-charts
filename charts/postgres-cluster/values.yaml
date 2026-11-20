@@ -556,11 +556,24 @@ databases: []
 #     type: rw
 #     poolMode: transaction
 #     instances: 3
+#     paused: false
+#     # image: ghcr.io/cloudnative-pg/pgbouncer:1.25.1
 #     imageCatalogRef:
 #       apiGroup: postgresql.cnpg.io
 #       kind: ClusterImageCatalog
 #       name: postgresql-standard-trixie
 #       key: pgbouncer
+#     deploymentStrategy:
+#       type: RollingUpdate
+#       rollingUpdate:
+#         maxUnavailable: 1
+#     serviceAccountName: custom-pooler-sa
+#     serviceTemplate:
+#       metadata:
+#         annotations:
+#           example.com/pooler: "true"
+#       spec:
+#         type: ClusterIP
 #     parameters:
 #       max_client_conn: "1000"
 #       default_pool_size: "25"

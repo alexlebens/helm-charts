@@ -342,7 +342,92 @@
       "type": "array"
     },
     "poolers": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["rw", "ro", "r"]
+          },
+          "poolMode": {
+            "type": "string",
+            "enum": ["session", "transaction"]
+          },
+          "instances": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "image": {
+            "type": "string"
+          },
+          "imageCatalogRef": {
+            "type": "object",
+            "properties": {
+              "apiGroup": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["ClusterImageCatalog", "ImageCatalog"]
+              },
+              "name": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              }
+            }
+          },
+          "paused": {
+            "type": "boolean"
+          },
+          "deploymentStrategy": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["RollingUpdate", "Recreate"]
+              },
+              "rollingUpdate": {
+                "type": "object"
+              }
+            }
+          },
+          "serviceAccountName": {
+            "type": "string"
+          },
+          "serviceTemplate": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "type": "object"
+              },
+              "spec": {
+                "type": "object"
+              }
+            }
+          },
+          "template": {
+            "type": "object"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "pg_hba": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "monitoring": {
+            "type": "object"
+          }
+        }
+      }
     }
   }
 }

@@ -93,3 +93,71 @@ tests:
       - equal:
           path: spec.pgbouncer.imageCatalogRef.key
           value: pgbouncer
+
+  - it: should omit optional deploymentStrategy, serviceAccountName, serviceTemplate, paused, and image by default
+    set:
+      poolers:
+        - name: rw
+          instances: 2
+    asserts:
+      - notExists:
+          path: spec.deploymentStrategy
+      - notExists:
+          path: spec.serviceAccountName
+      - notExists:
+          path: spec.serviceTemplate
+      - notExists:
+          path: spec.pgbouncer.paused
+      - notExists:
+          path: spec.pgbouncer.image
+
+  - it: should configure deploymentStrategy, serviceAccountName, and serviceTemplate on Pooler
+    set:
+      poolers:
+        - name: rw
+          instances: 2
+          type: rw
+          poolMode: transaction
+          deploymentStrategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxUnavailable: 1
+          serviceAccountName: custom-pooler-sa
+          serviceTemplate:
+            metadata:
+              annotations:
+                example.com/pooler: "true"
+            spec:
+              type: ClusterIP
+    asserts:
+      - equal:
+          path: spec.deploymentStrategy.type
+          value: RollingUpdate
+      - equal:
+          path: spec.deploymentStrategy.rollingUpdate.maxUnavailable
+          value: 1
+      - equal:
+          path: spec.serviceAccountName
+          value: custom-pooler-sa
+      - equal:
+          path: spec.serviceTemplate.metadata.annotations["example.com/pooler"]
+          value: "true"
+      - equal:
+          path: spec.serviceTemplate.spec.type
+          value: ClusterIP
+
+  - it: should configure paused and direct image on Pooler
+    set:
+      poolers:
+        - name: ro
+          instances: 2
+          type: ro
+          paused: true
+          image: ghcr.io/cloudnative-pg/pgbouncer:1.25.1
+    asserts:
+      - equal:
+          path: spec.pgbouncer.paused
+          value: true
+      - equal:
+          path: spec.pgbouncer.image
+          value: ghcr.io/cloudnative-pg/pgbouncer:1.25.1
