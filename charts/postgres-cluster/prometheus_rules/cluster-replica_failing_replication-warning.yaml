@@ -2,15 +2,18 @@
 {{- if not (has $alert .excludeRules) -}}
 alert: {{ $alert }}
 annotations:
-  summary: CNPG Cluster has a replica is failing to replicate.
+  summary: CNPG Cluster has a replica failing to replicate.
   description: |-
-    Replica {{`{{`}} $labels.pod {{`}}`}}
-    is failing to replicate
+    Replica {{ .labels.pod }}
+    is failing to replicate.
 expr: |
-  cnpg_pg_replication_in_recovery{namespace="{{ .namespace }}"} > cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}"}
+  cnpg_pg_replication_in_recovery{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"} > cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}
 for: 1m
 labels:
   severity: warning
   namespace: {{ .namespace }}
   cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .additionalLabels }}
+  {{ $key }}: {{ $val | toString | quote }}
+{{- end }}
 {{- end -}}

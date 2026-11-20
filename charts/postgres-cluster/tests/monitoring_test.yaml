@@ -79,3 +79,105 @@ tests:
       - template: config-map.yaml
         isKind:
           of: ConfigMap
+
+  - it: should set cnpg.io/cluster label and render clean Prometheus template expressions without backticks
+    asserts:
+      - template: prometheus-rule.yaml
+        equal:
+          path: metadata.labels["cnpg.io/cluster"]
+          value: RELEASE-NAME-postgres-cluster
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[0].annotations.description
+          pattern: '\{\{ \$labels\.pod \}\}.*\{\{ \$value \}\}'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[0].expr
+          pattern: 'pod=~"RELEASE-NAME-postgres-cluster-\(\[1-9\]\[0-9\]\*\)\$"'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[1].expr
+          pattern: 'increase\(cnpg_pg_stat_database_deadlocks'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[3].annotations.description
+          pattern: '\{\{ \$labels\.job \}\}.*\{\{ \$value \}\}'
+      - template: prometheus-rule.yaml
+        notMatchRegex:
+          path: spec.groups[0].rules[3].annotations.description
+          pattern: '`\{\{'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[3].expr
+          pattern: "cnpg_collector_replica_mode"
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[6].annotations.description
+          pattern: '\{\{ \$value \}\}s'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[10].annotations.description
+          pattern: '\{\{ \$labels\.subname \}\}'
+      - template: prometheus-rule.yaml
+        notMatchRegex:
+          path: spec.groups[0].rules[10].annotations.description
+          pattern: '\{\{\s*\.subname'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[17].expr
+          pattern: '\* 100 > 70'
+
+  - it: should propagate namespaceOverride into PrometheusRule metadata, expr, and rule labels
+    set:
+      namespaceOverride: custom-db-ns
+    asserts:
+      - template: prometheus-rule.yaml
+        equal:
+          path: metadata.namespace
+          value: custom-db-ns
+      - template: prometheus-rule.yaml
+        equal:
+          path: spec.groups[0].rules[0].labels.namespace
+          value: custom-db-ns
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[0].expr
+          pattern: 'namespace="custom-db-ns"'
+
+  - it: should attach additionalLabels to generated PrometheusRule alerts
+    set:
+      cluster:
+        monitoring:
+          prometheusRule:
+            additionalLabels:
+              team: platform
+              tier: critical-infra
+    asserts:
+      - template: prometheus-rule.yaml
+        equal:
+          path: spec.groups[0].rules[0].labels.team
+          value: platform
+      - template: prometheus-rule.yaml
+        equal:
+          path: spec.groups[0].rules[3].labels.tier
+          value: critical-infra
+
+  - it: should omit rules listed in excludeRules
+    set:
+      cluster:
+        monitoring:
+          prometheusRule:
+            excludeRules:
+              - CNPGClusterLastFailedArchiveTimeWarning
+              - CNPGClusterZoneSpreadWarning
+    asserts:
+      - template: prometheus-rule.yaml
+        lengthEqual:
+          path: spec.groups[0].rules
+          count: 24
+      - template: prometheus-rule.yaml
+        notContains:
+          path: spec.groups[0].rules
+          content:
+            alert: CNPGClusterZoneSpreadWarning
+          any: true

@@ -199,6 +199,9 @@ cluster:
       excludeRules:
         - CNPGClusterLastFailedArchiveTimeWarning
 
+      # -- Additional labels to attach to every generated Prometheus alerting rule
+      additionalLabels: {}
+
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false

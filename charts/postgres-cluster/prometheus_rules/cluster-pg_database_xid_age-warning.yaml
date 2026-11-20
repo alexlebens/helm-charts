@@ -4,13 +4,16 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster has a number of transactions from the frozen XID to the current one.
   description: |-
-    Over 300,000,000 transactions from frozen xid
-    on pod {{`{{`}} $labels.pod {{`}}`}}
+    {{ .value }} transactions from frozen xid (over 300,000,000)
+    on pod {{ .labels.pod }}.
 expr: |
-  cnpg_pg_database_xid_age{namespace="{{ .namespace }}"} > 300000000
+  cnpg_pg_database_xid_age{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"} > 300000000
 for: 1m
 labels:
   severity: warning
   namespace: {{ .namespace }}
   cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .additionalLabels }}
+  {{ $key }}: {{ $val | toString | quote }}
+{{- end }}
 {{- end -}}

@@ -7,16 +7,18 @@ metadata:
   namespace: {{ include "cluster.namespace" $ }}
   labels:
     app.kubernetes.io/name: {{ include "cluster.name" $ }}-alert-rules
+    cnpg.io/cluster: {{ include "cluster.name" $ }}-cluster
     {{- include "cluster.labels" $ | nindent 4 }}
 spec:
   groups:
     - name: cloudnative-pg/{{ include "cluster.name" . }}
       rules:
         {{- $dict := dict "excludeRules" .Values.cluster.monitoring.prometheusRule.excludeRules -}}
-        {{- $_ := set $dict "value"       "{{`{{`}} $value {{`}}`}}" -}}
-        {{- $_ := set $dict "namespace"   .Release.Namespace -}}
+        {{- $_ := set $dict "additionalLabels" .Values.cluster.monitoring.prometheusRule.additionalLabels -}}
+        {{- $_ := set $dict "value"       "{{ $value }}" -}}
+        {{- $_ := set $dict "namespace"   (include "cluster.namespace" .) -}}
         {{- $_ := set $dict "cluster"     (printf "%s-cluster" (include "cluster.name" .) ) -}}
-        {{- $_ := set $dict "labels"      (dict "job" "{{`{{`}} $labels.job {{`}}`}}" "node" "{{`{{`}} $labels.node {{`}}`}}" "pod" "{{`{{`}} $labels.pod {{`}}`}}") -}}
+        {{- $_ := set $dict "labels"      (dict "job" "{{ $labels.job }}" "node" "{{ $labels.node }}" "pod" "{{ $labels.pod }}" "subname" "{{ $labels.subname }}") -}}
         {{- $_ := set $dict "podSelector" (printf "%s-cluster-([1-9][0-9]*)$" (include "cluster.name" .) ) -}}
         {{- $_ := set $dict "Values"      .Values -}}
         {{- $_ := set $dict "Template"    .Template -}}

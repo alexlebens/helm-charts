@@ -207,6 +207,23 @@
           "properties": {
             "enabled": {
               "type": "boolean"
+            },
+            "prometheusRule": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "excludeRules": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "additionalLabels": {
+                  "type": "object"
+                }
+              }
             }
           }
         },

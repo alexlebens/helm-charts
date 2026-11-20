@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster logical replication lagging
   description: |-
-    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription is experiencing replication lag.
+    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ .labels.subname }}" subscription is experiencing replication lag.
 
     {{- if .labels.lag_type }}
     Lag type: {{ .labels.lag_type }}
@@ -29,4 +29,7 @@ labels:
   severity: warning
   namespace: {{ .namespace }}
   cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .additionalLabels }}
+  {{ $key }}: {{ $val | toString | quote }}
+{{- end }}
 {{- end -}}

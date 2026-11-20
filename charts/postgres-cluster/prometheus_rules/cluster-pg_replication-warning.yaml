@@ -4,12 +4,15 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster standby is lagging behind the primary.
   description: |-
-    Standby is lagging behind by over 300 seconds (5 minutes)
+    Standby {{ .labels.pod }} is lagging behind by {{ .value }}s (over 5 minutes).
 expr: |
-  cnpg_pg_replication_lag{namespace="{{ .namespace }}"} > 300
+  cnpg_pg_replication_lag{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"} > 300
 for: 1m
 labels:
   severity: warning
   namespace: {{ .namespace }}
   cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .additionalLabels }}
+  {{ $key }}: {{ $val | toString | quote }}
+{{- end }}
 {{- end -}}

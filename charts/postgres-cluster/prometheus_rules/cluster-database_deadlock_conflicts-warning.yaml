@@ -4,13 +4,15 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster has over 10 deadlock conflicts.
   description: |-
-    There are over 10 deadlock conflicts in
-    {{`{{`}} $labels.pod {{`}}`}}
+    There were {{ .value }} deadlock conflicts in the last 5 minutes on {{ .labels.pod }}.
 expr: |
-  cnpg_pg_stat_database_deadlocks{namespace="{{ .namespace }}"} > 10
+  increase(cnpg_pg_stat_database_deadlocks{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}[5m]) > 10
 for: 1m
 labels:
   severity: warning
   namespace: {{ .namespace }}
   cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .additionalLabels }}
+  {{ $key }}: {{ $val | toString | quote }}
+{{- end }}
 {{- end -}}
