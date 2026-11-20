@@ -115,16 +115,32 @@ tests:
           path: spec.groups[0].rules[6].annotations.description
           pattern: '\{\{ \$value \}\}s'
       - template: prometheus-rule.yaml
+        equal:
+          path: spec.groups[0].rules[9].alert
+          value: CNPGClusterLastFailedArchiveTimeWarning
+      - template: prometheus-rule.yaml
+        equal:
+          path: spec.groups[0].rules[9].for
+          value: 15m
+      - template: prometheus-rule.yaml
         matchRegex:
-          path: spec.groups[0].rules[10].annotations.description
+          path: spec.groups[0].rules[9].expr
+          pattern: "> 0"
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[9].annotations.description
+          pattern: '15 minutes on \{\{ \$labels\.pod \}\}'
+      - template: prometheus-rule.yaml
+        matchRegex:
+          path: spec.groups[0].rules[11].annotations.description
           pattern: '\{\{ \$labels\.subname \}\}'
       - template: prometheus-rule.yaml
         notMatchRegex:
-          path: spec.groups[0].rules[10].annotations.description
+          path: spec.groups[0].rules[11].annotations.description
           pattern: '\{\{\s*\.subname'
       - template: prometheus-rule.yaml
         matchRegex:
-          path: spec.groups[0].rules[17].expr
+          path: spec.groups[0].rules[18].expr
           pattern: '\* 100 > 70'
 
   - it: should propagate namespaceOverride into PrometheusRule metadata, expr, and rule labels

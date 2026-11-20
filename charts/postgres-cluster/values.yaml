@@ -196,8 +196,7 @@ cluster:
       enabled: true
 
       # -- Exclude specified rules
-      excludeRules:
-        - CNPGClusterLastFailedArchiveTimeWarning
+      excludeRules: []
 
       # -- Additional labels to attach to every generated Prometheus alerting rule
       additionalLabels: {}
