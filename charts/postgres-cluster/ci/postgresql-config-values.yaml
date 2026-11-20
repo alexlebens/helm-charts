@@ -1,0 +1,25 @@
+cluster:
+  postgresql:
+    pg_ident:
+      - mymap /^(.*)@example\.com$ \1
+    ldap:
+      server: ldap.example.com
+      port: 389
+      scheme: ldap
+      bindAsAuth:
+        prefix: "uid="
+        suffix: ",ou=people,dc=example,dc=com"
+    extensions:
+      - name: pgvector
+        image:
+          reference: ghcr.io/cloudnative-pg/pgvector:0.8.7-202611201143-18-trixie@sha256:8c719f4ba8796a39b1e08a450b424577be9fd9821089dfd2c90e8c2d86b7a03c
+      - name: postgis
+        image:
+          reference: ghcr.io/cloudnative-pg/postgis-extension:3.7.0-202611201143-18-trixie@sha256:ea0a56f3182b9c4e9d4931657722c32473c0874cdf324b37b36e5f7be5a20cba
+        ld_library_path:
+          - system
+        env:
+          - name: GDAL_DATA
+            value: ${image_root}/share/gdal
+    promotionTimeout: 60
+    enableAlterSystem: true

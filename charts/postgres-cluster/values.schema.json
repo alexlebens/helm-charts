@@ -122,6 +122,104 @@
               "type": "object"
             }
           }
+        },
+        "postgresql": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "object"
+            },
+            "synchronous": {
+              "type": "object"
+            },
+            "shared_preload_libraries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pg_hba": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pg_ident": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "ldap": {
+              "type": "object",
+              "properties": {
+                "server": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "integer"
+                },
+                "scheme": {
+                  "type": "string",
+                  "enum": ["ldap", "ldaps"]
+                },
+                "bindAsAuth": {
+                  "type": "object"
+                },
+                "bindSearchAuth": {
+                  "type": "object"
+                }
+              }
+            },
+            "extensions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "object"
+                  },
+                  "dynamic_library_path": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "extension_control_path": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ld_library_path": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "bin_path": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "env": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "promotionTimeout": {
+              "type": ["integer", "null"],
+              "minimum": 1
+            },
+            "enableAlterSystem": {
+              "type": "boolean"
+            }
+          }
         }
       }
     },

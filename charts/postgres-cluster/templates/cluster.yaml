@@ -91,6 +91,24 @@ spec:
     pg_hba:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    {{- with .Values.cluster.postgresql.pg_ident }}
+    pg_ident:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.ldap }}
+    ldap:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.extensions }}
+    extensions:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.promotionTimeout }}
+    promotionTimeout: {{ . | int }}
+    {{- end }}
+    {{- if .Values.cluster.postgresql.enableAlterSystem }}
+    enableAlterSystem: true
+    {{- end }}
   {{- if not (empty .Values.cluster.services) }}
   managed:
     {{- with .Values.cluster.services }}

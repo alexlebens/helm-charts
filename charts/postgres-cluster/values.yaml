@@ -185,6 +185,38 @@ cluster:
     pg_hba: []
       # - host all all all md5
 
+    # -- List of pg_ident.conf user name map rules
+    pg_ident: []
+      # - mymap /^(.*)@example\.com$ \1
+
+    # -- LDAP authentication configuration
+    ldap: {}
+      # server: ldap.example.com
+      # port: 389
+      # scheme: ldap
+      # bindAsAuth:
+      #   prefix: "uid="
+      #   suffix: ",ou=people,dc=example,dc=com"
+
+    # -- List of OCI Image Volume extensions to mount into PostgreSQL pods (requires PostgreSQL 18+ and Kubernetes 1.35+ ImageVolume)
+    # See: https://cloudnative-pg.io/documentation/current/imagevolume_extensions/
+    extensions: []
+      # - name: pgvector
+      # - name: postgis
+      #   image:
+      #     reference: ghcr.io/cloudnative-pg/postgis-extension:3.7.0-202611201143-18-trixie
+      #   ld_library_path:
+      #     - system
+      #   env:
+      #     - name: GDAL_DATA
+      #       value: ${image_root}/share/gdal
+
+    # -- Maximum number of seconds to wait when promoting a standby to primary (leave null for CNPG default)
+    promotionTimeout: null
+
+    # -- Allow invoking ALTER SYSTEM on the cluster (for debugging/troubleshooting only)
+    enableAlterSystem: false
+
   # -- Bootstrap is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb

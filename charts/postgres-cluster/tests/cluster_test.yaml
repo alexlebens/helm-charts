@@ -447,3 +447,97 @@ tests:
       - equal:
           path: spec.plugins[0].parameters.serverName
           value: custom-backup-server
+
+  - it: should omit optional postgresql extensions and advanced config by default
+    asserts:
+      - notExists:
+          path: spec.postgresql.extensions
+      - notExists:
+          path: spec.postgresql.pg_ident
+      - notExists:
+          path: spec.postgresql.ldap
+      - notExists:
+          path: spec.postgresql.promotionTimeout
+      - notExists:
+          path: spec.postgresql.enableAlterSystem
+
+  - it: should configure ImageVolume extensions under spec.postgresql.extensions
+    set:
+      cluster:
+        postgresql:
+          extensions:
+            - name: pgvector
+            - name: postgis
+              image:
+                reference: ghcr.io/cloudnative-pg/postgis-extension:3.7.0-202611201143-18-trixie
+              ld_library_path:
+                - system
+              env:
+                - name: GDAL_DATA
+                  value: ${image_root}/share/gdal
+    asserts:
+      - equal:
+          path: spec.postgresql.extensions[0].name
+          value: pgvector
+      - equal:
+          path: spec.postgresql.extensions[1].name
+          value: postgis
+      - equal:
+          path: spec.postgresql.extensions[1].image.reference
+          value: ghcr.io/cloudnative-pg/postgis-extension:3.7.0-202611201143-18-trixie
+      - equal:
+          path: spec.postgresql.extensions[1].ld_library_path[0]
+          value: system
+      - equal:
+          path: spec.postgresql.extensions[1].env[0].name
+          value: GDAL_DATA
+
+  - it: should configure postgresql pg_ident rules
+    set:
+      cluster:
+        postgresql:
+          pg_ident:
+            - mymap /^(.*)@example\.com$ \1
+    asserts:
+      - equal:
+          path: spec.postgresql.pg_ident[0]
+          value: mymap /^(.*)@example\.com$ \1
+
+  - it: should configure postgresql ldap authentication
+    set:
+      cluster:
+        postgresql:
+          ldap:
+            server: ldap.example.com
+            port: 389
+            scheme: ldap
+            bindAsAuth:
+              prefix: "uid="
+              suffix: ",ou=people,dc=example,dc=com"
+    asserts:
+      - equal:
+          path: spec.postgresql.ldap.server
+          value: ldap.example.com
+      - equal:
+          path: spec.postgresql.ldap.port
+          value: 389
+      - equal:
+          path: spec.postgresql.ldap.scheme
+          value: ldap
+      - equal:
+          path: spec.postgresql.ldap.bindAsAuth.prefix
+          value: "uid="
+
+  - it: should configure promotionTimeout and enableAlterSystem
+    set:
+      cluster:
+        postgresql:
+          promotionTimeout: 60
+          enableAlterSystem: true
+    asserts:
+      - equal:
+          path: spec.postgresql.promotionTimeout
+          value: 60
+      - equal:
+          path: spec.postgresql.enableAlterSystem
+          value: true
