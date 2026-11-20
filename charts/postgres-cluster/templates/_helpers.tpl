@@ -5,7 +5,7 @@ Expand the name of the chart.
   {{- if .Values.nameOverride }}
     {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    {{- printf "%s-postgresql-%s" .Release.Name ((semver .Values.cluster.image.tag).Major | toString) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-postgresql-%s" .Release.Name ((semver (regexReplaceAll "@sha256:.*$" .Values.cluster.image.tag "")).Major | toString) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -171,3 +171,29 @@ Generate backup CA secret name
     {{- printf "%s-ca" (include "cluster.backupName" .) | trunc 63 | trimSuffix "-" -}}
   {{- end -}}
 {{- end }}
+
+{{/*
+Generate default inherited annotations for CNPG pods (such as version-checker match-regex) merged with user overrides
+*/}}
+{{- define "cluster.inheritedAnnotations" -}}
+  {{- $defaults := dict -}}
+  {{- $tag := .Values.cluster.image.tag | default "" -}}
+  {{- $cleanTag := regexReplaceAll "@sha256:.*$" $tag "" -}}
+  {{- if regexMatch "^[0-9]+\\.[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
+    {{- $suffix := regexReplaceAll "^[0-9]+\\.[0-9]+-" $cleanTag "" -}}
+    {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+\\.[0-9]+-%s$" $suffix) -}}
+  {{- else if regexMatch "^[0-9]+-[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
+    {{- $suffix := regexReplaceAll "^[0-9]+-[0-9]+-" $cleanTag "" -}}
+    {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+-[0-9]+-%s$" $suffix) -}}
+  {{- else if regexMatch "^[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+\\.[0-9]+$" $cleanTag -}}
+    {{- $_ := set $defaults "match-regex.version-checker.io/postgres" "^[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+\\.[0-9]+$" -}}
+  {{- end -}}
+  {{- $userAnnotations := dict -}}
+  {{- if and .Values.cluster.inheritedMetadata .Values.cluster.inheritedMetadata.annotations -}}
+    {{- $userAnnotations = deepCopy .Values.cluster.inheritedMetadata.annotations -}}
+  {{- end -}}
+  {{- $merged := mergeOverwrite $defaults $userAnnotations -}}
+  {{- if $merged -}}
+    {{- toYaml $merged -}}
+  {{- end -}}
+{{- end -}}

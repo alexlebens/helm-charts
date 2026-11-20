@@ -181,6 +181,13 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- Metadata inherited by all objects created by the CNPG Cluster (including pods)
+  inheritedMetadata:
+    # -- Labels inherited by all objects created by the CNPG Cluster
+    labels: {}
+    # -- Annotations inherited by all objects created by the CNPG Cluster (merged over chart defaults)
+    annotations: {}
+
 # -- Recovery settings when booting cluster from external cluster
 recovery:
   # -- Available recovery methods:

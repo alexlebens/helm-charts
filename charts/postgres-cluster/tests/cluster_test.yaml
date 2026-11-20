@@ -267,3 +267,61 @@ tests:
       - equal:
           path: spec.bootstrap.initdb.postInitTemplateSQL[0]
           value: CREATE EXTENSION IF NOT EXISTS my_ext;
+
+  - it: should set default version-checker match-regex inherited annotation for standard suffixed tag
+    asserts:
+      - equal:
+          path: spec.inheritedMetadata.annotations["match-regex.version-checker.io/postgres"]
+          value: ^[0-9]+\.[0-9]+-standard-trixie$
+
+  - it: should set version-checker match-regex inherited annotation for PostGIS tag
+    set:
+      cluster:
+        image:
+          repository: ghcr.io/cloudnative-pg/postgis
+          tag: 18-3-system-trixie
+    asserts:
+      - equal:
+          path: spec.inheritedMetadata.annotations["match-regex.version-checker.io/postgres"]
+          value: ^[0-9]+-[0-9]+-system-trixie$
+
+  - it: should set version-checker match-regex inherited annotation for VectorChord digest-pinned tag
+    set:
+      cluster:
+        image:
+          repository: ghcr.io/tensorchord/cloudnative-vectorchord
+          tag: 18.6-1.1.1@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    asserts:
+      - equal:
+          path: spec.inheritedMetadata.annotations["match-regex.version-checker.io/postgres"]
+          value: ^[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+$
+
+  - it: should omit inheritedMetadata when tag has no CNPG suffix and no user inheritedMetadata is set
+    set:
+      cluster:
+        image:
+          repository: custom-registry.io/my-postgres
+          tag: v1.2.3
+    asserts:
+      - notExists:
+          path: spec.inheritedMetadata
+
+  - it: should allow user inheritedMetadata labels and override default annotations
+    set:
+      cluster:
+        inheritedMetadata:
+          labels:
+            custom.io/team: platform
+          annotations:
+            match-regex.version-checker.io/postgres: ^18\.[0-9]+-custom$
+            custom.io/note: enabled
+    asserts:
+      - equal:
+          path: spec.inheritedMetadata.labels["custom.io/team"]
+          value: platform
+      - equal:
+          path: spec.inheritedMetadata.annotations["match-regex.version-checker.io/postgres"]
+          value: ^18\.[0-9]+-custom$
+      - equal:
+          path: spec.inheritedMetadata.annotations["custom.io/note"]
+          value: enabled

@@ -12,6 +12,22 @@ metadata:
     {{- include "cluster.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.cluster.instances }}
+  {{- $inheritedAnnotations := include "cluster.inheritedAnnotations" . | fromYaml }}
+  {{- $inheritedLabels := dict }}
+  {{- if .Values.cluster.inheritedMetadata }}
+  {{- $inheritedLabels = .Values.cluster.inheritedMetadata.labels | default dict }}
+  {{- end }}
+  {{- if or $inheritedAnnotations $inheritedLabels }}
+  inheritedMetadata:
+    {{- with $inheritedLabels }}
+    labels:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with $inheritedAnnotations }}
+    annotations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
   imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   {{- with .Values.cluster.imagePullSecrets }}

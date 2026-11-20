@@ -81,6 +81,17 @@
         },
         "annotations": {
           "type": "object"
+        },
+        "inheritedMetadata": {
+          "type": "object",
+          "properties": {
+            "labels": {
+              "type": "object"
+            },
+            "annotations": {
+              "type": "object"
+            }
+          }
         }
       }
     },
