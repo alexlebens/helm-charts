@@ -42,7 +42,7 @@ Cloudnative-pg Cluster
 | backup.objectStore.endpointCredentials.includeRegion | bool | `true` | If the S3 endpoint require the ACCESS_REGION variable set in credentials |
 | backup.objectStore.endpointCredentials.name | string | `""` | Override secret name that contains S3 credentials |
 | backup.objectStore.endpointURL | string | `"http://synology.alexlebens.dev:3900"` | Overrides the provider specific default endpoint. |
-| backup.objectStore.index | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }} |
+| backup.objectStore.index | int | `1` | Backup index used in default serverName: <cluster.name>-pg<major>-backup-<index> |
 | backup.objectStore.isWALArchiver | bool | `true` | Specificies if this backup will do WALs |
 | backup.objectStore.retentionPolicy | string | `"7d"` | Retention policy for backups |
 | backup.objectStore.wal | object | `{"compression":"snappy","encryption":"","maxParallel":1}` | Storage |
@@ -97,7 +97,7 @@ Cloudnative-pg Cluster
 | nameOverride | string | `""` | Override the name of the cluster |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | poolers | list | `[]` | List of PgBouncer poolers to deploy alongside the cluster. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Pooler Example: poolers:   - name: rw     type: rw     poolMode: transaction     instances: 3     parameters:       max_client_conn: "1000"       default_pool_size: "25"     monitoring:       enabled: true       podMonitor:         enabled: true   - name: ro     type: ro     poolMode: transaction     instances: 3     parameters:       max_client_conn: "1000"       default_pool_size: "25" |
-| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"key":"password","name":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"objectStore","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationBucket":"postgres-backups","destinationPathOverride":"","enabled":true,"endpointCA":{"createExternalSecret":false,"externalSecretCredentialPath":"","externalSecretProperty":"ca.crt","key":"","name":""},"endpointCredentials":{"createExternalSecret":true,"externalSecretCredentialPath":"/ps02sn/garage/keys/postgres-backups","includeRegion":true,"name":""},"endpointURL":"http://synology.alexlebens.dev:3900","index":1,"owner":"","pitrTarget":{"time":""},"wal":{"compression":"snappy","encryption":"","maxParallel":1}}}` | Recovery settings when booting cluster from external cluster |
+| recovery | object | `{"backup":{"backupName":"","database":"app","owner":"","pitrTarget":{"time":""}},"import":{"databases":[],"pgDumpExtraOptions":[],"pgRestoreExtraOptions":[],"postImportApplicationSQL":[],"roles":[],"schemaOnly":false,"source":{"database":"app","host":"","passwordSecret":{"key":"password","name":""},"port":5432,"sslCertSecret":{"key":"","name":""},"sslKeySecret":{"key":"","name":""},"sslMode":"verify-full","sslRootCertSecret":{"key":"","name":""},"username":"app"},"type":"microservice"},"method":"objectStore","objectStore":{"clusterName":"","data":{"compression":"snappy","encryption":"","jobs":1},"database":"app","destinationBucket":"postgres-backups","destinationPathOverride":"","enabled":true,"endpointCA":{"createExternalSecret":false,"externalSecretCredentialPath":"","externalSecretProperty":"ca.crt","key":"","name":""},"endpointCredentials":{"createExternalSecret":true,"externalSecretCredentialPath":"/ps02sn/garage/keys/postgres-backups","includeRegion":true,"name":""},"endpointURL":"http://synology.alexlebens.dev:3900","index":1,"owner":"","pitrTarget":{"time":""},"serverNameOverride":"","wal":{"compression":"snappy","encryption":"","maxParallel":1}}}` | Recovery settings when booting cluster from external cluster |
 | recovery.backup.backupName | string | `""` | Name of the backup to recover from. |
 | recovery.backup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.backup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
@@ -113,7 +113,7 @@ Cloudnative-pg Cluster
 | recovery.import.source.passwordSecret | object | `{"key":"password","name":""}` | Name and key of the existing secret containing the password |
 | recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works |
 | recovery.method | string | `"objectStore"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `objectStore` - Recovers a CNPG cluster from a barman object store (PITR supported). * `import` - Import one or more databases from an existing Postgres cluster. |
-| recovery.objectStore.clusterName | string | `""` | Override the name of the backup cluster, defaults to "cluster.name" |
+| recovery.objectStore.clusterName | string | `""` | Override the base cluster name (without -cluster suffix) for recovery destination path and serverName; defaults to cluster.name |
 | recovery.objectStore.data.compression | string | `"snappy"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | recovery.objectStore.data.jobs | int | `1` | Number of data files to be archived or restored in parallel. |
@@ -131,10 +131,11 @@ Cloudnative-pg Cluster
 | recovery.objectStore.endpointCredentials.includeRegion | bool | `true` | If the S3 endpoint require the ACCESS_REGION variable set in credentials |
 | recovery.objectStore.endpointCredentials.name | string | `""` | Override secret name that contains S3 credentials |
 | recovery.objectStore.endpointURL | string | `"http://synology.alexlebens.dev:3900"` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
-| recovery.objectStore.index | int | `1` | Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }} |
+| recovery.objectStore.index | int | `1` | Recovery backup index used in default serverName: <cluster.name>-pg<major>-backup-<index> |
 | recovery.objectStore.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | recovery.objectStore.pitrTarget | object | `{"time":""}` | Point in time recovery target. Specify one of the following: |
 | recovery.objectStore.pitrTarget.time | string | `""` | Time in RFC3339 format |
+| recovery.objectStore.serverNameOverride | string | `""` | Override the recovery Barman serverName explicitly (e.g. when restoring from a legacy versioned backup) |
 | recovery.objectStore.wal | object | `{"compression":"snappy","encryption":"","maxParallel":1}` | Storage |
 | recovery.objectStore.wal.compression | string | `"snappy"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | recovery.objectStore.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |

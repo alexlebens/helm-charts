@@ -5,8 +5,15 @@ Expand the name of the chart.
   {{- if .Values.nameOverride }}
     {{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    {{- printf "%s-postgresql-%s" .Release.Name ((semver (regexReplaceAll "@sha256:.*$" .Values.cluster.image.tag "")).Major | toString) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-postgres" .Release.Name | trunc 63 | trimSuffix "-" -}}
   {{- end }}
+{{- end }}
+
+{{/*
+Extract the PostgreSQL major version from the configured image tag.
+*/}}
+{{- define "cluster.majorVersion" -}}
+  {{- (semver (regexReplaceAll "@sha256:.*$" .Values.cluster.image.tag "")).Major | toString -}}
 {{- end }}
 
 {{/*
@@ -83,7 +90,12 @@ Generate recovery name
 Generate recovery server name
 */}}
 {{- define "cluster.recoveryServerName" -}}
-  {{- printf "%s-backup-%s" (include "cluster.name" .) (toString .Values.recovery.objectStore.index) | trunc 63 | trimSuffix "-" -}}
+  {{- if .Values.recovery.objectStore.serverNameOverride -}}
+    {{- .Values.recovery.objectStore.serverNameOverride | trunc 63 | trimSuffix "-" -}}
+  {{- else -}}
+    {{- $base := default (include "cluster.name" .) .Values.recovery.objectStore.clusterName -}}
+    {{- printf "%s-pg%s-backup-%s" $base (include "cluster.majorVersion" .) (toString .Values.recovery.objectStore.index) | trunc 63 | trimSuffix "-" -}}
+  {{- end }}
 {{- end }}
 
 {{/*
@@ -93,7 +105,8 @@ Generate recovery destination path
   {{- if .Values.recovery.objectStore.destinationPathOverride -}}
     {{- .Values.recovery.objectStore.destinationPathOverride -}}
   {{- else -}}
-    {{- printf "s3://%s/%s/%s/%s-cluster" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) (include "cluster.name" .) | trimSuffix "-" -}}
+    {{- $base := default (include "cluster.name" .) .Values.recovery.objectStore.clusterName -}}
+    {{- printf "s3://%s/%s/%s/%s-cluster" (.Values.recovery.objectStore.destinationBucket) (.Values.kubernetesClusterName) (include "cluster.namespace" .) $base | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 
@@ -133,7 +146,7 @@ Generate backup server name
   {{- if .Values.backup.backupServerName -}}
     {{- .Values.backup.backupServerName -}}
   {{- else -}}
-    {{- printf "%s-%s" (include "cluster.backupName" .) (toString .Values.backup.objectStore.index) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-pg%s-backup-%s" (include "cluster.name" .) (include "cluster.majorVersion" .) (toString .Values.backup.objectStore.index) | trunc 63 | trimSuffix "-" -}}
   {{- end }}
 {{- end }}
 

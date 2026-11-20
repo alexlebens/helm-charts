@@ -270,11 +270,14 @@ recovery:
       # -- Property within the external secret that contains the CA certificate.
       externalSecretProperty: "ca.crt"
 
-    # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
+    # -- Recovery backup index used in default serverName: <cluster.name>-pg<major>-backup-<index>
     index: 1
 
-    # -- Override the name of the backup cluster, defaults to "cluster.name"
+    # -- Override the base cluster name (without -cluster suffix) for recovery destination path and serverName; defaults to cluster.name
     clusterName: ""
+
+    # -- Override the recovery Barman serverName explicitly (e.g. when restoring from a legacy versioned backup)
+    serverNameOverride: ""
 
     # -- Storage
     wal:
@@ -400,7 +403,7 @@ backup:
       # -- Property within the external secret that contains the CA certificate.
       externalSecretProperty: "ca.crt"
 
-    # -- Generate external cluster name, uses: {{ .Release.Name }}-postgresql-<major version>-backup-index-{{ index }}
+    # -- Backup index used in default serverName: <cluster.name>-pg<major>-backup-<index>
     index: 1
 
     # -- Retention policy for backups

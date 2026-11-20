@@ -138,3 +138,50 @@ tests:
           value: ca/secret/path
         template: external-secret.yaml
         documentIndex: 2
+
+  - it: should scope recovery destinationPath and serverName using recovery.objectStore.clusterName
+    set:
+      backup:
+        objectStore:
+          enabled: false
+      mode: recovery
+      recovery:
+        method: objectStore
+        objectStore:
+          enabled: true
+          clusterName: legacy-postgres
+          index: 1
+    asserts:
+      - equal:
+          path: spec.configuration.destinationPath
+          value: s3://postgres-backups/cl01tl/NAMESPACE/legacy-postgres-cluster
+        template: object-store.yaml
+      - equal:
+          path: spec.bootstrap.recovery.source
+          value: legacy-postgres-pg19-backup-1
+        template: cluster.yaml
+      - equal:
+          path: spec.externalClusters[0].plugin.parameters.serverName
+          value: legacy-postgres-pg19-backup-1
+        template: cluster.yaml
+
+  - it: should allow explicit recovery serverNameOverride
+    set:
+      backup:
+        objectStore:
+          enabled: false
+      mode: recovery
+      recovery:
+        method: objectStore
+        objectStore:
+          enabled: true
+          serverNameOverride: app-postgresql-18-backup-1
+    asserts:
+      - equal:
+          path: spec.bootstrap.recovery.source
+          value: app-postgresql-18-backup-1
+        template: cluster.yaml
+      - equal:
+          path: spec.externalClusters[0].plugin.parameters.serverName
+          value: app-postgresql-18-backup-1
+        template: cluster.yaml

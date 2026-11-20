@@ -59,9 +59,9 @@ tests:
           count: 2
       - equal:
           path: metadata.name
-          value: RELEASE-NAME-postgresql-18-pooler-p1
+          value: RELEASE-NAME-postgres-pooler-p1
         documentIndex: 0
       - equal:
           path: metadata.name
-          value: RELEASE-NAME-postgresql-18-pooler-p2
+          value: RELEASE-NAME-postgres-pooler-p2
         documentIndex: 1

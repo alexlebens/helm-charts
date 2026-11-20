@@ -29,6 +29,17 @@
           "type": "integer",
           "minimum": 1
         },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            }
+          }
+        },
         "storage": {
           "type": "object",
           "properties": {
@@ -101,11 +112,68 @@
         "method": {
           "type": "string",
           "enum": ["import", "backup", "objectStore"]
+        },
+        "objectStore": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "destinationBucket": {
+              "type": "string"
+            },
+            "destinationPathOverride": {
+              "type": "string"
+            },
+            "endpointURL": {
+              "type": "string"
+            },
+            "clusterName": {
+              "type": "string"
+            },
+            "serverNameOverride": {
+              "type": "string"
+            },
+            "index": {
+              "type": "integer"
+            }
+          }
         }
       }
     },
     "backup": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "backupServerName": {
+          "type": "string"
+        },
+        "objectStore": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "isWALArchiver": {
+              "type": "boolean"
+            },
+            "destinationBucket": {
+              "type": "string"
+            },
+            "destinationPathOverride": {
+              "type": "string"
+            },
+            "endpointURL": {
+              "type": "string"
+            },
+            "retentionPolicy": {
+              "type": "string"
+            },
+            "index": {
+              "type": "integer"
+            }
+          }
+        }
+      }
     },
     "roles": {
       "type": "array"
