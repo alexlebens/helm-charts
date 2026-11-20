@@ -1,0 +1,4 @@
+cluster:
+  image:
+    repository: ghcr.io/cloudnative-pg/postgis
+    tag: 19-3-system-trixie

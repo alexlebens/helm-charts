@@ -28,7 +28,7 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   {{- end }}
-  imageName: "{{ .Values.cluster.image.repository }}:{{ .Values.cluster.image.tag }}"
+  {{- include "cluster.image" . | trim | nindent 2 }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   {{- with .Values.cluster.imagePullSecrets }}
   imagePullSecrets:

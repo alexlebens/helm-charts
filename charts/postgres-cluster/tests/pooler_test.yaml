@@ -65,3 +65,31 @@ tests:
           path: metadata.name
           value: RELEASE-NAME-postgres-pooler-p2
         documentIndex: 1
+
+  - it: should configure imageCatalogRef on Pooler when specified
+    set:
+      poolers:
+        - name: rw
+          instances: 2
+          type: rw
+          poolMode: transaction
+          imageCatalogRef:
+            apiGroup: postgresql.cnpg.io
+            kind: ClusterImageCatalog
+            name: postgresql-standard-trixie
+            key: pgbouncer
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.pgbouncer.imageCatalogRef.apiGroup
+          value: postgresql.cnpg.io
+      - equal:
+          path: spec.pgbouncer.imageCatalogRef.kind
+          value: ClusterImageCatalog
+      - equal:
+          path: spec.pgbouncer.imageCatalogRef.name
+          value: postgresql-standard-trixie
+      - equal:
+          path: spec.pgbouncer.imageCatalogRef.key
+          value: pgbouncer

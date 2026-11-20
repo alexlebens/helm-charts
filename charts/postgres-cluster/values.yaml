@@ -23,10 +23,26 @@ externalSecretStoreName: openbao
 cluster:
   instances: 3
 
-  # -- Default image
+  # -- Reference an existing ClusterImageCatalog or ImageCatalog (recommended for centralized patch/minor updates).
+  # Mutually exclusive with `cluster.image`. Setting `cluster.image.repository` or `cluster.image.tag` takes
+  # precedence and renders `spec.imageName` instead, so custom images (e.g. PostGIS, VectorChord) work without
+  # clearing `imageCatalogRef`.
+  imageCatalogRef:
+    # -- API group for the referenced catalog
+    apiGroup: postgresql.cnpg.io
+    # -- Kind of catalog to reference: `ClusterImageCatalog` or `ImageCatalog`
+    kind: ClusterImageCatalog
+    # -- Name of the ClusterImageCatalog or ImageCatalog (leave empty to require `cluster.image` or `imageCatalog.create`)
+    name: postgresql-standard-trixie
+    # -- PostgreSQL major version to select from the catalog (bump this to trigger an in-place major upgrade)
+    major: 19
+
+  # -- Direct operand image override (mutually exclusive with `cluster.imageCatalogRef` and `imageCatalog.create`).
+  # Leave empty to use `cluster.imageCatalogRef`. Set `tag` (and optionally `repository`, which defaults to
+  # `ghcr.io/cloudnative-pg/postgresql`) to pin a custom image directly via `spec.imageName`.
   image:
-    repository: ghcr.io/cloudnative-pg/postgresql
-    tag: 19.0-standard-trixie
+    repository: ""
+    tag: ""
 
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
@@ -452,6 +468,25 @@ backup:
     # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
     plugin: ""
 
+# -- Optional namespaced ImageCatalog managed by this chart.
+# When `create: true` and `images` is non-empty (and `cluster.image` is empty), the chart creates an
+# `ImageCatalog` resource and points `Cluster.spec.imageCatalogRef` to it automatically.
+# See: https://cloudnative-pg.io/documentation/current/image_catalog/
+imageCatalog:
+  # -- Whether to create a namespaced ImageCatalog resource
+  create: false
+  # -- Override the ImageCatalog resource name (defaults to `cluster.name`)
+  name: ""
+  # -- List of PostgreSQL major version images (each entry: `major`, `image`, optional `extensions`)
+  images: []
+  #  - major: 19
+  #    image: ghcr.io/cloudnative-pg/postgresql:19.0-standard-trixie@sha256:...
+  #    extensions: []
+  # -- Optional list of component images such as PgBouncer (each entry: `key`, `image`)
+  componentImages: []
+  #  - key: pgbouncer
+  #    image: ghcr.io/cloudnative-pg/pgbouncer:1.25.1
+
 # -- Role management configuration.
 # Define a list of roles to be managed by the operator via DatabaseRole CRDs.
 # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-DatabaseRole
@@ -489,6 +524,11 @@ databases: []
 #     type: rw
 #     poolMode: transaction
 #     instances: 3
+#     imageCatalogRef:
+#       apiGroup: postgresql.cnpg.io
+#       kind: ClusterImageCatalog
+#       name: postgresql-standard-trixie
+#       key: pgbouncer
 #     parameters:
 #       max_client_conn: "1000"
 #       default_pool_size: "25"

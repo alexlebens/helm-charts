@@ -1,0 +1,28 @@
+imageCatalog:
+  create: true
+  images:
+    - major: 18
+      image: ghcr.io/cloudnative-pg/postgresql:18.7-202611201711-standard-trixie@sha256:5827829071060876c4029650c04183e4ee562da3ebb9e88c914d67c8dc8669d6
+    - major: 19
+      image: ghcr.io/cloudnative-pg/postgresql:19.0-202611201710-standard-trixie@sha256:e845b0146b37f13d912461b63b1a25ef4bbc6992e19fa2447f6ec001f4ee06e8
+      extensions:
+        - name: pgvector
+          image:
+            reference: ghcr.io/cloudnative-pg/pgvector:0.8.7-202611201143-18-trixie@sha256:8c719f4ba8796a39b1e08a450b424577be9fd9821089dfd2c90e8c2d86b7a03c
+  componentImages:
+    - key: pgbouncer
+      image: ghcr.io/cloudnative-pg/pgbouncer:1.25.1
+
+poolers:
+  - name: rw
+    type: rw
+    poolMode: transaction
+    instances: 2
+    imageCatalogRef:
+      apiGroup: postgresql.cnpg.io
+      kind: ImageCatalog
+      name: release-name-postgres
+      key: pgbouncer
+    parameters:
+      max_client_conn: "1000"
+      default_pool_size: "25"

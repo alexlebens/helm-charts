@@ -29,6 +29,25 @@
           "type": "integer",
           "minimum": 1
         },
+        "imageCatalogRef": {
+          "type": "object",
+          "properties": {
+            "apiGroup": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["ClusterImageCatalog", "ImageCatalog"]
+            },
+            "name": {
+              "type": "string"
+            },
+            "major": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
         "image": {
           "type": "object",
           "properties": {
@@ -177,6 +196,49 @@
     },
     "roles": {
       "type": "array"
+    },
+    "imageCatalog": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "major": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "image": {
+                "type": "string"
+              },
+              "extensions": {
+                "type": "array"
+              }
+            }
+          }
+        },
+        "componentImages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     },
     "databases": {
       "type": "array"

@@ -10,10 +10,45 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
-Extract the PostgreSQL major version from the configured image tag.
+Extract the PostgreSQL major version from the configured image tag or image catalog reference.
 */}}
 {{- define "cluster.majorVersion" -}}
-  {{- (semver (regexReplaceAll "@sha256:.*$" .Values.cluster.image.tag "")).Major | toString -}}
+  {{- if or .Values.cluster.image.repository .Values.cluster.image.tag -}}
+    {{- (semver (regexReplaceAll "@sha256:.*$" .Values.cluster.image.tag "")).Major | toString -}}
+  {{- else -}}
+    {{- .Values.cluster.imageCatalogRef.major | int | toString -}}
+  {{- end -}}
+{{- end }}
+
+{{/*
+Render either spec.imageName or spec.imageCatalogRef for the Cluster resource.
+Precedence:
+  1. Direct image override (`cluster.image.repository` or `cluster.image.tag` set) -> `imageName`
+  2. Chart-managed namespaced ImageCatalog (`imageCatalog.create` and `imageCatalog.images` non-empty) -> `imageCatalogRef` (kind: ImageCatalog)
+  3. External catalog reference (`cluster.imageCatalogRef.name` set) -> `imageCatalogRef`
+*/}}
+{{- define "cluster.image" -}}
+{{- if or .Values.cluster.image.repository .Values.cluster.image.tag -}}
+{{- if not .Values.cluster.image.tag -}}
+{{- fail "cluster.image.tag is required when cluster.image.repository is set!" -}}
+{{- end -}}
+{{- $repo := default "ghcr.io/cloudnative-pg/postgresql" .Values.cluster.image.repository -}}
+imageName: {{ printf "%s:%s" $repo .Values.cluster.image.tag | quote }}
+{{- else if and .Values.imageCatalog.create (not (empty .Values.imageCatalog.images)) -}}
+imageCatalogRef:
+  apiGroup: {{ .Values.cluster.imageCatalogRef.apiGroup | default "postgresql.cnpg.io" }}
+  kind: ImageCatalog
+  name: {{ default (include "cluster.name" .) .Values.imageCatalog.name }}
+  major: {{ .Values.cluster.imageCatalogRef.major | required "cluster.imageCatalogRef.major is required when using imageCatalog!" | int }}
+{{- else if .Values.cluster.imageCatalogRef.name -}}
+imageCatalogRef:
+  apiGroup: {{ .Values.cluster.imageCatalogRef.apiGroup | default "postgresql.cnpg.io" }}
+  kind: {{ .Values.cluster.imageCatalogRef.kind | default "ClusterImageCatalog" }}
+  name: {{ .Values.cluster.imageCatalogRef.name }}
+  major: {{ .Values.cluster.imageCatalogRef.major | required "cluster.imageCatalogRef.major is required when cluster.imageCatalogRef.name is set!" | int }}
+{{- else -}}
+{{- fail "Either cluster.image (repository/tag), imageCatalog.create with images, or cluster.imageCatalogRef.name must be configured!" -}}
+{{- end -}}
 {{- end }}
 
 {{/*
@@ -191,15 +226,37 @@ Generate default inherited annotations for CNPG pods (such as version-checker ma
 {{- define "cluster.inheritedAnnotations" -}}
   {{- $defaults := dict -}}
   {{- $tag := .Values.cluster.image.tag | default "" -}}
-  {{- $cleanTag := regexReplaceAll "@sha256:.*$" $tag "" -}}
-  {{- if regexMatch "^[0-9]+\\.[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
-    {{- $suffix := regexReplaceAll "^[0-9]+\\.[0-9]+-" $cleanTag "" -}}
-    {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+\\.[0-9]+-%s$" $suffix) -}}
-  {{- else if regexMatch "^[0-9]+-[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
-    {{- $suffix := regexReplaceAll "^[0-9]+-[0-9]+-" $cleanTag "" -}}
-    {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+-[0-9]+-%s$" $suffix) -}}
-  {{- else if regexMatch "^[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+\\.[0-9]+$" $cleanTag -}}
-    {{- $_ := set $defaults "match-regex.version-checker.io/postgres" "^[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+\\.[0-9]+$" -}}
+  {{- if and (not (or .Values.cluster.image.repository .Values.cluster.image.tag)) .Values.imageCatalog.create (not (empty .Values.imageCatalog.images)) -}}
+    {{- $targetMajor := int .Values.cluster.imageCatalogRef.major -}}
+    {{- range .Values.imageCatalog.images -}}
+      {{- if eq (int .major) $targetMajor -}}
+        {{- $imgNoDigest := regexReplaceAll "@sha256:.*$" .image "" -}}
+        {{- if contains ":" $imgNoDigest -}}
+          {{- $tag = regexReplaceAll "^.*:" $imgNoDigest "" -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $tag -}}
+    {{- $cleanTag := regexReplaceAll "@sha256:.*$" $tag "" -}}
+    {{- if regexMatch "^[0-9]+\\.[0-9]+-[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
+      {{- $suffix := regexReplaceAll "^[0-9]+\\.[0-9]+-[0-9]+-" $cleanTag "" -}}
+      {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+\\.[0-9]+-[0-9]+-%s$" $suffix) -}}
+    {{- else if regexMatch "^[0-9]+\\.[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
+      {{- $suffix := regexReplaceAll "^[0-9]+\\.[0-9]+-" $cleanTag "" -}}
+      {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+\\.[0-9]+-%s$" $suffix) -}}
+    {{- else if regexMatch "^[0-9]+-[0-9]+-[a-z][a-z0-9-]*$" $cleanTag -}}
+      {{- $suffix := regexReplaceAll "^[0-9]+-[0-9]+-" $cleanTag "" -}}
+      {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+-[0-9]+-%s$" $suffix) -}}
+    {{- else if regexMatch "^[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+\\.[0-9]+$" $cleanTag -}}
+      {{- $_ := set $defaults "match-regex.version-checker.io/postgres" "^[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+\\.[0-9]+$" -}}
+    {{- end -}}
+  {{- else if and (not (or .Values.cluster.image.repository .Values.cluster.image.tag)) (not (and .Values.imageCatalog.create (not (empty .Values.imageCatalog.images)))) .Values.cluster.imageCatalogRef.name -}}
+    {{- $catName := .Values.cluster.imageCatalogRef.name -}}
+    {{- if regexMatch "^postgresql-(minimal|standard|system)-[a-z0-9-]+$" $catName -}}
+      {{- $suffix := regexReplaceAll "^postgresql-" $catName "" -}}
+      {{- $_ := set $defaults "match-regex.version-checker.io/postgres" (printf "^[0-9]+\\.[0-9]+-%s$" $suffix) -}}
+    {{- end -}}
   {{- end -}}
   {{- $userAnnotations := dict -}}
   {{- if and .Values.cluster.inheritedMetadata .Values.cluster.inheritedMetadata.annotations -}}

@@ -326,19 +326,48 @@ tests:
           path: spec.inheritedMetadata.annotations["custom.io/note"]
           value: enabled
 
-  - it: should use versionless cluster name and major-scoped backup serverName by default
+  - it: should use versionless cluster name, default ClusterImageCatalog, and major-scoped backup serverName by default
     asserts:
       - equal:
           path: metadata.name
           value: RELEASE-NAME-postgres-cluster
-      - equal:
+      - notExists:
           path: spec.imageName
-          value: ghcr.io/cloudnative-pg/postgresql:19.0-standard-trixie
+      - equal:
+          path: spec.imageCatalogRef.apiGroup
+          value: postgresql.cnpg.io
+      - equal:
+          path: spec.imageCatalogRef.kind
+          value: ClusterImageCatalog
+      - equal:
+          path: spec.imageCatalogRef.name
+          value: postgresql-standard-trixie
+      - equal:
+          path: spec.imageCatalogRef.major
+          value: 19
       - equal:
           path: spec.plugins[0].parameters.serverName
           value: RELEASE-NAME-postgres-pg19-backup-1
 
-  - it: should keep cluster name invariant across major versions while rotating backup serverName
+  - it: should keep cluster name invariant across catalog major versions while rotating backup serverName
+    set:
+      cluster:
+        imageCatalogRef:
+          major: 18
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-postgres-cluster
+      - notExists:
+          path: spec.imageName
+      - equal:
+          path: spec.imageCatalogRef.major
+          value: 18
+      - equal:
+          path: spec.plugins[0].parameters.serverName
+          value: RELEASE-NAME-postgres-pg18-backup-1
+
+  - it: should keep cluster name invariant with direct image override while rotating backup serverName
     set:
       cluster:
         image:
@@ -347,12 +376,68 @@ tests:
       - equal:
           path: metadata.name
           value: RELEASE-NAME-postgres-cluster
+      - notExists:
+          path: spec.imageCatalogRef
       - equal:
           path: spec.imageName
           value: ghcr.io/cloudnative-pg/postgresql:18.7-standard-trixie
       - equal:
           path: spec.plugins[0].parameters.serverName
           value: RELEASE-NAME-postgres-pg18-backup-1
+
+  - it:
+      should derive version-checker annotation from official ClusterImageCatalog names and omit for custom catalog names
+    set:
+      cluster:
+        imageCatalogRef:
+          name: postgresql-minimal-trixie
+          major: 19
+    asserts:
+      - equal:
+          path: spec.inheritedMetadata.annotations["match-regex.version-checker.io/postgres"]
+          value: ^[0-9]+\.[0-9]+-minimal-trixie$
+
+  - it: should omit default version-checker annotation for custom external ImageCatalog name
+    set:
+      cluster:
+        imageCatalogRef:
+          kind: ImageCatalog
+          name: custom-company-catalog
+          major: 19
+    asserts:
+      - notExists:
+          path: spec.inheritedMetadata
+
+  - it: should point Cluster to chart-managed ImageCatalog and derive version-checker annotation from matching image
+    set:
+      cluster:
+        imageCatalogRef:
+          major: 19
+      imageCatalog:
+        create: true
+        images:
+          - major: 18
+            image: ghcr.io/cloudnative-pg/postgresql:18.7-202611201711-standard-trixie
+          - major: 19
+            image: ghcr.io/cloudnative-pg/postgresql:19.0-202611201710-standard-trixie@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    asserts:
+      - notExists:
+          path: spec.imageName
+      - equal:
+          path: spec.imageCatalogRef.apiGroup
+          value: postgresql.cnpg.io
+      - equal:
+          path: spec.imageCatalogRef.kind
+          value: ImageCatalog
+      - equal:
+          path: spec.imageCatalogRef.name
+          value: RELEASE-NAME-postgres
+      - equal:
+          path: spec.imageCatalogRef.major
+          value: 19
+      - equal:
+          path: spec.inheritedMetadata.annotations["match-regex.version-checker.io/postgres"]
+          value: ^[0-9]+\.[0-9]+-[0-9]+-standard-trixie$
 
   - it: should allow explicit backup serverName override
     set:

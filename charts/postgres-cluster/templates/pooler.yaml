@@ -15,6 +15,13 @@ spec:
   type: {{ default "rw" .type }}
   pgbouncer:
     poolMode: {{ default "session" .poolMode }}
+    {{- with .imageCatalogRef }}
+    imageCatalogRef:
+      apiGroup: {{ .apiGroup | default "postgresql.cnpg.io" }}
+      kind: {{ .kind | default "ClusterImageCatalog" }}
+      name: {{ .name | required "poolers[].imageCatalogRef.name is required when imageCatalogRef is set" }}
+      key: {{ .key | default "pgbouncer" }}
+    {{- end }}
     {{- with .authQuerySecret }}
     authQuerySecret:
       {{- toYaml . | nindent 6 }}
