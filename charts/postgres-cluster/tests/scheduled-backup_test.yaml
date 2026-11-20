@@ -46,3 +46,20 @@ tests:
       - matchRegex:
           path: spec.cluster.name
           pattern: .*-cluster
+      - equal:
+          path: spec.target
+          value: prefer-standby
+
+  - it: should allow overriding ScheduledBackup target to primary
+    set:
+      backup:
+        objectStore:
+          enabled: true
+        scheduledBackup:
+          enabled: true
+          schedule: "0 0 0 * * *"
+          target: primary
+    asserts:
+      - equal:
+          path: spec.target
+          value: primary

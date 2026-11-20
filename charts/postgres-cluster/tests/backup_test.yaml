@@ -189,3 +189,73 @@ tests:
           value: ca/secret/path
         template: external-secret.yaml
         documentIndex: 1
+
+  - it: should render default Barman sidecar env and omit optional sidecar fields
+    asserts:
+      - equal:
+          path: spec.instanceSidecarConfiguration.env[0].name
+          value: AWS_REQUEST_CHECKSUM_CALCULATION
+        template: object-store.yaml
+        documentIndex: 0
+      - equal:
+          path: spec.instanceSidecarConfiguration.env[1].name
+          value: AWS_RESPONSE_CHECKSUM_VALIDATION
+        template: object-store.yaml
+        documentIndex: 0
+      - notExists:
+          path: spec.instanceSidecarConfiguration.resources
+        template: object-store.yaml
+        documentIndex: 0
+      - notExists:
+          path: spec.instanceSidecarConfiguration.retentionPolicyIntervalSeconds
+        template: object-store.yaml
+        documentIndex: 0
+      - notExists:
+          path: spec.instanceSidecarConfiguration.logLevel
+        template: object-store.yaml
+        documentIndex: 0
+      - notExists:
+          path: spec.instanceSidecarConfiguration.additionalContainerArgs
+        template: object-store.yaml
+        documentIndex: 0
+
+  - it: should configure custom Barman ObjectStore instanceSidecarConfiguration
+    set:
+      recovery:
+        method: backup
+      backup:
+        objectStore:
+          enabled: true
+          instanceSidecarConfiguration:
+            env:
+              - name: CUSTOM_VAR
+                value: custom-val
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+            retentionPolicyIntervalSeconds: 3600
+            logLevel: debug
+            additionalContainerArgs:
+              - --custom-flag
+    asserts:
+      - equal:
+          path: spec.instanceSidecarConfiguration.env[0].name
+          value: CUSTOM_VAR
+        template: object-store.yaml
+      - equal:
+          path: spec.instanceSidecarConfiguration.resources.requests.memory
+          value: 64Mi
+        template: object-store.yaml
+      - equal:
+          path: spec.instanceSidecarConfiguration.retentionPolicyIntervalSeconds
+          value: 3600
+        template: object-store.yaml
+      - equal:
+          path: spec.instanceSidecarConfiguration.logLevel
+          value: debug
+        template: object-store.yaml
+      - equal:
+          path: spec.instanceSidecarConfiguration.additionalContainerArgs[0]
+          value: --custom-flag
+        template: object-store.yaml

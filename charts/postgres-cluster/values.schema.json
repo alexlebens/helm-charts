@@ -253,6 +253,27 @@
             },
             "index": {
               "type": "integer"
+            },
+            "instanceSidecarConfiguration": {
+              "type": "object",
+              "properties": {
+                "env": {
+                  "type": "array"
+                },
+                "resources": {
+                  "type": "object"
+                },
+                "logLevel": {
+                  "type": "string",
+                  "enum": ["", "error", "warning", "info", "debug", "trace"]
+                },
+                "additionalContainerArgs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }
@@ -287,6 +308,58 @@
             },
             "index": {
               "type": "integer"
+            },
+            "instanceSidecarConfiguration": {
+              "type": "object",
+              "properties": {
+                "env": {
+                  "type": "array"
+                },
+                "resources": {
+                  "type": "object"
+                },
+                "retentionPolicyIntervalSeconds": {
+                  "type": ["integer", "null"],
+                  "minimum": 1
+                },
+                "logLevel": {
+                  "type": "string",
+                  "enum": ["", "error", "warning", "info", "debug", "trace"]
+                },
+                "additionalContainerArgs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "scheduledBackup": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "immediate": {
+              "type": "boolean"
+            },
+            "suspend": {
+              "type": "boolean"
+            },
+            "schedule": {
+              "type": "string"
+            },
+            "backupOwnerReference": {
+              "type": "string"
+            },
+            "plugin": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string",
+              "enum": ["", "primary", "prefer-standby"]
             }
           }
         }

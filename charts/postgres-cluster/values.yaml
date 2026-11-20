@@ -327,6 +327,25 @@ recovery:
     # -- Override the recovery Barman serverName explicitly (e.g. when restoring from a legacy versioned backup)
     serverNameOverride: ""
 
+    # -- Configuration for the Barman Cloud sidecar container used during recovery
+    # See: https://cloudnative-pg.io/plugin-barman-cloud/docs/
+    instanceSidecarConfiguration:
+      # -- Environment variables passed to the Barman Cloud recovery sidecar (defaults disable AWS S3 checksums for non-AWS S3 compatibility; see cloudnative-pg#8599)
+      env:
+        - name: AWS_REQUEST_CHECKSUM_CALCULATION
+          value: when_required
+        - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+          value: when_required
+      # -- Resource requests and limits for the Barman Cloud recovery sidecar container
+      resources: {}
+      #  requests:
+      #    cpu: 10m
+      #    memory: 64Mi
+      # -- Log level for the Barman Cloud recovery sidecar (`error`, `warning`, `info`, `debug`, `trace`)
+      logLevel: ""
+      # -- Additional command-line arguments appended to the Barman Cloud recovery sidecar container
+      additionalContainerArgs: []
+
     # -- Storage
     wal:
       # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
@@ -457,6 +476,27 @@ backup:
     # -- Retention policy for backups
     retentionPolicy: "7d"
 
+    # -- Configuration for the Barman Cloud sidecar container running inside each PostgreSQL pod
+    # See: https://cloudnative-pg.io/plugin-barman-cloud/docs/
+    instanceSidecarConfiguration:
+      # -- Environment variables passed to the Barman Cloud sidecar (defaults disable AWS S3 checksums for non-AWS S3 compatibility; see cloudnative-pg#8599)
+      env:
+        - name: AWS_REQUEST_CHECKSUM_CALCULATION
+          value: when_required
+        - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+          value: when_required
+      # -- Resource requests and limits for the Barman Cloud sidecar container
+      resources: {}
+      #  requests:
+      #    cpu: 10m
+      #    memory: 64Mi
+      # -- Retention policy enforcement check interval in seconds (leave null for plugin default)
+      retentionPolicyIntervalSeconds: null
+      # -- Log level for the Barman Cloud sidecar (`error`, `warning`, `info`, `debug`, `trace`)
+      logLevel: ""
+      # -- Additional command-line arguments appended to the Barman Cloud sidecar container
+      additionalContainerArgs: []
+
     # -- Specificies if this backup will do WALs
     isWALArchiver: true
 
@@ -499,6 +539,9 @@ backup:
 
     # -- Backup method, can be `barman-cloud.cloudnative-pg.io` (default)
     plugin: ""
+
+    # -- Target instance to take the backup from: `prefer-standby` (offloads IOPS from primary, falls back to primary on single-instance clusters) or `primary`
+    target: prefer-standby
 
 # -- Optional namespaced ImageCatalog managed by this chart.
 # When `create: true` and `images` is non-empty (and `cluster.image` is empty), the chart creates an

@@ -15,6 +15,9 @@ spec:
   suspend: {{ .suspend | default false }}
   schedule: {{ .schedule | quote | required "Schedule is required" }}
   backupOwnerReference: {{ .backupOwnerReference | default "self" }}
+  {{- with .target }}
+  target: {{ . }}
+  {{- end }}
   cluster:
     name: {{ include "cluster.name" $context }}-cluster
   method: plugin

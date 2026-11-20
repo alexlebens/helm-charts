@@ -267,3 +267,32 @@ Generate default inherited annotations for CNPG pods (such as version-checker ma
     {{- toYaml $merged -}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Render Barman Cloud ObjectStore instanceSidecarConfiguration block when any sidecar setting is provided.
+*/}}
+{{- define "cluster.objectStoreSidecarConfig" -}}
+{{- if . -}}
+{{- if or .env .resources .retentionPolicyIntervalSeconds .logLevel .additionalContainerArgs -}}
+instanceSidecarConfiguration:
+  {{- with .env }}
+  env:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .retentionPolicyIntervalSeconds }}
+  retentionPolicyIntervalSeconds: {{ . | int }}
+  {{- end }}
+  {{- with .logLevel }}
+  logLevel: {{ . }}
+  {{- end }}
+  {{- with .additionalContainerArgs }}
+  additionalContainerArgs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

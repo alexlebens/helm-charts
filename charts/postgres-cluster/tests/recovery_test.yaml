@@ -185,3 +185,32 @@ tests:
           path: spec.externalClusters[0].plugin.parameters.serverName
           value: app-postgresql-18-backup-1
         template: cluster.yaml
+
+  - it: should render default Barman sidecar env and support resources on recovery ObjectStore
+    set:
+      backup:
+        objectStore:
+          enabled: false
+      mode: recovery
+      recovery:
+        method: objectStore
+        objectStore:
+          enabled: true
+          instanceSidecarConfiguration:
+            resources:
+              requests:
+                cpu: 15m
+                memory: 96Mi
+    asserts:
+      - equal:
+          path: spec.instanceSidecarConfiguration.env[0].name
+          value: AWS_REQUEST_CHECKSUM_CALCULATION
+        template: object-store.yaml
+      - equal:
+          path: spec.instanceSidecarConfiguration.resources.requests.cpu
+          value: 15m
+        template: object-store.yaml
+      - equal:
+          path: spec.instanceSidecarConfiguration.resources.requests.memory
+          value: 96Mi
+        template: object-store.yaml
