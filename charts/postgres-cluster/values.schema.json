@@ -67,6 +67,9 @@
             },
             "storageClass": {
               "type": "string"
+            },
+            "resizeInUseVolumes": {
+              "type": ["boolean", "null"]
             }
           }
         },
@@ -81,14 +84,95 @@
             },
             "storageClass": {
               "type": "string"
+            },
+            "resizeInUseVolumes": {
+              "type": ["boolean", "null"]
             }
           }
+        },
+        "services": {
+          "type": "object"
+        },
+        "roles": {
+          "type": "array"
+        },
+        "replicationSlots": {
+          "type": "object",
+          "properties": {
+            "highAvailability": {
+              "type": "object"
+            },
+            "synchronizeReplicas": {
+              "type": "object"
+            },
+            "updateInterval": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "nodeMaintenanceWindow": {
+          "type": "object",
+          "properties": {
+            "inProgress": {
+              "type": "boolean"
+            },
+            "reusePVC": {
+              "type": "boolean"
+            }
+          }
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
         },
         "enablePDB": {
           "type": "boolean"
         },
         "enableSuperuserAccess": {
           "type": "boolean"
+        },
+        "seccompProfile": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "localhostProfile": {
+              "type": "string"
+            }
+          }
+        },
+        "podSecurityContext": {
+          "type": "object"
+        },
+        "securityContext": {
+          "type": "object"
+        },
+        "probes": {
+          "type": "object",
+          "properties": {
+            "startup": {
+              "type": "object"
+            },
+            "readiness": {
+              "type": "object"
+            },
+            "liveness": {
+              "type": "object"
+            }
+          }
+        },
+        "serviceAccountName": {
+          "type": "string"
+        },
+        "serviceAccountTemplate": {
+          "type": "object"
         },
         "primaryUpdateMethod": {
           "type": "string",
@@ -97,6 +181,26 @@
         "primaryUpdateStrategy": {
           "type": "string",
           "enum": ["unsupervised", "supervised"]
+        },
+        "startDelay": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "stopDelay": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "smartShutdownTimeout": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "switchoverDelay": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "failoverDelay": {
+          "type": ["integer", "null"],
+          "minimum": 0
         },
         "monitoring": {
           "type": "object",

@@ -541,3 +541,168 @@ tests:
       - equal:
           path: spec.postgresql.enableAlterSystem
           value: true
+
+  - it: should set RuntimeDefault seccompProfile and omit optional lifecycle, security, and HA fields by default
+    asserts:
+      - equal:
+          path: spec.seccompProfile.type
+          value: RuntimeDefault
+      - notExists:
+          path: spec.probes
+      - notExists:
+          path: spec.stopDelay
+      - notExists:
+          path: spec.smartShutdownTimeout
+      - notExists:
+          path: spec.topologySpreadConstraints
+      - notExists:
+          path: spec.replicationSlots
+      - notExists:
+          path: spec.nodeMaintenanceWindow
+      - notExists:
+          path: spec.serviceAccountName
+      - notExists:
+          path: spec.serviceAccountTemplate
+      - notExists:
+          path: spec.env
+      - notExists:
+          path: spec.envFrom
+      - notExists:
+          path: spec.managed
+      - notExists:
+          path: spec.storage.resizeInUseVolumes
+
+  - it: should configure lifecycle delays including explicit zero smartShutdownTimeout
+    set:
+      cluster:
+        startDelay: 30
+        stopDelay: 45
+        smartShutdownTimeout: 0
+        switchoverDelay: 20
+        failoverDelay: 10
+    asserts:
+      - equal:
+          path: spec.startDelay
+          value: 30
+      - equal:
+          path: spec.stopDelay
+          value: 45
+      - equal:
+          path: spec.smartShutdownTimeout
+          value: 0
+      - equal:
+          path: spec.switchoverDelay
+          value: 20
+      - equal:
+          path: spec.failoverDelay
+          value: 10
+
+  - it: should configure security contexts, probes, env, envFrom, and serviceAccountTemplate
+    set:
+      cluster:
+        seccompProfile:
+          type: Localhost
+          localhostProfile: profiles/audit.json
+        podSecurityContext:
+          fsGroupChangePolicy: OnRootMismatch
+        securityContext:
+          allowPrivilegeEscalation: false
+        probes:
+          startup:
+            initialDelaySeconds: 10
+          readiness:
+            periodSeconds: 5
+          liveness:
+            failureThreshold: 4
+        env:
+          - name: PG_CUSTOM_ENV
+            value: enabled
+        envFrom:
+          - configMapRef:
+              name: pg-extra-env
+        serviceAccountTemplate:
+          metadata:
+            annotations:
+              example.com/cnpg: "true"
+    asserts:
+      - equal:
+          path: spec.seccompProfile.localhostProfile
+          value: profiles/audit.json
+      - equal:
+          path: spec.podSecurityContext.fsGroupChangePolicy
+          value: OnRootMismatch
+      - equal:
+          path: spec.securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.probes.startup.initialDelaySeconds
+          value: 10
+      - equal:
+          path: spec.probes.readiness.periodSeconds
+          value: 5
+      - equal:
+          path: spec.probes.liveness.failureThreshold
+          value: 4
+      - equal:
+          path: spec.env[0].name
+          value: PG_CUSTOM_ENV
+      - equal:
+          path: spec.envFrom[0].configMapRef.name
+          value: pg-extra-env
+      - equal:
+          path: spec.serviceAccountTemplate.metadata.annotations["example.com/cnpg"]
+          value: "true"
+
+  - it: should configure serviceAccountName and explicit storage resizeInUseVolumes flags
+    set:
+      cluster:
+        serviceAccountName: custom-cnpg-sa
+        storage:
+          resizeInUseVolumes: false
+        walStorage:
+          enabled: true
+          resizeInUseVolumes: false
+    asserts:
+      - equal:
+          path: spec.serviceAccountName
+          value: custom-cnpg-sa
+      - equal:
+          path: spec.storage.resizeInUseVolumes
+          value: false
+      - equal:
+          path: spec.walStorage.resizeInUseVolumes
+          value: false
+
+  - it: should configure topologySpreadConstraints, replicationSlots, nodeMaintenanceWindow, and managed roles
+    set:
+      cluster:
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+        replicationSlots:
+          highAvailability:
+            enabled: true
+        nodeMaintenanceWindow:
+          inProgress: true
+          reusePVC: true
+        roles:
+          - name: app_readonly
+            ensure: present
+            login: true
+    asserts:
+      - equal:
+          path: spec.topologySpreadConstraints[0].topologyKey
+          value: kubernetes.io/hostname
+      - equal:
+          path: spec.replicationSlots.highAvailability.enabled
+          value: true
+      - equal:
+          path: spec.nodeMaintenanceWindow.inProgress
+          value: true
+      - equal:
+          path: spec.nodeMaintenanceWindow.reusePVC
+          value: true
+      - equal:
+          path: spec.managed.roles[0].name
+          value: app_readonly

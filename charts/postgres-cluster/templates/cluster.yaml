@@ -41,11 +41,17 @@ spec:
     {{- if not (empty .Values.cluster.storage.storageClass) }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
     {{- end }}
+    {{- if not (kindIs "invalid" .Values.cluster.storage.resizeInUseVolumes) }}
+    resizeInUseVolumes: {{ .Values.cluster.storage.resizeInUseVolumes }}
+    {{- end }}
   {{- if .Values.cluster.walStorage.enabled }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     {{- if not (empty .Values.cluster.walStorage.storageClass) }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
+    {{- end }}
+    {{- if not (kindIs "invalid" .Values.cluster.walStorage.resizeInUseVolumes) }}
+    resizeInUseVolumes: {{ .Values.cluster.walStorage.resizeInUseVolumes }}
     {{- end }}
   {{- end }}
   {{- with .Values.cluster.resources }}
@@ -56,11 +62,33 @@ spec:
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.cluster.topologySpreadConstraints }}
+  topologySpreadConstraints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.nodeMaintenanceWindow }}
+  nodeMaintenanceWindow:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.env }}
+  env:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.envFrom }}
+  envFrom:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
   {{- end }}
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  {{- range $field := list "startDelay" "stopDelay" "smartShutdownTimeout" "switchoverDelay" "failoverDelay" }}
+  {{- $val := index $.Values.cluster $field }}
+  {{- if not (kindIs "invalid" $val) }}
+  {{ $field }}: {{ $val | int }}
+  {{- end }}
+  {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:
@@ -72,6 +100,36 @@ spec:
     name: {{ . }}
   {{- end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
+  {{- with .Values.cluster.seccompProfile }}
+  seccompProfile:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.podSecurityContext }}
+  podSecurityContext:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.securityContext }}
+  securityContext:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.probes }}
+  probes:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if and .Values.cluster.serviceAccountName .Values.cluster.serviceAccountTemplate }}
+  {{- fail "cluster.serviceAccountName and cluster.serviceAccountTemplate are mutually exclusive!" }}
+  {{- end }}
+  {{- with .Values.cluster.serviceAccountName }}
+  serviceAccountName: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.cluster.serviceAccountTemplate }}
+  serviceAccountTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   postgresql:
     {{- if .Values.cluster.postgresql.shared_preload_libraries }}
     shared_preload_libraries:
@@ -109,10 +167,14 @@ spec:
     {{- if .Values.cluster.postgresql.enableAlterSystem }}
     enableAlterSystem: true
     {{- end }}
-  {{- if not (empty .Values.cluster.services) }}
+  {{- if or (not (empty .Values.cluster.services)) (not (empty .Values.cluster.roles)) }}
   managed:
     {{- with .Values.cluster.services }}
     services:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.roles }}
+    roles:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   {{- end }}

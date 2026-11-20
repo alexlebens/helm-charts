@@ -1,0 +1,46 @@
+cluster:
+  storage:
+    resizeInUseVolumes: false
+  walStorage:
+    resizeInUseVolumes: false
+  env:
+    - name: PG_CUSTOM_ENV
+      value: enabled
+  startDelay: 30
+  stopDelay: 30
+  smartShutdownTimeout: 0
+  switchoverDelay: 15
+  failoverDelay: 10
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  seccompProfile:
+    type: RuntimeDefault
+  probes:
+    startup:
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      failureThreshold: 30
+    readiness:
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    liveness:
+      initialDelaySeconds: 15
+      periodSeconds: 10
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        example.com/cnpg: "true"
+  replicationSlots:
+    highAvailability:
+      enabled: true
+  roles:
+    - name: app_readonly
+      ensure: present
+      login: true
+      inRoles:
+        - pg_read_all_data

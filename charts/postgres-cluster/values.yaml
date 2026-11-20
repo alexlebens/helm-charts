@@ -57,10 +57,16 @@ cluster:
     size: 10Gi
     storageClass: local-path
 
+    # -- Enable resizing existing PVCs in-place (leave null for CNPG default true; set false for StorageClasses that do not support expansion)
+    resizeInUseVolumes: null
+
   walStorage:
     enabled: true
     size: 2Gi
     storageClass: local-path
+
+    # -- Enable resizing existing WAL PVCs in-place (leave null for CNPG default true)
+    resizeInUseVolumes: null
 
   # -- The UID and GID of the postgres user inside the image, defaults to 26
   postgresUID: -1
@@ -68,6 +74,14 @@ cluster:
 
   # -- Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/
   services: {}
+
+  # -- Inline PostgreSQL roles managed via Cluster spec.managed.roles (alternative to standalone DatabaseRole CRDs under top-level roles)
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-RoleConfiguration
+  roles: []
+
+  # -- Replication slot management configuration (highAvailability, synchronizeReplicas, updateInterval)
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-ReplicationSlotsConfiguration
+  replicationSlots: {}
 
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
@@ -80,6 +94,12 @@ cluster:
 
   priorityClassName: ""
 
+  # -- Extra environment variables injected into PostgreSQL instance containers
+  env: []
+
+  # -- Extra ConfigMap/Secret envFrom sources injected into PostgreSQL instance containers
+  envFrom: []
+
   # -- Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
   # successfully updated. It can be switchover (default) or restart.
   primaryUpdateMethod: switchover
@@ -87,6 +107,21 @@ cluster:
   # -- Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
   # successfully updated: it can be automated (unsupervised - default) or manual (supervised)
   primaryUpdateStrategy: unsupervised
+
+  # -- Maximum time in seconds to wait for PostgreSQL to start up (leave null for CNPG default)
+  startDelay: null
+
+  # -- Maximum time in seconds to wait for PostgreSQL to shut down gracefully (leave null for CNPG default)
+  stopDelay: null
+
+  # -- Time in seconds allocated to the smart shutdown phase before fast shutdown; accepts 0 (leave null for CNPG default)
+  smartShutdownTimeout: null
+
+  # -- Time in seconds to wait for a switchover before forcing it (leave null for CNPG default)
+  switchoverDelay: null
+
+  # -- Time in seconds to wait before promoting a new primary on failover (leave null for CNPG default)
+  failoverDelay: null
 
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
@@ -96,6 +131,13 @@ cluster:
   affinity:
     enablePodAntiAffinity: true
     topologyKey: kubernetes.io/hostname
+
+  # -- Pod topology spread constraints for scheduling across zones/hosts
+  topologySpreadConstraints: []
+
+  # -- Node maintenance window configuration (inProgress, reusePVC), useful during Talos/Kubernetes node upgrades
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-NodeMaintenanceWindow
+  nodeMaintenanceWindow: {}
 
   # -- The configuration for the CA and related certificates.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
@@ -111,6 +153,25 @@ cluster:
   # -- Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes
   # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
   enablePDB: true
+
+  # -- SeccompProfile applied to every Pod and Container (defaults to RuntimeDefault)
+  seccompProfile:
+    type: RuntimeDefault
+
+  # -- Additional pod-level SecurityContext settings
+  podSecurityContext: {}
+
+  # -- Additional container-level SecurityContext settings
+  securityContext: {}
+
+  # -- Custom startup, readiness, and liveness probe overrides for PostgreSQL pods
+  probes: {}
+
+  # -- Name of an existing ServiceAccount to use (mutually exclusive with serviceAccountTemplate)
+  serviceAccountName: ""
+
+  # -- Template to customize the operator-managed ServiceAccount (mutually exclusive with serviceAccountName)
+  serviceAccountTemplate: {}
 
   # -- Enable default monitoring and alert rules
   monitoring:
