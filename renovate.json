@@ -7,7 +7,7 @@
   "prConcurrentLimit": 0,
   "pinDigests": true,
   "baseBranchPatterns": ["main"],
-  "ignorePaths": [".mise/tests/bash/test_helper/**"],
+  "ignorePaths": [".mise/tests/bash/test_helper/**", "charts/*/ci/**", "charts/*/tests/**"],
   "separateMinorPatch": true,
   "customManagers": [
     {
@@ -96,6 +96,26 @@
       "description": "Group Prettier updates",
       "matchPackageNames": ["prettier"],
       "groupName": "prettier"
+    },
+    {
+      "description": "Disable automated PostgreSQL major version updates in Helm charts",
+      "matchPackageNames": [
+        "ghcr.io/cloudnative-pg/postgresql",
+        "ghcr.io/cloudnative-pg/postgis",
+        "ghcr.io/tensorchord/cloudnative-vectorchord"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Keep CloudNativePG operator and PostgreSQL image updates manual",
+      "matchPackageNames": [
+        "cloudnative-pg/cloudnative-pg",
+        "ghcr.io/cloudnative-pg/postgresql",
+        "ghcr.io/cloudnative-pg/postgis",
+        "ghcr.io/tensorchord/cloudnative-vectorchord"
+      ],
+      "automerge": false
     }
   ]
 }
