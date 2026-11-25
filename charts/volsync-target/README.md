@@ -1,6 +1,6 @@
 # volsync-target
 
-![Version: 4.2.0](https://img.shields.io/badge/Version-4.2.0-informational?style=flat-square) ![AppVersion: 0.17.0](https://img.shields.io/badge/AppVersion-0.17.0-informational?style=flat-square)
+![Version: 4.2.1](https://img.shields.io/badge/Version-4.2.1-informational?style=flat-square) ![AppVersion: 0.17.0](https://img.shields.io/badge/AppVersion-0.17.0-informational?style=flat-square)
 
 Volsync Replication set to target specific PVC with preconfigured settings
 
@@ -53,7 +53,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | b.restore.enabled | bool | `false` | Create a ReplicationDestination for this tier |
 | b.restore.manual | string | `""` | Trigger token; change it to run another restore |
 | b.schedule | string | `"0 7 * * *"` | 5 character cron schedule |
-| c | object | `{"enabled":false,"externalSecret":{"accessKeyIdProperty":"AWS_ACCESS_KEY_ID","bucketPath":"/ps10rp/garage/config","bucketProperty":"BUCKET_NAME","credentialPath":"/ps10rp/garage/keys/volsync-backups","enabled":true,"endpointProperty":"ENDPOINT","regionProperty":"AWS_REGION","resticPasswordProperty":"RESTIC_PASSWORD","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"},"manual":"","maxSyncLag":"","moverSecurityContext":{},"paused":false,"repair":{"enabled":false,"token":""},"restic":{"cacheAccessModes":[],"cacheCapacity":"1Gi","cacheStorageClassName":"","copyMethod":"Snapshot","pruneIntervalDays":6,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":6,"yearly":0},"storageClassName":"ceph-block","unlock":"","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"restore":{"enabled":false,"manual":""},"schedule":"0 10 * * 0"}` | Tier C: Remote Raspberry Pi backup configuration (ps10rp) |
+| c | object | `{"enabled":false,"externalSecret":{"accessKeyIdProperty":"AWS_ACCESS_KEY_ID","bucketPath":"/ps10rp/garage/config","bucketProperty":"BUCKET_NAME","credentialPath":"/ps10rp/garage/keys/volsync-backups","enabled":true,"endpointProperty":"ENDPOINT","regionProperty":"AWS_REGION","resticPasswordProperty":"RESTIC_PASSWORD","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"},"manual":"","maxSyncLag":"","moverSecurityContext":{},"paused":false,"repair":{"enabled":false,"token":""},"restic":{"cacheAccessModes":[],"cacheCapacity":"1Gi","cacheStorageClassName":"","copyMethod":"Snapshot","pruneIntervalDays":6,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":4,"yearly":0},"storageClassName":"ceph-block","unlock":"","volumeSnapshotClassName":"ceph-blockpool-snapshot"},"restore":{"enabled":false,"manual":""},"schedule":"0 10 * * 0"}` | Tier C: Remote Raspberry Pi backup configuration (ps10rp) |
 | c.externalSecret | object | `{"accessKeyIdProperty":"AWS_ACCESS_KEY_ID","bucketPath":"/ps10rp/garage/config","bucketProperty":"BUCKET_NAME","credentialPath":"/ps10rp/garage/keys/volsync-backups","enabled":true,"endpointProperty":"ENDPOINT","regionProperty":"AWS_REGION","resticPasswordProperty":"RESTIC_PASSWORD","secretAccessKeyProperty":"AWS_SECRET_ACCESS_KEY","storeName":"openbao"}` | External Secret configuration |
 | c.manual | string | `""` | Manual backup trigger token for this tier |
 | c.maxSyncLag | string | `""` | Optional override for max sync lag threshold in seconds (auto-computed from schedule if unset) |
@@ -62,7 +62,7 @@ Volsync Replication set to target specific PVC with preconfigured settings
 | c.repair | object | `{"enabled":false,"token":""}` | Repair Job for this tier. Set `enabled` and change `token` to run restic repair on demand |
 | c.repair.enabled | bool | `false` | Create the repair Job for this tier |
 | c.repair.token | string | `""` | Unique token appended to the Job name; change it to re-run the repair |
-| c.restic | object | `{"cacheAccessModes":[],"cacheCapacity":"1Gi","cacheStorageClassName":"","copyMethod":"Snapshot","pruneIntervalDays":6,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":6,"yearly":0},"storageClassName":"ceph-block","unlock":"","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
+| c.restic | object | `{"cacheAccessModes":[],"cacheCapacity":"1Gi","cacheStorageClassName":"","copyMethod":"Snapshot","pruneIntervalDays":6,"repository":"","retain":{"daily":0,"hourly":0,"monthly":0,"weekly":4,"yearly":0},"storageClassName":"ceph-block","unlock":"","volumeSnapshotClassName":"ceph-blockpool-snapshot"}` | Backup configuration, inserted directly into the yaml |
 | c.restic.unlock | string | `""` | Unlock token to clear stale restic repository locks for this tier |
 | c.restore | object | `{"enabled":false,"manual":""}` | Restore overrides for this tier. Set `enabled` and a unique `manual` token to run a restore from GitOps |
 | c.restore.enabled | bool | `false` | Create a ReplicationDestination for this tier |
