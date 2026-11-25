@@ -36,7 +36,7 @@ tests:
           value: Never
       - equal:
           path: spec.template.spec.containers[0].image
-          value: docker.io/restic/restic:0.19.1
+          value: docker.io/restic/restic:0.20.0
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].secretRef.name
           value: data-backup-secret-a
