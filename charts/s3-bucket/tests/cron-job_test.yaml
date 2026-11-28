@@ -108,3 +108,16 @@ tests:
           content:
             name: RCLONE_EXCLUDE_FLAGS
             value: "--exclude=*.tmp --exclude=cache/**"
+
+  - it: should render RCLONE_MAX_AGE when maxAge is set
+    set:
+      backups:
+        d:
+          enabled: true
+          maxAge: "36h"
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: RCLONE_MAX_AGE
+            value: "36h"

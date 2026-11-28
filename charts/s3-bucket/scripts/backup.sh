@@ -24,6 +24,7 @@ rclone ${MODE} \
   "dest:${DEST_BUCKET}" \
   --s3-no-check-bucket \
   ${RCLONE_EXCLUDE_FLAGS} \
+  ${RCLONE_MAX_AGE:+--max-age "${RCLONE_MAX_AGE}"} \
   --verbose 2>&1 | tee /tmp/rclone-sync.log
 
 sync_res=$?
