@@ -51,6 +51,7 @@
           "immediate": { "type": "boolean" },
           "mode": { "type": "string", "enum": ["sync", "copy"] },
           "exclude": { "type": "array", "items": { "type": "string" } },
+          "maxAge": { "type": "string" },
           "cronJob": {
             "type": "object",
             "properties": {

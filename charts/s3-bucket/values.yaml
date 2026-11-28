@@ -106,6 +106,8 @@ backups:
     mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
+    # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
+    maxAge: ""
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -138,6 +140,8 @@ backups:
     mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
+    # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
+    maxAge: ""
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -170,6 +174,8 @@ backups:
     mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
+    # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
+    maxAge: ""
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -202,6 +208,8 @@ backups:
     mode: sync
     # -- Rclone --exclude patterns (e.g. ["wals/**"] to skip WAL files)
     exclude: []
+    # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
+    maxAge: ""
     cronJob:
       suspend: false
       timeZone: America/Chicago
