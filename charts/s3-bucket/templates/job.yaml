@@ -75,6 +75,8 @@ spec:
               value: {{ $excludeFlags | trim | quote }}
             - name: RCLONE_MAX_AGE
               value: {{ $backupConfig.maxAge | default "" | quote }}
+            - name: RCLONE_LATEST_ONLY
+              value: {{ $backupConfig.latestOnly | default false | quote }}
             - name: NTFY_ENABLED
               value: {{ $.Values.backupConfig.ntfy.enabled | quote }}
             - name: PRUNE_ENABLED

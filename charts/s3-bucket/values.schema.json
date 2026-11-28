@@ -52,6 +52,7 @@
           "mode": { "type": "string", "enum": ["sync", "copy"] },
           "exclude": { "type": "array", "items": { "type": "string" } },
           "maxAge": { "type": "string" },
+          "latestOnly": { "type": "boolean" },
           "cronJob": {
             "type": "object",
             "properties": {

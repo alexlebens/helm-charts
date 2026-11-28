@@ -108,6 +108,8 @@ backups:
     exclude: []
     # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
     maxAge: ""
+    # -- Copy only the most recent completed Barman base backup (*/base/<timestamp>/) per cluster prefix
+    latestOnly: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -142,6 +144,8 @@ backups:
     exclude: []
     # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
     maxAge: ""
+    # -- Copy only the most recent completed Barman base backup (*/base/<timestamp>/) per cluster prefix
+    latestOnly: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -176,6 +180,8 @@ backups:
     exclude: []
     # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
     maxAge: ""
+    # -- Copy only the most recent completed Barman base backup (*/base/<timestamp>/) per cluster prefix
+    latestOnly: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
@@ -210,6 +216,8 @@ backups:
     exclude: []
     # -- Maximum age of source files to include in sync/copy (rclone --max-age, e.g. "36h")
     maxAge: ""
+    # -- Copy only the most recent completed Barman base backup (*/base/<timestamp>/) per cluster prefix
+    latestOnly: false
     cronJob:
       suspend: false
       timeZone: America/Chicago
