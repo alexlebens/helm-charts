@@ -121,3 +121,16 @@ tests:
           content:
             name: RCLONE_MAX_AGE
             value: "36h"
+
+  - it: should render RCLONE_LATEST_ONLY when latestOnly is enabled
+    set:
+      backups:
+        d:
+          enabled: true
+          latestOnly: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: RCLONE_LATEST_ONLY
+            value: "true"

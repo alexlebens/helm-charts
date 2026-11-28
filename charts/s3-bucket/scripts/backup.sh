@@ -18,6 +18,27 @@ send_ntfy() {
 }
 
 # --- ${MODE} Phase ---
+INCLUDE_FROM_FLAG=""
+if [ "${RCLONE_LATEST_ONLY:-false}" = "true" ]; then
+  rclone lsf "src:${SRC_BUCKET}" \
+    --s3-no-check-bucket \
+    --recursive \
+    --files-only \
+    --include "**/base/*/backup.info" \
+    > /tmp/rclone-base-backups.txt
+
+  sort /tmp/rclone-base-backups.txt | awk -F'/base/' 'NF==2 {
+    split($2, parts, "/");
+    latest[$1] = parts[1];
+  } END {
+    for (p in latest) {
+      print p "/base/" latest[p] "/**";
+    }
+  }' > /tmp/rclone-latest-includes.txt
+
+  INCLUDE_FROM_FLAG="--include-from=/tmp/rclone-latest-includes.txt"
+fi
+
 # shellcheck disable=SC2086
 rclone ${MODE} \
   "src:${SRC_BUCKET}" \
@@ -25,6 +46,7 @@ rclone ${MODE} \
   --s3-no-check-bucket \
   ${RCLONE_EXCLUDE_FLAGS} \
   ${RCLONE_MAX_AGE:+--max-age "${RCLONE_MAX_AGE}"} \
+  ${INCLUDE_FROM_FLAG} \
   --verbose 2>&1 | tee /tmp/rclone-sync.log
 
 sync_res=$?
